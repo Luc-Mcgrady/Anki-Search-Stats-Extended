@@ -4,13 +4,18 @@ from aqt.stats import NewDeckStats
 from aqt.qt import QUrl
 from aqt import mw
 
+import urllib.request
+
 with open("replacement.html") as f:
     html = f.read()
-with open("graphs_append.js") as f:
-    innerJs = f.read()
+#with open("graphs_append.js") as f:
+#    innerJs = f.read()
+
+with urllib.request.urlopen(f"{mw.serverURL()}/_anki/pages/graphs.js") as resp:
+    js: str = resp.read().decode(encoding="utf8")
 
 html = html.format(
-    js=innerJs.replace("\n", ";").replace("\"", "\\\""),
+    js=js,
     media=mw.serverURL()
 )
 
