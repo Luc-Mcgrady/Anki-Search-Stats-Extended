@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild ts/src/index.ts --outfile=out.js"
+    "build": "node esbuild.mjs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "rollup": "^3.27.1",
+    "@tsconfig/svelte": "^5.0.0",
+    "esbuild-svelte": "^0.7.4",
+    "svelte": "^4.1.2",
     "typescript": "^5.1.6"
   },
   "devDependencies": {

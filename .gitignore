@@ -1,2 +1,3 @@
 *.pyc
+*.min.js
 node_modules
