@@ -1,13 +1,11 @@
 from anki.hooks import wrap
 
 from aqt.stats import NewDeckStats
-from aqt.qt import QUrl
-from aqt import mw
-
-with open("graphs.min.js") as f:
-    innerJs = f.read()
 
 def new_refresh(self: NewDeckStats):
+    with open("graphs.min.js") as f: # Putting this inside the function allows you to rebuild the page with anki still open
+        innerJs = f.read()
+
     self.form.web.eval(innerJs)
 
 NewDeckStats.refresh = wrap(NewDeckStats.refresh, new_refresh, "after")
