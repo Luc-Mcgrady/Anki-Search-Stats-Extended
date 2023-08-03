@@ -1,7 +1,12 @@
-import Hello from './Hello.svelte'
-import { anki } from './anki'
-
-const root = document.createElement("div")
+const root = document.createElement("body")
 document.body.appendChild(root)
 
-anki.setupGraphs([anki.graphComponents.AddedGraph], {controller: anki.graphComponents.RangeBox})
+const graphs = Object.values(anki.graphComponents).filter(a => a != anki.graphComponents.RangeBox && typeof a != "object")
+
+console.log(graphs)
+
+setTimeout(() => { // Delay and then swap the body of the document to remove regular anki's dom
+    document.body = root
+
+    anki.setupGraphs(graphs, {controller: anki.graphComponents.RangeBox})
+}, 10);
