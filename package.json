@@ -1,0 +1,19 @@
+{
+  "name": "anki-new-graphs",
+  "version": "0.0.0",
+  "description": "Customizable new graphs for anki",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild ts/src/index.ts --outfile=out.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "rollup": "^3.27.1",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.17"
+  }
+}
