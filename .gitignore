@@ -4,3 +4,4 @@
 *.ankiaddon
 meta.json
 node_modules
+proto

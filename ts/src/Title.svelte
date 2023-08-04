@@ -1,5 +1,6 @@
-<script lang="ts">
-    export const sourceData: any | null = null;
+<script>
 </script>
 
-<h1>New Graphs Plus:</h1>
+<dir class="container">
+    <h1>New Graphs Plus:</h1>
+</dir>
