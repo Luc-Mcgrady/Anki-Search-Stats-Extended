@@ -1,19 +1,20 @@
 <script lang="ts">
     import Title from "./Title.svelte";
-    import { GraphsRequest } from "./proto/anki/stats_pb"
+    import { GraphsResponse } from "./proto/anki/stats_pb"
 
-    let data: null | GraphsRequest = null;
+    let data: null | GraphsResponse = null;
     
-    const oldfetch = fetch
+    const oldFetch = fetch
     //@ts-ignore
     fetch = (first: string, ...args: any[]) => {
 
             async function handle() {
-                const resp = await oldfetch(first, ...args)
+                const resp = await oldFetch(first, ...args)
                 
-                const reader = await resp.body!.getReader().read()
-                const bytes = reader.value!
-                data = GraphsRequest.fromBinary(bytes)
+                const blob = await resp.blob();
+                const respBuf = await new Response(blob).arrayBuffer();
+                const bytes = new Uint8Array(respBuf)
+                data = GraphsResponse.fromBinary(bytes)
 
                 console.log(bytes, data.toJson())
 
@@ -23,7 +24,7 @@
             if (first == "/_anki/graphs") {
                 handle()
             }
-            return oldfetch(first, ...args)
+            return oldFetch(first, ...args)
         }
 
 </script>
