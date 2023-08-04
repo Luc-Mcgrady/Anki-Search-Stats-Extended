@@ -1,10 +1,15 @@
 import esbuild from 'esbuild'
-import sveltePlugin from 'esbuild-svelte'
+import esbuildSvelte from "esbuild-svelte";
+import sveltePreprocess from "svelte-preprocess";
 
 esbuild.build({
     entryPoints: ["ts/src/index.ts"],
     outfile: "graphs.min.js",
     bundle: true,
-    minify: true, // This is actually required because I embed it inline for some insane reason I forgot.
-    plugins: [sveltePlugin()]
+    minify: false, // This is actually required because I embed it inline for some insane reason I forgot.
+    plugins: [
+        esbuildSvelte({
+          preprocess: sveltePreprocess(),
+        }),
+      ],
 })
