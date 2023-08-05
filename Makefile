@@ -1,4 +1,4 @@
-INCLUDED =  __init__.py graphs.min.js
+INCLUDED = __init__.py graphs.min.js developers.md
 OUT = addon.ankiaddon
 
 $(OUT): $(INCLUDED)
