@@ -5,7 +5,7 @@ $(OUT): $(INCLUDED)
 	zip $(OUT).zip $(INCLUDED)
 	mv $(OUT).zip $(OUT)
 
-graphs.min.js: ts/src/* esbuild.mjs ts/src/protc node_modules
+graphs.min.js: ${wildcard ts/src/*.ts} esbuild.mjs ts/src/proto node_modules
 	npm run build
 
 ts/src/protc: node_modules
