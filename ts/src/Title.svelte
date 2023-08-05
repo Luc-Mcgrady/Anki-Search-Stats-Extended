@@ -1,6 +1,7 @@
 <script>
+    import Graph from "./Graph.svelte";
 </script>
 
-<dir class="container">
+<Graph>
     <h1>New Graphs Plus:</h1>
-</dir>
+</Graph>

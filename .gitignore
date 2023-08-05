@@ -1,7 +1,9 @@
 *.pyc
 *.min.js
+*.min.css
 *.zip
 *.ankiaddon
 meta.json
 node_modules
 proto
+sass
