@@ -5,10 +5,10 @@ $(OUT): $(INCLUDED)
 	zip $(OUT).zip $(INCLUDED)
 	mv $(OUT).zip $(OUT)
 
-graphs.min.js: ts/src/* esbuild.mjs ts/src/protc
+graphs.min.js: ts/src/* esbuild.mjs ts/src/protc node_modules
 	npm run build
 
-ts/src/protc:
+ts/src/protc: node_modules
 	mkdir ts/src/proto -p
 
 	npx protoc \
@@ -16,3 +16,6 @@ ts/src/protc:
 		--es_out ts/src/proto \
 		--es_opt target=ts \
 		anki/proto/anki/*.proto \
+
+node_modules:
+	npm i
