@@ -3,21 +3,17 @@
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
     import { GraphsResponse } from "./proto/anki/stats_pb"
+    import { DecodeResponse } from "./root";
 
     let data: null | GraphsResponse = null;
+    const utf8Encode = new TextEncoder();
     
     const oldFetch = fetch
     //@ts-ignore
     fetch = (first: string, ...args: any[]) => {
         async function handle() {
             const resp = await oldFetch(first, ...args)
-            
-            const blob = await resp.blob();
-            const respBuf = await new Response(blob).arrayBuffer();
-            const bytes = new Uint8Array(respBuf)
-            data = GraphsResponse.fromBinary(bytes)
-
-            console.log(bytes, data.toJson())
+            data = await DecodeResponse(resp)
 
             return resp
         }
