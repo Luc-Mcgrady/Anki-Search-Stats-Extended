@@ -8,11 +8,11 @@ It would be possible to make this compatible with the caveat that you would have
 
 ## Development
 
-Building this addon works on linux, might work on mac and unless you have some sorta godly setup where symlinks work properly and have make installed doesn't work on windows
+Building this addon works on linux, might work on mac and unless you have some sorta godly setup where symlinks work properly and have make installed, doesn't work on windows
 
 Clone this repo recursively (It contains all anki's source files, sorry)
 ```
-git clone https://github.com/Luc-Mcgrady/Anki-New-Graphs.git
+git clone https://github.com/Luc-Mcgrady/Anki-New-Graphs.git --recursive
 ```
 
 run make to setup source files
