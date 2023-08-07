@@ -1,4 +1,6 @@
 <script lang="ts">
+    import BurdenPie from "./BurdenPie.svelte";
+    import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
     import { GraphsResponse } from "./proto/anki/stats_pb"
 
@@ -31,6 +33,7 @@
         "method": "POST",
     });
 
+    $: intervals = data?.intervals!.intervals || {}
 </script>
 
 <h1>New Graphs Plus:</h1>
@@ -38,7 +41,16 @@
 <div class="graphs-container">
 {#if data}
     <!--{JSON.stringify(data.toJson())}-->
-    <IntervalPie data={data}/>
+    <GraphContainer>
+        <h1>Interval Distribution</h1>
+        <hr/>
+        <IntervalPie {intervals}/>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Burden Distribution</h1>
+        <hr/>
+        <BurdenPie {intervals}/>
+    </GraphContainer>
 {/if}
 </div>
 
