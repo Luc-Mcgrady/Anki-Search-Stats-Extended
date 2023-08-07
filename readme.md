@@ -5,10 +5,21 @@ This addon is going to be in no way compatible with any other addon which change
 
 It would be possible to make this compatible with the caveat that you would have 2 search bars. If any more addons come out then that might be a sacrifice I would be willing to make for compatibility.
 
-## Building
 
-You can't use this addon out the box from the git repo, you have to run:
+## Development
+
+Building this addon works on linux, might work on mac and unless you have some sorta godly setup where symlinks work properly and have make installed doesn't work on windows
+
+Clone this repo recursively (It contains all anki's source files, sorry)
 ```
-npm run build
+git clone https://github.com/Luc-Mcgrady/Anki-New-Graphs.git
+```
+
+run make to setup source files
+
+```
+make
 ``` 
-first.
+
+Then every-time you make any changes run make again.
+Due to the way its set up you don't have to reload anki for javascript changes, you only have to run make again and reload the stats menu.
