@@ -1,6 +1,5 @@
 <script lang="ts">
     import IntervalPie from "./IntervalPie.svelte";
-import Title from "./Title.svelte";
     import { GraphsResponse } from "./proto/anki/stats_pb"
 
     let data: null | GraphsResponse = null;
@@ -34,7 +33,7 @@ import Title from "./Title.svelte";
 
 </script>
 
-<Title></Title>
+<h1>New Graphs Plus:</h1>
 
 <div class="graphs-container">
 {#if data}
