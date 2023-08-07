@@ -8,16 +8,19 @@
 
     export let data: GraphsResponse 
 
-    const gradient = new Rainbow()
     
-    let step = 4;
-    const steps = 6;
+    let step = 6;
+    let steps = 4;
     
     const intervals = data.intervals!.intervals
     $: last = step*steps
 
-    gradient.setNumberRange(0,steps + 1)
-    gradient.setSpectrum("#74C476", "#31a354")
+    const gradient = new Rainbow()
+
+    $ : {
+        gradient.setNumberRange(0,steps + 1)
+        gradient.setSpectrum("#74C476", "#31a354")
+    }
 
     let pie_data: PieDatum[]
     $: pie_data = 
@@ -54,6 +57,17 @@
     <h1>Interval Distribution</h1>
     <hr/>
     <Pie data={pie_data}></Pie>
-    <label for="interval_pie_step"></label>
-    <input type="number" id="interval_pie_step" bind:value={step}>
+    <div>
+        <label for="interval_pie_step">Days per step</label>
+        <input type="number" id="interval_pie_step" bind:value={step}><br/>
+        <label for="interval_pie_step">Steps</label>
+        <input type="number" id="interval_pie_step" bind:value={steps}>
+    </div>
 </Graph>
+
+<style>
+    div {
+        display: grid;
+        grid-template-rows: auto auto;
+    }
+</style>
