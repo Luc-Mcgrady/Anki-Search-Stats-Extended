@@ -7,6 +7,14 @@ export type PieDatum = {
     colour: string
 }
 
+export function PieDatumFactory(start: any, end: any, value: number, colour: string) {
+    return {
+        label: start!=end?`${start}-${end}`:`${start}`,
+        value: value,
+        colour: colour
+    }
+}
+
 export function renderPie(data: PieDatum[], svg: SVGElement, radius: number) {
     const pie = d3.pie<any, PieDatum>()
         .value(d=>d.value)

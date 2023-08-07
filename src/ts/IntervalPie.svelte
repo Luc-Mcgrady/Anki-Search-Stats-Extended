@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { GraphsResponse } from "./proto/anki/stats_pb";
     import Pie from "./Pie.svelte"
     import type {PieDatum} from "./pie"
-    import _ from "lodash"
+    import {PieDatumFactory} from "./pie"
+    import _, { sum, values } from "lodash"
     import Rainbow from "rainbowvis.js"
 
     export let intervals : Record<number, number>
@@ -10,7 +10,7 @@
     let steps = 4;
     let last = 21;
     
-    $: step = Math.ceil(last / steps);
+    $: step = Math.floor(last / steps);
     $: realLast = steps * step
 
     const gradient = new Rainbow()
@@ -21,33 +21,42 @@
     }
 
     let pie_data: PieDatum[]
-    $: pie_data = 
-        [..._.range(0,step*steps,step)
+    $: { 
+        console.log(_.range(1,step*steps+1,step))
+        pie_data = _.range(1,step*steps+1,step)
         .map((start,i)=>
             {
-                const end = start+step
+                let end = start + step
+                if (end > last && last != realLast) {
+                    end = realLast
+                }
+
+                console.log(_.range(start, end))
 
                 const count=
-                    _.range(start, end+1)
-                    .reduce((n,j)=>n+(intervals[j] || 0))
+                    _.range(start, end)
+                    .reduce((n,j)=>n+(intervals[j] || 0), 0)
 
-                return {
-                    label: `${start}-${end}`,
-                    value: count,
-                    colour: `#${gradient.colourAt(i)}`
-                }
+                return PieDatumFactory(start, end, count, `#${gradient.colourAt(i)}`)
             }
-        ), 
-        { // The to infinity one
-            label: `${realLast}-Infinity`,
-            value: 
-                Object.entries(intervals)
-                .filter(([i, _])=>parseInt(i)>realLast)
+        )
+        
+        if (realLast < last) {
+            const filler_start = realLast+1
+            const filler_pie_slice = Object.entries(intervals)
+                .filter(([i, _])=>parseInt(i)>=filler_start && parseInt(i)<=last)
                 .reduce((n,[_, v])=>n+v, 0)
-            ,
-            colour: "grey"
+
+            pie_data.push(PieDatumFactory(filler_start, last, filler_pie_slice, "gold"))
         }
-    ]
+
+        const infinite_pie_slice = Object.entries(intervals)
+            .filter(([i, _])=>parseInt(i)>last)
+            .reduce((n,[_, v])=>n+v, 0)
+
+        pie_data.push(PieDatumFactory(last, "Infinity", infinite_pie_slice, "grey"))
+    }
+
     
 </script>
 
@@ -61,10 +70,15 @@
 <br>
 <Pie data={pie_data}></Pie>
 
+<span>{`Total <${last} = ${_.sum(Object.values(pie_data).map(d=>d.value))}`}</span><br>
 
 <style>
     div {
         display: grid;
         grid-template-rows: auto auto;
+    }
+
+    span {
+        text-align: center;
     }
 </style>
