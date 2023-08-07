@@ -68,15 +68,13 @@
     <input type="number" id="interval_pie_step" bind:value={steps}>
 </div>
 <br>
-<Pie data={pie_data}></Pie>
+<Pie data={pie_data} {legend_title}></Pie>
 
 <span>{`Total <${last} = ${
-    _.sum(pie_values.slice(0,-1))
-        .toFixed(2)
-        .replace(/[.,]00$/, "")}`
+    _.round(_.sum(pie_values.slice(0,-1)), 2)}`
         } <!--Removes the end if not a value--> 
     </span><br>
-<span>Total = {_.sum(pie_values).toFixed(2).replace(/[.,]00$/, "")}</span>
+<span>Total = {_.round(_.sum(pie_values), 2)}</span>
 
 <style>
     div {

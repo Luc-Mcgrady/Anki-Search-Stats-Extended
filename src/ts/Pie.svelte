@@ -24,7 +24,7 @@
             {#each data as datum}
             <tr>
                 <span style="color: {datum.colour};">■&nbsp;</span>
-                {datum.label}: {datum.value}
+                {datum.label}: {_.round(datum.value, 2)}
             </tr>
             {/each}
         </table>
