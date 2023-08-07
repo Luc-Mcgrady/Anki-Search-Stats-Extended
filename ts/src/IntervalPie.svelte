@@ -58,13 +58,14 @@
 <Graph>
     <h1>Interval Distribution</h1>
     <hr/>
-    <Pie data={pie_data}></Pie>
     <div>
         <label for="interval_pie_last">Last Day</label>
         <input type="number" id="interval_pie_last" bind:value={last}><br/>
         <label for="interval_pie_step">Steps</label>
         <input type="number" id="interval_pie_step" bind:value={steps}>
     </div>
+    <br>
+    <Pie data={pie_data}></Pie>
 </Graph>
 
 <style>

@@ -15,24 +15,30 @@
 </script>
 
 
-<div>
+<div class="root">
     <svg width={bounds.width} height={bounds.height}>
         <g transform={`translate(${bounds.width / 2},${bounds.height / 2})`} bind:this={svg}></g>
     </svg>
 
-    <table>
-        {#each data as datum}
+    <div style={`max-height:${bounds.height}px`} class="glossary">
+        <table>
+            {#each data as datum}
             <tr>
                 <span style="color: {datum.colour};">■&nbsp;</span>
                 {datum.label}: {datum.value}
             </tr>
-        {/each}
-    </table>
+            {/each}
+        </table>
+    </div>
 </div>
 
 <style>
-    div {
+    div.root {
         display: flex;
         align-items: center;
+    }
+ 
+    div.glossary {
+        overflow-y: auto;
     }
 </style>
