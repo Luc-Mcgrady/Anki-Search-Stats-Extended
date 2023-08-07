@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Bar from "./Bar.svelte";
     import BurdenPie from "./BurdenPie.svelte";
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
@@ -53,6 +54,13 @@
             Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>
             as an example if a card has an interval of 1 it has a burden of 1 because you see it every day.<br>
             If a card has an interval of 2 it has a burden of 0.5 etcetera.
+        </p>        
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Future Due Types</h1>
+        <hr/>
+        <Bar/>
+        <p>
         </p>        
     </GraphContainer>
 {/if}
