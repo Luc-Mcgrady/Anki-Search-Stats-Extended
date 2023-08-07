@@ -1,10 +1,10 @@
 {
-  "name": "anki-new-graphs",
+  "name": "anki-new-stats",
+  "private": true,
   "version": "0.0.0",
   "description": "Customizable new graphs for anki",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node esbuild.mjs"
   },
   "author": "",
