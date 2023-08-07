@@ -2,11 +2,12 @@
     import Pie from "./Pie.svelte"
     import type {PieDatum} from "./pie"
     import {PieDatumFactory} from "./pie"
-    import _, { slice, sum, values } from "lodash"
+    import _ from "lodash"
     import Rainbow from "rainbowvis.js"
 
     export let intervals : Record<number, number>
-    
+    export let legend_title = "Interval Range: cards"
+
     let steps = 4;
     let last = 21;
     

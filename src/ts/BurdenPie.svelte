@@ -13,7 +13,7 @@
 
 </script>
 
-<IntervalPie intervals={burdens}></IntervalPie>
+<IntervalPie intervals={burdens} legend_title="Burden: Cards"></IntervalPie>
 
 <style>
     span {
