@@ -8,7 +8,7 @@
     export let intervals : Record<number, number>
     export let legend_title = "Interval Range: cards"
 
-    let steps = 4;
+    let steps = 7;
     let last = 21;
     
     $: step = Math.floor(last / steps);
