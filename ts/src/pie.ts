@@ -10,7 +10,8 @@ export type PieDatum = {
 export function renderPie(data: PieDatum[], svg: SVGElement, radius: number) {
     const pie = d3.pie<any, PieDatum>()
         .value(d=>d.value)
-    
+        .sort(null)
+
     const data_ready = pie(data)
 
     d3.select(svg)
