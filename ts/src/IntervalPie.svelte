@@ -1,6 +1,6 @@
 <script lang="ts">
     import { GraphsResponse } from "./proto/anki/stats_pb";
-    import Graph from "./Graph.svelte"
+    import GraphContainer from "./Graph.svelte"
     import Pie from "./Pie.svelte"
     import type {PieDatum} from "./pie"
     import _ from "lodash"
@@ -55,7 +55,7 @@
     
 </script>
 
-<Graph>
+<GraphContainer>
     <h1>Interval Distribution</h1>
     <hr/>
     <div>
@@ -66,7 +66,7 @@
     </div>
     <br>
     <Pie data={pie_data}></Pie>
-</Graph>
+</GraphContainer>
 
 <style>
     div {

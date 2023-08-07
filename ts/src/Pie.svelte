@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Graph from "./Graph.svelte";
     import { defaultGraphBounds } from "./graph";
     import { renderPie, type PieDatum } from "./pie";
 
