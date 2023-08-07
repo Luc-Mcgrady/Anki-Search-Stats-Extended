@@ -57,7 +57,7 @@
         pie_data.push(PieDatumFactory(last, "Infinity", infinite_pie_slice, "grey"))
     }
 
-    
+    $: pie_values =  Object.values(pie_data).map(d=>d.value)
 </script>
 
 
@@ -70,7 +70,13 @@
 <br>
 <Pie data={pie_data}></Pie>
 
-<span>{`Total <${last} = ${_.sum(Object.values(pie_data).map(d=>d.value).slice(0,-1))}`}</span><br>
+<span>{`Total <${last} = ${
+    _.sum(pie_values.slice(0,-1))
+        .toFixed(2)
+        .replace(/[.,]00$/, "")}`
+        } <!--Removes the end if not a value--> 
+    </span><br>
+<span>Total = {_.sum(pie_values).toFixed(2).replace(/[.,]00$/, "")}</span>
 
 <style>
     div {

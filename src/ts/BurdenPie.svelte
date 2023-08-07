@@ -15,8 +15,6 @@
 
 <IntervalPie intervals={burdens}></IntervalPie>
 
-<span>Total burden = {Object.values(burdens).reduce((p,n)=>p+n)}</span>
-
 <style>
     span {
         text-align: center;
