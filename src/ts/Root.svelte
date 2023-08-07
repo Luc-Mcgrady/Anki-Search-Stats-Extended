@@ -97,8 +97,4 @@
             margin-top: 3em;
         }
     }
-
-    .spacer {
-        height: 1.5em;
-    }
 </style>

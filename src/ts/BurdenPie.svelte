@@ -14,9 +14,3 @@
 </script>
 
 <IntervalPie intervals={burdens} legend_title="Burden: Cards"></IntervalPie>
-
-<style>
-    span {
-        text-align: center;
-    }
-</style>
