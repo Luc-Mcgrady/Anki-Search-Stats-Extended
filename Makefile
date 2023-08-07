@@ -1,5 +1,5 @@
-INCLUDED = __init__.py graphs.min.js developers.md
-OUT = addon.ankiaddon
+INCLUDED = __init__.py stats.min.js stats.min.css developers.md
+OUT = newStatsPlus.ankiaddon
 
 COPIED = anki/graphs/Graph.sphelte
 
@@ -7,7 +7,7 @@ $(OUT): $(INCLUDED)
 	zip $(OUT).zip $(INCLUDED)
 	mv $(OUT).zip $(OUT)
 
-graphs.min.js: ${wildcard src/ts/*.ts} ${wildcard src/ts/*.svelte} esbuild.mjs src/ts/proto node_modules sass
+stats.min.js: ${wildcard src/ts/*.ts} ${wildcard src/ts/*.svelte} esbuild.mjs src/ts/proto node_modules sass
 	npm run build
 
 sass:

@@ -12,7 +12,7 @@ Building this addon works on linux, might work on mac and unless you have some s
 
 Clone this repo recursively (It contains all anki's source files, sorry)
 ```
-git clone https://github.com/Luc-Mcgrady/Anki-New-Graphs.git --recursive
+git clone https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus.git --recursive
 ```
 
 run make to setup source files
