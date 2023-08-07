@@ -45,16 +45,30 @@
         <h1>Interval Distribution</h1>
         <hr/>
         <IntervalPie {intervals}/>
+        <p>
+            Here you can more easily visualise the spread of your intervals
+        </p>   
     </GraphContainer>
     <GraphContainer>
         <h1>Burden Distribution</h1>
         <hr/>
         <BurdenPie {intervals}/>
+        <p>
+            Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>
+            as an example if a card has an interval of 1 it has a burden of 1 because you see it every day.<br>
+            If a card has an interval of 2 it has a burden of 0.5 etcetera.
+        </p>        
     </GraphContainer>
 {/if}
 </div>
 
 <style lang="scss">
+
+    p {
+        font-size: small;
+        margin-top: 1em;
+    }
+
     // Copied from anki/ts/graphs/GraphsPage.svelte
     .graphs-container {
         display: grid;
