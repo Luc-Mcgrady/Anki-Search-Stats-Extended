@@ -2,7 +2,7 @@
     import Pie from "./Pie.svelte"
     import type {PieDatum} from "./pie"
     import {PieDatumFactory} from "./pie"
-    import _, { sum, values } from "lodash"
+    import _, { slice, sum, values } from "lodash"
     import Rainbow from "rainbowvis.js"
 
     export let intervals : Record<number, number>
@@ -70,7 +70,7 @@
 <br>
 <Pie data={pie_data}></Pie>
 
-<span>{`Total <${last} = ${_.sum(Object.values(pie_data).map(d=>d.value))}`}</span><br>
+<span>{`Total <${last} = ${_.sum(Object.values(pie_data).map(d=>d.value).slice(0,-1))}`}</span><br>
 
 <style>
     div {
