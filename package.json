@@ -16,6 +16,8 @@
     "@tsconfig/svelte": "^5.0.0",
     "d3": "^7.8.5",
     "esbuild-svelte": "^0.7.4",
+    "lodash": "^4.17.21",
+    "rainbowvis.js": "^1.1.1",
     "sass": "^1.64.2",
     "svelte": "^4.1.2",
     "svelte-preprocess": "^5.0.4",
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "@types/d3": "^7.4.0",
+    "@types/lodash": "^4.14.196",
     "esbuild": "^0.18.17"
   }
 }
