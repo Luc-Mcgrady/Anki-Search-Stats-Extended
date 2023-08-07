@@ -1,6 +1,8 @@
 import Root from "./Root.svelte"
  
-export const root = new Root({target: document.body})
+setTimeout(()=>
+    new Root({target: document.body})
+, 100)
 
 declare global {
     let css: string
