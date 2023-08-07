@@ -11,6 +11,17 @@
     let steps = 7;
     let last = 21;
     
+    $: {
+        if (steps < 1) {
+            steps = 1
+        }
+    }
+    $: {
+        if (last < 0) {
+            last = 0
+        }
+    }
+
     $: step = Math.floor(last / steps);
     $: realLast = steps * step
 
