@@ -3,27 +3,28 @@
     import BurdenPie from "./BurdenPie.svelte";
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
-    import { GraphsResponse } from "./proto/anki/stats_pb"
-    import { DecodeResponse } from "./root";
+    import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
+    import { decodeResponse, fetchAndDecode, swapSearch } from "./root";
 
     let data: null | GraphsResponse = null;
+    let mature_data: null | GraphsResponse = null;
+    let learn_data: null | GraphsResponse = null;
     const utf8Encode = new TextEncoder();
     
     const oldFetch = fetch
     //@ts-ignore
-    fetch = (first: string, ...args: any[]) => {
+    fetch = (req: string, ...args: any[]) => {
         async function handle() {
+            data =          await fetchAndDecode(oldFetch, req, ...args) // I feel like theres a better way of doing this than tripping the amount of processing needed
+            mature_data =   await fetchAndDecode(oldFetch, swapSearch(req, "$1 AND prop:ivl>=21"), ...args)
+            learn_data =    await fetchAndDecode(oldFetch, swapSearch(req, "$1 AND is:learn"), ...args)
 
-            const resp = await oldFetch(first, ...args)
-            data = await DecodeResponse(resp)
-
-            return resp
         }
-        console.log(first)
-        if (first == "/_anki/graphs") {
+        console.log(req)
+        if (req == "/_anki/graphs") {
             handle()
         }
-        return oldFetch(first, ...args)
+        return oldFetch(req, ...args)
     }
 
     fetch("/_anki/graphs", {
@@ -55,13 +56,13 @@
             If a card has an interval of 2 it has a burden of 0.5 etcetera.
         </p>        
     </GraphContainer>
-    {#if data.futureDue}
-    <GraphContainer>
-        <h1>Future Due Types</h1>
-        <DueBar all={data.futureDue}/>
-        <p>
-        </p>        
-    </GraphContainer>
+    {#if data.futureDue && learn_data?.futureDue && mature_data?.futureDue}
+        <GraphContainer>
+            <h1>Future Due Types</h1>
+            <DueBar all={data.futureDue} learn={learn_data.futureDue} mature={mature_data.futureDue}/>
+            <p>
+            </p>        
+        </GraphContainer>
     {/if}
 {/if}
 </div>
