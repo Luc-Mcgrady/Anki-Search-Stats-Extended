@@ -4,15 +4,15 @@
     let svg: SVGElement | null = null
 
     const chart: BarChart = {
-        row_labels: ["test"],
-        row_colours: ["red"],
+        row_labels: ["test", "ahh"],
+        row_colours: ["red", "blue"],
         data: [{
-            values: {test: 10},
+            values: [10, 0],
             label: "1"
         },
         {
-            values: {test: 20},
-            label: "1"
+            values: [20, 10],
+            label: "2"
         }]
     }
     $: {
