@@ -26,5 +26,6 @@
 
         transition: box-shadow var(--transition) ease-in-out;
         page-break-inside: avoid;
+        padding:1em;
     }
 </style>
