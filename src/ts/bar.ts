@@ -62,8 +62,8 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
             return zip
         })
         .enter().append("rect")
-        .attr("height", d=>y(d[1]!))
-        .attr("y", d=>-y(d[0]!))
+        .attr("height", d=>y(d[0]!))
+        .attr("y", d=>-y(d[1]!))
         .attr("fill", (_,i)=>chart.row_colours[i])
         .attr("width", x.bandwidth())
 }
