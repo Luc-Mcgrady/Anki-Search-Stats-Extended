@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Bar from "./Bar.svelte";
+    import DueBar from "./DueBar.svelte";
     import BurdenPie from "./BurdenPie.svelte";
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
@@ -13,6 +13,7 @@
     //@ts-ignore
     fetch = (first: string, ...args: any[]) => {
         async function handle() {
+
             const resp = await oldFetch(first, ...args)
             data = await DecodeResponse(resp)
 
@@ -54,13 +55,14 @@
             If a card has an interval of 2 it has a burden of 0.5 etcetera.
         </p>        
     </GraphContainer>
+    {#if data.futureDue}
     <GraphContainer>
         <h1>Future Due Types</h1>
-        <hr/>
-        <Bar/>
+        <DueBar all={data.futureDue}/>
         <p>
         </p>        
     </GraphContainer>
+    {/if}
 {/if}
 </div>
 
