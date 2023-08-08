@@ -33,7 +33,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     const y = d3.scaleLinear()
         .domain([0, _.sum(Object.values(max.values))])
-        .range([bounds.height, 0])
+        .range([0, bounds.height])
 
     d3svg.append("g")
         .call(d3.axisLeft(y))
@@ -44,6 +44,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     d3svg
         .append("g")
+        //.attr("transform", `translate(0,-${bounds.height})`)
         .selectAll("g")
         .data(chart.data)
         .enter().append("g")
@@ -57,7 +58,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                 return sum
             })
             const zip = _.zip(values, tops)
-            console.log(zip)
+            console.log({zip, d})
             return zip
         })
         .enter().append("rect")
