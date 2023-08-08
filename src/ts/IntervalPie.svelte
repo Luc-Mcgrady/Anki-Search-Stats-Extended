@@ -6,7 +6,7 @@
     import Rainbow from "rainbowvis.js"
 
     export let intervals : Record<number, number>
-    export let legend_title = "Interval Range: cards"
+    export let legend_title = "Intervals: Cards"
 
     let steps = 7;
     let last = 21;
