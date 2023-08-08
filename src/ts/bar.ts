@@ -51,11 +51,12 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .selectAll("rect")
         .data(d=>{ // I'm not very good with d3, if theres a better way of doing this go ahead.
             let sum = 0;
-            const tops = d.values.reverse().map(v=>{
+            const values = {...d.values} // Copy so we don't mutate original
+            const tops = values.reverse().map(v=>{
                 sum += v
                 return sum
             })
-            const zip = _.zip(d.values, tops)
+            const zip = _.zip(values, tops)
             console.log(zip)
             return zip
         })
