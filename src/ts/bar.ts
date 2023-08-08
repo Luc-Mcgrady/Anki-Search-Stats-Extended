@@ -41,20 +41,27 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     d3svg.append("g")
         .attr("transform", `translate(0, ${bounds.height})`)
         .call(d3.axisBottom(x).tickSizeOuter(0))
-    
+
     d3svg
         .append("g")
         .selectAll("g")
         .data(chart.data)
         .enter().append("g")
-        //.attr("fill", (_,i)=>"red")
         .attr("transform", d=>`translate(${x(d.label)}, ${bounds.height})`)
         .selectAll("rect")
-        .data(d=>d.values)
-        .enter()
-        .append("rect")
-        .attr("height", d=>y(d))
-        .attr("y", d=>-y(d))
+        .data(d=>{ // I'm not very good with d3, if theres a better way of doing this go ahead.
+            let sum = 0;
+            const tops = d.values.reverse().map(v=>{
+                sum += v
+                return sum
+            })
+            const zip = _.zip(d.values, tops)
+            console.log(zip)
+            return zip
+        })
+        .enter().append("rect")
+        .attr("height", d=>y(d[1]!))
+        .attr("y", d=>-y(d[0]!))
         .attr("fill", (_,i)=>chart.row_colours[i])
         .attr("width", x.bandwidth())
 }
