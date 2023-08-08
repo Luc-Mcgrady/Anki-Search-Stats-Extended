@@ -40,7 +40,6 @@
     <!--{JSON.stringify(data.toJson())}-->
     <GraphContainer>
         <h1>Interval Distribution</h1>
-        <hr/>
         <IntervalPie {intervals}/>
         <p>
             Here you can more easily visualise the spread of your intervals
@@ -48,7 +47,6 @@
     </GraphContainer>
     <GraphContainer>
         <h1>Burden Distribution</h1>
-        <hr/>
         <BurdenPie {intervals}/>
         <p>
             Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>
@@ -71,6 +69,10 @@
     p {
         font-size: small;
         margin-top: 1em;
+    }
+
+    h1 {
+        border-bottom: 1px var(--border) solid;
     }
 
     // Copied from anki/ts/graphs/GraphsPage.svelte

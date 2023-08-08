@@ -6,7 +6,7 @@
     import Rainbow from "rainbowvis.js"
 
     export let intervals : Record<number, number>
-    export let legend_title = "Interval Range: cards"
+    export let legend_title = "Intervals: Cards"
 
     let steps = 7;
     let last = 21;
@@ -49,7 +49,7 @@
                     _.range(start, end)
                     .reduce((n,j)=>n+(intervals[j] || 0), 0)
 
-                return PieDatumFactory(start, end, count, `#${gradient.colourAt(i)}`)
+                return PieDatumFactory(start, end-1, count, `#${gradient.colourAt(i)}`)
             }
         )
         

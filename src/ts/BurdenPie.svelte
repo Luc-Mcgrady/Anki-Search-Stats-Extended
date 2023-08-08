@@ -13,4 +13,4 @@
 
 </script>
 
-<IntervalPie intervals={burdens} legend_title="Burden: Cards"></IntervalPie>
+<IntervalPie intervals={burdens} legend_title="Intervals: Burden"></IntervalPie>
