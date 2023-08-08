@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import { defaultGraphBounds } from "./graph"
 import _ from "lodash"
 
-type BarDatum = {
+export type BarDatum = {
     values: number[]
     label: string
 }
@@ -51,7 +51,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .selectAll("rect")
         .data(d=>{ // I'm not very good with d3, if theres a better way of doing this go ahead.
             let sum = 0;
-            const values = {...d.values} // Copy so we don't mutate original
+            const values = [...d.values] // Copy so we don't mutate original
             const tops = values.reverse().map(v=>{
                 sum += v
                 return sum
