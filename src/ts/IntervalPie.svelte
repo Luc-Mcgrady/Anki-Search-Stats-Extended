@@ -49,7 +49,7 @@
                     _.range(start, end)
                     .reduce((n,j)=>n+(intervals[j] || 0), 0)
 
-                return PieDatumFactory(start, end, count, `#${gradient.colourAt(i)}`)
+                return PieDatumFactory(start, end-1, count, `#${gradient.colourAt(i)}`)
             }
         )
         
