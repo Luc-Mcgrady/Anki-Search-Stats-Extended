@@ -34,6 +34,12 @@
         }
         console.log(req)
         if (req == "/_anki/graphs") {
+
+            data = null
+            mature_data = null
+            learn_data = null
+            relearn_data = null
+
             handle()
         }
         return oldFetch(req, headers)
