@@ -18,6 +18,8 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const bounds = defaultGraphBounds()
     bounds.width = 500
 
+    d3.select(svg).selectAll("g").remove()
+
     const d3svg = d3.select(svg)
         .attr("height", bounds.height + 50)
         .attr("width", bounds.width)
