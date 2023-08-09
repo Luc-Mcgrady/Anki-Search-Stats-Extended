@@ -10,6 +10,8 @@ export async function decodeResponse(resp: Response) {
 const decoder = new TextDecoder()
 const encoder = new TextEncoder()
 
+export const realFetch = fetch
+
 export function decodeRequest(req: string | Uint8Array) {
     if (typeof req == "string") {
         req = encoder.encode(req)

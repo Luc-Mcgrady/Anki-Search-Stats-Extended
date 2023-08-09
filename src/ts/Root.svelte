@@ -4,35 +4,42 @@
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
     import { GraphsResponse } from "./proto/anki/stats_pb"
-    import { fetchAndDecode, bodySwap, decodeRequest } from "./root";
+    import { fetchAndDecode, bodySwap, decodeRequest, realFetch } from "./root";
     import { SearchRequest } from "./proto/anki/search_pb";
+    import RetentionPie from "./RetentionPie.svelte";
 
     let search: null | SearchRequest = null
+
+    $: searchString = search?.search
 
     let data: null | GraphsResponse = null;
     let mature_data: null | GraphsResponse = null;
     let learn_data: null | GraphsResponse = null;
     let relearn_data: null | GraphsResponse = null;
+
+    let today_flunked_data: null | GraphsResponse = null;
+    let today_passed_data: null | GraphsResponse = null;
     const utf8Encode = new TextEncoder();
     
-    const oldFetch = fetch
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {
         async function handle() {
             const origBody = headers.body
 
             function fetchSwappedSearch(criteria: string) {
-                headers.body =  bodySwap(origBody, criteria)
-                return fetchAndDecode(oldFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
+                headers.body = bodySwap(origBody, criteria)
+                return fetchAndDecode(realFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
             }
 
-            search = decodeRequest(req)
+            search = decodeRequest(origBody)
 
-            data = await fetchAndDecode(oldFetch(req, headers)) // I feel like theres a better way of doing this than tripping the amount of processing needed
+            data = await fetchAndDecode(realFetch(req, headers)) // I feel like theres a better way of doing this than tripping the amount of processing needed
             mature_data = await fetchSwappedSearch("prop:ivl>=21")
             learn_data = await fetchSwappedSearch("is:learn")
             relearn_data = await fetchSwappedSearch("is:learn is:review")
 
+            
+            
             headers.body = origBody
 
         }
@@ -46,7 +53,7 @@
 
             handle()
         }
-        return oldFetch(req, headers)
+        return realFetch(req, headers)
     }
 
     fetch("/_anki/graphs", {
@@ -67,6 +74,15 @@
             <DueBar all={data.futureDue} learn={learn_data.futureDue} mature={mature_data.futureDue} relearn={relearn_data?.futureDue}/>
             <p>
             </p>        
+        </GraphContainer>
+    {/if}
+    {#if searchString}
+        <GraphContainer>
+            <h1>Retention</h1>
+            <RetentionPie search={searchString}></RetentionPie>
+            <p>
+
+            </p>
         </GraphContainer>
     {/if}
     <GraphContainer>
