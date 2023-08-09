@@ -21,16 +21,16 @@
 
         for (const day in all.futureDue) {
 
-            const all_day = all.futureDue[day]
-            const mature_day = mature.futureDue[day]
-            const learn_day = learn.futureDue[day] 
+            const all_day = all.futureDue[day] ?? 0
+            const mature_day = mature.futureDue[day] ?? 0 
+            const learn_day = learn.futureDue[day] ?? 0
             const young_day = all_day - learn_day - mature_day
             const relearn_day = all_day - young_day - mature_day - learn_day
 
             bars[parseInt(day)] = 
                 {
                     label: day,
-                    values: [mature_day, young_day, 0, learn_day]
+                    values: [mature_day, 0, 0, learn_day]
                 }
             
         }

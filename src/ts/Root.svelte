@@ -3,8 +3,8 @@
     import BurdenPie from "./BurdenPie.svelte";
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
-    import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-    import { decodeResponse, fetchAndDecode, swapSearch } from "./root";
+    import { GraphsResponse } from "./proto/anki/stats_pb"
+    import { fetchAndDecode, bodySwap } from "./root";
 
     let data: null | GraphsResponse = null;
     let mature_data: null | GraphsResponse = null;
@@ -13,18 +13,24 @@
     
     const oldFetch = fetch
     //@ts-ignore
-    fetch = (req: string, ...args: any[]) => {
+    fetch = (req: string, headers: Record<string, any>) => {
         async function handle() {
-            data =          await fetchAndDecode(oldFetch, req, ...args) // I feel like theres a better way of doing this than tripping the amount of processing needed
-            mature_data =   await fetchAndDecode(oldFetch, swapSearch(req, "$1 AND prop:ivl>=21"), ...args)
-            learn_data =    await fetchAndDecode(oldFetch, swapSearch(req, "$1 AND is:learn"), ...args)
+            const origBody = headers.body
+            console.log(origBody)
+            data =          await fetchAndDecode(oldFetch(req, headers)) // I feel like theres a better way of doing this than tripping the amount of processing needed
+            headers.body =  bodySwap(origBody, "prop:ivl>=21")
+            console.log("Headers.body", headers.body)
+            mature_data =   await fetchAndDecode(oldFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
+            headers.body =  bodySwap(origBody, "is:learn")
+            learn_data =    await fetchAndDecode(oldFetch(req, headers)) // swapSearch(req, "$1 AND is:learn")
+            headers.body = origBody
 
         }
         console.log(req)
         if (req == "/_anki/graphs") {
             handle()
         }
-        return oldFetch(req, ...args)
+        return oldFetch(req, headers)
     }
 
     fetch("/_anki/graphs", {
