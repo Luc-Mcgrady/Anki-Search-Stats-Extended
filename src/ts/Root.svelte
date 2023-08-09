@@ -57,7 +57,14 @@
 
 <div class="graphs-container">
 {#if data}
-    <!--{JSON.stringify(data.toJson())}-->
+    {#if data.futureDue && learn_data?.futureDue && mature_data?.futureDue && relearn_data?.futureDue}
+        <GraphContainer>
+            <h1>Future Due Types</h1>
+            <DueBar all={data.futureDue} learn={learn_data.futureDue} mature={mature_data.futureDue} relearn={relearn_data?.futureDue}/>
+            <p>
+            </p>        
+        </GraphContainer>
+    {/if}
     <GraphContainer>
         <h1>Interval Distribution</h1>
         <IntervalPie {intervals}/>
@@ -74,14 +81,6 @@
             If a card has an interval of 2 it has a burden of 0.5 etcetera.
         </p>        
     </GraphContainer>
-    {#if data.futureDue && learn_data?.futureDue && mature_data?.futureDue && relearn_data?.futureDue}
-        <GraphContainer>
-            <h1>Future Due Types</h1>
-            <DueBar all={data.futureDue} learn={learn_data.futureDue} mature={mature_data.futureDue} relearn={relearn_data?.futureDue}/>
-            <p>
-            </p>        
-        </GraphContainer>
-    {/if}
 {/if}
 </div>
 
