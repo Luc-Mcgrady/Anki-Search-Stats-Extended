@@ -7,6 +7,7 @@
     import { fetchAndDecode, bodySwap, decodeRequest, realFetch } from "./root";
     import { SearchRequest } from "./proto/anki/search_pb";
     import RetentionPie from "./RetentionPie.svelte";
+    import CustomPie from "./CustomPie.svelte";
 
     let search: null | SearchRequest = null
 
@@ -84,6 +85,10 @@
 
             </p>
         </GraphContainer>
+        <GraphContainer>
+            <h1>Custom pie</h1>
+            <CustomPie search={searchString}/>   
+        </GraphContainer>
     {/if}
     <GraphContainer>
         <h1>Interval Distribution</h1>
@@ -101,6 +106,7 @@
             If a card has an interval of 2 it has a burden of 0.5 etcetera.
         </p>        
     </GraphContainer>
+
 {/if}
 </div>
 
