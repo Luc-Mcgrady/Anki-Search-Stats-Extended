@@ -30,9 +30,12 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .padding(0.2)
 
     const max = _.maxBy(chart.data, d=>_.sum(Object.values(d.values)))!
+    const maxval = _.sum(Object.values(max.values))
+
+    const columns = _.range(0, maxval)
 
     const y = d3.scaleLinear()
-        .domain([0, _.sum(Object.values(max.values))])
+        .domain([maxval, 0])
         .range([0, bounds.height])
 
     d3svg.append("g")
@@ -42,28 +45,24 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("transform", `translate(0, ${bounds.height})`)
         .call(d3.axisBottom(x).tickSizeOuter(0))
 
+    const stack = d3.stack<BarDatum, number>()
+        .keys(_.range(0, chart.row_labels.length))
+        .value((obj, key)=>obj.values[key])
+        (chart.data)
+
+    console.log(stack)
+
     d3svg
         .append("g")
-        //.attr("transform", `translate(0,-${bounds.height})`)
         .selectAll("g")
-        .data(chart.data)
-        .enter().append("g")
-        .attr("transform", d=>`translate(${x(d.label)}, ${bounds.height})`)
-        .selectAll("rect")
-        .data(d=>{ // I'm not very good with d3, if theres a better way of doing this go ahead.
-            let sum = 0;
-            const values = [...d.values] // Copy so we don't mutate original
-            const tops = values.reverse().map(v=>{
-                sum += v
-                return sum
-            })
-            const zip = _.zip(values, tops)
-            console.log({zip, d})
-            return zip
-        })
-        .enter().append("rect")
-        .attr("height", d=>y(d[0]!))
-        .attr("y", d=>-y(d[1]!))
-        .attr("fill", (_,i)=>chart.row_colours[i])
-        .attr("width", x.bandwidth())
+        .data(stack)
+        .join("g")
+            .attr("fill", d=>chart.row_colours[d.key])
+            .selectAll("rect")
+            .data(d=>d)
+            .join("rect")
+                .attr("x", d=>x(d.data.label)!)
+                .attr("y", d=>y(d[1]))
+                .attr("height", d=>y(d[0]) - y(d[1]))
+                .attr("width", x.bandwidth())
 }
