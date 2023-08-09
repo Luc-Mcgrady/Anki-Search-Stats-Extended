@@ -10,10 +10,13 @@ export async function decodeResponse(resp: Response) {
 const decoder = new TextDecoder()
 const encoder = new TextEncoder()
 
-export function bodySwap(body: string, newSearch: string) {
-    const initial = GraphsRequest.fromBinary(encoder.encode(body))
-    console.log({request: body, initial, GraphsRequest})
-    initial.search = `(${initial.search}) AND (${newSearch})` 
+export function bodySwap(body: string | Uint8Array, newSearch: string) {
+    if (typeof body == "string") {
+        body = encoder.encode(body)
+    }
+    const initial = GraphsRequest.fromBinary(body)
+    console.log({body, initial, GraphsRequest})
+    initial.search = `(${initial.search}) AND (${newSearch})`
     return initial.toBinary();
 }
 
