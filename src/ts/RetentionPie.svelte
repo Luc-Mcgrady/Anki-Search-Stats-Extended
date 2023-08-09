@@ -5,21 +5,31 @@
 
     export let search: string;
 
+    $: passed_search = `(${search}) AND (rated:1 -rated:1:1 AND is:review)`
+    $: flunked_search = `(${search}) AND (rated:1 AND rated:1:1 AND is:review)`
+    $: learning_search = `(${search}) AND (rated:1 AND -is:review AND is:learn)`
+
     async function dataGen(): Promise<PieDatum[]> {
         console.log(search)
-        const passed = await doSearch(`(${search} AND rated:1:1)`)
-        const flunked = await doSearch(`(${search} AND (rated:1 AND -rated:1:1))`)
 
+        const passed = await doSearch(passed_search)
+        const flunked = await doSearch(flunked_search)
+        const learning = await doSearch(learning_search)
 
         return [{
             label: "Passed",
-            value: passed.ids.length,
+            value: passed.length,
             colour: "#74c476"
         },
         {
             label: "Flunked",
-            value: flunked.ids.length,
+            value: flunked.length,
             colour: "#fb6a4a"
+        },
+        {
+            label: "Learning",
+            value: learning.length,
+            colour: "#fd8d3c"
         }
         ]
     }
@@ -29,4 +39,9 @@
     Loading...
 {:then data}
     <Pie {data}></Pie>
+    <small>
+            Passed = <code>{passed_search}</code> <br>
+            Flunked = <code>{flunked_search}</code> <br>
+            Learning = <code>{learning_search}</code> <br>
+    </small>
 {/await}
