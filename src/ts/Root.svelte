@@ -4,7 +4,10 @@
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
     import { GraphsResponse } from "./proto/anki/stats_pb"
-    import { fetchAndDecode, bodySwap } from "./root";
+    import { fetchAndDecode, bodySwap, decodeRequest } from "./root";
+    import { SearchRequest } from "./proto/anki/search_pb";
+
+    let search: null | SearchRequest = null
 
     let data: null | GraphsResponse = null;
     let mature_data: null | GraphsResponse = null;
@@ -23,6 +26,7 @@
                 return fetchAndDecode(oldFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
             }
 
+            search = decodeRequest(req)
 
             data = await fetchAndDecode(oldFetch(req, headers)) // I feel like theres a better way of doing this than tripping the amount of processing needed
             mature_data = await fetchSwappedSearch("prop:ivl>=21")
