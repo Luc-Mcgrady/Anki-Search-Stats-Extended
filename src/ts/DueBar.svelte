@@ -25,12 +25,11 @@
             const mature_day = mature.futureDue[day] ?? 0 
             const learn_day = learn.futureDue[day] ?? 0
             const young_day = all_day - learn_day - mature_day
-            const relearn_day = all_day - young_day - mature_day - learn_day
 
             bars[parseInt(day)] = 
                 {
                     label: day,
-                    values: [mature_day, 0, 0, learn_day]
+                    values: [mature_day, young_day, learn_day]
                 }
             
         }
@@ -43,8 +42,8 @@
 
 
 <Bar data={{
-    row_colours: ["#31a354", "#74c476", "#fb6a4a" ,"#fd8d3c"],
-    row_labels: ["Mature", "Young", "Relearning", "Learning"],
+    row_colours: ["#31a354", "#74c476", /*"#fb6a4a", */"#fd8d3c"],
+    row_labels: ["Mature", "Young", /*"Relearning, */ "Learning"],
     data: bars,
 }}>
 </Bar>
