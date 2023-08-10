@@ -9,12 +9,21 @@
     $: flunked_search = `(${search}) AND (rated:1 AND rated:1:1 AND is:review)`
     $: learning_search = `(${search}) AND (rated:1 AND -is:review AND is:learn)`
 
-    async function dataGen(): Promise<PieDatum[]> {
+    let do_learning = true;
+    $: data_fetcher = dataGen(do_learning)
+
+    async function dataGen(include_learning: boolean): Promise<PieDatum[]> {
         console.log(search)
 
         const passed = await doSearch(passed_search)
         const flunked = await doSearch(flunked_search)
         const learning = await doSearch(learning_search)
+
+        const learning_data = include_learning ? [{
+            label: "Learning",
+            value: learning.length,
+            colour: "#fd8d3c"
+        }] : []
 
         return [{
             label: "Passed",
@@ -26,22 +35,20 @@
             value: flunked.length,
             colour: "#fb6a4a"
         },
-        {
-            label: "Learning",
-            value: learning.length,
-            colour: "#fd8d3c"
-        }
+        ...learning_data
         ]
     }
 </script>
 
-{#await dataGen()}
+{#await data_fetcher}
     Loading...
 {:then data}
     <Pie {data}></Pie>
     <small>
             Passed = <code>{passed_search}</code> <br>
             Flunked = <code>{flunked_search}</code> <br>
-            Learning = <code>{learning_search}</code> <br>
+            
+            <input type="checkbox" id="retention_pie_learning" bind:checked={do_learning}>
+            <label for="retention_pie_learning">Learning = <code>{learning_search}</code> <br></label> 
     </small>
 {/await}
