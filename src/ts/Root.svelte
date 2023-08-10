@@ -65,7 +65,7 @@
     $: intervals = data?.intervals!.intervals || {}
 </script>
 
-<h1>New Graphs Plus:</h1>
+<h1>Search Stats Extended:</h1>
 
 <div class="graphs-container">
 {#if data}

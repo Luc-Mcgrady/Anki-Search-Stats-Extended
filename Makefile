@@ -1,5 +1,5 @@
 INCLUDED = __init__.py stats.min.js stats.min.css developers.md
-OUT = newStatsPlus.ankiaddon
+OUT = searchStatsExtended.ankiaddon
 
 COPIED = anki/graphs/Graph.sphelte
 
