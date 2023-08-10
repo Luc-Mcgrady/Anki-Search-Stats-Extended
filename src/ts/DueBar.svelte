@@ -18,8 +18,6 @@
             values: [0,0,0,0]
         }))
 
-        console.log(bars, len)
-
         for (const day in all.futureDue) {
 
             const all_day = all.futureDue[day] ?? 0
@@ -38,8 +36,6 @@
 
         bars = bars.slice(0, 30)
     }
-
-    $: console.log("Due", bars)
 </script>
 
 

@@ -44,7 +44,6 @@
             headers.body = origBody
 
         }
-        console.log(req)
         if (req == "/_anki/graphs") {
 
             data = null

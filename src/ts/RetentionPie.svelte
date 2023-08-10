@@ -13,7 +13,6 @@
     $: data_fetcher = dataGen(do_learning)
 
     async function dataGen(include_learning: boolean): Promise<PieDatum[]> {
-        console.log(search)
 
         const passed = await doSearch(passed_search)
         const flunked = await doSearch(flunked_search)

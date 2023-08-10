@@ -7,7 +7,6 @@
     export let data : BarChart;
     $: {
         if (svg && data.data.length) {
-            console.log("data", data.data)
             renderBarChart(data,svg as any)
         }
     }

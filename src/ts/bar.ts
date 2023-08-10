@@ -52,8 +52,6 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .value((obj, key)=>obj.values[key])
         (chart.data)
 
-    console.log(stack)
-
     d3svg
         .append("g")
         .selectAll("g")

@@ -9,10 +9,8 @@
 
     const bounds = defaultGraphBounds()
 
-    $: {
-        renderPie(data, svg as any, bounds.height/2)
-        console.log(svg)
-    }
+    $: renderPie(data, svg as any, bounds.height/2)
+    
 </script>
 
 

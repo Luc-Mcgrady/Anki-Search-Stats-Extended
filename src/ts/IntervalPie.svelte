@@ -34,7 +34,6 @@
 
     let pie_data: PieDatum[]
     $: { 
-        console.log(_.range(1,step*steps+1,step))
         pie_data = _.range(1,step*steps+1,step)
         .map((start,i)=>
             {
@@ -42,8 +41,6 @@
                 if (end > last && last != realLast) {
                     end = realLast
                 }
-
-                console.log(_.range(start, end))
 
                 const count=
                     _.range(start, end)
