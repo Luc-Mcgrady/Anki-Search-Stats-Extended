@@ -37,8 +37,21 @@
 </script>
 
 <Pie data={pie_data}></Pie>
-{#each pie_data as pie_data}
-    <input type="text" bind:value={pie_data.label} placeholder="Search string" on:change={()=>onChange(pie_data)}>
-    <input type="text" bind:value={pie_data.colour} placeholder="Search string"> <br>
-{/each} <br>
-<input type="button" on:click={newSearch} value="New search">
+<div>
+    <span>Search</span>
+    <span>Colour</span>
+    {#each pie_data as pie_data}
+        <input type="text" bind:value={pie_data.label} placeholder="Search string" on:change={()=>onChange(pie_data)}>
+        <input type="text" bind:value={pie_data.colour} placeholder="Search string"> 
+    {/each}
+    <input type="button" on:click={newSearch} value="New search">
+    <input type="button" on:click={()=>pie_data=[]} value="Reset">
+</div>
+
+<style>
+    div {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 1em;
+    }
+</style>
