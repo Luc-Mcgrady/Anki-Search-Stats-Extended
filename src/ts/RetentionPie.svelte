@@ -38,12 +38,21 @@
         ...learning_data
         ]
     }
+
+    
 </script>
 
 {#await data_fetcher}
     Loading...
 {:then data}
     <Pie {data}></Pie>
+    <br>
+    <p>
+        <!-- Doing it with fixed indexes this way is kinda risky but it works-->
+        Retention = {data[0].value} / 
+        {data[0].value + data[1].value} = 
+        {(100 * data[0].value) / (data[0].value + data[1].value)}%
+    </p>
     <small>
             Passed = <code>{passed_search}</code> <br>
             Flunked = <code>{flunked_search}</code> <br>
