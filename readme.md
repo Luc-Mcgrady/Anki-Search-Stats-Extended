@@ -29,7 +29,7 @@ Building this with make addon works on linux and will probably work on mac
 
 Clone this repo recursively (It contains all anki's source files, sorry)
 ```
-git clone https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus.git --recursive
+https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive
 ```
 
 run make to setup source files
