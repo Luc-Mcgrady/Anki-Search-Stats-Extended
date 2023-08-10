@@ -6,10 +6,12 @@
 
     export let search: string;
 
-    const pickable_colours = ["red", "green", "blue", "orange"]
+    const pickable_colours = ["blue", "red", "green", "orange"]
     let pickable_colours_i = 0
 
     let pie_data: PieDatum[] = []
+
+    reset()
 
     async function getQuery(query: string): Promise<number> {
         const result = await doSearch(`(${query})`)
@@ -33,6 +35,10 @@
         pie_data = [...pie_data]
     }
 
+    function reset() {
+        pie_data=[];
+        newSearch()
+    }
 
 </script>
 
@@ -45,7 +51,7 @@
         <input type="text" bind:value={pie_data.colour} placeholder="Search string"> 
     {/each}
     <input type="button" on:click={newSearch} value="New search">
-    <input type="button" on:click={()=>pie_data=[]} value="Reset">
+    <input type="button" on:click={reset} value="Reset">
 </div>
 
 <style>
