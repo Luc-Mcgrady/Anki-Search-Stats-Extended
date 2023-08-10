@@ -73,20 +73,25 @@
             <h1>Future Due Types</h1>
             <DueBar all={data.futureDue} learn={learn_data.futureDue} mature={mature_data.futureDue} relearn={relearn_data?.futureDue}/>
             <p>
+                This graph is the same as the Future Due above except it delineates between types of cards. <br>
+                Very useful if you have learning steps greater than one day.
             </p>        
         </GraphContainer>
     {/if}
     {#if searchString}
         <GraphContainer>
-            <h1>Retention</h1>
+            <h1>Today's Retention</h1>
             <RetentionPie search={searchString}></RetentionPie>
             <p>
-
+                Retention is used to compare how many cards you got right and wrong on first looking.
             </p>
         </GraphContainer>
         <GraphContainer>
             <h1>Custom pie</h1>
-            <CustomPie search={searchString}/>   
+            <CustomPie search={searchString}/>
+            <p>
+                This pie will show you the number of cards which match <code>Search</code> for each search
+            </p>
         </GraphContainer>
     {/if}
     <GraphContainer>
