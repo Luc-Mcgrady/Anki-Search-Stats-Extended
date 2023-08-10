@@ -9,11 +9,19 @@ It would be possible to make this compatible with the caveat that you would have
 
 ### Future due types
 
+![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/84ccc66d-7e1d-4fb7-9c12-0ad231e44fdd)
+
 ### Todays Retention
+
+![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/d34dd13e-32cc-49cc-ab46-871696f58c75)
 
 ### Custom Pie
 
+![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/65c1e76b-89f0-4125-b6b3-4b5f4051592c)
+
 ### Interval/Burden distribution
+
+![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/ffe3cb58-ef01-4961-bca7-18c81b03f77d)
 
 ## Development
 
@@ -55,5 +63,8 @@ npm run build
 I haven't actually tested this so good luck.
 Check the makefile for more information
 
+------
 
 Due to the way its set up you don't have to reload anki for javascript changes, you only have to run make/build again and reload the stats menu.
+
+If you have any cool graph idea's then let me know or just pull request and make it yourself.
