@@ -6,12 +6,18 @@
 
     export let data : BarChart;
     $: {
-        if (svg)
+        if (svg && data.data.length) {
+            console.log("data", data.data)
             renderBarChart(data,svg as any)
+        }
     }
 </script>
 
 <svg bind:this={svg}></svg>
+
+{#if !data.data.length} 
+    No data
+{/if}
 
 <div class="glossary">
     {#each _.zip(data.row_labels, data.row_colours) as [label, colour] }
