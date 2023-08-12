@@ -2,30 +2,37 @@
     import _ from "lodash";
     import Bar from "./Bar.svelte";
     import type { BarDatum } from "./bar";
-    import { getCardData, search } from "./search";
+    import { getCardData, search, type CardData } from "./search";
 
     export let parentSearch: string
 
     const hour = 1000 * 60 * 60
     const day = hour * 24
 
-    async function fetchCards(parentSearch : string) {
-        const due_today = await search(`(${parentSearch}) AND prop:due=0 AND is:learn`)
-        const cards = await getCardData(due_today)
-
-        const now = Date.now()
+    async function fetchCards(parentSearch : string) : Promise<BarDatum[]> {
+        const due_today_learn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn -is:review`)
+        const cards_learn = await getCardData(due_today_learn)
+        const due_today_relearn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn is:review`)
+        const cards_relearn = await getCardData(due_today_relearn)
+        
+        // const now = Date.now()
 
         const data = _.range(0, 24).map(hour=>({
             label: hour.toString(),
             values: [0, 0]
         }))
 
-        for (const card of cards) {
-            const timestamp = card.due_date % day
-            const card_hour = Math.floor(timestamp / hour)
+        function graph(card_data: CardData[], offset: number) {
+            for (const card of card_data) {
+                const timestamp = card.due_date % day
+                const card_hour = Math.floor(timestamp / hour)
 
-            data[card_hour].values[0] += 1
+                data[card_hour].values[offset] += 1
+            }
         }
+
+        graph(cards_relearn, 0)
+        graph(cards_learn, 1)
 
         return data
     }
@@ -38,8 +45,8 @@
     Loading...
 {:then data} 
     <Bar data={{
-        row_labels: ["Learning","Relearning"],
-        row_colours: ["#fd8d3c", "#fb6a4a"],
+        row_labels: ["Relearning", "Learning"],
+        row_colours: ["#fb6a4a", "#fd8d3c"],
         data
     }}/>    
 {/await}
