@@ -19,8 +19,9 @@ NewDeckStats.refresh = wrap(NewDeckStats.refresh, new_refresh, "after")
 
 # Search endpoint
 from flask import request, Response
-from aqt.mediasrv import post_handlers
+import json
 
+from aqt.mediasrv import post_handlers
 from aqt import mw
 
 def card_search() -> bytes:
@@ -28,3 +29,13 @@ def card_search() -> bytes:
     return Response(str(list(mw.col.find_cards(search))))
 
 post_handlers["cardSearch"] = card_search
+
+def card_data() -> bytes:
+    cards = request.data
+    print(request.data)
+    cards: list[int] = json.loads(cards)
+    assert isinstance(cards, list)
+    assert isinstance(cards[0], int)
+    return Response(str([mw.col.card_stats_data(a) for a in cards]))
+
+post_handlers["cardData"] = card_data
