@@ -18,10 +18,6 @@
     let mature_data: null | GraphsResponse = null;
     let learn_data: null | GraphsResponse = null;
     let relearn_data: null | GraphsResponse = null;
-
-    let today_flunked_data: null | GraphsResponse = null;
-    let today_passed_data: null | GraphsResponse = null;
-    const utf8Encode = new TextEncoder();
     
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {

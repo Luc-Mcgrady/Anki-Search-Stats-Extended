@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Pie from "./Pie.svelte"
+    import Pie from "./Pie.svelte";
     import type { PieDatum } from "./pie";
-    import {search as doSearch} from "./search"
+    import { search as doSearch } from "./search";
 
     export let search: string;
 

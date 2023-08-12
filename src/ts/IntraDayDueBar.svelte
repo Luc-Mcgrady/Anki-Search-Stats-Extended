@@ -2,7 +2,7 @@
     import _ from "lodash";
     import Bar from "./Bar.svelte";
     import type { BarDatum, ExtraRenderInput } from "./bar";
-    import { getCardData, search, type CardData, getRollover } from "./search";
+    import { getCardData, getRollover, search, type CardData } from "./search";
 
     export let parentSearch: string
     let rollover = 0

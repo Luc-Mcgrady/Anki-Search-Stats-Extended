@@ -1,4 +1,4 @@
-import Root from "./Root.svelte"
+import Root from "./Root.svelte";
  
 setTimeout(()=>
     new Root({target: document.body})

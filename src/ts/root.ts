@@ -7,7 +7,6 @@ export async function decodeResponse(resp: Response) {
     return GraphsResponse.fromBinary(bytes)!
 }
 
-const decoder = new TextDecoder()
 const encoder = new TextEncoder()
 
 export const realFetch = fetch

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Pie from "./Pie.svelte"
-    import type {PieDatum} from "./pie"
-    import {PieDatumFactory} from "./pie"
-    import _ from "lodash"
-    import Rainbow from "rainbowvis.js"
+    import _ from "lodash";
+    import Rainbow from "rainbowvis.js";
+    import Pie from "./Pie.svelte";
+    import type { PieDatum } from "./pie";
+    import { PieDatumFactory } from "./pie";
 
     export let intervals : Record<number, number>
     export let legend_title = "Intervals: Cards"

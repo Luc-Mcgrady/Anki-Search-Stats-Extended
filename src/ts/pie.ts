@@ -1,5 +1,5 @@
 import type { PieArcDatum } from "d3"
-import *  as d3 from "d3"
+import * as d3 from "d3"
 
 export type PieDatum = {
     label: string

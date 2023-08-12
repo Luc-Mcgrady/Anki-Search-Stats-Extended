@@ -1,6 +1,6 @@
 import * as d3 from "d3"
-import { defaultGraphBounds } from "./graph"
 import _ from "lodash"
+import { defaultGraphBounds } from "./graph"
 
 export type BarDatum = {
     values: number[]
@@ -33,8 +33,6 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     const max = _.maxBy(chart.data, d=>_.sum(Object.values(d.values)))!
     const maxValue = _.sum(Object.values(max.values))
-
-    const columns = _.range(0, maxValue)
 
     const y = d3.scaleLinear()
         .domain([maxValue, 0])

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import _, { values } from "lodash";
-    import Bar from "./Bar.svelte"
-    import type {BarChart, BarDatum} from "./bar"
+    import _ from "lodash";
+    import Bar from "./Bar.svelte";
+    import type { BarDatum } from "./bar";
     import type { GraphsResponse_FutureDue } from "./proto/anki/stats_pb";
 
     export let all : GraphsResponse_FutureDue
