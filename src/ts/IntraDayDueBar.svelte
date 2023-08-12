@@ -2,9 +2,10 @@
     import _ from "lodash";
     import Bar from "./Bar.svelte";
     import type { BarDatum, ExtraRenderInput } from "./bar";
-    import { getCardData, search, type CardData } from "./search";
+    import { getCardData, search, type CardData, getRollover } from "./search";
 
     export let parentSearch: string
+    let rollover = 0
 
     const hour = 60 * 60
     const day = hour * 24
@@ -15,7 +16,9 @@
         const due_today_relearn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn is:review`)
         const cards_relearn = await getCardData(due_today_relearn)
 
-        const data = _.range(0, 24).map(hour=>({
+        rollover = await getRollover()
+
+        const data = [..._.range(rollover, 24), ..._.range(0, rollover)].map(hour=>({
             label: hour.toString(),
             values: [0, 0]
         }))
@@ -25,7 +28,7 @@
                 if (card.type == 1 || card.type == 3) {
                     const time = new Date(card.due * 1000)
 
-                    data[time.getHours()].values[offset] += 1
+                    data[(24 + time.getHours() - rollover) % 24].values[offset] += 1
                 }
             }
         }
@@ -38,7 +41,10 @@
     
     function extraRender({x,y,svg,maxValue}: ExtraRenderInput) {
         const now = new Date(Date.now())
-        const lineX = x(now.getHours().toFixed(0))! + (((x.bandwidth() + x.padding()) * now.getMinutes()) / 60) + (x.bandwidth() / 2)
+        const lineX = 
+            x(now.getHours().toFixed(0))! + // Go to the label
+            (((x.bandwidth() + x.padding()) * now.getMinutes()) / 60) + // Intra day
+            (x.bandwidth() / 2) // Make sure line lines up with ticks
         const bottom = y(0)
         const top = y(maxValue)
         
