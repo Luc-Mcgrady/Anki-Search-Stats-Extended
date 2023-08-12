@@ -6,7 +6,7 @@
 
     export let parentSearch: string
 
-    const hour = 1000 * 60 * 60
+    const hour = 60 * 60
     const day = hour * 24
 
     async function fetchCards(parentSearch : string) : Promise<BarDatum[]> {
@@ -14,8 +14,6 @@
         const cards_learn = await getCardData(due_today_learn)
         const due_today_relearn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn is:review`)
         const cards_relearn = await getCardData(due_today_relearn)
-        
-        // const now = Date.now()
 
         const data = _.range(0, 24).map(hour=>({
             label: hour.toString(),
@@ -24,10 +22,11 @@
 
         function graph(card_data: CardData[], offset: number) {
             for (const card of card_data) {
-                const timestamp = card.due_date % day
-                const card_hour = Math.floor(timestamp / hour)
+                if (card.type == 1 || card.type == 3) {
+                    const time = new Date(card.due * 1000)
 
-                data[card_hour].values[offset] += 1
+                    data[time.getHours()].values[offset] += 1
+                }
             }
         }
 

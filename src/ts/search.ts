@@ -11,22 +11,26 @@ export async function search(search: string) {
 }
 
 export interface CardData {
-    card_id: number
-    note_id: number
-    deck: string
-    added: number
-    first_review: number
-    latest_review: number
-    due_date: number
-    interval: number
-    ease: number
-    reviews: number
-    average_secs: number
-    total_secs: number
-    card_type: string
-    notetype: string
-    custom_data: string
+    id: number
+    nid: number
+    did: number
+    ord: number
+    mod: number
+    usn: number
+    type: number
+    queue: number
+    due: number
+    ivl: number
+    factor: number
+    reps: number
+    lapses: number
+    left: number
+    odue: number
+    odid: number
+    flags: number
+    data: string
 }
+  
 
 export async function getCardData(cids: number[]) {
     return await endpoint("cardData", JSON.stringify(cids)) as CardData[]

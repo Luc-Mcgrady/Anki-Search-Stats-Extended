@@ -24,38 +24,18 @@ import json
 from aqt.mediasrv import post_handlers
 from aqt import mw
 
-def card_json(object):
-    # https://regex101.com/r/lRU1dh/1
-    return { 
-        "card_id": object.card_id,
-        "note_id": object.note_id,
-        "deck": object.deck,
-        "added": object.added,
-        "first_review": object.first_review,
-        "latest_review": object.latest_review,
-        "due_date": object.due_date,
-        "interval": object.interval,
-        "ease": object.ease,
-        "reviews": object.reviews,
-        "average_secs": object.average_secs,
-        "total_secs": object.total_secs,
-        "card_type": object.card_type,
-        "notetype": object.notetype,
-        "custom_data": object.custom_data,
-        # "revlog": Not yet implemented
-    }
-
 def card_search() -> bytes:
     search = request.data
     return Response(str(list(mw.col.find_cards(search))))
 
 post_handlers["cardSearch"] = card_search
 
+CARD_COLUMNS = ["id","nid","did","ord","mod","usn","type","queue","due","ivl","factor","reps","lapses","left","odue","odid","flags","data"]
+
 def card_data() -> bytes:
-    cards = request.data
-    cards: list[int] = json.loads(cards)
-    assert isinstance(cards, list)
-    assert isinstance(cards[0], int)
-    return Response(json.dumps([(card_json(mw.col.card_stats_data(a))) for a in cards]))
+    cards = request.data.strip(b"[]").decode()
+    cardData = mw.col.db.all(f"SELECT * FROM cards WHERE id IN ({cards})")
+    cardData = [{k: v for k, v in zip(CARD_COLUMNS, a)} for a in cardData]
+    return Response(json.dumps(cardData))
 
 post_handlers["cardData"] = card_data
