@@ -41,15 +41,19 @@
         const lineX = x(now.getHours().toFixed(0))! + (now.getMinutes() / (x.bandwidth() * 60))
         const bottom = y(0)
         const top = y(maxValue)
+        
+        const night_mode = document.body.closest(".night-mode") != null
+        const colour = night_mode ? "white" : "black"
 
         const line = svg.append("g")
+            .attr("stroke", colour)
+            .attr("fill", colour)
         
         line.append("line")
             .attr("x1", lineX)
             .attr("x2", lineX)
             .attr("y1", bottom)
             .attr("y2", top)
-            .attr("stroke", "black")
             .attr("stroke-width", 2)
             .attr("stroke-opacity", "50%")
         
@@ -60,6 +64,7 @@
         
         line.append("text")
             .text("Now")
+            .attr("stroke-width", 0.5)
             .attr("x", lineX + 5)
             .attr("y", top)
     }
