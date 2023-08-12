@@ -1,6 +1,6 @@
 import { realFetch } from "./root";
 
-async function endpoint(endpoint: string, body: string) {
+async function endpoint(endpoint: string, body?: string) {
     const resp = await realFetch(`/_anki/${endpoint}`, {method: "POST", body})
     const blob = await resp.text()
     return JSON.parse(blob)
@@ -34,4 +34,8 @@ export interface CardData {
 
 export async function getCardData(cids: number[]) {
     return await endpoint("cardData", JSON.stringify(cids)) as CardData[]
+}
+
+export async function getRollover() {
+    return await endpoint("rollover") as number
 }

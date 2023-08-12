@@ -39,3 +39,8 @@ def card_data() -> bytes:
     return Response(json.dumps(cardData))
 
 post_handlers["cardData"] = card_data
+
+def rollover() -> bytes:
+    return Response(json.dumps(mw.col.get_preferences().scheduling.rollover))
+
+post_handlers["rollover"] = rollover
