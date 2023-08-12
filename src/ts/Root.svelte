@@ -8,7 +8,7 @@
     import { SearchRequest } from "./proto/anki/search_pb";
     import RetentionPie from "./RetentionPie.svelte";
     import CustomPie from "./CustomPie.svelte";
-    import InterdayDueBar from "./InterdayDueBar.svelte";
+    import IntraDayDueBar from "./IntraDayDueBar.svelte";
 
     let search: null | SearchRequest = null
 
@@ -81,7 +81,11 @@
     {/if}
     {#if searchString}
         <GraphContainer>
-            <InterdayDueBar parentSearch={searchString}></InterdayDueBar>
+            <h1>Intra-day Due Bar</h1>
+            <IntraDayDueBar parentSearch={searchString}></IntraDayDueBar>
+            <p>
+                This graph shows you which hour todays cards are due in.
+            </p>
         </GraphContainer>
         <GraphContainer>
             <h1>Today's Retention</h1>
