@@ -77,7 +77,7 @@
     {/if}
     {#if searchString}
         <GraphContainer>
-            <h1>Intra-day Due Bar</h1>
+            <h1>Intra-day Due</h1>
             <IntraDayDueBar parentSearch={searchString}></IntraDayDueBar>
             <p>
                 This graph shows you which hours todays cards are/were due in. <br>
