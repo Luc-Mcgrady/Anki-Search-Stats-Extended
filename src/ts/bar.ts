@@ -22,7 +22,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     const d3svg = d3.select(svg)
         .attr("height", bounds.height + 50)
-        .attr("width", bounds.width)
+        .attr("width", bounds.width + 50)
         .append("g")
         .attr("transform", `translate(50, 10)`)
     
