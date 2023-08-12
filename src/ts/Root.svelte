@@ -8,6 +8,7 @@
     import { SearchRequest } from "./proto/anki/search_pb";
     import RetentionPie from "./RetentionPie.svelte";
     import CustomPie from "./CustomPie.svelte";
+    import InterdayDueBar from "./InterdayDueBar.svelte";
 
     let search: null | SearchRequest = null
 
@@ -79,6 +80,9 @@
         </GraphContainer>
     {/if}
     {#if searchString}
+        <GraphContainer>
+            <InterdayDueBar parentSearch={searchString}></InterdayDueBar>
+        </GraphContainer>
         <GraphContainer>
             <h1>Today's Retention</h1>
             <RetentionPie search={searchString}></RetentionPie>
