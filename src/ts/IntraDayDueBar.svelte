@@ -38,7 +38,7 @@
     
     function extraRender({x,y,svg,maxValue}: ExtraRenderInput) {
         const now = new Date(Date.now())
-        const lineX = x(now.getHours().toFixed(0))! + (now.getMinutes() / (x.bandwidth() * 60))
+        const lineX = x(now.getHours().toFixed(0))! + (((x.bandwidth() + x.padding()) * now.getMinutes()) / 60) + (x.bandwidth() / 2)
         const bottom = y(0)
         const top = y(maxValue)
         
