@@ -1,13 +1,15 @@
 <script lang="ts">
     import _ from "lodash";
-    import { renderBarChart, type BarChart } from "./bar";
+    import { renderBarChart, type BarChart, type ExtraRenderInput } from "./bar";
 
     let svg: SVGElement | null = null
+    export let extraRender = (chart: ExtraRenderInput) => {}
 
     export let data : BarChart;
     $: {
         if (svg && data.data.length) {
-            renderBarChart(data,svg as any)
+            const chart = renderBarChart(data,svg as any)
+            extraRender(chart)
         }
     }
 </script>

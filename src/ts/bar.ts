@@ -32,12 +32,12 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .padding(0.2)
 
     const max = _.maxBy(chart.data, d=>_.sum(Object.values(d.values)))!
-    const maxval = _.sum(Object.values(max.values))
+    const maxValue = _.sum(Object.values(max.values))
 
-    const columns = _.range(0, maxval)
+    const columns = _.range(0, maxValue)
 
     const y = d3.scaleLinear()
-        .domain([maxval, 0])
+        .domain([maxValue, 0])
         .range([0, bounds.height])
 
     d3svg.append("g")
@@ -65,4 +65,8 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                 .attr("y", d=>y(d[1]))
                 .attr("height", d=>y(d[0]) - y(d[1]))
                 .attr("width", x.bandwidth())
+
+    return {x, y, svg: d3svg, maxValue}
 }
+
+export type ExtraRenderInput = ReturnType<typeof renderBarChart>
