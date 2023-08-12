@@ -84,7 +84,8 @@
             <h1>Intra-day Due Bar</h1>
             <IntraDayDueBar parentSearch={searchString}></IntraDayDueBar>
             <p>
-                This graph shows you which hour todays cards are due in.
+                This graph shows you which hours todays cards are/were due in. <br>
+                Useful if you have long intra-day learning intervals.
             </p>
         </GraphContainer>
         <GraphContainer>
