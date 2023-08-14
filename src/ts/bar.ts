@@ -21,11 +21,9 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     d3.select(svg).selectAll("g").remove()
 
     const d3svg = d3.select(svg)
-        .attr("height", bounds.height + 50)
-        .attr("width", bounds.width + 50)
+        .attr("viewBox", `-40 -10 ${bounds.width + 50} ${bounds.height + 50}`)
         .append("g")
-        .attr("transform", `translate(50, 10)`)
-    
+        
     const x = d3.scaleBand()
         .domain(d3.map(chart.data, d=>d.label))
         .range([0,bounds.width])
