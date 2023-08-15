@@ -3,9 +3,13 @@
     import Bar from "./Bar.svelte";
     import type { BarDatum, ExtraRenderInput } from "./bar";
     import { getCardData, getRollover, search, type CardData } from "./search";
+    import { timeDay } from "d3";
 
     export let parentSearch: string
     let rollover = 0
+
+    let next_card_time: Date | null = null;
+    let next_card_time_until: string = ""
 
     const hour = 60 * 60
     const day = hour * 24
@@ -35,6 +39,26 @@
 
         graph(cards_relearn, 0)
         graph(cards_learn, 1)
+        
+        const remaining = [...cards_learn, ...cards_relearn].filter(card=>1000*card.due>Date.now())
+        const next_card = _.minBy(remaining,card=>card.due)?.due
+
+        if (next_card) {
+            next_card_time = new Date(next_card * 1000)
+
+            const time_until = (next_card_time.getTime() - Date.now()) / (60 * 1000) // minutes
+
+            const hours = Math.floor(time_until / hour)
+            const minutes = Math.ceil(time_until % 60)
+
+            next_card_time_until = ""
+            next_card_time_until += hours ? `${(hours).toFixed(0)} hour${hours != 1 ? "s" : ""} ` : ""
+            next_card_time_until += minutes ? `${(minutes).toFixed(0)} minute${minutes != 1 ? "s" : ""} ` : ""
+
+        }
+        else {
+            next_card_time = null
+        }
 
         return data
     }
@@ -82,11 +106,19 @@
 {#await fetch}
     Loading...
 {:then data} 
-    <Bar data={{
-        row_labels: ["Relearning", "Learning"],
-        row_colours: ["#fb6a4a", "#fd8d3c"],
-        data
-    }}
-    {extraRender}
-    />    
+    {#if data.reduce((p,n)=>p+_.sum(n.values),0) > 0} <!--If there is data-->
+        {#if next_card_time} <!--If there is a future card-->
+            <h4>Next card is in <b>{next_card_time_until}</b> at <b>{next_card_time.toLocaleTimeString()}</b></h4>
+        {/if}
+        <Bar data={{
+            row_labels: ["Relearning", "Learning"],
+            row_colours: ["#fb6a4a", "#fd8d3c"],
+            data
+        }}
+        {extraRender}
+        />
+    {:else}
+        <h4>No Intra-Day cards</h4>
+        <br>
+    {/if}
 {/await}
