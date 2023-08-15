@@ -43,7 +43,7 @@
         const now = new Date(Date.now())
         const lineX = 
             x(now.getHours().toFixed(0))! + // Go to the label
-            (((x.bandwidth() + x.padding()) * now.getMinutes()) / 60) + // Intra day
+            (((x.bandwidth() + x.padding()) * now.getMinutes()) / 60) + // Intra hour
             (x.bandwidth() / 2) // Make sure line lines up with ticks
         const bottom = y(0)
         const top = y(maxValue)

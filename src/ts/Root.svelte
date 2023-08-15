@@ -112,7 +112,7 @@
         <p>
             Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>
             as an example if a card has an interval of 1 it has a burden of 1 because you see it every day.<br>
-            If a card has an interval of 2 it has a burden of 0.5 etcetera.
+            If a card has an interval of 2 it has a burden of 0.5 et cetera.
         </p>        
     </GraphContainer>
 
