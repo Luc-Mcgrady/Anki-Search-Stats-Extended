@@ -13,7 +13,7 @@ stats.min.js: ${wildcard src/ts/*.ts} ${wildcard src/ts/*.svelte} esbuild.mjs sr
 sass:
 	ln -s anki/sass sass
 
-src/ts/protc: node_modules
+src/ts/proto: node_modules
 	mkdir src/ts/proto -p
 
 	npx protoc \
