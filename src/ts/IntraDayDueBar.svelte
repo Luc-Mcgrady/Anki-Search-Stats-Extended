@@ -48,7 +48,7 @@
 
             const time_until = (next_card_time.getTime() - Date.now()) / (60 * 1000) // minutes
 
-            const hours = Math.floor(time_until / hour)
+            const hours = Math.floor(time_until / 60)
             const minutes = Math.ceil(time_until % 60)
 
             next_card_time_until = ""
