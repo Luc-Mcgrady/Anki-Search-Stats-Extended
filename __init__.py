@@ -40,7 +40,10 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
-def rollover() -> bytes:
-    return Response(json.dumps(mw.col.get_preferences().scheduling.rollover))
+def scheduler_config() -> bytes:
+    return Response(json.dumps({
+        "rollover": mw.col.get_preferences().scheduling.rollover,
+        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs
+    }))
 
-post_handlers["rollover"] = rollover
+post_handlers["schedulerConfig"] = scheduler_config

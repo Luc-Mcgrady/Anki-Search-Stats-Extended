@@ -2,8 +2,7 @@
     import _ from "lodash";
     import Bar from "./Bar.svelte";
     import type { BarDatum, ExtraRenderInput } from "./bar";
-    import { getCardData, getRollover, search, type CardData } from "./search";
-    import { timeDay } from "d3";
+    import { getCardData, getSchedulerConfig, search, type CardData } from "./search";
 
     export let parentSearch: string
     let rollover = 0
@@ -20,7 +19,7 @@
         const due_today_relearn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn is:review`)
         const cards_relearn = await getCardData(due_today_relearn)
 
-        rollover = await getRollover()
+        const {learn_ahead_secs, rollover} = await getSchedulerConfig()
 
         const data = [..._.range(rollover, 24), ..._.range(0, rollover)].map(hour=>({
             label: hour.toString(),
@@ -40,8 +39,10 @@
         graph(cards_relearn, 0)
         graph(cards_learn, 1)
         
-        const remaining = [...cards_learn, ...cards_relearn].filter(card=>1000*card.due>Date.now())
-        const next_card = _.minBy(remaining,card=>card.due)?.due
+        const remaining = [...cards_learn, ...cards_relearn]
+            .map(card=>card.due-learn_ahead_secs)
+            .filter(due=>1000*due>Date.now())
+        const next_card = _.min(remaining)
 
         if (next_card) {
             next_card_time = new Date(next_card * 1000)

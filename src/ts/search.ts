@@ -36,6 +36,11 @@ export async function getCardData(cids: number[]) {
     return await endpoint("cardData", JSON.stringify(cids)) as CardData[]
 }
 
-export async function getRollover() {
-    return await endpoint("rollover") as number
+interface SchedulerConfig {
+    learn_ahead_secs: number
+    rollover: number
+}
+
+export async function getSchedulerConfig() {
+    return await endpoint("schedulerConfig") as SchedulerConfig
 }
