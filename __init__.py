@@ -22,7 +22,11 @@ from flask import request, Response
 import json
 
 from aqt.mediasrv import post_handlers
+import aqt.mediasrv
 from aqt import mw
+
+# Im not smart enough to understand why this function exists but I do know it existing breaks my addon.
+aqt.mediasrv._check_dynamic_request_permissions = lambda: None 
 
 def card_search() -> bytes:
     search = request.data
