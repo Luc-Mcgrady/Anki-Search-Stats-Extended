@@ -3,6 +3,7 @@
     import Bar from "./Bar.svelte";
     import type { BarDatum, ExtraRenderInput } from "./bar";
     import { getCardData, getSchedulerConfig, search, type CardData } from "./search";
+  import { searchJoin } from "./root";
 
     export let parentSearch: string
     let rollover = 0
@@ -14,9 +15,9 @@
     const day = hour * 24
 
     async function fetchCards(parentSearch : string) : Promise<BarDatum[]> {
-        const due_today_learn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn -is:review`)
+        const due_today_learn = await search(searchJoin(parentSearch, "prop:due=0 AND is:learn -is:review"))
         const cards_learn = await getCardData(due_today_learn)
-        const due_today_relearn = await search(`(${parentSearch}) AND prop:due=0 AND is:learn is:review`)
+        const due_today_relearn = await search(searchJoin(parentSearch, "prop:due=0 AND is:learn is:review"))
         const cards_relearn = await getCardData(due_today_relearn)
 
         const {learn_ahead_secs, rollover} = await getSchedulerConfig()

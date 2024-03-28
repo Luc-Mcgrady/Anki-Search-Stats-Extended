@@ -1,13 +1,14 @@
 <script lang="ts">
     import Pie from "./Pie.svelte";
     import type { PieDatum } from "./pie";
+    import { searchJoin } from "./root";
     import { search as doSearch } from "./search";
 
     export let search: string;
 
-    $: passed_search = `(${search}) AND (rated:1 -rated:1:1 AND is:review)`
-    $: flunked_search = `(${search}) AND (rated:1 AND rated:1:1 AND is:review)`
-    $: learning_search = `(${search}) AND (rated:1 AND -is:review AND is:learn)`
+    $: passed_search = searchJoin(search , "rated:1 -rated:1:1 AND is:review")
+    $: flunked_search = searchJoin(search , "rated:1 AND rated:1:1 AND is:review")
+    $: learning_search = searchJoin(search , "rated:1 AND -is:review AND is:learn")
 
     let do_learning = true;
     $: data_fetcher = dataGen(do_learning)

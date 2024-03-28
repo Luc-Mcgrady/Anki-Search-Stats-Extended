@@ -18,9 +18,13 @@ export function decodeRequest(req: string | Uint8Array) {
     return GraphsRequest.fromBinary(req)
 }
 
+export function searchJoin(user: string | null, added: string) {
+    return user ? `(${user}) AND (${added})` : added
+}
+
 export function bodySwap(req: string | Uint8Array, newSearch: string) {
     const request = decodeRequest(req)
-    request.search = `(${request.search}) AND (${newSearch})`
+    request.search = searchJoin(request?.search, newSearch)
     return request.toBinary();
 }
 

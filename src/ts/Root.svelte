@@ -76,7 +76,7 @@
             </p>        
         </GraphContainer>
     {/if}
-    {#if searchString}
+    {#if searchString !== undefined}
         <GraphContainer>
             <h1>Intra-day Due</h1>
             <IntraDayDueBar parentSearch={searchString}></IntraDayDueBar>
