@@ -109,7 +109,7 @@
         <label>Include suspended: <input type="checkbox" bind:checked={use_suspended}></label>
     </GraphContainer>
     <GraphContainer>
-        <h1>Burden Distribution</h1>
+        <h1>Load Distribution</h1>
         <BurdenPie {intervals}/>
         <p>
             Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>

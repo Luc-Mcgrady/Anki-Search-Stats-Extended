@@ -20,7 +20,7 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/65c1e76b-89f0-4125-b6b3-4b5f4051592c)
 
-### Interval/Burden distribution
+### Interval/Load distribution
 
 ![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/ffe3cb58-ef01-4961-bca7-18c81b03f77d)
 
