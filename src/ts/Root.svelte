@@ -18,6 +18,7 @@
     let mature_data: null | GraphsResponse = null;
     let learn_data: null | GraphsResponse = null;
     let relearn_data: null | GraphsResponse = null;
+    let not_suspended_data: null | GraphsResponse = null;
     
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {
@@ -35,8 +36,7 @@
             mature_data = await fetchSwappedSearch("prop:ivl>=21")
             learn_data = await fetchSwappedSearch("is:learn")
             relearn_data = await fetchSwappedSearch("is:learn is:review")
-
-            
+            not_suspended_data = await fetchSwappedSearch("-is:suspended")
             
             headers.body = origBody
 
@@ -58,7 +58,8 @@
         "method": "POST",
     });
 
-    $: intervals = data?.intervals!.intervals || {}
+    let use_suspended = false;
+    $: intervals = (use_suspended ? data?.intervals!.intervals : not_suspended_data?.intervals!.intervals) || {}
 </script>
 
 <h1>Search Stats Extended:</h1>
@@ -104,7 +105,8 @@
         <IntervalPie {intervals}/>
         <p>
             Here you can more easily visualise the spread of your intervals
-        </p>   
+        </p>
+        <label>Include suspended: <input type="checkbox" bind:checked={use_suspended}></label>
     </GraphContainer>
     <GraphContainer>
         <h1>Burden Distribution</h1>
@@ -113,7 +115,8 @@
             Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>
             as an example if a card has an interval of 1 it has a burden of 1 because you see it every day.<br>
             If a card has an interval of 2 it has a burden of 0.5 et cetera.
-        </p>        
+        </p>
+        <label>Include suspended: <input type="checkbox" bind:checked={use_suspended}></label>
     </GraphContainer>
 
 {/if}
@@ -128,6 +131,10 @@
 
     h1 {
         border-bottom: 1px var(--border) solid;
+    }
+
+    label {
+        user-select: none;
     }
 
     // Copied from anki/ts/graphs/GraphsPage.svelte
