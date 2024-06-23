@@ -27,9 +27,12 @@
 
     const gradient = new Rainbow()
 
+    export let spectrumFrom = "#74C476"
+    export let spectrumTo = "#014720"
+
     $ : {
         gradient.setNumberRange(0,steps + 1)
-        gradient.setSpectrum("#74C476", "#014720")
+        gradient.setSpectrum(spectrumFrom, spectrumTo)
     }
 
     let pie_data: PieDatum[]

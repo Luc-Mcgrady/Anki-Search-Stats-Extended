@@ -20,17 +20,17 @@
 
 <GraphContainer>
     <h1>Lapse Distribution</h1>
-    <IntervalPie intervals={lapses}/>
+    <IntervalPie spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses}/>
 </GraphContainer>
 <GraphContainer>
     <h1>Lapse Load</h1>
-    <BurdenPie intervals={lapses}/>
+    <BurdenPie spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses}/>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Distribution</h1>
-    <IntervalPie intervals={repetitions}/>
+    <IntervalPie spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions}/>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Load</h1>
-    <BurdenPie intervals={repetitions}/>
+    <BurdenPie spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions}/>
 </GraphContainer>
