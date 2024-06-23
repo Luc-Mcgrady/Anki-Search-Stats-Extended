@@ -3,9 +3,6 @@
 
     export let intervals: Record<number, number>;
 
-    export let spectrumFrom: undefined | string = undefined
-    export let spectrumTo: undefined | string = undefined
-
     let burdens: Record<number, number>
     $: {
         burdens = {...intervals}
@@ -17,4 +14,4 @@
 
 </script>
 
-<IntervalPie {spectrumFrom} {spectrumTo} intervals={burdens} legend_title="Intervals: Burden"></IntervalPie>
+<IntervalPie intervals={burdens}></IntervalPie>
