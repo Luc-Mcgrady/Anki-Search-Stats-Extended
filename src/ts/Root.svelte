@@ -9,11 +9,6 @@
     import { patchFetch } from "./root";
   import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString } from "./stores";
 
-    fetch("/_anki/graphs", {
-        "body": "\n\fdeck:current\u0010í\u0002",
-        "method": "POST",
-    });
-
     patchFetch()
 
     let use_suspended = false;
