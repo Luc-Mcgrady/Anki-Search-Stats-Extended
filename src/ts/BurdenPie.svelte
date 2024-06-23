@@ -14,4 +14,4 @@
 
 </script>
 
-<IntervalPie intervals={burdens}></IntervalPie>
+<IntervalPie intervals={burdens} legend_title={"Interval: Load"}></IntervalPie>

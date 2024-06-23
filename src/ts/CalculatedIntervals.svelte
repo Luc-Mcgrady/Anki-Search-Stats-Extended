@@ -25,17 +25,17 @@
 
 <GraphContainer>
     <h1>Lapse Distribution</h1>
-    <IntervalPie legend_title="Lapse count: Card count" spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses}/>
+    <IntervalPie countDescriptor="Highest Lapse Count" legend_title="Lapse count: Card count" spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses}/>
 </GraphContainer>
 <GraphContainer>
     <h1>Lapse Load</h1>
-    <IntervalPie legend_title="Lapse count: Card count" spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses_burden}/>
+    <IntervalPie countDescriptor="Highest Lapse Count" legend_title="Lapse count: Card Load" spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses_burden}/>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Distribution</h1>
-    <IntervalPie spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions}/>
+    <IntervalPie countDescriptor="Most Repetitions" legend_title="Repetition count: Card count" spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions}/>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Load</h1>
-    <IntervalPie spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions_burden}/>
+    <IntervalPie countDescriptor="Most Repetitions" legend_title="Repetition count: Card Load" spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions_burden}/>
 </GraphContainer>

@@ -7,6 +7,7 @@
 
     export let intervals : Record<number, number>
     export let legend_title = "Intervals: Cards"
+    export let countDescriptor = "Last Day"
 
     let steps = 7;
     let last = 21;
@@ -76,7 +77,7 @@
 
 
 <div>
-    <label for="interval_pie_last">Last Day</label>
+    <label for="interval_pie_last">{countDescriptor}</label>
     <input type="number" id="interval_pie_last" bind:value={last}><br/>
     <label for="interval_pie_step">Steps</label>
     <input type="number" id="interval_pie_step" bind:value={steps}>
