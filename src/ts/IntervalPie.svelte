@@ -37,7 +37,8 @@
 
     let pie_data: PieDatum[]
     $: { 
-        pie_data = _.range(1,step*steps+1,step)
+        const min = _.min(Object.keys(intervals).filter(k=>k!==undefined).map(parseInt)) ?? 1
+        pie_data = _.range(min,step*steps,step)
         .map((start,i)=>
             {
                 let end = start + step
@@ -54,12 +55,13 @@
         )
         
         if (realLast < last) {
-            const filler_start = realLast+1
+            const filler_start = realLast+min
+            const filler_end = last+min-1
             const filler_pie_slice = Object.entries(intervals)
-                .filter(([i, _])=>parseInt(i)>=filler_start && parseInt(i)<=last)
+                .filter(([i, _])=>parseInt(i)>=filler_start && parseInt(i)<=filler_end)
                 .reduce((n,[_, v])=>n+v, 0)
 
-            pie_data.push(PieDatumFactory(filler_start, last, filler_pie_slice, "gold"))
+            pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, "gold"))
         }
 
         const infinite_pie_slice = Object.entries(intervals)
