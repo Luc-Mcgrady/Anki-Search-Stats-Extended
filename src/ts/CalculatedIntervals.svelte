@@ -6,28 +6,36 @@
 
     export let cardData: CardData[]
     
-    let lapses: number[] = []
-    let repetitions: number[] = []
-    let lapses_burden: number[] = []
-    let repetitions_burden: number[] = []
-
-    for (const card of cardData) {
-        if (card.reps > 0) {
-            lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
-            repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
-            if (card.ivl > 0) {
-                lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + (1 / card.ivl)
-                repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + (1 / card.ivl)
-            }
-        }
-    }
+    let lapses: number[]
+    let repetitions: number[] 
+    let lapses_burden: number[] 
+    let repetitions_burden: number[] 
 
     let zeroInclusive = false
 
-    if (zeroInclusive) {
-        delete lapses[0]
-        delete lapses_burden[0]
+    $: {
+        lapses = []
+        repetitions = []
+        lapses_burden = []
+        repetitions_burden = []
+
+        for (const card of cardData) {
+            if (card.reps > 0) {
+                lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
+                repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
+                if (card.ivl > 0) {
+                    lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + (1 / card.ivl)
+                    repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + (1 / card.ivl)
+                }
+            }
+        }
+
+        if (!zeroInclusive) {
+            delete lapses[0]
+            delete lapses_burden[0]
+        }
     }
+
 </script>
 
 
