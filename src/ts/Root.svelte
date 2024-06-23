@@ -3,83 +3,41 @@
     import BurdenPie from "./BurdenPie.svelte";
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte";
-    import { GraphsResponse } from "./proto/anki/stats_pb"
-    import { fetchAndDecode, bodySwap, decodeRequest, realFetch } from "./root";
-    import { SearchRequest } from "./proto/anki/search_pb";
     import RetentionPie from "./RetentionPie.svelte";
     import CustomPie from "./CustomPie.svelte";
     import IntraDayDueBar from "./IntraDayDueBar.svelte";
-
-    let search: null | SearchRequest = null
-
-    $: searchString = search?.search
-
-    let data: null | GraphsResponse = null;
-    let mature_data: null | GraphsResponse = null;
-    let learn_data: null | GraphsResponse = null;
-    let relearn_data: null | GraphsResponse = null;
-    let not_suspended_data: null | GraphsResponse = null;
-    
-    //@ts-ignore
-    fetch = (req: string, headers: Record<string, any>) => {
-        async function handle() {
-            const origBody = headers.body
-
-            function fetchSwappedSearch(criteria: string) {
-                headers.body = bodySwap(origBody, criteria)
-                return fetchAndDecode(realFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
-            }
-
-            search = decodeRequest(origBody)
-
-            data = await fetchAndDecode(realFetch(req, headers)) // I feel like theres a better way of doing this than tripping the amount of processing needed
-            mature_data = await fetchSwappedSearch("prop:ivl>=21")
-            learn_data = await fetchSwappedSearch("is:learn")
-            relearn_data = await fetchSwappedSearch("is:learn is:review")
-            not_suspended_data = await fetchSwappedSearch("-is:suspended")
-            
-            headers.body = origBody
-
-        }
-        if (req == "/_anki/graphs") {
-
-            data = null
-            mature_data = null
-            learn_data = null
-            relearn_data = null
-
-            handle()
-        }
-        return realFetch(req, headers)
-    }
+    import { patchFetch } from "./root";
+  import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString } from "./stores";
 
     fetch("/_anki/graphs", {
         "body": "\n\fdeck:current\u0010í\u0002",
         "method": "POST",
     });
 
+    patchFetch()
+
     let use_suspended = false;
-    $: intervals = (use_suspended ? data?.intervals!.intervals : not_suspended_data?.intervals!.intervals) || {}
+    $: intervals = (use_suspended ? $data?.intervals!.intervals : $not_suspended_data?.intervals!.intervals) || {}
 </script>
 
 <h1>Search Stats Extended:</h1>
 
 <div class="graphs-container">
-{#if data}
-    {#if data.futureDue && learn_data?.futureDue && mature_data?.futureDue && relearn_data?.futureDue}
+{#if $data}
+    {#if $data.futureDue && $learn_data?.futureDue && $mature_data?.futureDue && $relearn_data?.futureDue}
         <GraphContainer>
             <h1>Future Due Types</h1>
-            <DueBar all={data.futureDue} learn={learn_data.futureDue} mature={mature_data.futureDue} relearn={relearn_data?.futureDue}/>
+            <DueBar all={$data.futureDue} learn={$learn_data.futureDue} mature={$mature_data.futureDue} relearn={$relearn_data?.futureDue}/>
             <p>
                 This graph is the same as the Future Due above except it delineates between types of cards. <br>
                 Very useful if you have learning steps greater than one day.
             </p>        
         </GraphContainer>
     {/if}
-    {#if searchString !== undefined}
+    {#if $searchString !== null}
         <GraphContainer>
             <h1>Intra-day Due</h1>
-            <IntraDayDueBar parentSearch={searchString}></IntraDayDueBar>
+            <IntraDayDueBar parentSearch={$searchString}></IntraDayDueBar>
             <p>
                 This graph shows you which hours todays cards are/were due in. <br>
                 Useful if you have long intra-day learning intervals.
@@ -87,14 +45,14 @@
         </GraphContainer>
         <GraphContainer>
             <h1>Today's Retention</h1>
-            <RetentionPie search={searchString}></RetentionPie>
+            <RetentionPie search={$searchString}></RetentionPie>
             <p>
                 Retention is used to compare how many cards you got right and wrong on first looking.
             </p>
         </GraphContainer>
         <GraphContainer>
             <h1>Custom pie</h1>
-            <CustomPie search={searchString}/>
+            <CustomPie search={$searchString}/>
             <p>
                 This pie will show you the number of cards which match <code>Search</code> for each search
             </p>
