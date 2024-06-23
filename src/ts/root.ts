@@ -1,6 +1,6 @@
-import type { SearchRequest } from "./proto/anki/search_pb";
 import { GraphsResponse, GraphsRequest } from "./proto/anki/stats_pb";
-import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString } from "./stores";
+import { getCardData, search } from "./search";
+import { card_data, data, learn_data, mature_data, not_suspended_data, relearn_data, searchString } from "./stores";
 
 export async function decodeResponse(resp: Response) {
     const blob = await resp.blob();
@@ -38,8 +38,6 @@ async function fetchAndDecode(fetchPromise: Promise<Response>)
 
 export function patchFetch() {
 
-    let search: null | SearchRequest = null
-    
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {
         if (req == "/_anki/graphs") {
@@ -57,9 +55,10 @@ export function patchFetch() {
                 return fetchAndDecode(realFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
             }
 
-            search = decodeRequest(origBody)
+            const search_request = decodeRequest(origBody)
 
-            searchString.set(search?.search)
+            searchString.set(search_request?.search)
+            search(search_request?.search).then(getCardData).then(card_data.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set) // I feel like theres a better way of doing this than tripping the amount of processing needed
             fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)

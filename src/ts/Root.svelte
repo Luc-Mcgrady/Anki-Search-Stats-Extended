@@ -7,7 +7,8 @@
     import CustomPie from "./CustomPie.svelte";
     import IntraDayDueBar from "./IntraDayDueBar.svelte";
     import { patchFetch } from "./root";
-  import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString } from "./stores";
+    import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString, card_data } from "./stores";
+  import CalculatedIntervals from "./CalculatedIntervals.svelte";
 
     patchFetch()
 
@@ -71,7 +72,9 @@
         </p>
         <label>Include suspended: <input type="checkbox" bind:checked={use_suspended}></label>
     </GraphContainer>
-
+{/if}
+{#if $card_data}
+    <CalculatedIntervals cardData={$card_data}/>
 {/if}
 </div>
 
