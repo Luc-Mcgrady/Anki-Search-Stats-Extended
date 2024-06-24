@@ -26,7 +26,7 @@
             {#each data as datum}
                 <span style:color={datum.colour} class="colour">■&nbsp;</span>
                 <span>{datum.label}:</span>
-                <span>{_.round(datum.value, 2)}</span>
+                <span>{_.round(datum.value, 2).toLocaleString()}</span>
             {/each}
         </div>
     </div>
