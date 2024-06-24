@@ -6,7 +6,7 @@ esbuild.build({
     entryPoints: ["src/ts/index.ts"],
     outfile: "stats.min.js",
     bundle: true,
-    minify: false, // This is actually required because I embed it inline for some insane reason I forgot.
+    minify: false,
     plugins: [
         esbuildSvelte({
           preprocess: sveltePreprocess(),
