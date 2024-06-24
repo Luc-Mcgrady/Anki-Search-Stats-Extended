@@ -3,7 +3,8 @@
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalPie from "./IntervalPie.svelte"
-    import { include_suspended } from "./stores"
+    import { include_suspended, zero_inclusive } from "./stores"
+    import ZeroInclusive from "./ZeroInclusive.svelte"
 
     export let cardData: CardData[]
 
@@ -13,8 +14,6 @@
     let repetitions: number[]
     let lapses_burden: number[]
     let repetitions_burden: number[]
-
-    let zeroInclusive = false
 
     $: {
         total_lapses = 0
@@ -43,7 +42,7 @@
             }
         }
 
-        if (!zeroInclusive) {
+        if (!$zero_inclusive) {
             delete lapses[0]
             delete lapses_burden[0]
         }
@@ -68,12 +67,9 @@
         intervals={lapses}
     />
     <br />
-    <span>Total Lapses = {total_lapses.toLocaleString()}</span>
+    <ZeroInclusive />
     <br />
-    <label>
-        <input type="checkbox" bind:checked={zeroInclusive} />
-        Zero Inclusive?
-    </label>
+    <span>Total Lapses = {total_lapses.toLocaleString()}</span>
 </GraphContainer>
 <GraphContainer>
     <h1>Lapse Load</h1>
@@ -87,10 +83,7 @@
         intervals={lapses_burden}
     />
     <br />
-    <label>
-        <input type="checkbox" bind:checked={zeroInclusive} />
-        Zero Inclusive?
-    </label>
+    <ZeroInclusive />
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Distribution</h1>
@@ -118,9 +111,3 @@
         intervals={repetitions_burden}
     />
 </GraphContainer>
-
-<style>
-    label {
-        user-select: none;
-    }
-</style>
