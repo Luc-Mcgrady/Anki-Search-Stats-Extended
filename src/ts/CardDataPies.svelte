@@ -111,6 +111,25 @@
     </p>
 </GraphContainer>
 <GraphContainer>
+    <h1>Lapse Count</h1>
+    <IntervalPie
+        bind:steps={repetitions_steps}
+        bind:last={repetitions_last}
+        totalDescriptor="Lapses"
+        countDescriptor="Most Lapses"
+        legend_left="Lapses per card"
+        legend_right="Lapse count"
+        spectrumFrom={"#bd3f09"}
+        spectrumTo={"#612207"}
+        intervals={lapses.map((e, i) => e * i)}
+    />
+    <p>
+        This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3
+        lapses per card, the lapse count for 3 would be 6.
+    </p>
+</GraphContainer>
+<!-- Repetition  -->
+<GraphContainer>
     <h1>Repetition Distribution</h1>
     <IntervalPie
         bind:steps={repetitions_steps}
@@ -155,8 +174,8 @@
         intervals={repetitions.map((e, i) => e * i)}
     />
     <p>
-        This graph shows the number of repetitions for each card. E.g if 2 cards have a repetitions
-        per card of 3, the repetition count for 3 would be 6.
+        This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a
+        repetitions per card of 3, the repetition count for 3 would be 6.
     </p>
 </GraphContainer>
 
