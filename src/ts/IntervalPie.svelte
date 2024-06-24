@@ -83,7 +83,7 @@
     $: pie_values = Object.values(pie_data).map((d) => d.value)
 </script>
 
-<div>
+<div class="options">
     <label>
         {countDescriptor}
         <input type="number" bind:value={last} />
@@ -101,17 +101,27 @@
 <br />
 <Pie data={pie_data} {legend_left} {legend_right}></Pie>
 
-<span>
-    {`Total ${totalDescriptor} < ${last} = ${_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}`}
-    <!--Removes the end if not a value-->
-</span>
-<br />
-<span>Total {totalDescriptor} = {_.round(_.sum(pie_values), 2).toLocaleString()}</span>
+<div class="totals">
+    <span>Total {totalDescriptor} {"<"} {last}:</span>
+    <span>{_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}</span>
+    <span>Total {totalDescriptor}:</span>
+    <span>{_.round(_.sum(pie_values), 2).toLocaleString()}</span>
+</div>
 
 <style>
-    div {
+    div.options {
         display: grid;
-        grid-template-rows: auto auto;
+        grid-template-columns: auto 1fr;
+        gap: 0.5em 1em;
+        align-items: baseline;
+    }
+
+    div.totals {
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-content: start;
+        justify-items: start;
+        gap: 0 1em;
     }
 
     span {
