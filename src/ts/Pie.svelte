@@ -18,13 +18,13 @@
         <g transform={`translate(${bounds.height / 2},${bounds.height / 2})`} bind:this={svg}></g>
     </svg>
 
-    <div style={`max-height:${bounds.height}px`} class="glossary">
+    <div style:max-height={`${bounds.height}px`} class="glossary">
         <div class="grid">
             <span></span>
             <span>{legend_left}:</span>
             <span>{legend_right}</span>
             {#each data as datum}
-                <span style:color={datum.colour}>■&nbsp;</span>
+                <span style:color={datum.colour} class="colour">■&nbsp;</span>
                 <span>{datum.label}:</span>
                 <span>{_.round(datum.value, 2)}</span>
             {/each}
@@ -43,6 +43,10 @@
         display: grid;
         grid-template-columns: auto auto auto;
         gap: 0 1em;
+    }
+
+    span.colour {
+        margin-right: -1em;
     }
 
     div.glossary {
