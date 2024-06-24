@@ -122,14 +122,6 @@
         spectrumTo={"#0b4f99"}
         intervals={repetitions}
     />
-    <br />
-    <span>Total Repetitions = {total_repetitions.toLocaleString()}</span>
-    <br />
-    <span>
-        Total Repetitions {"<"}
-        {repetitions_last} = {total_under_repetitions.toLocaleString()}
-    </span>
-    <p>A card gains a repetition whenever you review it.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Load</h1>
@@ -147,6 +139,24 @@
     <p>
         This graph shows <code>1 / interval</code>
         for cards which have the given number of repetitions.
+    </p>
+</GraphContainer>
+<GraphContainer>
+    <h1>Repetition Count</h1>
+    <IntervalPie
+        bind:steps={repetitions_steps}
+        bind:last={repetitions_last}
+        totalDescriptor="Repetitions"
+        countDescriptor="Most Repetitions"
+        legend_left="Repetitions per card"
+        legend_right="Repetition count"
+        spectrumFrom={"#5ca7f7"}
+        spectrumTo={"#0b4f99"}
+        intervals={repetitions.map((e, i) => e * i)}
+    />
+    <p>
+        This graph shows the number of repetitions for each card. E.g if 2 cards have a repetitions
+        per card of 3, the repetition count for 3 would be 6.
     </p>
 </GraphContainer>
 
