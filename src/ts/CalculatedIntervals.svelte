@@ -85,6 +85,7 @@
     <IntervalPie
         bind:steps={lapse_steps}
         bind:last={lapse_last}
+        totalDescriptor="Load"
         countDescriptor="Highest Lapse Count"
         legend_title="Lapse count: Card Load"
         spectrumFrom={"#bd3f09"}
@@ -121,6 +122,7 @@
     <IntervalPie
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
+        totalDescriptor="Load"
         countDescriptor="Most Repetitions"
         legend_title="Repetition count: Card Load"
         spectrumFrom={"#5ca7f7"}
@@ -129,7 +131,7 @@
     />
     <p>
         This graph shows <code>1 / interval</code>
-         for cards which have the given number of repetitions.
+        for cards which have the given number of repetitions.
     </p>
 </GraphContainer>
 

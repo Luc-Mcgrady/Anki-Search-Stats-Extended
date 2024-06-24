@@ -9,6 +9,7 @@
     export let intervals: Record<number, number>
     export let legend_title = "Intervals: Cards"
     export let countDescriptor = "Last Day"
+    export let totalDescriptor = "Cards"
 
     export let steps = 7
     export let last = 21
@@ -99,11 +100,11 @@
 <Pie data={pie_data} {legend_title}></Pie>
 
 <span>
-    {`Total Value < ${last} = ${_.round(_.sum(pie_values.slice(0, -1)), 2)}`}
+    {`Total ${totalDescriptor} < ${last} = ${_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}`}
     <!--Removes the end if not a value-->
 </span>
 <br />
-<span>Total Value = {_.round(_.sum(pie_values), 2)}</span>
+<span>Total {totalDescriptor} = {_.round(_.sum(pie_values), 2).toLocaleString()}</span>
 
 <style>
     div {

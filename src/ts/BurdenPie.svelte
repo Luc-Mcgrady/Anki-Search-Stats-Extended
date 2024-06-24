@@ -16,4 +16,10 @@
     }
 </script>
 
-<IntervalPie bind:last bind:steps intervals={burdens} legend_title={"Interval: Load"}></IntervalPie>
+<IntervalPie
+    bind:last
+    bind:steps
+    intervals={burdens}
+    totalDescriptor="Load"
+    legend_title="Interval: Load"
+></IntervalPie>
