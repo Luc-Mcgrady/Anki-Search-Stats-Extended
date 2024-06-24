@@ -7,7 +7,7 @@
     import CustomPie from "./CustomPie.svelte";
     import IntraDayDueBar from "./IntraDayDueBar.svelte";
     import { patchFetch } from "./root";
-    import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString, card_data } from "./stores";
+    import { data, learn_data, mature_data, not_suspended_data, relearn_data, searchString, card_data, include_suspended } from "./stores";
   import CalculatedIntervals from "./CalculatedIntervals.svelte";
 
     patchFetch()
@@ -15,8 +15,7 @@
     let interval_last = 21
     let interval_steps = 7
 
-    let use_suspended = false;
-    $: intervals = (use_suspended ? $data?.intervals!.intervals : $not_suspended_data?.intervals!.intervals) || {}
+    $: intervals = (include_suspended ? $data?.intervals!.intervals : $not_suspended_data?.intervals!.intervals) || {}
 </script>
 
 <h1>Search Stats Extended:</h1>
@@ -63,7 +62,6 @@
         <p>
             Here you can more easily visualise the spread of your intervals
         </p>
-        <label>Include suspended: <input type="checkbox" bind:checked={use_suspended}></label>
     </GraphContainer>
     <GraphContainer>
         <h1>Load Distribution</h1>
@@ -73,7 +71,6 @@
             as an example if a card has an interval of 1 it has a burden of 1 because you see it every day.<br>
             If a card has an interval of 2 it has a burden of 0.5 et cetera.
         </p>
-        <label>Include suspended: <input type="checkbox" bind:checked={use_suspended}></label>
     </GraphContainer>
 {/if}
 {#if $card_data}
@@ -90,10 +87,6 @@
 
     h1 {
         border-bottom: 1px var(--border) solid;
-    }
-
-    label {
-        user-select: none;
     }
 
     // Copied from anki/ts/graphs/GraphsPage.svelte

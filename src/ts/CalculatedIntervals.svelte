@@ -3,6 +3,7 @@
     import _ from "lodash";
     import GraphContainer from "./GraphContainer.svelte";
     import IntervalPie from "./IntervalPie.svelte"
+  import { include_suspended } from "./stores";
 
     export let cardData: CardData[]
     
@@ -23,20 +24,23 @@
         lapses_burden = []
         repetitions_burden = []
 
-        for (const card of cardData) {
-            
-            total_lapses += card.lapses
-            total_repetitions += card.reps
+        console.log(cardData)
 
-            if (card.reps > 0) {
-                lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
-                repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
-                
-                if (card.ivl > 0) {
-                    lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + (1 / card.ivl)
-                    repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + (1 / card.ivl)
+        for (const card of cardData) {
+            if ($include_suspended || card.queue !== -1) {
+                total_lapses += card.lapses
+                total_repetitions += card.reps
+
+                if (card.reps > 0) {
+                    lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
+                    repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
+                    
+                    if (card.ivl > 0) {
+                        lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + (1 / card.ivl)
+                        repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + (1 / card.ivl)
+                    }
                 }
-            }
+        }
         }
 
         if (!zeroInclusive) {
@@ -84,3 +88,9 @@
     <h1>Repetition Load</h1>
     <IntervalPie bind:steps={repetitions_steps} bind:last={repetitions_last} countDescriptor="Most Repetitions" legend_title="Repetition count: Card Load" spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions_burden}/>
 </GraphContainer>
+
+<style>
+    label {
+        user-select: none;
+    }
+</style>

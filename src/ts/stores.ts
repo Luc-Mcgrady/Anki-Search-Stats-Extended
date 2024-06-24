@@ -8,6 +8,7 @@ export let mature_data: Writable<null | GraphsResponse> = writable(null);
 export let learn_data: Writable<null | GraphsResponse> = writable(null);
 export let relearn_data: Writable<null | GraphsResponse> = writable(null);
 
+export let searchString: Writable<null | string> = writable(null)
 export let card_data: Writable<null | CardData[]> = writable(null);
 
-export let searchString: Writable<null | string> = writable(null)
+export let include_suspended = writable(false)

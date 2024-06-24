@@ -4,6 +4,7 @@
     import Pie from "./Pie.svelte";
     import type { PieDatum } from "./pie";
     import { PieDatumFactory } from "./pie";
+  import { include_suspended } from "./stores";
 
     export let intervals : Record<number, number>
     export let legend_title = "Intervals: Cards"
@@ -84,6 +85,8 @@
     <input type="number" id="interval_pie_last" bind:value={last}><br/>
     <label for="interval_pie_step">Steps</label>
     <input type="number" id="interval_pie_step" bind:value={steps}>
+    <br>
+    <label>Include suspended: <input type="checkbox" bind:checked={$include_suspended}></label>
 </div>
 <br>
 <Pie data={pie_data} {legend_title}></Pie>
@@ -102,5 +105,9 @@
 
     span {
         text-align: center;
+    }
+
+    label {
+        user-select: none;
     }
 </style>
