@@ -94,7 +94,8 @@
     </label>
 </div>
 <label class="checkbox">
-    Include suspended: <input type="checkbox" bind:checked={$include_suspended} />
+    <input type="checkbox" bind:checked={$include_suspended} />
+    Include suspended
 </label>
 <slot />
 <br />

@@ -62,10 +62,11 @@
         <code>{flunked_search}</code>
         <br />
 
-        <input type="checkbox" id="retention_pie_learning" bind:checked={do_learning} />
-        <label for="retention_pie_learning">
-            Learning = <code>{learning_search}</code>
-            <br />
+        <label>
+            <input type="checkbox" bind:checked={do_learning} />
+            Learning =
+            <code>{learning_search}</code>
         </label>
+        <br />
     </small>
 {/await}

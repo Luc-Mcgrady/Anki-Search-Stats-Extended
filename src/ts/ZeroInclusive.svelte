@@ -3,8 +3,8 @@
 </script>
 
 <label>
-    Zero Inclusive:
     <input type="checkbox" bind:checked={$zero_inclusive} />
+    Zero Inclusive
 </label>
 
 <style>

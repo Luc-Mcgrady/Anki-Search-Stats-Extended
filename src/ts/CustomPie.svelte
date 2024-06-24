@@ -69,20 +69,20 @@
 
 <div class="options">
     <label>
-        Count:
         <input type="radio" bind:group={mode} on:change={refresh} value="Count" />
+        Count
     </label>
     <label>
-        Burden:
         <input type="radio" bind:group={mode} on:change={refresh} value="Burden" />
+        Burden
     </label>
     <label>
-        Lapses:
         <input type="radio" bind:group={mode} on:change={refresh} value="Lapses" />
+        Lapses
     </label>
     <label>
-        Repetitions:
         <input type="radio" bind:group={mode} on:change={refresh} value="Repetitions" />
+        Repetitions
     </label>
 </div>
 
