@@ -4,7 +4,7 @@
     import { search as doSearch, getCardData } from "./search"
 
     export let search: string
-    export let burden_mode = false
+    export let mode = "Count"
 
     const pickable_colours = ["blue", "red", "green", "orange"]
     let pickable_colours_i = 0
@@ -15,11 +15,21 @@
 
     async function getQuery(query: string): Promise<number> {
         const result = await doSearch(`(${query})`)
-        if (!burden_mode) {
+
+        if (mode === "Count") {
             return result.length
-        } else {
-            const cards = await getCardData(result)
-            return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
+        }
+        const cards = await getCardData(result)
+        switch (mode) {
+            case "Burden":
+                return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
+            case "Lapses":
+                return cards.reduce((p, n) => (p += n.lapses), 0)
+            case "Repetitions":
+                return cards.reduce((p, n) => (p += n.reps), 0)
+            default:
+                mode = "How the fuck?"
+                return 0
         }
     }
 
@@ -55,16 +65,28 @@
         pie_data = []
         newSearch()
     }
-
-    $: legend_right = burden_mode ? "Burden" : "Cards"
 </script>
 
-<label>
-    Burden:
-    <input type="checkbox" bind:checked={burden_mode} on:change={refresh} />
-</label>
+<div>
+    <label>
+        Count:
+        <input type="radio" bind:group={mode} on:change={refresh} value="Count" />
+    </label>
+    <label>
+        Burden:
+        <input type="radio" bind:group={mode} on:change={refresh} value="Burden" />
+    </label>
+    <label>
+        Lapses:
+        <input type="radio" bind:group={mode} on:change={refresh} value="Lapses" />
+    </label>
+    <label>
+        Repetitions:
+        <input type="radio" bind:group={mode} on:change={refresh} value="Repetitions" />
+    </label>
+</div>
 
-<Pie data={pie_data} legend_left="Search" {legend_right}></Pie>
+<Pie data={pie_data} legend_left="Search" legend_right={mode}></Pie>
 <div>
     <span>Search</span>
     <span>Colour</span>
