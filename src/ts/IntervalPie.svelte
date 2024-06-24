@@ -102,7 +102,7 @@
 <Pie data={pie_data} {legend_left} {legend_right}></Pie>
 
 <div class="totals">
-    <span>Total {totalDescriptor} {"<"} {last}:</span>
+    <span>Total {totalDescriptor} {"<="} {last}:</span>
     <span>{_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}</span>
     <span>Total {totalDescriptor}:</span>
     <span>{_.round(_.sum(pie_values), 2).toLocaleString()}</span>
