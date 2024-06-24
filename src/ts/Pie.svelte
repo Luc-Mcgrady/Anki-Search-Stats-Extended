@@ -1,18 +1,16 @@
 <script lang="ts">
-    import _ from "lodash";
-    import { defaultGraphBounds } from "./graph";
-    import { renderPie, type PieDatum } from "./pie";
+    import _ from "lodash"
+    import { defaultGraphBounds } from "./graph"
+    import { renderPie, type PieDatum } from "./pie"
 
     export let data: PieDatum[]
     export let legend_title = "Legend"
-    let svg: SVGElement | null = null;
+    let svg: SVGElement | null = null
 
     const bounds = defaultGraphBounds()
 
-    $: renderPie(data, svg as any, bounds.height/2)
-    
+    $: renderPie(data, svg as any, bounds.height / 2)
 </script>
-
 
 <div class="root">
     <svg width={bounds.height} height={bounds.height}>
@@ -23,10 +21,10 @@
         <table>
             <th>{legend_title}</th>
             {#each data as datum}
-            <tr>
-                <span style="color: {datum.colour};">■&nbsp;</span>
-                {datum.label}: {_.round(datum.value, 2)}
-            </tr>
+                <tr>
+                    <span style="color: {datum.colour};">■&nbsp;</span>
+                    {datum.label}: {_.round(datum.value, 2)}
+                </tr>
             {/each}
         </table>
     </div>
@@ -38,7 +36,7 @@
         align-items: center;
         justify-content: space-around;
     }
- 
+
     div.glossary {
         overflow-y: auto;
     }

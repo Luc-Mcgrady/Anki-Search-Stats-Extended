@@ -1,10 +1,18 @@
-import { GraphsResponse, GraphsRequest } from "./proto/anki/stats_pb";
-import { getCardData, search } from "./search";
-import { card_data, data, learn_data, mature_data, not_suspended_data, relearn_data, searchString } from "./stores";
+import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
+import { getCardData, search } from "./search"
+import {
+    card_data,
+    data,
+    learn_data,
+    mature_data,
+    not_suspended_data,
+    relearn_data,
+    searchString,
+} from "./stores"
 
 export async function decodeResponse(resp: Response) {
-    const blob = await resp.blob();
-    const respBuf = await new Response(blob).arrayBuffer();
+    const blob = await resp.blob()
+    const respBuf = await new Response(blob).arrayBuffer()
     const bytes = new Uint8Array(respBuf)
     return GraphsResponse.fromBinary(bytes)!
 }
@@ -27,21 +35,18 @@ export function searchJoin(user: string | null, added: string) {
 function bodySwap(req: string | Uint8Array, newSearch: string) {
     const request = decodeRequest(req)
     request.search = searchJoin(request?.search, newSearch)
-    return request.toBinary();
+    return request.toBinary()
 }
 
-async function fetchAndDecode(fetchPromise: Promise<Response>) 
-{
+async function fetchAndDecode(fetchPromise: Promise<Response>) {
     const resp = await fetchPromise
     return await decodeResponse(resp)
 }
 
 export function patchFetch() {
-
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {
         if (req == "/_anki/graphs") {
-
             data.set(null)
             mature_data.set(null)
             learn_data.set(null)
@@ -65,7 +70,7 @@ export function patchFetch() {
             fetchSwappedSearch("is:learn").then(learn_data.set)
             fetchSwappedSearch("is:learn is:review").then(relearn_data.set)
             fetchSwappedSearch("-is:suspended").then(not_suspended_data.set)
-            
+
             headers.body = origBody
         }
         return realFetch(req, headers)

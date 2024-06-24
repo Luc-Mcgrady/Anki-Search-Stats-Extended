@@ -1,13 +1,13 @@
-import { realFetch } from "./root";
+import { realFetch } from "./root"
 
 async function endpoint(endpoint: string, body?: string) {
-    const resp = await realFetch(`/_anki/${endpoint}`, {method: "POST", body})
+    const resp = await realFetch(`/_anki/${endpoint}`, { method: "POST", body })
     const blob = await resp.text()
     return JSON.parse(blob)
 }
 
 export async function search(search: string) {
-    return await endpoint("cardSearch", search) as number[]
+    return (await endpoint("cardSearch", search)) as number[]
 }
 
 export interface CardData {
@@ -30,10 +30,9 @@ export interface CardData {
     flags: number
     data: string
 }
-  
 
 export async function getCardData(cids: number[]) {
-    return await endpoint("cardData", JSON.stringify(cids)) as CardData[]
+    return (await endpoint("cardData", JSON.stringify(cids))) as CardData[]
 }
 
 interface SchedulerConfig {
@@ -42,5 +41,5 @@ interface SchedulerConfig {
 }
 
 export async function getSchedulerConfig() {
-    return await endpoint("schedulerConfig") as SchedulerConfig
+    return (await endpoint("schedulerConfig")) as SchedulerConfig
 }

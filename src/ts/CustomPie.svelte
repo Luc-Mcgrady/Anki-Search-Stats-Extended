@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Pie from "./Pie.svelte";
-    import type { PieDatum } from "./pie";
-    import { search as doSearch } from "./search";
+    import Pie from "./Pie.svelte"
+    import type { PieDatum } from "./pie"
+    import { search as doSearch } from "./search"
 
-    export let search: string;
+    export let search: string
 
     const pickable_colours = ["blue", "red", "green", "orange"]
     let pickable_colours_i = 0
@@ -18,15 +18,16 @@
     }
 
     async function newSearch() {
+        pie_data = [
+            ...pie_data,
+            {
+                label: search,
+                colour: pickable_colours[pickable_colours_i++],
+                value: await getQuery(search),
+            },
+        ]
 
-        pie_data = [...pie_data, 
-        {
-            label: search,
-            colour: pickable_colours[pickable_colours_i++],
-            value: await getQuery(search)
-        }]
-
-        pickable_colours_i %= pickable_colours.length 
+        pickable_colours_i %= pickable_colours.length
     }
 
     async function onChange(datum: PieDatum) {
@@ -35,10 +36,9 @@
     }
 
     function reset() {
-        pie_data=[];
+        pie_data = []
         newSearch()
     }
-
 </script>
 
 <Pie data={pie_data}></Pie>
@@ -46,11 +46,16 @@
     <span>Search</span>
     <span>Colour</span>
     {#each pie_data as pie_data}
-        <input type="text" bind:value={pie_data.label} placeholder="Search string" on:change={()=>onChange(pie_data)}>
-        <input type="text" bind:value={pie_data.colour} placeholder="Search string"> 
+        <input
+            type="text"
+            bind:value={pie_data.label}
+            placeholder="Search string"
+            on:change={() => onChange(pie_data)}
+        />
+        <input type="text" bind:value={pie_data.colour} placeholder="Search string" />
     {/each}
-    <input type="button" on:click={newSearch} value="New search">
-    <input type="button" on:click={reset} value="Reset">
+    <input type="button" on:click={newSearch} value="New search" />
+    <input type="button" on:click={reset} value="Reset" />
 </div>
 
 <style>

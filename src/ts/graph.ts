@@ -6,5 +6,5 @@ export function defaultGraphBounds() {
         marginRight: 70,
         marginTop: 20,
         marginBottom: 25,
-    };
+    }
 }

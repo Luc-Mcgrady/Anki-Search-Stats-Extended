@@ -1,14 +1,14 @@
 <script lang="ts">
-    import _ from "lodash";
-    import { renderBarChart, type BarChart, type ExtraRenderInput } from "./bar";
+    import _ from "lodash"
+    import { renderBarChart, type BarChart, type ExtraRenderInput } from "./bar"
 
     let svg: SVGElement | null = null
     export let extraRender = (chart: ExtraRenderInput) => {}
 
-    export let data : BarChart;
+    export let data: BarChart
     $: {
         if (svg && data.data.length) {
-            const chart = renderBarChart(data,svg as any)
+            const chart = renderBarChart(data, svg as any)
             extraRender(chart)
         }
     }
@@ -16,15 +16,16 @@
 
 <svg bind:this={svg}></svg>
 
-{#if !data.data.length} 
+{#if !data.data.length}
     No data
 {/if}
 
 <div class="glossary">
-    {#each _.zip(data.row_labels, data.row_colours) as [label, colour] }
+    {#each _.zip(data.row_labels, data.row_colours) as [label, colour]}
         <div>
-            <span style={`color:${colour}`}>■&nbsp;</span> {label}
-        </div>    
+            <span style={`color:${colour}`}>■&nbsp;</span>
+            {label}
+        </div>
     {/each}
 </div>
 

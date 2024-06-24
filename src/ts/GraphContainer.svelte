@@ -1,5 +1,5 @@
 <dir class="container graph">
-    <slot/>
+    <slot />
 </dir>
 
 <style lang="scss">
@@ -7,7 +7,7 @@
     // Copied from anki/ts/graphs/Graph.svelte
     .graph {
         /* See graph-styles.ts for constants referencing global styles */
-        
+
         // OMITTED GLOBAL DEFINITIONS FOR DUPLICATION REASONS
 
         /* Customizing the standard x and y tick markers and text on the graphs.
@@ -26,6 +26,6 @@
 
         transition: box-shadow var(--transition) ease-in-out;
         page-break-inside: avoid;
-        padding:1em;
+        padding: 1em;
     }
 </style>
