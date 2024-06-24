@@ -24,12 +24,13 @@
         repetitions_burden = []
 
         for (const card of cardData) {
+            
+            total_lapses += card.lapses
+            total_repetitions += card.reps
+
             if (card.reps > 0) {
                 lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
                 repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
-                
-                total_lapses += card.lapses
-                total_repetitions += card.reps
                 
                 if (card.ivl > 0) {
                     lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + (1 / card.ivl)
