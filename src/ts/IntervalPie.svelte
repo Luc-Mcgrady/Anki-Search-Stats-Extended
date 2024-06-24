@@ -23,7 +23,9 @@
         }
     }
 
-    $: step = Math.floor(last / steps);
+    $: min = _.min(Object.keys(intervals).filter(k=>k!==undefined).map(parseInt)) ?? 1
+
+    $: step = Math.floor((last - min + 1) / steps);
     $: realLast = steps * step
 
     const gradient = new Rainbow()
@@ -37,8 +39,7 @@
     }
 
     let pie_data: PieDatum[]
-    $: { 
-        const min = _.min(Object.keys(intervals).filter(k=>k!==undefined).map(parseInt)) ?? 1
+    $: {
         pie_data = _.range(min,step*steps,step)
         .map((start,i)=>
             {
@@ -69,7 +70,7 @@
             .filter(([i, _])=>parseInt(i)>last)
             .reduce((n,[_, v])=>n+v, 0)
 
-        pie_data.push(PieDatumFactory(last, "Infinity", infinite_pie_slice, "grey"))
+        pie_data.push(PieDatumFactory(last+min, "Infinity", infinite_pie_slice, "grey"))
     }
 
     $: pie_values =  Object.values(pie_data).map(d=>d.value)
