@@ -17,7 +17,7 @@
         card_data,
         include_suspended,
     } from "./stores"
-    import CalculatedIntervals from "./CalculatedIntervals.svelte"
+    import CardDataPies from "./CardDataPies.svelte"
 
     patchFetch()
 
@@ -96,7 +96,7 @@
         </GraphContainer>
     {/if}
     {#if $card_data}
-        <CalculatedIntervals cardData={$card_data} />
+        <CardDataPies cardData={$card_data} />
     {/if}
 </div>
 
