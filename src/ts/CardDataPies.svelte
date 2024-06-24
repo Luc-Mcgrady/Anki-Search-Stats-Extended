@@ -185,4 +185,8 @@
         font-size: small;
         margin-top: 1em;
     }
+
+    h1 {
+        border-bottom: 1px var(--border) solid;
+    }
 </style>
