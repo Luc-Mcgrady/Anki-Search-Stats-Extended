@@ -21,6 +21,6 @@
     bind:steps
     intervals={burdens}
     totalDescriptor="Load"
-    legend_left="Interval Load"
+    legend_left="Interval load"
     legend_right="Load"
 ></IntervalPie>

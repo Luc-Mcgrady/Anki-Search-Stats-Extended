@@ -67,9 +67,9 @@
         bind:steps={lapse_steps}
         bind:last={lapse_last}
         totalDescriptor="Load"
-        countDescriptor="Highest Lapse Count"
+        countDescriptor="Highest Lapse count"
         legend_left="Lapse count"
-        legend_right="Card Load"
+        legend_right="Card load"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses_burden}
@@ -91,7 +91,7 @@
         bind:last={lapse_last}
         countDescriptor="Highest Lapse Count"
         legend_left="Lapse count"
-        legend_right="Card Count"
+        legend_right="Card count"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses}
@@ -126,7 +126,7 @@
     </IntervalPie>
     <p>
         This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3
-        lapses per card, the lapse count for 3 would be 6.
+        lapses per card, the lapse total for 3 would be 6.
     </p>
 </GraphContainer>
 <!-- Repetition  -->
@@ -138,7 +138,7 @@
         totalDescriptor="Load"
         countDescriptor="Most Repetitions"
         legend_left="Repetition count"
-        legend_right="Card Load"
+        legend_right="Card load"
         spectrumFrom={"#5ca7f7"}
         spectrumTo={"#0b4f99"}
         intervals={repetitions_burden}
@@ -176,7 +176,7 @@
     />
     <p>
         This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a
-        repetitions per card of 3, the repetition count for 3 would be 6.
+        repetitions per card of 3, the repetition total for 3 would be 6.
     </p>
 </GraphContainer>
 
