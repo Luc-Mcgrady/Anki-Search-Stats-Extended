@@ -94,6 +94,7 @@
 <label class="checkbox">
     Include suspended: <input type="checkbox" bind:checked={$include_suspended} />
 </label>
+<slot />
 <br />
 <Pie data={pie_data} {legend_title}></Pie>
 

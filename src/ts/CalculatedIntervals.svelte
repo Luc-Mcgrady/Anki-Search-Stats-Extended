@@ -61,13 +61,14 @@
         bind:steps={lapse_steps}
         bind:last={lapse_last}
         countDescriptor="Highest Lapse Count"
-        legend_title="Lapse count: Card count"
+        legend_title="Lapse count: Card Count"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses}
-    />
-    <br />
-    <ZeroInclusive />
+    >
+        <br />
+        <ZeroInclusive />
+    </IntervalPie>
     <br />
     <span>Total Lapses = {total_lapses.toLocaleString()}</span>
 </GraphContainer>
@@ -81,9 +82,10 @@
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses_burden}
-    />
-    <br />
-    <ZeroInclusive />
+    >
+        <br />
+        <ZeroInclusive />
+    </IntervalPie>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Distribution</h1>
