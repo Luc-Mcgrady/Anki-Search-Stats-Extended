@@ -1,4 +1,7 @@
 import Root from "./Root.svelte"
+import { patchFetch } from "./root"
+
+patchFetch()
 
 setTimeout(() => new Root({ target: document.body }), 100)
 

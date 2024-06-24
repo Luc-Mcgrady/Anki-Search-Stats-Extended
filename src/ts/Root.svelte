@@ -19,8 +19,6 @@
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
 
-    patchFetch()
-
     let interval_last = 21
     let interval_steps = 7
 
