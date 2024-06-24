@@ -6,6 +6,8 @@
 
     export let cardData: CardData[]
     
+    let total_lapses: number
+    let total_repetitions: number
     let lapses: number[]
     let repetitions: number[] 
     let lapses_burden: number[] 
@@ -14,6 +16,8 @@
     let zeroInclusive = false
 
     $: {
+        total_lapses = 0
+        total_repetitions = 0
         lapses = []
         repetitions = []
         lapses_burden = []
@@ -23,6 +27,10 @@
             if (card.reps > 0) {
                 lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
                 repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
+                
+                total_lapses += card.lapses
+                total_repetitions += card.reps
+                
                 if (card.ivl > 0) {
                     lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + (1 / card.ivl)
                     repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + (1 / card.ivl)
@@ -49,6 +57,8 @@
     <h1>Lapse Distribution</h1>
     <IntervalPie bind:steps={lapse_steps} bind:last={lapse_last} countDescriptor="Highest Lapse Count" legend_title="Lapse count: Card count" spectrumFrom={"#bd3f09"} spectrumTo={"#612207"} intervals={lapses}/>
     <br>
+    <span>Total Lapses = {total_lapses.toLocaleString()}</span>
+    <br>
     <label>
         <input type="checkbox" bind:checked={zeroInclusive}>
         Zero Inclusive?
@@ -66,6 +76,8 @@
 <GraphContainer>
     <h1>Repetition Distribution</h1>
     <IntervalPie bind:steps={repetitions_steps} bind:last={repetitions_last} countDescriptor="Most Repetitions" legend_title="Repetition count: Card count" spectrumFrom={"#5ca7f7"} spectrumTo={"#0b4f99"} intervals={repetitions}/>
+    <br>
+    <span>Total Repetitions = {total_repetitions.toLocaleString()}</span>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Load</h1>
