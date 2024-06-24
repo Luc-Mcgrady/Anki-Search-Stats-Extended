@@ -109,18 +109,21 @@
     </p>
 </GraphContainer>
 <GraphContainer>
-    <h1>Lapse Count</h1>
+    <h1>Lapse Total</h1>
     <IntervalPie
-        bind:steps={repetitions_steps}
-        bind:last={repetitions_last}
+        bind:steps={lapse_steps}
+        bind:last={lapse_last}
         totalDescriptor="Lapses"
         countDescriptor="Most Lapses"
-        legend_left="Lapses per card"
-        legend_right="Lapse count"
+        legend_left="Lapses count"
+        legend_right="Lapse total"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses.map((e, i) => e * i)}
-    />
+    >
+        <br />
+        <ZeroInclusive />
+    </IntervalPie>
     <p>
         This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3
         lapses per card, the lapse count for 3 would be 6.
@@ -165,8 +168,8 @@
         bind:last={repetitions_last}
         totalDescriptor="Repetitions"
         countDescriptor="Most Repetitions"
-        legend_left="Repetitions per card"
-        legend_right="Repetition count"
+        legend_left="Repetitions count"
+        legend_right="Repetition total"
         spectrumFrom={"#5ca7f7"}
         spectrumTo={"#0b4f99"}
         intervals={repetitions.map((e, i) => e * i)}
