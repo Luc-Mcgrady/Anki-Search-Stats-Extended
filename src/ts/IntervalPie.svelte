@@ -81,13 +81,16 @@
 
 
 <div>
-    <label for="interval_pie_last">{countDescriptor}</label>
-    <input type="number" id="interval_pie_last" bind:value={last}><br/>
-    <label for="interval_pie_step">Steps</label>
-    <input type="number" id="interval_pie_step" bind:value={steps}>
-    <br>
-    <label>Include suspended: <input type="checkbox" bind:checked={$include_suspended}></label>
+    <label>
+        {countDescriptor}
+        <input type="number" bind:value={last}>
+    </label>
+    <label>
+        Steps
+        <input type="number" bind:value={steps}>
+    </label>
 </div>
+<label class="checkbox">Include suspended: <input type="checkbox" bind:checked={$include_suspended}></label>
 <br>
 <Pie data={pie_data} {legend_title}></Pie>
 
@@ -108,6 +111,10 @@
     }
 
     label {
+        display: contents;
+    }
+
+    label.checkbox {
         user-select: none;
     }
 </style>
