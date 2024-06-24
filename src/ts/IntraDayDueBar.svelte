@@ -16,11 +16,11 @@
 
     async function fetchCards(parentSearch: string): Promise<BarDatum[]> {
         const due_today_learn = await search(
-            searchJoin(parentSearch, "prop:due=0 AND is:learn -is:review")
+            searchJoin(parentSearch, "prop:due=0 is:learn -is:review")
         )
         const cards_learn = await getCardData(due_today_learn)
         const due_today_relearn = await search(
-            searchJoin(parentSearch, "prop:due=0 AND is:learn is:review")
+            searchJoin(parentSearch, "prop:due=0 is:learn is:review")
         )
         const cards_relearn = await getCardData(due_today_relearn)
 

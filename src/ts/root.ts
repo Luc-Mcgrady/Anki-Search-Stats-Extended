@@ -29,7 +29,7 @@ function decodeRequest(req: string | Uint8Array) {
 }
 
 export function searchJoin(user: string | null, added: string) {
-    return user ? `(${user}) AND (${added})` : added
+    return user ? `(${user}) (${added})` : added
 }
 
 function bodySwap(req: string | Uint8Array, newSearch: string) {
@@ -57,7 +57,7 @@ export function patchFetch() {
 
             function fetchSwappedSearch(criteria: string) {
                 headers.body = bodySwap(origBody, criteria)
-                return fetchAndDecode(realFetch(req, headers)) // swapSearch(req, "$1 AND prop:ivl>=21")
+                return fetchAndDecode(realFetch(req, headers))
             }
 
             const search_request = decodeRequest(origBody)
@@ -65,7 +65,7 @@ export function patchFetch() {
             searchString.set(search_request?.search)
             search(search_request?.search).then(getCardData).then(card_data.set)
 
-            fetchAndDecode(realFetch(req, headers)).then(data.set) // I feel like theres a better way of doing this than tripping the amount of processing needed
+            fetchAndDecode(realFetch(req, headers)).then(data.set)
             fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)
             fetchSwappedSearch("is:learn").then(learn_data.set)
             fetchSwappedSearch("is:learn is:review").then(relearn_data.set)

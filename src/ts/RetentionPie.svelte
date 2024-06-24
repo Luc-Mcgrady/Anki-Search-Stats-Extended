@@ -6,9 +6,9 @@
 
     export let search: string
 
-    $: passed_search = searchJoin(search, "rated:1 -rated:1:1 AND is:review")
-    $: flunked_search = searchJoin(search, "rated:1 AND rated:1:1 AND is:review")
-    $: learning_search = searchJoin(search, "rated:1 AND -is:review AND is:learn")
+    $: passed_search = searchJoin(search, "rated:1 -rated:1:1 is:review")
+    $: flunked_search = searchJoin(search, "rated:1 rated:1:1 is:review")
+    $: learning_search = searchJoin(search, "rated:1 -is:review is:learn")
 
     let do_learning = true
     $: data_fetcher = dataGen(do_learning)
