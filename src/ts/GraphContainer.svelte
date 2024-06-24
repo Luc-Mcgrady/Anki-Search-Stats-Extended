@@ -3,7 +3,7 @@
 </dir>
 
 <style lang="scss">
-    @use "sass/elevation" as *;
+    @use "../../sass/elevation" as *;
     // Copied from anki/ts/graphs/Graph.svelte
     .graph {
         /* See graph-styles.ts for constants referencing global styles */
