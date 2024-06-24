@@ -25,7 +25,7 @@
     let interval_steps = 7
 
     $: intervals =
-        (include_suspended
+        ($include_suspended
             ? $data?.intervals!.intervals
             : $not_suspended_data?.intervals!.intervals) || {}
 </script>
