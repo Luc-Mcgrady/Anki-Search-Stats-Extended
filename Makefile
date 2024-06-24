@@ -8,6 +8,7 @@ $(OUT): $(INCLUDED)
 	mv $(OUT).zip $(OUT)
 
 stats.min.js: ${wildcard src/ts/*.ts} ${wildcard src/ts/*.svelte} esbuild.mjs src/ts/proto/ node_modules sass
+	npm run format
 	npm run build
 
 sass:
