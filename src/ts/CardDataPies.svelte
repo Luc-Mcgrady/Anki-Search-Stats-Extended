@@ -115,7 +115,7 @@
         bind:last={lapse_last}
         totalDescriptor="Lapses"
         countDescriptor="Most Lapses"
-        legend_left="Lapses count"
+        legend_left="Lapse count"
         legend_right="Lapse total"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}

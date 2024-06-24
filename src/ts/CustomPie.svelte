@@ -67,7 +67,7 @@
     }
 </script>
 
-<div>
+<div class="options">
     <label>
         Count:
         <input type="radio" bind:group={mode} on:change={refresh} value="Count" />
@@ -87,7 +87,7 @@
 </div>
 
 <Pie data={pie_data} legend_left="Search" legend_right={mode}></Pie>
-<div>
+<div class="searches">
     <span>Search</span>
     <span>Colour</span>
     {#each pie_data as pie_data}
@@ -104,9 +104,14 @@
 </div>
 
 <style>
-    div {
+    div.searches {
         display: grid;
         grid-template-columns: auto auto;
         gap: 1em;
+    }
+    div.options {
+        display: flex;
+        gap: 1em;
+        justify-content: center;
     }
 </style>

@@ -34,6 +34,7 @@
 
 <style>
     div.root {
+        margin: 1em;
         display: flex;
         align-items: center;
         justify-content: space-around;
