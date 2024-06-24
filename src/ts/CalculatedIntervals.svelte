@@ -10,6 +10,7 @@
 
     let total_lapses: number
     let total_repetitions: number
+    let total_under_repetitions: number
     let lapses: number[]
     let repetitions: number[]
     let lapses_burden: number[]
@@ -18,6 +19,7 @@
     $: {
         total_lapses = 0
         total_repetitions = 0
+        total_under_repetitions = 0
         lapses = []
         repetitions = []
         lapses_burden = []
@@ -27,6 +29,10 @@
             if ($include_suspended || card.queue !== -1) {
                 total_lapses += card.lapses
                 total_repetitions += card.reps
+
+                if (card.reps < repetitions_last) {
+                    total_under_repetitions += card.reps
+                }
 
                 if (card.reps > 0) {
                     lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
@@ -118,6 +124,11 @@
     />
     <br />
     <span>Total Repetitions = {total_repetitions.toLocaleString()}</span>
+    <br />
+    <span>
+        Total Repetitions {"<"}
+        {repetitions_last} = {total_under_repetitions.toLocaleString()}
+    </span>
     <p>A card gains a repetition whenever you review it.</p>
 </GraphContainer>
 <GraphContainer>
