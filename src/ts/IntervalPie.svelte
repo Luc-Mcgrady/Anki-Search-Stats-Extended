@@ -32,7 +32,7 @@
         ) ?? 1
 
     $: step = Math.floor((last - min + 1) / steps)
-    $: realLast = steps * step
+    $: realLast = steps * step + min - 1
 
     const gradient = new Rainbow()
 
@@ -46,7 +46,7 @@
 
     let pie_data: PieDatum[]
     $: {
-        pie_data = _.range(min, step * steps + min, step).map((start, i) => {
+        pie_data = _.range(min, realLast + 1, step).map((start, i) => {
             let end = start + step
             if (end > last && last != realLast) {
                 end = realLast
@@ -58,8 +58,8 @@
         })
 
         if (realLast < last) {
-            const filler_start = realLast + min
-            const filler_end = last + min - 1
+            const filler_start = realLast + 1
+            const filler_end = last
             const filler_pie_slice = Object.entries(intervals)
                 .filter(([i, _]) => parseInt(i) >= filler_start && parseInt(i) <= filler_end)
                 .reduce((n, [_, v]) => n + v, 0)
@@ -67,7 +67,9 @@
             pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, "gold"))
         }
 
-        const infinite_pie_start = last + min
+        console.log({ last, realLast })
+
+        const infinite_pie_start = last + 1
 
         const infinite_pie_slice = Object.entries(intervals)
             .filter(([i, _]) => parseInt(i) >= infinite_pie_start)

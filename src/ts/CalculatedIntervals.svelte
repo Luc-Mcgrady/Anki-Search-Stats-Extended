@@ -24,8 +24,6 @@
         lapses_burden = []
         repetitions_burden = []
 
-        console.log(cardData)
-
         for (const card of cardData) {
             if ($include_suspended || card.queue !== -1) {
                 total_lapses += card.lapses
