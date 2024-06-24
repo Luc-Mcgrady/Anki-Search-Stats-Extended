@@ -6,13 +6,11 @@
     import { searchJoin } from "./root"
 
     export let parentSearch: string
-    let rollover = 0
 
     let next_card_time: Date | null = null
     let next_card_time_until: string = ""
 
     const hour = 60 * 60
-    const day = hour * 24
 
     async function fetchCards(parentSearch: string): Promise<BarDatum[]> {
         const due_today_learn = await search(
