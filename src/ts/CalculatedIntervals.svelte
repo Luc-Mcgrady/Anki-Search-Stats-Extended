@@ -71,6 +71,14 @@
     </IntervalPie>
     <br />
     <span>Total Lapses = {total_lapses.toLocaleString()}</span>
+    <p>
+        A card increases its lapse count whenever it is reviewed "again" while not in the learning
+        state. Lapses are used to monitor which cards become "leeches". By default, whenever the
+        card reaches 7 lapses it becomes tagged as a leech. This value can be modified under <code>
+            leech threshold
+        </code>
+        in the deck settings.
+    </p>
 </GraphContainer>
 <GraphContainer>
     <h1>Lapse Load</h1>
@@ -86,6 +94,12 @@
         <br />
         <ZeroInclusive />
     </IntervalPie>
+    <p>
+        This graph shows the sum of <code>1 / interval</code>
+        for cards which have the given number of lapses. If you plan to suspend cards based on their
+        number of lapses, this can help you find a good threshold if you compare it with the count graph
+        to the left to see how many cards are giving you how much load
+    </p>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Distribution</h1>
@@ -100,6 +114,7 @@
     />
     <br />
     <span>Total Repetitions = {total_repetitions.toLocaleString()}</span>
+    <p>A card gains a repetition whenever you review it.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Load</h1>
@@ -112,4 +127,15 @@
         spectrumTo={"#0b4f99"}
         intervals={repetitions_burden}
     />
+    <p>
+        This graph shows <code>1 / interval</code>
+         for cards which have the given number of repetitions.
+    </p>
 </GraphContainer>
+
+<style>
+    p {
+        font-size: small;
+        margin-top: 1em;
+    }
+</style>
