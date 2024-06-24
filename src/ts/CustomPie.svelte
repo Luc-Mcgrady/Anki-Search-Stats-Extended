@@ -41,7 +41,7 @@
     }
 </script>
 
-<Pie data={pie_data}></Pie>
+<Pie data={pie_data} legend_left="Search" legend_right="Cards"></Pie>
 <div>
     <span>Search</span>
     <span>Colour</span>
