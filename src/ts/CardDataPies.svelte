@@ -62,32 +62,6 @@
 </script>
 
 <GraphContainer>
-    <h1>Lapse Distribution</h1>
-    <IntervalPie
-        bind:steps={lapse_steps}
-        bind:last={lapse_last}
-        countDescriptor="Highest Lapse Count"
-        legend_left="Lapse count"
-        legend_right="Card Count"
-        spectrumFrom={"#bd3f09"}
-        spectrumTo={"#612207"}
-        intervals={lapses}
-    >
-        <br />
-        <ZeroInclusive />
-    </IntervalPie>
-    <br />
-    <span>Total Lapses = {total_lapses.toLocaleString()}</span>
-    <p>
-        A card increases its lapse count whenever it is reviewed "again" while not in the learning
-        state. Lapses are used to monitor which cards become "leeches". By default, whenever the
-        card reaches 7 lapses it becomes tagged as a leech. This value can be modified under <code>
-            leech threshold
-        </code>
-        in the deck settings.
-    </p>
-</GraphContainer>
-<GraphContainer>
     <h1>Lapse Load</h1>
     <IntervalPie
         bind:steps={lapse_steps}
@@ -111,6 +85,30 @@
     </p>
 </GraphContainer>
 <GraphContainer>
+    <h1>Lapse Distribution</h1>
+    <IntervalPie
+        bind:steps={lapse_steps}
+        bind:last={lapse_last}
+        countDescriptor="Highest Lapse Count"
+        legend_left="Lapse count"
+        legend_right="Card Count"
+        spectrumFrom={"#bd3f09"}
+        spectrumTo={"#612207"}
+        intervals={lapses}
+    >
+        <br />
+        <ZeroInclusive />
+    </IntervalPie>
+    <p>
+        A card increases its lapse count whenever it is reviewed "again" while not in the learning
+        state. Lapses are used to monitor which cards become "leeches". By default, whenever the
+        card reaches 7 lapses it becomes tagged as a leech. This value can be modified under <code>
+            leech threshold
+        </code>
+        in the deck settings.
+    </p>
+</GraphContainer>
+<GraphContainer>
     <h1>Lapse Count</h1>
     <IntervalPie
         bind:steps={repetitions_steps}
@@ -130,19 +128,6 @@
 </GraphContainer>
 <!-- Repetition  -->
 <GraphContainer>
-    <h1>Repetition Distribution</h1>
-    <IntervalPie
-        bind:steps={repetitions_steps}
-        bind:last={repetitions_last}
-        countDescriptor="Most Repetitions"
-        legend_left="Repetition count"
-        legend_right="Card count"
-        spectrumFrom={"#5ca7f7"}
-        spectrumTo={"#0b4f99"}
-        intervals={repetitions}
-    />
-</GraphContainer>
-<GraphContainer>
     <h1>Repetition Load</h1>
     <IntervalPie
         bind:steps={repetitions_steps}
@@ -161,7 +146,20 @@
     </p>
 </GraphContainer>
 <GraphContainer>
-    <h1>Repetition Count</h1>
+    <h1>Repetition Distribution</h1>
+    <IntervalPie
+        bind:steps={repetitions_steps}
+        bind:last={repetitions_last}
+        countDescriptor="Most Repetitions"
+        legend_left="Repetition count"
+        legend_right="Card count"
+        spectrumFrom={"#5ca7f7"}
+        spectrumTo={"#0b4f99"}
+        intervals={repetitions}
+    />
+</GraphContainer>
+<GraphContainer>
+    <h1>Repetition Total</h1>
     <IntervalPie
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
