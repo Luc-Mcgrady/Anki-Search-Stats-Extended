@@ -7,7 +7,8 @@
     import { include_suspended } from "./stores"
 
     export let intervals: Record<number, number>
-    export let legend_title = "Intervals: Cards"
+    export let legend_left = "Intervals"
+    export let legend_right = "Cards"
     export let countDescriptor = "Last Day"
     export let totalDescriptor = "Cards"
 
@@ -97,7 +98,7 @@
 </label>
 <slot />
 <br />
-<Pie data={pie_data} {legend_title}></Pie>
+<Pie data={pie_data} {legend_left} {legend_right}></Pie>
 
 <span>
     {`Total ${totalDescriptor} < ${last} = ${_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}`}

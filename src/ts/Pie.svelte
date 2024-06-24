@@ -4,10 +4,11 @@
     import { renderPie, type PieDatum } from "./pie"
 
     export let data: PieDatum[]
-    export let legend_title = "Legend"
     let svg: SVGElement | null = null
 
     const bounds = defaultGraphBounds()
+    export let legend_left = ""
+    export let legend_right = ""
 
     $: renderPie(data, svg as any, bounds.height / 2)
 </script>
@@ -18,15 +19,16 @@
     </svg>
 
     <div style={`max-height:${bounds.height}px`} class="glossary">
-        <table>
-            <th>{legend_title}</th>
+        <div class="grid">
+            <span></span>
+            <span>{legend_left}:</span>
+            <span>{legend_right}</span>
             {#each data as datum}
-                <tr>
-                    <span style="color: {datum.colour};">■&nbsp;</span>
-                    {datum.label}: {_.round(datum.value, 2)}
-                </tr>
+                <span style:color={datum.colour}>■&nbsp;</span>
+                <span>{datum.label}:</span>
+                <span>{_.round(datum.value, 2)}</span>
             {/each}
-        </table>
+        </div>
     </div>
 </div>
 
@@ -35,6 +37,12 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
+    }
+
+    div.grid {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 0 1em;
     }
 
     div.glossary {

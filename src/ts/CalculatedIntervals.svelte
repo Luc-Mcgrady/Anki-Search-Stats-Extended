@@ -61,7 +61,8 @@
         bind:steps={lapse_steps}
         bind:last={lapse_last}
         countDescriptor="Highest Lapse Count"
-        legend_title="Lapse count: Card Count"
+        legend_left="Lapse count"
+        legend_right="Card Count"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses}
@@ -87,7 +88,8 @@
         bind:last={lapse_last}
         totalDescriptor="Load"
         countDescriptor="Highest Lapse Count"
-        legend_title="Lapse count: Card Load"
+        legend_left="Lapse count"
+        legend_right="Card Load"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses_burden}
@@ -108,7 +110,8 @@
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
         countDescriptor="Most Repetitions"
-        legend_title="Repetition count: Card count"
+        legend_left="Repetition count"
+        legend_right="Card count"
         spectrumFrom={"#5ca7f7"}
         spectrumTo={"#0b4f99"}
         intervals={repetitions}
@@ -124,7 +127,8 @@
         bind:last={repetitions_last}
         totalDescriptor="Load"
         countDescriptor="Most Repetitions"
-        legend_title="Repetition count: Card Load"
+        legend_left="Repetition count"
+        legend_right="Card Load"
         spectrumFrom={"#5ca7f7"}
         spectrumTo={"#0b4f99"}
         intervals={repetitions_burden}
