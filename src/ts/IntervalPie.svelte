@@ -40,7 +40,7 @@
 
     let pie_data: PieDatum[]
     $: {
-        pie_data = _.range(min,step*steps,step)
+        pie_data = _.range(min,(step*steps)+min,step)
         .map((start,i)=>
             {
                 let end = start + step
@@ -69,7 +69,7 @@
         const infinite_pie_start = last+min
 
         const infinite_pie_slice = Object.entries(intervals)
-            .filter(([i, _])=>parseInt(i)>infinite_pie_start)
+            .filter(([i, _])=>parseInt(i)>=infinite_pie_start)
             .reduce((n,[_, v])=>n+v, 0)
 
         pie_data.push(PieDatumFactory(infinite_pie_start, "Infinity", infinite_pie_slice, "grey"))
