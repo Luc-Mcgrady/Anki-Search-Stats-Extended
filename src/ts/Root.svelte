@@ -12,6 +12,9 @@
 
     patchFetch()
 
+    let interval_last = 21
+    let interval_steps = 7
+
     let use_suspended = false;
     $: intervals = (use_suspended ? $data?.intervals!.intervals : $not_suspended_data?.intervals!.intervals) || {}
 </script>
@@ -56,7 +59,7 @@
     {/if}
     <GraphContainer>
         <h1>Interval Distribution</h1>
-        <IntervalPie {intervals}/>
+        <IntervalPie {intervals} bind:last={interval_last} bind:steps={interval_steps}/>
         <p>
             Here you can more easily visualise the spread of your intervals
         </p>
@@ -64,7 +67,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>Load Distribution</h1>
-        <BurdenPie {intervals}/>
+        <BurdenPie {intervals} bind:last={interval_last} bind:steps={interval_steps}/>
         <p>
             Burden is 1/interval for each card and is used to estimate how many cards you see in a day<br>
             as an example if a card has an interval of 1 it has a burden of 1 because you see it every day.<br>

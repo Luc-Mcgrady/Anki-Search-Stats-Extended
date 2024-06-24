@@ -3,6 +3,9 @@
 
     export let intervals: Record<number, number>;
 
+    export let last: number = 21
+    export let steps: number = 7
+
     let burdens: Record<number, number>
     $: {
         burdens = {...intervals}
@@ -14,4 +17,4 @@
 
 </script>
 
-<IntervalPie intervals={burdens} legend_title={"Interval: Load"}></IntervalPie>
+<IntervalPie bind:last bind:steps intervals={burdens} legend_title={"Interval: Load"}></IntervalPie>

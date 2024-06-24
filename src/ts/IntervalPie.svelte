@@ -9,8 +9,8 @@
     export let legend_title = "Intervals: Cards"
     export let countDescriptor = "Last Day"
 
-    let steps = 7;
-    let last = 21;
+    export let steps = 7;
+    export let last = 21;
     
     $: {
         if (steps < 1) {
