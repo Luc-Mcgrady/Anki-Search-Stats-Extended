@@ -1,4 +1,4 @@
-INCLUDED = __init__.py stats.min.js stats.min.css developers.md
+INCLUDED = __init__.py stats.min.js stats.min.css developers.md manifest.json
 OUT = searchStatsExtended.ankiaddon
 
 COPIED = anki/graphs/Graph.sphelte
