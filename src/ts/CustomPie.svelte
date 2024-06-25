@@ -15,12 +15,21 @@
     reset()
 
     async function getQuery(query: string): Promise<number> {
-        const result = await doSearch(`(${query})`)
+        let cids: number[]
+        if (!query) {
+            query = "*"
+        }
+
+        try {
+            cids = await doSearch(query)
+        } catch {
+            return -1
+        }
 
         if (mode === "Count") {
-            return result.length
+            return cids.length
         }
-        const cards = await getCardData(result)
+        const cards = await getCardData(cids)
         switch (mode) {
             case $burdenOrLoad:
                 return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
