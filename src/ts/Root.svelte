@@ -83,13 +83,10 @@
             <h1>Load Distribution</h1>
             <BurdenPie {intervals} bind:last={interval_last} bind:steps={interval_steps} />
             <p>
-                Burden is 1/interval for each card and is used to estimate how many cards you see in
-                a day
-                <br />
-                as an example if a card has an interval of 1 it has a burden of 1 because you see it
-                every day.
-                <br />
-                If a card has an interval of 2 it has a burden of 0.5 et cetera.
+                Load (sometimes referred to as burden) is 1/interval for each card and is used to
+                estimate how many cards you see in a day. As an example if a card has an interval of
+                1 it has a Load of 1 because you see it every day. If a card has an interval of 2 it
+                has a Load of 0.5 et cetera.
             </p>
         </GraphContainer>
     {/if}

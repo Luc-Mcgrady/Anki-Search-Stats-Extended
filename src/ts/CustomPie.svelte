@@ -21,14 +21,14 @@
         }
         const cards = await getCardData(result)
         switch (mode) {
-            case "Burden":
+            case "Load":
                 return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
             case "Lapses":
                 return cards.reduce((p, n) => (p += n.lapses), 0)
             case "Repetitions":
                 return cards.reduce((p, n) => (p += n.reps), 0)
             default:
-                mode = "How the fuck?"
+                mode = "Invalid Mode"
                 return 0
         }
     }
@@ -73,8 +73,8 @@
         Count
     </label>
     <label>
-        <input type="radio" bind:group={mode} on:change={refresh} value="Burden" />
-        Burden
+        <input type="radio" bind:group={mode} on:change={refresh} value="Load" />
+        Load
     </label>
     <label>
         <input type="radio" bind:group={mode} on:change={refresh} value="Lapses" />
