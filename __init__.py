@@ -3,6 +3,7 @@ from anki.hooks import wrap
 
 from aqt.stats import NewDeckStats
 import os.path
+from aqt import mw
 
 addon_dir = os.path.dirname(__file__)
 
@@ -12,8 +13,12 @@ def new_refresh(self: NewDeckStats):
     with open(f"{addon_dir}/stats.min.css") as f:
         innerCss = f.read()
 
-    setCss = f"const css = `{innerCss}`;"
-    self.form.web.eval(setCss + innerJs)
+    config = mw.addonManager.getConfig(__name__)
+    setVars = (
+        f"const css = `{innerCss}`;" 
+        f"const SSEconfig = {json.dumps(config)};"
+    )
+    self.form.web.eval(setVars + innerJs)
 
 NewDeckStats.refresh = wrap(NewDeckStats.refresh, new_refresh, "after")
 
@@ -23,7 +28,7 @@ import json
 
 from aqt.mediasrv import post_handlers
 import aqt.mediasrv
-from aqt import mw
+
 
 # Im not smart enough to understand why this function exists but I do know it existing breaks my addon.
 aqt.mediasrv._check_dynamic_request_permissions = lambda: None 
