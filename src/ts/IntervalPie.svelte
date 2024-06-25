@@ -68,9 +68,6 @@
 
             pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, "gold"))
         }
-
-        console.log({ last, realLast })
-
         const infinite_pie_start = last + 1
 
         const infinite_pie_slice = Object.entries(intervals)
