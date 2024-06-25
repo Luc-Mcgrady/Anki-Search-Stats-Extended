@@ -34,9 +34,11 @@
 
 <style>
     div.root {
-        margin: 1em;
-        display: flex;
-        align-items: center;
+        margin: 1em 0;
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-items: center;
+        gap: 1em;
         justify-content: space-around;
     }
 
