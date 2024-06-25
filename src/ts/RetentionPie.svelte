@@ -47,7 +47,7 @@
 {#await data_fetcher}
     Loading...
 {:then data}
-    <Pie {data}></Pie>
+    <Pie legend_left="State" legend_right="Amount" {data}></Pie>
     <br />
     <p>
         <!-- Doing it with fixed indexes this way is kinda risky but it works-->
