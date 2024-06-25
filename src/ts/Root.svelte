@@ -71,7 +71,10 @@
                 <h1>Custom pie</h1>
                 <CustomPie search={$searchString} />
                 <p>
-                    This pie will show you the number of cards which match <code>Search</code>
+                    This pie will show you the sum of the requested value for cards which match <code
+                    >
+                        Search
+                    </code>
                     for each search
                 </p>
             </GraphContainer>
