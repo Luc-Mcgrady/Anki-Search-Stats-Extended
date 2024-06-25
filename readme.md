@@ -4,8 +4,8 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ## Config
      
-- loadDelayMs: The number of ms to delay before adding the search stats, Increasing this can help if the search stats appear above the regular stats (Though even with 0 this doesnt tend to happen)
-- burdenNotLoad: If true, replaces the word "Load" with "Burden" in many places to be consistant with supermemo https://supermemo.guru/wiki/Burden
+- loadDelayMs: The number of ms to delay before displaying the search stats, Increasing this can help if the search stats appear above the regular stats (Though even with 0ms this doesn't tend to happen)
+- burdenNotLoad: If true, replaces the word "Load" with "Burden" in many places to be consistent with SuperMemo https://supermemo.guru/wiki/Burden
 
 ## The Graphs
 
