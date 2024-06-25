@@ -2,6 +2,11 @@
 
 Like the new anki stats screen? Want more? This is the addon for you.
 
+## Config
+     
+- loadDelayMs: The number of ms to delay before adding the search stats, Increasing this can help if the search stats appear above the regular stats (Though even with 0 this doesnt tend to happen)
+- burdenNotLoad: If true, replaces the word "Load" with "Burden" in many places to be consistant with supermemo https://supermemo.guru/wiki/Burden
+
 ## The Graphs
 
 ### Future due types
@@ -18,11 +23,19 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ### Custom Pie
 
-![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/65c1e76b-89f0-4125-b6b3-4b5f4051592c)
+![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/26d552b5-9707-4cc1-a4f0-c5c1fb1d3a14)
 
-### Interval/Load distribution
+### Interval Distribution/Load
 
-![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/ffe3cb58-ef01-4961-bca7-18c81b03f77d)
+![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/dfe42518-5d5a-4d3e-92e9-8552ac753d64)
+
+### Lapse Load/Distribution/Total
+
+![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/8235d024-0bca-4856-bd6f-099e88da8c43)
+
+### Repetition Load/Distribution/Total
+
+![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/db56bfec-6fe1-47d0-987c-c0c79f5bf876)
 
 ## Development
 
