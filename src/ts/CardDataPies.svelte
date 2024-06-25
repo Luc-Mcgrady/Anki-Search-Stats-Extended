@@ -144,8 +144,8 @@
         intervals={repetitions_burden}
     />
     <p>
-        This graph shows <code>1 / interval</code>
-        for cards which have the given number of repetitions.
+        This graph shows the sum of <code>1 / interval</code>
+        for all cards which have the given number of repetitions.
     </p>
 </GraphContainer>
 <GraphContainer>
@@ -160,6 +160,7 @@
         spectrumTo={"#0b4f99"}
         intervals={repetitions}
     />
+    <p>A card gains a repetition (commonly called a review) whenever you review it.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Total</h1>

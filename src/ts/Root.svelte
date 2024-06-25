@@ -19,6 +19,7 @@
         burdenOrLoad,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
+    import _ from "lodash"
 
     let interval_last = 21
     let interval_steps = 7
@@ -81,7 +82,7 @@
             <p>Here you can more easily visualise the spread of your intervals</p>
         </GraphContainer>
         <GraphContainer>
-            <h1>{$burdenOrLoad} Distribution</h1>
+            <h1>Interval {$burdenOrLoad}</h1>
             <BurdenPie {intervals} bind:last={interval_last} bind:steps={interval_steps} />
             <p>
                 {#if $burdenOrLoad == "Burden"}
@@ -90,8 +91,9 @@
                     Load (sometimes referred to as burden)
                 {/if}
                 is 1/interval for each card and is used to estimate how many cards you see in a day.
-                As an example if a card has an interval of 1 it has a {$burdenOrLoad} of 1 because you
-                see it every day. If a card has an interval of 2 it has a {$burdenOrLoad} of 0.5 et cetera.
+                As an example if a card has an interval of 1 it has a {$burdenOrLoad.toLowerCase()} of
+                1 because you see it every day. If a card has an interval of 2 it has a {$burdenOrLoad.toLowerCase()}
+                of 0.5 et cetera.
             </p>
         </GraphContainer>
     {/if}
