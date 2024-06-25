@@ -1,5 +1,6 @@
 <script lang="ts">
     import IntervalPie from "./IntervalPie.svelte"
+    import { burdenOrLoad } from "./stores"
 
     export let intervals: Record<number, number>
 
@@ -20,7 +21,7 @@
     bind:last
     bind:steps
     intervals={burdens}
-    totalDescriptor="Load"
-    legend_left="Interval load"
-    legend_right="Load"
+    totalDescriptor={$burdenOrLoad}
+    legend_left="Intervals"
+    legend_right={$burdenOrLoad}
 ></IntervalPie>

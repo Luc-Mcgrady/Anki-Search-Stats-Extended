@@ -3,7 +3,7 @@
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalPie from "./IntervalPie.svelte"
-    import { include_suspended, zero_inclusive } from "./stores"
+    import { burdenOrLoad, include_suspended, zero_inclusive } from "./stores"
     import ZeroInclusive from "./ZeroInclusive.svelte"
 
     export let cardData: CardData[]
@@ -62,14 +62,14 @@
 </script>
 
 <GraphContainer>
-    <h1>Lapse Load</h1>
+    <h1>Lapse {$burdenOrLoad}</h1>
     <IntervalPie
         bind:steps={lapse_steps}
         bind:last={lapse_last}
-        totalDescriptor="Load"
+        totalDescriptor={$burdenOrLoad}
         countDescriptor="Highest Lapse count"
         legend_left="Lapse count"
-        legend_right="Card load"
+        legend_right="Card {$burdenOrLoad}"
         spectrumFrom={"#bd3f09"}
         spectrumTo={"#612207"}
         intervals={lapses_burden}
@@ -81,7 +81,7 @@
         This graph shows the sum of <code>1 / interval</code>
         for cards which have the given number of lapses. If you plan to suspend cards based on their
         number of lapses, this can help you find a good threshold if you compare it with the count graph
-        to the left to see how many cards are giving you how much load
+        to the left to see how many cards are giving you how much {$burdenOrLoad}
     </p>
 </GraphContainer>
 <GraphContainer>
@@ -131,14 +131,14 @@
 </GraphContainer>
 <!-- Repetition  -->
 <GraphContainer>
-    <h1>Repetition Load</h1>
+    <h1>Repetition {$burdenOrLoad}</h1>
     <IntervalPie
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
-        totalDescriptor="Load"
+        totalDescriptor={$burdenOrLoad}
         countDescriptor="Most Repetitions"
         legend_left="Repetition count"
-        legend_right="Card load"
+        legend_right="Card {$burdenOrLoad}"
         spectrumFrom={"#5ca7f7"}
         spectrumTo={"#0b4f99"}
         intervals={repetitions_burden}

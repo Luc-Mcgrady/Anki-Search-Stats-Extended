@@ -2,6 +2,7 @@
     import Pie from "./Pie.svelte"
     import type { PieDatum } from "./pie"
     import { search as doSearch, getCardData } from "./search"
+    import { burdenOrLoad } from "./stores"
 
     export let search: string
     export let mode = "Count"
@@ -21,7 +22,7 @@
         }
         const cards = await getCardData(result)
         switch (mode) {
-            case "Load":
+            case $burdenOrLoad:
                 return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
             case "Lapses":
                 return cards.reduce((p, n) => (p += n.lapses), 0)
@@ -73,7 +74,7 @@
         Count
     </label>
     <label>
-        <input type="radio" bind:group={mode} on:change={refresh} value="Load" />
+        <input type="radio" bind:group={mode} on:change={refresh} value={$burdenOrLoad} />
         Load
     </label>
     <label>

@@ -13,3 +13,5 @@ export let card_data: Writable<null | CardData[]> = writable(null)
 
 export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
+
+export let burdenOrLoad = writable("Load")
