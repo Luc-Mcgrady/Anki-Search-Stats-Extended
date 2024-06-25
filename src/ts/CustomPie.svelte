@@ -84,7 +84,7 @@
     </label>
     <label>
         <input type="radio" bind:group={mode} on:change={refresh} value={$burdenOrLoad} />
-        Load
+        {$burdenOrLoad}
     </label>
     <label>
         <input type="radio" bind:group={mode} on:change={refresh} value="Lapses" />
