@@ -107,7 +107,7 @@
             placeholder="Search string"
             on:change={() => onChange(pie_data)}
         />
-        <input type="text" bind:value={pie_data.colour} placeholder="Search string" />
+        <input type="text" bind:value={pie_data.colour} placeholder="CSS Colour" />
     {/each}
     <input type="button" on:click={newSearch} value="New search" />
     <input type="button" on:click={reset} value="Reset" />
