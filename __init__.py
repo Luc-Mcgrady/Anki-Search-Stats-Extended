@@ -49,6 +49,16 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
+REVLOG_COLUMNS = ["id", "cid", "usn", "ease", "ivl", "factor", "time", "type"]
+
+def revlogs() -> bytes:
+    cards = request.data.strip(b"[]").decode()
+    revlogs = mw.col.db.all(f"SELECT * FROM revlog WHERE cid IN ({cards})")
+    revlogs = [{k: v for k, v in zip(CARD_COLUMNS, a)} for a in revlogs]
+    return Response(json.dumps(revlogs))
+
+post_handlers["revlogs"] = revlogs
+
 def scheduler_config() -> bytes:
     return Response(json.dumps({
         "rollover": mw.col.get_preferences().scheduling.rollover,

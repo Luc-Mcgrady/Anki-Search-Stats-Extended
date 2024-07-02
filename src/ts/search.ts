@@ -31,8 +31,23 @@ export interface CardData {
     data: string
 }
 
+export interface Revlog {
+    id: number
+    cid: number
+    usn: number
+    ease: 0 | 1 | 2 | 3 | 4
+    ivl: number
+    factor: number
+    time: number
+    type: number
+}
+
 export async function getCardData(cids: number[]) {
     return (await endpoint("cardData", JSON.stringify(cids))) as CardData[]
+}
+
+export async function getRevlogs(cids: number[]) {
+    return (await endpoint("revlogs", JSON.stringify(cids))) as Revlog[]
 }
 
 interface SchedulerConfig {
