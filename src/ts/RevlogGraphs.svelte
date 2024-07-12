@@ -28,12 +28,28 @@
     <h1>Time Distribution</h1>
     <IntervalPie
         intervals={revlog_times}
+        countDescriptor={"Most Seconds"}
         spectrumFrom={"#fcba03"}
         spectrumTo={"#543e00"}
         last={59}
         steps={10}
         fillerColour={"blue"}
         legend_left={"Time (s)"}
+    ></IntervalPie>
+</GraphContainer>
+<GraphContainer>
+    <h1>Time Totals</h1>
+    <IntervalPie
+        intervals={revlog_times.map((i, a) => i * a)}
+        countDescriptor={"Most Seconds"}
+        spectrumFrom={"#fcba03"}
+        spectrumTo={"#543e00"}
+        last={59}
+        steps={10}
+        fillerColour={"blue"}
+        legend_left={"Per card (s)"}
+        legend_right={"Total (s)"}
+        totalDescriptor={"Seconds"}
     ></IntervalPie>
 </GraphContainer>
 
