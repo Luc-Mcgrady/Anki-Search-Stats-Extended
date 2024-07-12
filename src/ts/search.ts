@@ -37,6 +37,7 @@ export interface Revlog {
     usn: number
     ease: 0 | 1 | 2 | 3 | 4
     ivl: number
+    lastIvl: number
     factor: number
     time: number
     type: number

@@ -49,7 +49,7 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
-REVLOG_COLUMNS = ["id", "cid", "usn", "ease", "ivl", "factor", "time", "type"]
+REVLOG_COLUMNS = ["id", "cid", "usn", "ease", "ivl", "", "factor", "time", "type"]
 
 def revlogs() -> bytes:
     cards = request.data.strip(b"[]").decode()
