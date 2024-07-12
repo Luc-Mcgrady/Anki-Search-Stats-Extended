@@ -28,7 +28,9 @@
         spectrumFrom={"#fcba03"}
         spectrumTo={"#543e00"}
         totalDescriptor={""}
-        last={60}
+        last={59}
+        steps={10}
+        fillerColour={"blue"}
         legend_left={"Time (s)"}
     ></IntervalPie>
 </GraphContainer>

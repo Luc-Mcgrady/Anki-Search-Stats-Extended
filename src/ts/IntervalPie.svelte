@@ -40,6 +40,7 @@
 
     export let spectrumFrom = "#74C476"
     export let spectrumTo = "#014720"
+    export let fillerColour = "gold"
 
     $: {
         gradient.setNumberRange(0, steps + 1)
@@ -66,7 +67,7 @@
                 .filter(([i, _]) => parseInt(i) >= filler_start && parseInt(i) <= filler_end)
                 .reduce((n, [_, v]) => n + v, 0)
 
-            pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, "gold"))
+            pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, fillerColour))
         }
         const infinite_pie_start = last + 1
 
