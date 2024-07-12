@@ -6,6 +6,8 @@
     import IntervalPie from "./IntervalPie.svelte"
     import type { Revlog } from "./search"
     import { burdenOrLoad } from "./stores"
+    import { plotCandlestick, type CandlestickDatum } from "./Candlestick"
+    import Candlestick from "./Candlestick.svelte"
 
     export let revlog_data: Revlog[]
     let card_times: Record<number, number>
@@ -15,7 +17,7 @@
     let revlog_times: number[]
     let speed_trend_bar: BarChart
     let burden_change: number[]
-    let burden_trend_bar: BarChart
+    let burden_change_candlestick: CandlestickDatum[]
 
     const day_ms = 1000 * 60 * 60 * 24
 
@@ -62,14 +64,10 @@
                 })),
         }
 
-        burden_trend_bar = {
-            row_colours: ["darkgreen"],
-            row_labels: ["Burden"],
-            data: burden_change.map((data, i) => ({
-                label: (i - offset).toString(),
-                values: [data],
-            })),
-        }
+        burden_change_candlestick = burden_change.map((delta, i) => ({
+            label: (i - offset).toString(),
+            delta,
+        }))
 
         console.log({
             review_day_times,
@@ -115,7 +113,7 @@
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
-    <Bar data={burden_trend_bar}></Bar>
+    <Candlestick data={burden_change_candlestick}></Candlestick>
 </GraphContainer>
 
 <style>
