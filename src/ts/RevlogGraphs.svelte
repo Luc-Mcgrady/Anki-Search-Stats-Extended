@@ -14,12 +14,32 @@
     }
 
     for (const card_time of Object.values(card_times)) {
-        revlog_times[card_time] = (revlog_times[card_time] ?? 0) + 1
+        const key = Math.floor(card_time / 1000)
+        revlog_times[key] = (revlog_times[key] ?? 0) + 1
     }
 
     console.log({ revlog_data, card_times, revlog_times })
 </script>
 
 <GraphContainer>
-    <IntervalPie intervals={revlog_times}></IntervalPie>
+    <h1>Time Distribution</h1>
+    <IntervalPie
+        intervals={revlog_times}
+        spectrumFrom={"#fcba03"}
+        spectrumTo={"#543e00"}
+        totalDescriptor={""}
+        last={60}
+        legend_left={"Time (s)"}
+    ></IntervalPie>
 </GraphContainer>
+
+<style>
+    p {
+        font-size: small;
+        margin-top: 1em;
+    }
+
+    h1 {
+        border-bottom: 1px var(--border) solid;
+    }
+</style>
