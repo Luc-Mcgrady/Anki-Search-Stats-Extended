@@ -65,7 +65,9 @@ export function patchFetch() {
 
             searchString.set(search_request?.search)
             search(search_request?.search).then(getCardData).then(card_data.set)
-            search(search_request?.search).then(getRevlogs).then(revlogs.set)
+            search(searchJoin(search_request?.search, "prop:ivl>1"))
+                .then(getRevlogs)
+                .then(revlogs.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set)
             fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)
