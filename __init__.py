@@ -54,7 +54,7 @@ REVLOG_COLUMNS = ["id", "cid", "usn", "ease", "ivl", "factor", "time", "type"]
 def revlogs() -> bytes:
     cards = request.data.strip(b"[]").decode()
     revlogs = mw.col.db.all(f"SELECT * FROM revlog WHERE cid IN ({cards})")
-    revlogs = [{k: v for k, v in zip(CARD_COLUMNS, a)} for a in revlogs]
+    revlogs = [{k: v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
     return Response(json.dumps(revlogs))
 
 post_handlers["revlogs"] = revlogs
