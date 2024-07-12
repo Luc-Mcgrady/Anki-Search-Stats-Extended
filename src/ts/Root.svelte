@@ -17,9 +17,11 @@
         card_data,
         include_suspended,
         burdenOrLoad,
+        revlogs,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
+    import RevlogGraphs from "./RevlogGraphs.svelte"
 
     let interval_last = 21
     let interval_steps = 7
@@ -102,6 +104,9 @@
     {/if}
     {#if $card_data}
         <CardDataPies cardData={$card_data} />
+    {/if}
+    {#if $revlogs}
+        <RevlogGraphs revlog_data={$revlogs} />
     {/if}
 </div>
 

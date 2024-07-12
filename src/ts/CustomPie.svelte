@@ -1,7 +1,7 @@
 <script lang="ts">
     import Pie from "./Pie.svelte"
     import type { PieDatum } from "./pie"
-    import { search as doSearch, getCardData, getRevlogs } from "./search"
+    import { search as doSearch, getCardData } from "./search"
     import { burdenOrLoad } from "./stores"
 
     export let search: string
@@ -25,8 +25,6 @@
         } catch {
             return -1
         }
-
-        console.log(await getRevlogs(cids))
 
         if (mode === "Count") {
             return cids.length

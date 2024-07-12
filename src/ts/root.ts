@@ -1,5 +1,5 @@
 import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-import { getCardData, search } from "./search"
+import { getCardData, getRevlogs, search } from "./search"
 import {
     card_data,
     data,
@@ -7,6 +7,7 @@ import {
     mature_data,
     not_suspended_data,
     relearn_data,
+    revlogs,
     searchString,
 } from "./stores"
 
@@ -64,6 +65,7 @@ export function patchFetch() {
 
             searchString.set(search_request?.search)
             search(search_request?.search).then(getCardData).then(card_data.set)
+            search(search_request?.search).then(getRevlogs).then(revlogs.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set)
             fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)
