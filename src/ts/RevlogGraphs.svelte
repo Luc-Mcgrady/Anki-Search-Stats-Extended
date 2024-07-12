@@ -38,21 +38,23 @@
         review_day_times = review_day_times.splice(today - offset, today)
         review_day_count = review_day_count.splice(today - offset, today)
 
-        console.log({ review_day_times, review_day_count })
-
         for (const card_time of Object.values(card_times)) {
             const key = Math.floor(card_time / 1000)
             revlog_times[key] = (revlog_times[key] ?? 0) + 1
         }
 
         speed_trend_bar = {
-            row_colours: ["yellow"],
-            row_labels: ["speed per card"],
-            data: review_day_count.map((data, label) => ({
-                label: (label - offset).toString(),
-                values: [data],
-            })),
+            row_colours: ["#fcba03"],
+            row_labels: ["Speed Per Review (s)"],
+            data: review_day_count
+                .filter((data) => !!data)
+                .map((data, i) => ({
+                    label: (i - offset).toString(),
+                    values: [(review_day_times[i] ?? 0) / (data * 1000)],
+                })),
         }
+
+        console.log({ review_day_times, review_day_count, speed_trend_bar, revlog_data })
     }
 </script>
 
@@ -85,7 +87,7 @@
     ></IntervalPie>
 </GraphContainer>
 <GraphContainer>
-    <h1>Review speed trend</h1>
+    <h1>Review Speed Trend</h1>
     <Bar data={speed_trend_bar}></Bar>
 </GraphContainer>
 
