@@ -1,7 +1,6 @@
 import _ from "lodash"
-import { type Writable } from "svelte/store"
 import { createAxis } from "./bar"
-import { tooltip } from "./stores"
+import { tooltip, tooltipX } from "./stores"
 
 export type CandlestickDatum = {
     delta: number
@@ -20,11 +19,7 @@ export type CandlestickGraph = {
     data: CandlestickDatum[]
 }
 
-export function plotCandlestick(
-    graph: CandlestickGraph,
-    svg: SVGElement,
-    hoverData: Writable<string>
-) {
+export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
     let total = graph.start
 
     console.log(graph)
@@ -76,7 +71,7 @@ export function plotCandlestick(
                     `Change: ${delta.toFixed(2)}`,
                     `Final: ${final.toFixed(2)}`,
                 ],
-                x: e.pageX,
+                x: tooltipX(e),
                 y: e.pageY,
             })
         })

@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import { defaultGraphBounds } from "./graph"
-import { tooltip } from "./stores"
+import { tooltip, tooltipX } from "./stores"
 
 export type BarDatum = {
     values: number[]
@@ -72,7 +72,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                 text: d.data.values.map(
                     (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`
                 ),
-                x: e.pageX,
+                x: tooltipX(e),
                 y: e.pageY,
             })
         })

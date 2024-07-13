@@ -24,3 +24,7 @@ export type Tooltip = {
     y?: number
     text?: string[]
 }
+
+export function tooltipX(e: MouseEvent) {
+    return e.pageX - (e.pageX / document.body.scrollWidth) * 200
+}
