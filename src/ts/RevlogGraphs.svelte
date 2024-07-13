@@ -6,7 +6,7 @@
     import IntervalPie from "./IntervalPie.svelte"
     import type { Revlog } from "./search"
     import { burdenOrLoad } from "./stores"
-    import { type CandlestickDatum } from "./Candlestick"
+    import { type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
 
@@ -23,7 +23,7 @@
     let introduced: Set<number>
     let reintroduced: Set<number>
     let introduced_bar: BarChart
-    let burden_change_candlestick: CandlestickDatum[]
+    let burden_change_candlestick: CandlestickGraph
 
     const day_ms = 1000 * 60 * 60 * 24
 
@@ -91,11 +91,15 @@
 
         const today = Date.now() / day_ms
         const offset = 30
+        const start = today - offset
 
-        review_day_times = review_day_times.splice(today - offset, today)
-        review_day_count = review_day_count.splice(today - offset, today)
-        reintroduced_day_count = reintroduced_day_count.splice(today - offset, today)
-        introduced_day_count = introduced_day_count.splice(today - offset, today)
+        review_day_times = review_day_times.splice(start, today)
+        review_day_count = review_day_count.splice(start, today)
+        reintroduced_day_count = reintroduced_day_count.splice(start, today)
+        introduced_day_count = introduced_day_count.splice(start, today)
+
+        let burden_start = _.sum(burden_change.slice(0, start))
+        burden_change = burden_change.slice(start, today)
 
         console.log({
             introduced_day_total_count,
@@ -133,10 +137,13 @@
                 .map((d, i) => d ?? { values: [0, 0], label: (i - offset).toString() }),
         }
 
-        burden_change_candlestick = burden_change.map((delta, i) => ({
-            label: (i - offset).toString(),
-            delta,
-        }))
+        burden_change_candlestick = {
+            start: burden_start,
+            data: burden_change.map((delta, i) => ({
+                label: (i - offset).toString(),
+                delta,
+            })),
+        }
 
         console.log({
             review_day_times,
@@ -184,12 +191,11 @@
     <h1>Introduced</h1>
     <Bar data={introduced_bar}></Bar>
 </GraphContainer>
-
-<!--<GraphContainer>
+<GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
     <Candlestick data={burden_change_candlestick}></Candlestick>
 </GraphContainer>
--->
+
 <style>
     p {
         font-size: small;

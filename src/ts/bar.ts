@@ -26,7 +26,7 @@ export function createAxis(svg: SVGElement, labels: string[], max: number, min: 
 
     const x = d3.scaleBand().domain(labels).range([0, bounds.width]).padding(0.2)
 
-    const y = d3.scaleLinear().domain([max, min]).range([min, bounds.height])
+    const y = d3.scaleLinear().domain([max, min]).range([0, bounds.height])
 
     axis.append("g").call(d3.axisLeft(y))
 
