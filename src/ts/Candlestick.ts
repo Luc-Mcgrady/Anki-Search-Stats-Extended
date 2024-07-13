@@ -1,6 +1,7 @@
 import _ from "lodash"
 import { createAxis } from "./bar"
-import { tooltip, tooltipX } from "./stores"
+import { tooltip } from "./stores"
+import { tooltipDate, tooltipX } from "./tooltip"
 
 export type CandlestickDatum = {
     delta: number
@@ -62,7 +63,7 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
         .on("mouseover", (e, d) => {
             const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
             const final = d.positive ? d.end : d.begin
-            const date = new Date(Date.now() + 24 * 60 * 60 * 1000 * parseInt(d.label))
+            const date = tooltipDate(d.label)
 
             tooltip.set({
                 shown: true,

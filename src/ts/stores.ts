@@ -1,6 +1,7 @@
 import { writable, type Writable } from "svelte/store"
 import type { GraphsResponse } from "./proto/anki/stats_pb"
 import type { CardData, Revlog } from "./search"
+import type { Tooltip } from "./tooltip"
 
 export let data: Writable<null | GraphsResponse> = writable(null)
 export let not_suspended_data: Writable<null | GraphsResponse> = writable(null)
@@ -17,14 +18,3 @@ export let zero_inclusive = writable(false)
 
 export let burdenOrLoad = writable("Load")
 export let tooltip: Writable<Tooltip> = writable({ shown: false })
-
-export type Tooltip = {
-    shown: boolean
-    x?: number
-    y?: number
-    text?: string[]
-}
-
-export function tooltipX(e: MouseEvent) {
-    return e.pageX - (e.pageX / document.body.scrollWidth) * 200
-}
