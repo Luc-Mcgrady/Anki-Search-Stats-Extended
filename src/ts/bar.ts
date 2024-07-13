@@ -26,15 +26,13 @@ export function createAxis(svg: SVGElement, labels: string[], max: number, min: 
         .attr("viewBox", `-40 -10 ${bounds.width + 50} ${bounds.height + 50}`)
         .append("g")
 
-    const x = d3.scaleBand().domain(labels).range([0, bounds.width]).padding(0.2)
+    const x = d3.scaleBand().domain(labels).range([0, bounds.width]).padding(0.1)
 
     const y = d3.scaleLinear().domain([max, min]).range([0, bounds.height])
 
     axis.append("g").call(d3.axisLeft(y))
 
-    axis.append("g")
-        .attr("transform", `translate(0, ${bounds.height})`)
-        .call(d3.axisBottom(x).tickSizeOuter(0))
+    axis.append("g").attr("transform", `translate(0, ${bounds.height})`).call(d3.axisBottom(x))
 
     return { x, y, axis }
 }
