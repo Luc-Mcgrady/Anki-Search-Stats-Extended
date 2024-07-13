@@ -18,6 +18,7 @@
         include_suspended,
         burdenOrLoad,
         revlogs,
+        tooltip,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
@@ -108,12 +109,36 @@
     {#if $revlogs}
         <RevlogGraphs revlog_data={$revlogs} />
     {/if}
+
+    <div
+        class="tooltip"
+        style:opacity={$tooltip.shown ? 1 : 0}
+        style:left={`${$tooltip.x}px`}
+        style:top={`${$tooltip.y}px`}
+    >
+        {#each $tooltip?.text ?? [] as text}
+            <span>{text}</span>
+            <br />
+        {/each}
+    </div>
 </div>
 
 <style lang="scss">
     p {
         font-size: small;
         margin-top: 1em;
+    }
+    div.tooltip {
+        position: absolute;
+        opacity: 0;
+        white-space: nowrap;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 15px;
+        pointer-events: none;
+        transition: opacity var(--transition);
+        color: var(--fg);
+        background: var(--canvas-overlay);
     }
 
     h1 {

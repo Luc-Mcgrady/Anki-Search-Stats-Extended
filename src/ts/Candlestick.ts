@@ -1,5 +1,7 @@
 import _ from "lodash"
+import { type Writable } from "svelte/store"
 import { createAxis } from "./bar"
+import { tooltip } from "./stores"
 
 export type CandlestickDatum = {
     delta: number
@@ -18,7 +20,11 @@ export type CandlestickGraph = {
     data: CandlestickDatum[]
 }
 
-export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
+export function plotCandlestick(
+    graph: CandlestickGraph,
+    svg: SVGElement,
+    hoverData: Writable<string>
+) {
     let total = graph.start
 
     console.log(graph)
@@ -58,4 +64,23 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
         .attr("y", (d) => y(d.end))
         .attr("height", (d) => y(d.begin) - y(d.end))
         .attr("width", x.bandwidth())
+        .on("mouseover", (e, d) => {
+            const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
+            const final = d.positive ? d.end : d.begin
+            const date = new Date(Date.now() + 24 * 60 * 60 * 1000 * parseInt(d.label))
+
+            tooltip.set({
+                shown: true,
+                text: [
+                    `Date: ${date.toLocaleDateString()}`,
+                    `Change: ${delta.toFixed(2)}`,
+                    `Final: ${final.toFixed(2)}`,
+                ],
+                x: e.pageX,
+                y: e.pageY,
+            })
+        })
+        .on("mouseout", (e, v) => {
+            tooltip.set({ shown: false })
+        })
 }

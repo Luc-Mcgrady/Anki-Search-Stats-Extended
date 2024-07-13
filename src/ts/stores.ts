@@ -16,3 +16,11 @@ export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
 
 export let burdenOrLoad = writable("Load")
+export let tooltip: Writable<Tooltip> = writable({ shown: false })
+
+export type Tooltip = {
+    shown: boolean
+    x?: number
+    y?: number
+    text?: string[]
+}
