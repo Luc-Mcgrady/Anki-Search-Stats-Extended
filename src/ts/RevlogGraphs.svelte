@@ -99,7 +99,7 @@
         introduced_day_count = introduced_day_count.splice(start, today)
 
         let burden_start = _.sum(burden_change.slice(0, start))
-        burden_change = burden_change.slice(start, today)
+        burden_change = burden_change.splice(start, today)
 
         console.log({
             introduced_day_total_count,
