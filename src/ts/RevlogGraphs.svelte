@@ -8,6 +8,7 @@
     import { burdenOrLoad } from "./stores"
     import { type CandlestickDatum } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
+    import _ from "lodash"
 
     export let revlog_data: Revlog[]
     let card_times: Record<number, number>
@@ -16,7 +17,7 @@
     //let card_counts: Record<number, number> = {}
     let revlog_times: number[]
     let speed_trend_bar: BarChart
-    let burden_change: number[]
+    let interval_change: Record<number, number>[]
     let introduced_day_count: number[]
     let reintroduced_day_count: number[]
     let introduced: Set<number>
@@ -35,7 +36,9 @@
         reintroduced_day_count = []
         introduced = new Set()
         reintroduced = new Set()
-        burden_change = []
+        interval_change = []
+        let day_forgotten: number[] = []
+        let last_cids: Record<number, Revlog> = {}
 
         for (const revlog of revlog_data) {
             card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
@@ -47,6 +50,9 @@
 
             if (revlog.ease == 0 && revlog.ivl == 0) {
                 introduced.delete(revlog.cid)
+                if (revlog.lastIvl != 0) {
+                    day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
+                }
             } else if (!introduced.has(revlog.cid)) {
                 introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
                 if (reintroduced.has(revlog.cid)) {
@@ -56,8 +62,32 @@
                 reintroduced.add(revlog.cid)
             }
 
-            burden_change[day] = (burden_change[day] ?? 0) + 1 / revlog.ivl - 1 / revlog.lastIvl
+            const last_review = last_cids[revlog.cid]
+            const last_interval = last_review?.ivl > 0 ? last_review.ivl : 0
+            // Anki bug?!? when rescheduling the last_ivl isn't reset for the next revlog so i cant use lastIvl
+            interval_change[day] = interval_change[day] ?? {}
+
+            if (revlog.ivl == 0 && last_review) {
+                interval_change[day][last_interval] = (interval_change[day][last_interval] ?? 0) - 1
+                delete last_cids[revlog.cid]
+            } else if (revlog.ivl > 0) {
+                interval_change[day][last_interval] = (interval_change[day][last_interval] ?? 0) - 1
+                interval_change[day][revlog.ivl] = (interval_change[day][revlog.ivl] ?? 0) + 1
+
+                last_cids[revlog.cid] = revlog
+            }
         }
+
+        let running_total = 0
+        const introduced_day_total_count = introduced_day_count.map((v, i) => {
+            running_total += v + (reintroduced_day_count[i] ?? 0) - (day_forgotten[i] ?? 0)
+            return running_total
+        })
+
+        let burden_change = interval_change.map((v, i) => {
+            delete v[0]
+            return _.sum(Object.entries(v).map(([ivl, val]) => val / parseInt(ivl)))
+        })
 
         const today = Date.now() / day_ms
         const offset = 30
@@ -66,7 +96,13 @@
         review_day_count = review_day_count.splice(today - offset, today)
         reintroduced_day_count = reintroduced_day_count.splice(today - offset, today)
         introduced_day_count = introduced_day_count.splice(today - offset, today)
-        burden_change = burden_change.splice(today - offset, today)
+
+        console.log({
+            introduced_day_total_count,
+            burden_change,
+            interval_change,
+            introduced_day_count,
+        })
 
         for (const card_time of Object.values(card_times)) {
             const key = Math.floor(card_time / 1000)
@@ -107,7 +143,7 @@
             review_day_count,
             speed_trend_bar,
             revlog_data,
-            burden_change,
+            burden_change: interval_change,
         })
     }
 </script>
