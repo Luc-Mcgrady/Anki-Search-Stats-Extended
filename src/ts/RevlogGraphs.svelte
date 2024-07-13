@@ -6,7 +6,7 @@
     import IntervalPie from "./IntervalPie.svelte"
     import type { Revlog } from "./search"
     import { burdenOrLoad } from "./stores"
-    import { plotCandlestick, type CandlestickDatum } from "./Candlestick"
+    import { type CandlestickDatum } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
 
     export let revlog_data: Revlog[]
@@ -17,6 +17,11 @@
     let revlog_times: number[]
     let speed_trend_bar: BarChart
     let burden_change: number[]
+    let introduced_day_count: number[]
+    let reintroduced_day_count: number[]
+    let introduced: Set<number>
+    let reintroduced: Set<number>
+    let introduced_bar: BarChart
     let burden_change_candlestick: CandlestickDatum[]
 
     const day_ms = 1000 * 60 * 60 * 24
@@ -26,6 +31,10 @@
         revlog_times = []
         review_day_times = []
         review_day_count = []
+        introduced_day_count = []
+        reintroduced_day_count = []
+        introduced = new Set()
+        reintroduced = new Set()
         burden_change = []
 
         for (const revlog of revlog_data) {
@@ -36,9 +45,18 @@
             review_day_times[day] = (review_day_times[day] ?? 0) + revlog.time
             review_day_count[day] = (review_day_count[day] ?? 0) + 1
 
-            const lastBurden = revlog.lastIvl ? 1 / revlog.lastIvl : 0
+            if (revlog.ease == 0 && revlog.ivl == 0) {
+                introduced.delete(revlog.cid)
+            } else if (!introduced.has(revlog.cid)) {
+                introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
+                if (reintroduced.has(revlog.cid)) {
+                    reintroduced_day_count[day] = (reintroduced_day_count[day] ?? 0) + 1
+                }
+                introduced.add(revlog.cid)
+                reintroduced.add(revlog.cid)
+            }
 
-            burden_change[day] = (burden_change[day] ?? 0) + 1 / revlog.ivl - lastBurden
+            burden_change[day] = (burden_change[day] ?? 0) + 1 / revlog.ivl - 1 / revlog.lastIvl
         }
 
         const today = Date.now() / day_ms
@@ -46,6 +64,8 @@
 
         review_day_times = review_day_times.splice(today - offset, today)
         review_day_count = review_day_count.splice(today - offset, today)
+        reintroduced_day_count = reintroduced_day_count.splice(today - offset, today)
+        introduced_day_count = introduced_day_count.splice(today - offset, today)
         burden_change = burden_change.splice(today - offset, today)
 
         for (const card_time of Object.values(card_times)) {
@@ -56,12 +76,25 @@
         speed_trend_bar = {
             row_colours: ["#fcba03"],
             row_labels: ["Speed Per Review (s)"],
-            data: review_day_count
-                .filter((data) => !!data)
-                .map((data, i) => ({
-                    label: (i - offset).toString(),
-                    values: [(review_day_times[i] ?? 0) / (data * 1000)],
-                })),
+            data: Array.from(review_day_count).map((data, i) => ({
+                label: (i - offset).toString(),
+                values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
+            })),
+        }
+
+        introduced_bar = {
+            row_colours: ["#13e0eb", "#0c8b91"],
+            row_labels: ["Introduced", "Re-introduced"],
+            data: Array.from(introduced_day_count)
+                .map((v, i) => {
+                    const introduced = v ?? 0
+                    const reintroduced = reintroduced_day_count[i] ?? 0
+                    return {
+                        values: [introduced - reintroduced, reintroduced],
+                        label: (i - offset).toString(),
+                    }
+                })
+                .map((d, i) => d ?? { values: [0, 0], label: (i - offset).toString() }),
         }
 
         burden_change_candlestick = burden_change.map((delta, i) => ({
@@ -112,10 +145,15 @@
     <Bar data={speed_trend_bar}></Bar>
 </GraphContainer>
 <GraphContainer>
+    <h1>Introduced</h1>
+    <Bar data={introduced_bar}></Bar>
+</GraphContainer>
+
+<!--<GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
     <Candlestick data={burden_change_candlestick}></Candlestick>
 </GraphContainer>
-
+-->
 <style>
     p {
         font-size: small;
