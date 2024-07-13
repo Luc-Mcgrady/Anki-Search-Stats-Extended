@@ -43,5 +43,7 @@
         row_colours: ["#31a354", "#74c476", "#fb6a4a", "#fd8d3c"],
         row_labels: ["Mature", "Young", "Relearning", "Learning"],
         data: bars,
+        tick_spacing: 5,
+        isDate: true,
     }}
 ></Bar>

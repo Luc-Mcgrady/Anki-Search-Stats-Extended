@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { lab } from "d3"
-    import type { BarChart } from "./bar"
     import Bar from "./Bar.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalPie from "./IntervalPie.svelte"
@@ -109,6 +107,8 @@
             label: (i - offset).toString(),
             values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
         })),
+        tick_spacing: 5,
+        isDate: true,
     }
 
     $: introduced_bar = {
@@ -124,6 +124,8 @@
                 }
             })
             .map((d, i) => d ?? { values: [0, 0], label: (i - offset).toString() }),
+        tick_spacing: 5,
+        isDate: true,
     }
 
     $: burden_change_candlestick = {
