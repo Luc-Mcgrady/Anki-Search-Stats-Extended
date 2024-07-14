@@ -24,6 +24,12 @@
                 bars[newIndex].values = bars[newIndex].values.map((a, i) => a + bar?.values[i] ?? 0)
             }
         }
+        bars.map((bar, i) => {
+            const count = seperate_bars
+                .slice(i * binSize, (i + 1) * binSize)
+                .reduce((p, n) => p + (_.sum(n.values) > 0 ? 1 : 0), 0)
+            bar.values = bar.values.map((a) => a / count)
+        })
         console.log({ bars, seperate_bars })
     }
 </script>

@@ -97,7 +97,7 @@
     let binSize = 1
     let offset = 30
     let scrollOffset = bins * binSize
-    const start = today - offset
+    $: start = today - offset
 
     $: burden_start = _.sum(burden_change.slice(0, start))
     $: burden_change_window = Array.from(burden_change.splice(start, today)).map((v) => v ?? 0)
@@ -107,7 +107,7 @@
         row_labels: ["Speed Per Review (s)"],
         data: Array.from(review_day_count).map((data, i) => ({
             label: (i - today - scrollOffset).toString(),
-            values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000 * binSize)],
+            values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
         })),
         tick_spacing: 5,
         isDate: true,
