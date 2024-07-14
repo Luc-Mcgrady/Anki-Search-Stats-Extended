@@ -96,9 +96,6 @@
     let scrollOffset = bins * binSize
     const start = today - offset
 
-    $: review_day_times = review_day_times.splice(start, today)
-    $: review_day_count = review_day_count.splice(start, today)
-
     $: burden_start = _.sum(burden_change.slice(0, start))
     $: burden_change_window = Array.from(burden_change.splice(start, today)).map((v) => v ?? 0)
 
@@ -106,8 +103,8 @@
         row_colours: ["#fcba03"],
         row_labels: ["Speed Per Review (s)"],
         data: Array.from(review_day_count).map((data, i) => ({
-            label: (i - offset).toString(),
-            values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
+            label: (i - today - scrollOffset).toString(),
+            values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000 * binSize)],
         })),
         tick_spacing: 5,
         isDate: true,
@@ -169,7 +166,7 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Review Speed Trend</h1>
-    <Bar data={speed_trend_bar}></Bar>
+    <BarScrollable data={speed_trend_bar} bind:bins bind:binSize />
 </GraphContainer>
 <GraphContainer>
     <h1>Introduced</h1>
