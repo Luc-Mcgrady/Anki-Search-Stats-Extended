@@ -2,7 +2,7 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalPie from "./IntervalPie.svelte"
     import type { Revlog } from "./search"
-    import { burdenOrLoad } from "./stores"
+    import { burdenOrLoad, other } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -17,6 +17,7 @@
     let burden_change: number[]
 
     const day_ms = 1000 * 60 * 60 * 24
+    const rollover = $other.rollover * 60 * 60 * 1000
 
     $: {
         revlog_times = []
@@ -35,7 +36,7 @@
         for (const revlog of revlog_data) {
             card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
 
-            const day = Math.floor(revlog.id / day_ms)
+            const day = Math.floor((revlog.id - rollover) / day_ms)
 
             review_day_times[day] = (review_day_times[day] ?? 0) + revlog.time
             review_day_count[day] = (review_day_count[day] ?? 0) + 1
@@ -87,7 +88,7 @@
         }
     }
 
-    const today = Math.floor(Date.now() / day_ms)
+    const today = Math.floor((Date.now() - rollover) / day_ms)
     let scroll = 0
     let bins = 30
     let binSize = 1
