@@ -1,8 +1,7 @@
 export type Tooltip = {
-    shown: boolean
-    x?: number
-    y?: number
-    text?: string[]
+    x: number
+    y: number
+    text: string[]
 }
 
 export function tooltipX(e: MouseEvent) {

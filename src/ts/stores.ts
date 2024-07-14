@@ -23,4 +23,9 @@ export let showRevlogStats = writable(false)
 
 revlogs.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
 
-export let tooltip = writable<Tooltip>({ shown: false })
+export let tooltip = writable<Tooltip>({
+    text: [""],
+    x: 0,
+    y: 0,
+})
+export let tooltipShown = writable(false)

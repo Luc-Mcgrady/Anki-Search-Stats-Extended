@@ -20,6 +20,7 @@
         revlogs,
         tooltip,
         showRevlogStats,
+        tooltipShown,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
@@ -129,7 +130,7 @@
 
     <div
         class="tooltip"
-        style:opacity={$tooltip.shown ? 1 : 0}
+        style:opacity={$tooltipShown ? 1 : 0}
         style:left={`${$tooltip.x}px`}
         style:top={`${$tooltip.y}px`}
     >

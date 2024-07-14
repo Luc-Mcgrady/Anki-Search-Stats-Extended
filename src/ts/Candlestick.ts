@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { createAxis } from "./bar"
-import { tooltip } from "./stores"
+import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
 export type CandlestickDatum = {
@@ -65,8 +65,8 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
             const final = d.positive ? d.end : d.begin
             const date = tooltipDate(d.label)
 
+            tooltipShown.set(true)
             tooltip.set({
-                shown: true,
                 text: [
                     `Date: ${date.toLocaleDateString()}`,
                     `Change: ${delta.toFixed(2)}`,
@@ -77,6 +77,6 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
             })
         })
         .on("mouseout", (e, v) => {
-            tooltip.set({ shown: false })
+            tooltipShown.set(false)
         })
 }

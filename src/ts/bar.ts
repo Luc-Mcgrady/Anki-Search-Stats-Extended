@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import { defaultGraphBounds } from "./graph"
-import { tooltip } from "./stores"
+import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
 export type BarDatum = {
@@ -96,8 +96,8 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                 ? [`Date: ${date.toLocaleDateString()}${date2string}`]
                 : []
 
+            tooltipShown.set(true)
             tooltip.set({
-                shown: true,
                 text: [
                     ...dateString,
                     ...d.data.values.map(
@@ -108,6 +108,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                 y: e.pageY,
             })
         })
+        .on("mouseleave", () => tooltipShown.set(false))
 
     return { x, y, svg: axis, maxValue }
 }
