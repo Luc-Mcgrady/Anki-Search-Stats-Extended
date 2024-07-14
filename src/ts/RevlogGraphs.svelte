@@ -105,9 +105,10 @@
     let scroll = 0
     let bins = 30
     let binSize = 1
-    let offset = 30
-    let scrollOffset = bins * binSize - offset - 1
+    let scrollOffset = bins * binSize - bins
     $: start = today - bins * binSize - scroll
+
+    $: console.log({ burden_change })
 
     $: burden_start = _.sum(burden_change.slice(0, start)) ?? 0
 

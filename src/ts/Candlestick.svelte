@@ -1,7 +1,6 @@
 <script lang="ts">
     import _ from "lodash"
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
-    import { bin } from "d3"
 
     let svg: SVGElement | null = null
 
@@ -10,10 +9,15 @@
     export let bins = 30
     export let data: CandlestickGraph
 
-    $: realOffset = -Math.abs(offset)
+    $: realOffset = Math.abs(offset)
 
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(-(bins * binSize) + realOffset, realOffset - 1)
+    $: seperate_bars = data.data.slice(
+        -(bins * binSize) - realOffset,
+        realOffset == 0 ? undefined : -realOffset
+    )
+
+    $: console.log(seperate_bars)
 
     let bars: CandlestickDatum[]
     $: {
