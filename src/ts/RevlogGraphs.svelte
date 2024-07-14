@@ -69,7 +69,7 @@
 
             const last_review = last_cids[revlog.cid]
             const last_interval = last_review?.ivl > 0 ? last_review.ivl : 0
-            // Anki bug?!? when rescheduling the last_ivl isn't reset for the next revlog so i cant use lastIvl
+            // Anki bug?!? when rescheduling the last_ivl isn't reset for the next revlog if the card is manually rescheduled so I cant use lastIvl
             interval_change[day] = interval_change[day] ?? {}
 
             if (revlog.ivl == 0 && last_review) {
@@ -174,6 +174,7 @@
         fillerColour={"blue"}
         legend_left={"Time (s)"}
     ></IntervalPie>
+    <p>How many cards have taken the given amount of time to answer over every review</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Time Totals</h1>
@@ -189,21 +190,38 @@
         legend_right={"Total (s)"}
         totalDescriptor={"Seconds"}
     ></IntervalPie>
+    <p>
+        How much time have been spent on cards which have taken the given amount of time to answer
+        over every review
+    </p>
 </GraphContainer>
 <GraphContainer>
     <h1>Review Speed Trend</h1>
     <BarScrollable data={speed_trend_bar} bind:bins bind:binSize bind:offset={scroll} average />
+    <p>The average amount of time it took you to answer each card on a given day.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Introduced</h1>
     <BarScrollable data={introduced_bar} bind:bins bind:binSize bind:offset={scroll} />
+
+    <p>
+        A card is introduced when it is shown to you for the first time. A card is re-introduced
+        when it is shown to you for the first time after being forgotten.
+    </p>
 </GraphContainer>
 <GraphContainer>
     <h1>Forgotten</h1>
     <BarScrollable data={forgotten_bar} bind:bins bind:binSize bind:offset={scroll} />
-    <span>Remaining forgotten cards: {remaining_forgotten.toLocaleString()}</span>
+    <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
+
+    <p>You "forget" a card when you manually mark it as new.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
     <Candlestick data={burden_change_candlestick} bind:bins bind:binSize bind:offset={scroll} />
+    <p>
+        This shows the change in burden over time. A green bar shows a decrease in burden for that
+        period of time (improvement) while a red bar shows an increase. This graph is very
+        susceptible to rounding errors.
+    </p>
 </GraphContainer>
