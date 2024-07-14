@@ -1,15 +1,18 @@
 import Root from "./Root.svelte"
 import { patchFetch } from "./root"
-import { burdenOrLoad } from "./stores"
+import { burdenOrLoad, config, other } from "./stores"
 
 declare global {
     let css: string
     let SSEconfig: SSEconfig
+    let SSEother: SSEother
 }
 
 patchFetch()
 
 burdenOrLoad.set(SSEconfig.burdenNotLoad ? "Burden" : "Load")
+config.set(SSEconfig)
+other.set(SSEother)
 
 setTimeout(() => new Root({ target: document.body }), SSEconfig.loadDelayMs ?? 100)
 

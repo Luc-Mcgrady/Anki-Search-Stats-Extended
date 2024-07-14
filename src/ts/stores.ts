@@ -18,3 +18,6 @@ export let zero_inclusive = writable(false)
 
 export let burdenOrLoad = writable("Load")
 export let tooltip: Writable<Tooltip> = writable({ shown: false })
+
+export let config = writable<SSEconfig>()
+export let other = writable<SSEother>()

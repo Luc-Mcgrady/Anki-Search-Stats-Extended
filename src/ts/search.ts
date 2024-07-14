@@ -50,12 +50,3 @@ export async function getCardData(cids: number[]) {
 export async function getRevlogs(cids: number[]) {
     return (await endpoint("revlogs", JSON.stringify(cids))) as Revlog[]
 }
-
-interface SchedulerConfig {
-    learn_ahead_secs: number
-    rollover: number
-}
-
-export async function getSchedulerConfig() {
-    return (await endpoint("schedulerConfig")) as SchedulerConfig
-}

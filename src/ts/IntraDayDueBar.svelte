@@ -2,8 +2,9 @@
     import _ from "lodash"
     import Bar from "./Bar.svelte"
     import type { BarDatum, ExtraRenderInput } from "./bar"
-    import { getCardData, getSchedulerConfig, search, type CardData } from "./search"
+    import { getCardData, search, type CardData } from "./search"
     import { searchJoin } from "./root"
+    import { other } from "./stores"
 
     export let parentSearch: string
 
@@ -22,7 +23,7 @@
         )
         const cards_relearn = await getCardData(due_today_relearn)
 
-        const { learn_ahead_secs, rollover } = await getSchedulerConfig()
+        const { learn_ahead_secs, rollover } = $other
 
         const data = [..._.range(rollover, 24), ..._.range(0, rollover)].map((hour) => ({
             label: hour.toString(),

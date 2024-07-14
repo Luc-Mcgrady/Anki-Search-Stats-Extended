@@ -14,9 +14,14 @@ def new_refresh(self: NewDeckStats):
         innerCss = f.read()
 
     config = mw.addonManager.getConfig(__name__)
+    other = {
+        "rollover": mw.col.get_preferences().scheduling.rollover,
+        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs
+    }
     setVars = (
         f"const css = `{innerCss}`;" 
         f"const SSEconfig = {json.dumps(config)};"
+        f"const SSEother = {json.dumps(other)};"
     )
     self.form.web.eval(setVars + innerJs)
 
@@ -59,10 +64,3 @@ def revlogs() -> bytes:
 
 post_handlers["revlogs"] = revlogs
 
-def scheduler_config() -> bytes:
-    return Response(json.dumps({
-        "rollover": mw.col.get_preferences().scheduling.rollover,
-        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs
-    }))
-
-post_handlers["schedulerConfig"] = scheduler_config
