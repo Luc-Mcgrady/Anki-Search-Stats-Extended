@@ -110,7 +110,6 @@
     $: start = today - offset
 
     $: burden_start = _.sum(burden_change.slice(0, start))
-    $: burden_change_window = Array.from(burden_change.splice(start, today)).map((v) => v ?? 0)
 
     $: speed_trend_bar = {
         row_colours: ["#fcba03"],
@@ -155,9 +154,9 @@
 
     $: burden_change_candlestick = {
         start: burden_start,
-        data: burden_change_window.map((delta, i) => ({
-            label: (i - offset).toString(),
-            delta,
+        data: Array.from(burden_change).map((delta, i) => ({
+            label: (i - today - scrollOffset).toString(),
+            delta: delta ?? 0,
         })),
     }
 </script>
@@ -205,5 +204,5 @@
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
-    <Candlestick data={burden_change_candlestick}></Candlestick>
+    <Candlestick data={burden_change_candlestick} bind:bins bind:binSize bind:offset={scroll} />
 </GraphContainer>
