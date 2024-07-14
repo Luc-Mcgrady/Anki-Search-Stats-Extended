@@ -111,6 +111,8 @@
     {#if $showRevlogStats}
         {#if $revlogs}
             <RevlogGraphs revlog_data={$revlogs} />
+        {:else}
+            <h1>Loading Review Stats...</h1>
         {/if}
     {:else}
         <GraphContainer>

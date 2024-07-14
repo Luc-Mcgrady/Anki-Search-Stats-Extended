@@ -1,13 +1,13 @@
 import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-import { getCardData, getRevlogs, search } from "./search"
+import { getCardData, search } from "./search"
 import {
     card_data,
+    cids,
     data,
     learn_data,
     mature_data,
     not_suspended_data,
     relearn_data,
-    revlogs,
     searchString,
 } from "./stores"
 
@@ -64,8 +64,11 @@ export function patchFetch() {
             const search_request = decodeRequest(origBody)
 
             searchString.set(search_request?.search)
-            search(search_request?.search).then(getCardData).then(card_data.set)
-            search(search_request?.search).then(getRevlogs).then(revlogs.set)
+
+            const cidSearch = search(search_request?.search)
+
+            cidSearch.then(getCardData).then(card_data.set)
+            cidSearch.then(cids.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set)
             fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)

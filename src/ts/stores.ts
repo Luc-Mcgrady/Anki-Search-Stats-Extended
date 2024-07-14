@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store"
 import type { GraphsResponse } from "./proto/anki/stats_pb"
-import type { CardData, Revlog } from "./search"
+import { getRevlogs, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
 
 export let data = writable<null | GraphsResponse>(null)
@@ -10,6 +10,7 @@ export let learn_data = writable<null | GraphsResponse>(null)
 export let relearn_data = writable<null | GraphsResponse>(null)
 
 export let searchString = writable<null | string>(null)
+export let cids = writable<null | number[]>(null)
 export let card_data = writable<null | CardData[]>(null)
 export let revlogs = writable<null | Revlog[]>(null)
 
@@ -21,7 +22,21 @@ export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)
 
-revlogs.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
+searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
+
+const updateRevlogs = () => {
+    const $cids = get(cids)
+    const $showRevlogStats = get(showRevlogStats)
+
+    if ($showRevlogStats && $cids) {
+        return getRevlogs($cids).then(revlogs.set)
+    } else {
+        revlogs.set(null)
+    }
+}
+
+cids.subscribe(updateRevlogs)
+showRevlogStats.subscribe(updateRevlogs)
 
 export let tooltip = writable<Tooltip>({
     text: [""],
