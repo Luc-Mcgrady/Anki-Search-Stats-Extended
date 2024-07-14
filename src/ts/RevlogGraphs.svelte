@@ -98,7 +98,7 @@
     $: introduced_day_count = introduced_day_count.splice(start, today)
 
     $: burden_start = _.sum(burden_change.slice(0, start))
-    $: burden_change = Array.from(burden_change.splice(start, today)).map((v) => v ?? 0)
+    $: burden_change_window = Array.from(burden_change.splice(start, today)).map((v) => v ?? 0)
 
     $: speed_trend_bar = {
         row_colours: ["#fcba03"],
@@ -130,7 +130,7 @@
 
     $: burden_change_candlestick = {
         start: burden_start,
-        data: burden_change.map((delta, i) => ({
+        data: burden_change_window.map((delta, i) => ({
             label: (i - offset).toString(),
             delta,
         })),
