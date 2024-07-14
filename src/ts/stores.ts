@@ -28,10 +28,9 @@ const updateRevlogs = () => {
     const $cids = get(cids)
     const $showRevlogStats = get(showRevlogStats)
 
+    revlogs.set(null)
     if ($showRevlogStats && $cids) {
         return getRevlogs($cids).then(revlogs.set)
-    } else {
-        revlogs.set(null)
     }
 }
 
