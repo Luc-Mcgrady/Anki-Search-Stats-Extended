@@ -56,8 +56,8 @@ export function createAxis(
 }
 
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
-    const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d.values)))!
-    const maxValue = _.sum(Object.values(max.values))
+    const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
+    const maxValue = _.sum(Object.values(max?.values ?? []))
 
     const { axis, x, y } = createAxis(
         svg,
