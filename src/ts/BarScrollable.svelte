@@ -1,4 +1,5 @@
 <script lang="ts">
+    import _ from "lodash"
     import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
     import Bar from "./Bar.svelte"
 
@@ -9,8 +10,8 @@
     export let offset = 0
     export let bins = 30
 
-    $: seperate_bars = data.data.slice(-(bins * binSize), -1)
     $: binSize = binSize > 0 ? binSize : 1
+    $: seperate_bars = data.data.slice(-(bins * binSize) + offset, offset - 1)
 
     let bars: BarDatum[]
     $: {
@@ -33,7 +34,7 @@
         <input type="number" bind:value={binSize} />
     </label>
     <label>
-        Start
+        Scroll
         <input type="number" bind:value={offset} />
     </label>
 </div>
