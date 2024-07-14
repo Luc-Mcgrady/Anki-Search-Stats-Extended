@@ -107,9 +107,9 @@
     let binSize = 1
     let offset = 30
     let scrollOffset = bins * binSize - offset - 1
-    $: start = today - offset
+    $: start = today - bins * binSize - scroll
 
-    $: burden_start = _.sum(burden_change.slice(0, start))
+    $: burden_start = _.sum(burden_change.slice(0, start)) ?? 0
 
     $: speed_trend_bar = {
         row_colours: ["#fcba03"],
