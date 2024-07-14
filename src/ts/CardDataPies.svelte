@@ -180,14 +180,3 @@
         repetitions per card of 3, the repetition total for 3 would be 6.
     </p>
 </GraphContainer>
-
-<style>
-    p {
-        font-size: small;
-        margin-top: 1em;
-    }
-
-    h1 {
-        border-bottom: 1px var(--border) solid;
-    }
-</style>

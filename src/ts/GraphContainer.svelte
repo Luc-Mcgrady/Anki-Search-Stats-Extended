@@ -28,4 +28,14 @@
         page-break-inside: avoid;
         padding: 1em;
     }
+
+    .graph :global(p) {
+        font-size: small;
+        margin-top: 1em;
+    }
+
+    .graph :global(h1) {
+        border-bottom: 1px var(--border) solid;
+        padding-bottom: 0.25em;
+    }
 </style>

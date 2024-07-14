@@ -124,10 +124,6 @@
 </div>
 
 <style lang="scss">
-    p {
-        font-size: small;
-        margin-top: 1em;
-    }
     div.tooltip {
         position: absolute;
         opacity: 0;
@@ -139,10 +135,6 @@
         transition: opacity var(--transition);
         color: var(--fg);
         background: var(--canvas-overlay);
-    }
-
-    h1 {
-        border-bottom: 1px var(--border) solid;
     }
 
     // Copied from anki/ts/graphs/GraphsPage.svelte

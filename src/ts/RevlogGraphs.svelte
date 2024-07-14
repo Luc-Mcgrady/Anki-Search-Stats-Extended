@@ -177,14 +177,3 @@
     <h1>{$burdenOrLoad} Trend</h1>
     <Candlestick data={burden_change_candlestick}></Candlestick>
 </GraphContainer>
-
-<style>
-    p {
-        font-size: small;
-        margin-top: 1em;
-    }
-
-    h1 {
-        border-bottom: 1px var(--border) solid;
-    }
-</style>
