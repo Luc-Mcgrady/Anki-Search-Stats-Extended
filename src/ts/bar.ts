@@ -15,6 +15,7 @@ export type BarChart = {
     data: BarDatum[]
     tick_spacing?: number
     isDate?: boolean
+    barWidth?: number
 }
 
 export function createAxis(
@@ -84,8 +85,16 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
         .on("mouseover", (e, d) => {
-            let date = tooltipDate(d.data.label)
-            const dateString = chart.isDate ? [`Date: ${date.toLocaleDateString()}`] : []
+            const date = tooltipDate(d.data.label)
+
+            const date2index = parseInt(d.data.label) + (chart.barWidth ?? 1) - 1
+            const date2 = tooltipDate(date2index.toString())
+            const date2string =
+                date2.getUTCDate() == date.getUTCDate() ? "" : `-${date2.toLocaleDateString()}`
+
+            const dateString = chart.isDate
+                ? [`Date: ${date.toLocaleDateString()}${date2string}`]
+                : []
 
             tooltip.set({
                 shown: true,

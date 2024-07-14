@@ -39,4 +39,4 @@
     </label>
 </div>
 
-<Bar data={{ ...data, data: bars }} {extraRender}></Bar>
+<Bar data={{ ...data, data: bars, barWidth: binSize }} {extraRender}></Bar>
