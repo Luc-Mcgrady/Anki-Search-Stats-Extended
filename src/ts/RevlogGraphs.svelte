@@ -15,21 +15,31 @@
     let introduced_day_count: number[]
     let reintroduced_day_count: number[]
     let burden_change: number[]
+    let day_forgotten: number[]
+    let remaining_forgotten: number
 
-    const day_ms = 1000 * 60 * 60 * 24
     const rollover = $other.rollover * 60 * 60 * 1000
+    const day_ms = 1000 * 60 * 60 * 24
+    const today = Math.floor((Date.now() - rollover) / day_ms)
 
     $: {
         revlog_times = []
+        revlog_times[today] = 0
         review_day_times = []
+        review_day_times[today] = 0
         review_day_count = []
+        review_day_count[today] = 0
         introduced_day_count = []
+        introduced_day_count[today] = 0
         reintroduced_day_count = []
+        reintroduced_day_count[today] = 0
+        day_forgotten = []
+        day_forgotten[today] = 0
+        let forgotten = new Set<number>()
         let card_times: Record<number, number> = {}
         let introduced = new Set<number>()
         let reintroduced = new Set<number>()
         let interval_change: Record<number, number>[] = []
-        let day_forgotten: number[] = []
         let last_cids: Record<number, Revlog> = {}
         let introduced_day_total_count: number[]
 
@@ -43,6 +53,7 @@
 
             if (revlog.ease == 0 && revlog.ivl == 0) {
                 introduced.delete(revlog.cid)
+                forgotten.add(revlog.cid)
                 if (revlog.lastIvl != 0) {
                     day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
                 }
@@ -53,6 +64,7 @@
                 }
                 introduced.add(revlog.cid)
                 reintroduced.add(revlog.cid)
+                forgotten.delete(revlog.cid)
             }
 
             const last_review = last_cids[revlog.cid]
@@ -86,14 +98,15 @@
             const key = Math.floor(card_time / 1000)
             revlog_times[key] = (revlog_times[key] ?? 0) + 1
         }
+
+        remaining_forgotten = forgotten.size
     }
 
-    const today = Math.floor((Date.now() - rollover) / day_ms)
     let scroll = 0
     let bins = 30
     let binSize = 1
     let offset = 30
-    let scrollOffset = bins * binSize
+    let scrollOffset = bins * binSize - offset - 1
     $: start = today - offset
 
     $: burden_start = _.sum(burden_change.slice(0, start))
@@ -126,6 +139,19 @@
         tick_spacing: 5,
         isDate: true,
     }
+
+    $: forgotten_bar = {
+        row_colours: ["#330900"],
+        row_labels: ["Forgotten"],
+        data: Array.from(day_forgotten).map((v, i) => ({
+            values: [v ?? 0],
+            label: (i - today - scrollOffset).toString(),
+        })),
+        tick_spacing: 5,
+        isDate: true,
+    }
+
+    $: console.log({ forgotten_bar, day_forgotten })
 
     $: burden_change_candlestick = {
         start: burden_start,
@@ -171,6 +197,11 @@
 <GraphContainer>
     <h1>Introduced</h1>
     <BarScrollable data={introduced_bar} bind:bins bind:binSize bind:offset={scroll} />
+</GraphContainer>
+<GraphContainer>
+    <h1>Forgotten</h1>
+    <BarScrollable data={forgotten_bar} bind:bins bind:binSize bind:offset={scroll} />
+    <span>Remaining forgotten cards: {remaining_forgotten.toLocaleString()}</span>
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
