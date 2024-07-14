@@ -16,8 +16,9 @@ type CandlestickDelta = {
 }
 
 export type CandlestickGraph = {
-    start: number
     data: CandlestickDatum[]
+    start: number
+    tick_spacing?: number
 }
 
 export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
@@ -46,7 +47,8 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
         svg,
         deltas.map((datum) => datum.label),
         max,
-        min
+        min,
+        graph.tick_spacing
     )
 
     console.log({ deltas, max, min })

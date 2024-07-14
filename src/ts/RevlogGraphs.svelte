@@ -158,6 +158,7 @@
             label: (i - today - scrollOffset).toString(),
             delta: delta ?? 0,
         })),
+        tick_spacing: 5,
     }
 </script>
 
