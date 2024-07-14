@@ -10,8 +10,10 @@
     export let offset = 0
     export let bins = 30
 
+    $: realOffset = -Math.abs(offset)
+
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(-(bins * binSize) + offset, offset - 1)
+    $: seperate_bars = data.data.slice(-(bins * binSize) + realOffset, realOffset - 1)
 
     let bars: BarDatum[]
     $: {

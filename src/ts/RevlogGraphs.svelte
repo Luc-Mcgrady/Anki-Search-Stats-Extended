@@ -1,10 +1,8 @@
 <script lang="ts">
-    import Bar from "./Bar.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalPie from "./IntervalPie.svelte"
     import type { Revlog } from "./search"
     import { burdenOrLoad } from "./stores"
-    import { type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -91,8 +89,6 @@
 
     const today = Math.floor(Date.now() / day_ms)
     let scroll = 0
-    $: scroll = scroll > 0 ? 0 : scroll
-
     let bins = 30
     let binSize = 1
     let offset = 30
