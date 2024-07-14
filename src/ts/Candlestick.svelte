@@ -1,6 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
+    import { bin } from "d3"
 
     let svg: SVGElement | null = null
 
@@ -29,7 +30,7 @@
 
     $: {
         if (svg && data.data.length) {
-            const chart = plotCandlestick({ ...data, data: bars }, svg as any)
+            const chart = plotCandlestick({ ...data, data: bars, bar_width: binSize }, svg as any)
         }
     }
 </script>

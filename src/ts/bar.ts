@@ -85,16 +85,9 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
         .on("mouseover", (e, d) => {
-            const date = tooltipDate(d.data.label)
+            const date = tooltipDate(parseInt(d.data.label), chart.barWidth ?? 1)
 
-            const date2index = parseInt(d.data.label) + (chart.barWidth ?? 1) - 1
-            const date2 = tooltipDate(date2index.toString())
-            const date2string =
-                date2.getUTCDate() == date.getUTCDate() ? "" : `-${date2.toLocaleDateString()}`
-
-            const dateString = chart.isDate
-                ? [`Date: ${date.toLocaleDateString()}${date2string}`]
-                : []
+            const dateString = chart.isDate ? [`Date: ${date}`] : []
 
             tooltipShown.set(true)
             tooltip.set({

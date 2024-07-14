@@ -19,6 +19,7 @@ export type CandlestickGraph = {
     data: CandlestickDatum[]
     start: number
     tick_spacing?: number
+    bar_width?: number
 }
 
 export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
@@ -65,12 +66,12 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
         .on("mouseover", (e, d) => {
             const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
             const final = d.positive ? d.end : d.begin
-            const date = tooltipDate(d.label)
+            const date = tooltipDate(parseInt(d.label), graph.bar_width ?? 1)
 
             tooltipShown.set(true)
             tooltip.set({
                 text: [
-                    `Date: ${date.toLocaleDateString()}`,
+                    `Date: ${date}`,
                     `Change: ${delta.toFixed(2)}`,
                     `Final: ${final.toFixed(2)}`,
                 ],
