@@ -35,7 +35,7 @@
     </label>
     <label>
         Scroll
-        <input type="number" bind:value={offset} />
+        <input type="number" bind:value={offset} step={binSize} />
     </label>
 </div>
 

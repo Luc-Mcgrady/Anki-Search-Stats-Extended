@@ -90,6 +90,9 @@
     }
 
     const today = Math.floor(Date.now() / day_ms)
+    let scroll = 0
+    $: scroll = scroll > 0 ? 0 : scroll
+
     let bins = 30
     let binSize = 1
     let offset = 30
@@ -166,11 +169,11 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Review Speed Trend</h1>
-    <BarScrollable data={speed_trend_bar} bind:bins bind:binSize />
+    <BarScrollable data={speed_trend_bar} bind:bins bind:binSize bind:offset={scroll} />
 </GraphContainer>
 <GraphContainer>
     <h1>Introduced</h1>
-    <BarScrollable data={introduced_bar} bind:bins bind:binSize />
+    <BarScrollable data={introduced_bar} bind:bins bind:binSize bind:offset={scroll} />
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
