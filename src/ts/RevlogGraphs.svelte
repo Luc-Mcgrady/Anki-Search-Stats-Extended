@@ -165,7 +165,7 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Review Speed Trend</h1>
-    <BarScrollable data={speed_trend_bar} bind:bins bind:binSize bind:offset={scroll} />
+    <BarScrollable data={speed_trend_bar} bind:bins bind:binSize bind:offset={scroll} average />
 </GraphContainer>
 <GraphContainer>
     <h1>Introduced</h1>
