@@ -7,6 +7,7 @@
     import { type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
+    import BarScrollable from "./BarScrollable.svelte"
 
     export let revlog_data: Revlog[]
     let review_day_times: number[]
@@ -88,14 +89,15 @@
         }
     }
 
-    const today = Date.now() / day_ms
-    const offset = 30
+    const today = Math.floor(Date.now() / day_ms)
+    let bins = 30
+    let binSize = 1
+    let offset = 30
+    let scrollOffset = bins * binSize
     const start = today - offset
 
     $: review_day_times = review_day_times.splice(start, today)
     $: review_day_count = review_day_count.splice(start, today)
-    $: reintroduced_day_count = reintroduced_day_count.splice(start, today)
-    $: introduced_day_count = introduced_day_count.splice(start, today)
 
     $: burden_start = _.sum(burden_change.slice(0, start))
     $: burden_change_window = Array.from(burden_change.splice(start, today)).map((v) => v ?? 0)
@@ -120,10 +122,10 @@
                 const reintroduced = reintroduced_day_count[i] ?? 0
                 return {
                     values: [introduced - reintroduced, reintroduced],
-                    label: (i - offset).toString(),
+                    label: (i - today - scrollOffset).toString(),
                 }
             })
-            .map((d, i) => d ?? { values: [0, 0], label: (i - offset).toString() }),
+            .map((d, i) => d ?? { values: [0, 0], label: (i - today - scrollOffset).toString() }),
         tick_spacing: 5,
         isDate: true,
     }
@@ -171,7 +173,7 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Introduced</h1>
-    <Bar data={introduced_bar}></Bar>
+    <BarScrollable data={introduced_bar} bind:bins bind:binSize />
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
