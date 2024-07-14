@@ -123,8 +123,8 @@
                 <button on:click={() => ($showRevlogStats = true)}>Load Slow Graphs</button>
 
                 <span>
-                    To load these stats with the rest, set "confirmExpensiveStats" to false in the
-                    addon config
+                    To load these graphs by default, set "confirmExpensiveStats" to false in the
+                    addon config.
                 </span>
             </div>
         </GraphContainer>
