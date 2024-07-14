@@ -24,10 +24,12 @@
         bars = []
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
-            if (i % binSize == 0) {
-                bars[newIndex] = { ...bar, values: [...bar.values] }
+            if (!bars[newIndex]?.values) {
+                bars[newIndex] = { ...bar, values: bar.values.map((a) => a || 0) }
             } else {
-                bars[newIndex].values = bars[newIndex].values.map((a, i) => a + bar?.values[i] ?? 0)
+                bars[newIndex].values = bars[newIndex].values.map(
+                    (a, i) => a + (bar?.values[i] || 0)
+                )
             }
         }
         if (average) {
@@ -35,7 +37,9 @@
                 const count = seperate_bars
                     .slice(i * binSize, (i + 1) * binSize)
                     .reduce((p, n) => p + (_.sum(n.values) > 0 ? 1 : 0), 0)
-                bar.values = bar.values.map((a) => a / count)
+
+                console.log({ bar, count })
+                bar.values = bar.values.map((a) => a / (count || 1))
             })
         }
     }

@@ -22,10 +22,10 @@
         bars = []
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
-            if (i % binSize == 0) {
+            if (!bars[newIndex]?.delta) {
                 bars[newIndex] = { ...bar }
             } else {
-                bars[newIndex].delta += bar.delta
+                bars[newIndex].delta += bar.delta || 0
             }
         }
     }
