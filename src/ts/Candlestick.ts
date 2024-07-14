@@ -25,8 +25,6 @@ export type CandlestickGraph = {
 export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
     let total = graph.start
 
-    console.log(graph)
-
     const deltas: CandlestickDelta[] = graph.data.map((datum) => {
         let begin = total
         total += datum.delta
@@ -51,8 +49,6 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
         min,
         graph.tick_spacing
     )
-
-    console.log({ deltas, max, min })
 
     axis.append("g")
         .selectAll("g")

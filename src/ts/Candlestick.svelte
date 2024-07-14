@@ -17,8 +17,6 @@
         realOffset == 0 ? undefined : -realOffset
     )
 
-    $: console.log(seperate_bars)
-
     let bars: CandlestickDatum[]
     $: {
         bars = []

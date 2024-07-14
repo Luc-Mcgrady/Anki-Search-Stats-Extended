@@ -108,8 +108,6 @@
     let scrollOffset = bins * binSize - bins
     $: start = today - bins * binSize - scroll
 
-    $: console.log({ burden_change })
-
     $: burden_start = _.sum(burden_change.slice(0, start)) ?? 0
 
     $: speed_trend_bar = {
@@ -151,8 +149,6 @@
         isDate: true,
     }
 
-    $: console.log({ forgotten_bar, day_forgotten })
-
     $: burden_change_candlestick = {
         start: burden_start,
         data: Array.from(burden_change).map((delta, i) => ({
@@ -192,7 +188,7 @@
         totalDescriptor={"Seconds"}
     ></IntervalPie>
     <p>
-        How much time have been spent on cards which have taken the given amount of time to answer
+        The quantity of time that has been spent on cards which have taken the given amount of time to answer
         over every review
     </p>
 </GraphContainer>
