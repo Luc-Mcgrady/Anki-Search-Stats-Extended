@@ -157,6 +157,9 @@
         })),
         tick_spacing: 5,
     }
+
+    let pieLast = 59
+    let pieSteps = 10
 </script>
 
 <GraphContainer>
@@ -166,8 +169,8 @@
         countDescriptor={"Most Seconds"}
         spectrumFrom={"#fcba03"}
         spectrumTo={"#543e00"}
-        last={59}
-        steps={10}
+        bind:last={pieLast}
+        bind:steps={pieSteps}
         fillerColour={"blue"}
         legend_left={"Time (s)"}
     ></IntervalPie>
@@ -180,16 +183,16 @@
         countDescriptor={"Most Seconds"}
         spectrumFrom={"#fcba03"}
         spectrumTo={"#543e00"}
-        last={59}
-        steps={10}
+        bind:last={pieLast}
+        bind:steps={pieSteps}
         fillerColour={"blue"}
         legend_left={"Per card (s)"}
         legend_right={"Total (s)"}
         totalDescriptor={"Seconds"}
     ></IntervalPie>
     <p>
-        The quantity of time that has been spent on cards which have taken the given amount of time to answer
-        over every review
+        The quantity of time that has been spent on cards which have taken the given amount of time
+        to answer over every review
     </p>
 </GraphContainer>
 <GraphContainer>
