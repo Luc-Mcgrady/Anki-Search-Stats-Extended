@@ -1,4 +1,4 @@
-import { writable } from "svelte/store"
+import { get, writable } from "svelte/store"
 import type { GraphsResponse } from "./proto/anki/stats_pb"
 import type { CardData, Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
@@ -17,7 +17,10 @@ export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
 
 export let burdenOrLoad = writable("Load")
-export let tooltip = writable<Tooltip>({ shown: false })
-
-export let config = writable<SSEconfig>()
 export let other = writable<SSEother>()
+export let config = writable<SSEconfig>()
+export let showRevlogStats = writable(false)
+
+revlogs.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
+
+export let tooltip = writable<Tooltip>({ shown: false })

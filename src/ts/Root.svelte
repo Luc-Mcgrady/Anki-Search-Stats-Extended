@@ -19,6 +19,7 @@
         burdenOrLoad,
         revlogs,
         tooltip,
+        showRevlogStats,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
@@ -106,8 +107,24 @@
     {#if $card_data}
         <CardDataPies cardData={$card_data} />
     {/if}
-    {#if $revlogs}
-        <RevlogGraphs revlog_data={$revlogs} />
+    {#if $showRevlogStats}
+        {#if $revlogs}
+            <RevlogGraphs revlog_data={$revlogs} />
+        {/if}
+    {:else}
+        <GraphContainer>
+            <div class="loadOption">
+                <h1>Slow stats</h1>
+
+                <span>Slower machines can hang while calculating these statistics</span>
+                <button on:click={() => ($showRevlogStats = true)}>Load Slow Graphs</button>
+
+                <span>
+                    To load these stats with the rest, set "confirmExpensiveStats" to false in the
+                    addon config
+                </span>
+            </div>
+        </GraphContainer>
     {/if}
 
     <div
@@ -137,6 +154,21 @@
         background: var(--canvas-overlay);
     }
 
+    div.loadOption {
+        background-color: rgba(255, 136, 0, 0.116);
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+
+        border-radius: var(--border-radius-medium, 10px);
+        margin: -1em;
+        padding: 1em;
+
+        button {
+            font-size: 2em;
+            font-weight: 900;
+        }
+    }
     // Copied from anki/ts/graphs/GraphsPage.svelte
     .graphs-container {
         display: grid;
