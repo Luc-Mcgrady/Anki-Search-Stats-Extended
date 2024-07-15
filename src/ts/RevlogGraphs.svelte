@@ -40,6 +40,7 @@
         let introduced = new Set<number>()
         let reintroduced = new Set<number>()
         let interval_change: Record<number, number>[] = []
+        interval_change[today] = {}
         let last_cids: Record<number, Revlog> = {}
         let introduced_day_total_count: number[]
 
