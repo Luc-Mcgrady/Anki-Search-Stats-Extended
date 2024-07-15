@@ -39,8 +39,8 @@
         let card_times: Record<number, number> = {}
         let introduced = new Set<number>()
         let reintroduced = new Set<number>()
-        let interval_change: Record<number, number>[] = []
-        interval_change[today] = {}
+        let interval_change: number[][] = []
+        interval_change[today] = []
         let last_cids: Record<number, Revlog> = {}
         let introduced_day_total_count: number[]
 
@@ -71,7 +71,7 @@
             const last_review = last_cids[revlog.cid]
             const last_interval = last_review?.ivl > 0 ? last_review.ivl : 0
             // Anki bug?!? when rescheduling the last_ivl isn't reset for the next revlog if the card is manually rescheduled so I cant use lastIvl
-            interval_change[day] = interval_change[day] ?? {}
+            interval_change[day] = interval_change[day] ?? []
 
             if (revlog.ivl == 0 && last_review) {
                 interval_change[day][last_interval] = (interval_change[day][last_interval] ?? 0) - 1
@@ -92,7 +92,7 @@
 
         burden_change = interval_change.map((v, i) => {
             delete v[0]
-            return _.sum(Object.entries(v).map(([ivl, val]) => val / parseInt(ivl)))
+            return _.sum(v.map((val, ivl) => val / ivl))
         })
 
         for (const card_time of Object.values(card_times)) {
