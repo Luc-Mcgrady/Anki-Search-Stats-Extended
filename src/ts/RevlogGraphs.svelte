@@ -6,9 +6,13 @@
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
+    import type { PieDatum } from "./pie"
+    import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
+    import Pie from "./Pie.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
+    export let addedCards: Record<number, number>
 
     let id_card_data: Record<number, CardData>
     let review_day_times: number[]
@@ -20,6 +24,7 @@
     let burden_change: number[]
     let day_forgotten: number[]
     let remaining_forgotten: number
+    let intervals: number[][]
 
     const rollover = $other.rollover * 60 * 60 * 1000
     const day_ms = 1000 * 60 * 60 * 24
@@ -45,12 +50,12 @@
         reintroduced_day_count[today] = 0
         day_forgotten = []
         day_forgotten[today] = 0
+        intervals = []
+        intervals[today] = []
         let forgotten = new Set<number>()
         let card_times: Record<number, number> = {}
         let introduced = new Set<number>()
         let reintroduced = new Set<number>()
-        let intervals: number[][] = []
-        intervals[today] = []
         let last_cids: Record<number, Revlog> = {}
         let introduced_day_total_count: number[]
 
@@ -175,6 +180,34 @@
         tick_spacing: 5,
     }
 
+    let time_machine_pie: PieDatum[]
+    $: time_machine_intervals = intervals[today + scroll] ?? []
+    $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21))
+    $: time_machine_mature = _.sum(time_machine_intervals.slice(21))
+    $: time_machine_added = Object.entries(addedCards).reduce(
+        (p, [i, v]) => p + (parseInt(i) <= scroll ? v : 0),
+        0
+    )
+    console.log({ addedCards })
+    $: time_machine_min = _.min(Object.entries(addedCards).map(([k, v]) => parseInt(k))) ?? 0
+    $: time_machine_pie = [
+        {
+            label: "Young",
+            value: time_machine_young,
+            colour: YOUNG_COLOUR,
+        },
+        {
+            label: "Mature",
+            value: time_machine_mature,
+            colour: MATURE_COLOUR,
+        },
+        {
+            label: "New",
+            value: time_machine_added - time_machine_young - time_machine_mature,
+            colour: "#6baed6",
+        },
+    ]
+
     let pieLast = 59
     let pieSteps = 10
 </script>
@@ -248,4 +281,9 @@
         period of time (improvement) while a red bar shows an increase. This graph is very
         susceptible to rounding errors.
     </p>
+</GraphContainer>
+<GraphContainer>
+    <h1>Card Count Time Machine</h1>
+    <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"}></Pie>
+    <input type="range" min={time_machine_min} max={0} bind:value={scroll} />
 </GraphContainer>

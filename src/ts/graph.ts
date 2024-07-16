@@ -8,3 +8,6 @@ export function defaultGraphBounds() {
         marginBottom: 25,
     }
 }
+
+export const MATURE_COLOUR = "#31a354"
+export const YOUNG_COLOUR = "#74c476"

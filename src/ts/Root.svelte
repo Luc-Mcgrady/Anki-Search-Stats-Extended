@@ -111,8 +111,12 @@
         <h1>Loading Card Data Stats...</h1>
     {/if}
     {#if $showRevlogStats}
-        {#if $revlogs && $card_data}
-            <RevlogGraphs revlogData={$revlogs} cardData={$card_data} />
+        {#if $revlogs && $card_data && $data?.added}
+            <RevlogGraphs
+                revlogData={$revlogs}
+                cardData={$card_data}
+                addedCards={$data.added.added}
+            />
         {:else}
             <h1>Loading Review Stats...</h1>
         {/if}
