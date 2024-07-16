@@ -6,7 +6,6 @@
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
-    import { QueuedCards_QueuedCard } from "./proto/anki/scheduler_pb"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -14,7 +13,6 @@
     let id_card_data: Record<number, CardData>
     let review_day_times: number[]
     let review_day_count: number[]
-    //let card_counts: Record<number, number> = {}
     let revlog_times: number[]
     let introduced_day_count: number[]
     let reintroduced_day_count: number[]
@@ -117,8 +115,6 @@
             const key = Math.floor(card_time / 1000)
             revlog_times[key] = (revlog_times[key] ?? 0) + 1
         }
-
-        console.log({ intervals, burden, burden_change })
 
         remaining_forgotten = forgotten.size
     }
