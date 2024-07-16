@@ -1,13 +1,17 @@
 <script lang="ts">
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalPie from "./IntervalPie.svelte"
-    import type { Revlog } from "./search"
+    import type { CardData, Revlog } from "./search"
     import { burdenOrLoad, other } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
+    import { QueuedCards_QueuedCard } from "./proto/anki/scheduler_pb"
 
-    export let revlog_data: Revlog[]
+    export let revlogData: Revlog[]
+    export let cardData: CardData[]
+
+    let id_card_data: Record<number, CardData>
     let review_day_times: number[]
     let review_day_count: number[]
     //let card_counts: Record<number, number> = {}
@@ -22,6 +26,13 @@
     const rollover = $other.rollover * 60 * 60 * 1000
     const day_ms = 1000 * 60 * 60 * 24
     const today = Math.floor((Date.now() - rollover) / day_ms)
+
+    $: {
+        id_card_data = {}
+        for (const card of cardData) {
+            id_card_data[card.id] = card
+        }
+    }
 
     $: {
         revlog_times = []
@@ -45,7 +56,7 @@
         let last_cids: Record<number, Revlog> = {}
         let introduced_day_total_count: number[]
 
-        for (const revlog of revlog_data) {
+        for (const revlog of revlogData) {
             const day = Math.floor((revlog.id - rollover) / day_ms)
 
             card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
@@ -70,19 +81,21 @@
             }
         }
 
-        for (const revlog of revlog_data.reverse()) {
+        for (const revlog of revlogData.reverse()) {
             const day = Math.floor((revlog.id - rollover) / day_ms)
 
             const after_review = last_cids[revlog.cid]
-            
+            // If the card is still learning, use the card data
+            const ivl = after_review ? revlog.ivl : id_card_data[revlog.cid].ivl
+
             for (const intervalDay of _.range(
                 day,
                 Math.floor((after_review?.id - rollover) / day_ms) || today + 1
             )) {
                 intervals[intervalDay] = intervals[intervalDay] ?? []
-                intervals[intervalDay][revlog.ivl] = (intervals[intervalDay][revlog.ivl] ?? 0) + 1
+                intervals[intervalDay][ivl] = (intervals[intervalDay][ivl] ?? 0) + 1
             }
-            
+
             last_cids[revlog.cid] = revlog
         }
 

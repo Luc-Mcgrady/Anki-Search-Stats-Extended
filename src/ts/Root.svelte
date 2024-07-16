@@ -107,10 +107,12 @@
     {/if}
     {#if $card_data}
         <CardDataPies cardData={$card_data} />
+    {:else}
+        <h1>Loading Card Data Stats...</h1>
     {/if}
     {#if $showRevlogStats}
-        {#if $revlogs}
-            <RevlogGraphs revlog_data={$revlogs} />
+        {#if $revlogs && $card_data}
+            <RevlogGraphs revlogData={$revlogs} cardData={$card_data} />
         {:else}
             <h1>Loading Review Stats...</h1>
         {/if}
