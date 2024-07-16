@@ -6,6 +6,7 @@ Like the new anki stats screen? Want more? This is the addon for you.
      
 - loadDelayMs: The number of ms to delay before displaying the search stats, Increasing this can help if the search stats appear above the regular stats (Though even with 0ms this doesn't tend to happen)
 - burdenNotLoad: If true, replaces the word "Load" with "Burden" in many places to be consistent with SuperMemo https://supermemo.guru/wiki/Burden
+- confirmExpensiveStats: If true, graphs which itterate over every review for the cards in the selection will be hidden by default prompting the user to press a button to load them. 
 
 ## The Graphs
 
@@ -37,6 +38,26 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/db56bfec-6fe1-47d0-987c-c0c79f5bf876)
 
+### Time Distribution/Total
+
+![image](https://github.com/user-attachments/assets/15e1e948-c869-4af9-b20f-6f55708d1a23)
+
+### Review Speed Trend
+
+![image](https://github.com/user-attachments/assets/02c08574-a100-48b6-9c75-3e3e8a5d3aec)
+
+### Introduced/Forgotten
+
+![image](https://github.com/user-attachments/assets/b8110b00-7c56-42e6-a163-03676c0e75f9)
+
+### Burden Trend
+
+![image](https://github.com/user-attachments/assets/acad50ec-72b1-4041-a5af-b63ad3e4fa67)
+
+### Card Count / Interval Time Machines
+
+![image](https://github.com/user-attachments/assets/a8804de9-c60e-412d-8bf0-7c04e1a2423c)
+
 ## Development
 
 Building this with make addon works on linux and will probably work on mac 
@@ -46,10 +67,9 @@ Clone this repo recursively (It contains all anki's source files, sorry)
 https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive
 ```
 
-run make to setup source files
-
 ### Linux / Mac
 
+run make to setup source files
 ```
 make
 ``` 
