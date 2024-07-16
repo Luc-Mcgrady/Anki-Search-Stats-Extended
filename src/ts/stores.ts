@@ -42,4 +42,10 @@ const updateRevlogs = () => {
 searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
 cids.subscribe(updateRevlogs)
 showRevlogStats.subscribe(updateRevlogs)
-showRevlogStats.subscribe(() => tooltip.update(($tooltip) => ({ text: $tooltip.text, x: 0, y: 0 })))
+tooltipShown.subscribe(() =>
+    setTimeout(() => {
+        if (!get(tooltipShown)) {
+            tooltip.update(($tooltip) => ({ text: $tooltip.text, x: 0, y: 0 }))
+        }
+    }, 1000)
+)
