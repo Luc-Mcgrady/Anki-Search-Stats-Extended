@@ -14,6 +14,7 @@
     let revlog_times: number[]
     let introduced_day_count: number[]
     let reintroduced_day_count: number[]
+    let burden: number[]
     let burden_change: number[]
     let day_forgotten: number[]
     let remaining_forgotten: number
@@ -39,15 +40,15 @@
         let card_times: Record<number, number> = {}
         let introduced = new Set<number>()
         let reintroduced = new Set<number>()
-        let interval_change: number[][] = []
-        interval_change[today] = []
+        let intervals: number[][] = []
+        intervals[today] = []
         let last_cids: Record<number, Revlog> = {}
         let introduced_day_total_count: number[]
 
         for (const revlog of revlog_data) {
-            card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
-
             const day = Math.floor((revlog.id - rollover) / day_ms)
+
+            card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
 
             review_day_times[day] = (review_day_times[day] ?? 0) + revlog.time
             review_day_count[day] = (review_day_count[day] ?? 0) + 1
@@ -67,21 +68,22 @@
                 reintroduced.add(revlog.cid)
                 forgotten.delete(revlog.cid)
             }
+        }
 
-            const last_review = last_cids[revlog.cid]
-            const last_interval = last_review?.ivl > 0 ? last_review.ivl : 0
-            // Anki bug?!? when rescheduling the last_ivl isn't reset for the next revlog if the card is manually rescheduled so I cant use lastIvl
-            interval_change[day] = interval_change[day] ?? []
+        for (const revlog of revlog_data.reverse()) {
+            const day = Math.floor((revlog.id - rollover) / day_ms)
 
-            if (revlog.ivl == 0 && last_review) {
-                interval_change[day][last_interval] = (interval_change[day][last_interval] ?? 0) - 1
-                delete last_cids[revlog.cid]
-            } else if (revlog.ivl > 0) {
-                interval_change[day][last_interval] = (interval_change[day][last_interval] ?? 0) - 1
-                interval_change[day][revlog.ivl] = (interval_change[day][revlog.ivl] ?? 0) + 1
-
-                last_cids[revlog.cid] = revlog
+            const after_review = last_cids[revlog.cid]
+            
+            for (const intervalDay of _.range(
+                day,
+                Math.floor((after_review?.id - rollover) / day_ms) || today + 1
+            )) {
+                intervals[intervalDay] = intervals[intervalDay] ?? []
+                intervals[intervalDay][revlog.ivl] = (intervals[intervalDay][revlog.ivl] ?? 0) + 1
             }
+            
+            last_cids[revlog.cid] = revlog
         }
 
         let running_total = 0
@@ -90,15 +92,20 @@
             return running_total
         })
 
-        burden_change = interval_change.map((v, i) => {
+        burden = intervals.map((v, i) => {
+            v[0] = 0
             delete v[0]
             return _.sum(v.map((val, ivl) => val / ivl))
         })
+
+        burden_change = burden.map((v, i) => v - (burden[i - 1] || 0))
 
         for (const card_time of Object.values(card_times)) {
             const key = Math.floor(card_time / 1000)
             revlog_times[key] = (revlog_times[key] ?? 0) + 1
         }
+
+        console.log({ intervals, burden, burden_change })
 
         remaining_forgotten = forgotten.size
     }
@@ -109,7 +116,7 @@
     let scrollOffset = bins * binSize - bins
     $: start = today - bins * binSize - scroll
 
-    $: burden_start = _.sum(burden_change.slice(0, start)) ?? 0
+    $: burden_start = burden[start] ?? 0
 
     $: speed_trend_bar = {
         row_colours: ["#fcba03"],

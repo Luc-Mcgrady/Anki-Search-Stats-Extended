@@ -38,7 +38,6 @@
                     .slice(i * binSize, (i + 1) * binSize)
                     .reduce((p, n) => p + (_.sum(n.values) > 0 ? 1 : 0), 0)
 
-                console.log({ bar, count })
                 bar.values = bar.values.map((a) => a / (count || 1))
             })
         }
