@@ -136,7 +136,7 @@
 
     $: speed_trend_bar = {
         row_colours: ["#fcba03"],
-        row_labels: ["Speed Per Review (s)"],
+        row_labels: ["Time Spent Per Review (s)"],
         data: Array.from(review_day_count).map((data, i) => ({
             label: (i - today - scrollOffset).toString(),
             values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
