@@ -49,3 +49,19 @@
 </div>
 
 <svg bind:this={svg}></svg>
+
+<style>
+    div.options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5em 1em;
+        align-items: baseline;
+    }
+
+    label {
+        display: grid;
+        align-items: baseline;
+        white-space: nowrap;
+        gap: 0.5em;
+    }
+</style>
