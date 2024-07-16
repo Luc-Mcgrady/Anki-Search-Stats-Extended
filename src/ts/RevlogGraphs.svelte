@@ -127,10 +127,11 @@
     }
 
     let scroll = 0
+    $: realScroll = -Math.abs(scroll)
     let bins = 30
     let binSize = 1
     let scrollOffset = bins * binSize - bins
-    $: start = today - bins * binSize - scroll
+    $: start = today - bins * binSize - realScroll
 
     $: burden_start = burden[start] ?? 0
 
@@ -183,11 +184,11 @@
     }
 
     let time_machine_pie: PieDatum[]
-    $: time_machine_intervals = intervals[today + scroll] ?? []
+    $: time_machine_intervals = intervals[today + realScroll] ?? []
     $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21))
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21))
     $: time_machine_added = Object.entries(addedCards).reduce(
-        (p, [i, v]) => p + (parseInt(i) <= scroll ? v : 0),
+        (p, [i, v]) => p + (parseInt(i) <= realScroll ? v : 0),
         0
     )
     console.log({ addedCards })
@@ -300,7 +301,7 @@
     <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"}></Pie>
     <label>
         <span>
-            {-scroll} days ago:
+            {-realScroll} days ago:
         </span>
         <span class="scroll">
             {time_machine_min}
