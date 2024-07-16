@@ -289,8 +289,9 @@
     <h1>{$burdenOrLoad} Trend</h1>
     <Candlestick data={burden_change_candlestick} bind:bins bind:binSize bind:offset={scroll} />
     <p>
-        This shows the change in burden over time. A green bar shows a decrease in burden for that
-        period of time (improvement) while a red bar shows an increase.
+        This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
+        in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
+        an increase.
     </p>
 </GraphContainer>
 <GraphContainer>
