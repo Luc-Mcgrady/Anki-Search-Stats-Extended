@@ -190,7 +190,6 @@
         (p, [i, v]) => p + (parseInt(i) <= realScroll ? v : 0),
         0
     )
-    console.log({ addedCards })
     $: time_machine_min = _.min(Object.entries(addedCards).map(([k, v]) => parseInt(k))) ?? 0
     $: time_machine_pie = [
         {
