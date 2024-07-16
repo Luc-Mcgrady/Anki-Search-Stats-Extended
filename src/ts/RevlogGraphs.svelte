@@ -130,7 +130,7 @@
     let bins = 30
     let binSize = 1
     let scrollOffset = bins * binSize - bins
-    $: start = today - bins * binSize - realScroll
+    $: start = today - bins * binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
 
