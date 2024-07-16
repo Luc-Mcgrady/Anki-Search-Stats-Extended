@@ -307,6 +307,7 @@
             0
         </span>
     </label>
+    <span>Total: {time_machine_added}</span>
     <p>Shows your card type counts for a given date</p>
 </GraphContainer>
 <GraphContainer>
