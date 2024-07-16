@@ -2,6 +2,7 @@ import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { getCardData, search } from "./search"
 import {
     card_data,
+    cids,
     data,
     learn_data,
     mature_data,
@@ -63,7 +64,11 @@ export function patchFetch() {
             const search_request = decodeRequest(origBody)
 
             searchString.set(search_request?.search)
-            search(search_request?.search).then(getCardData).then(card_data.set)
+
+            const cidSearch = search(search_request?.search)
+
+            cidSearch.then(getCardData).then(card_data.set)
+            cidSearch.then(cids.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set)
             fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)

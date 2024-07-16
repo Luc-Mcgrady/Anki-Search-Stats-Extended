@@ -14,9 +14,14 @@ def new_refresh(self: NewDeckStats):
         innerCss = f.read()
 
     config = mw.addonManager.getConfig(__name__)
+    other = {
+        "rollover": mw.col.get_preferences().scheduling.rollover,
+        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs
+    }
     setVars = (
         f"const css = `{innerCss}`;" 
         f"const SSEconfig = {json.dumps(config)};"
+        f"const SSEother = {json.dumps(other)};"
     )
     self.form.web.eval(setVars + innerJs)
 
@@ -49,10 +54,13 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
-def scheduler_config() -> bytes:
-    return Response(json.dumps({
-        "rollover": mw.col.get_preferences().scheduling.rollover,
-        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs
-    }))
+REVLOG_COLUMNS = ["id", "cid", "usn", "ease", "ivl", "lastIvl", "factor", "time", "type"]
 
-post_handlers["schedulerConfig"] = scheduler_config
+def revlogs() -> bytes:
+    cards = request.data.strip(b"[]").decode()
+    revlogs = mw.col.db.all(f"SELECT * FROM revlog WHERE cid IN ({cards}) ORDER BY id")
+    revlogs = [{k: v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
+    return Response(json.dumps(revlogs))
+
+post_handlers["revlogs"] = revlogs
+

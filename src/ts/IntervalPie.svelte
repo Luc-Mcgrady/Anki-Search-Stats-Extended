@@ -11,6 +11,7 @@
     export let legend_right = "Cards"
     export let countDescriptor = "Last Day"
     export let totalDescriptor = "Cards"
+    export let include_suspended_option = true
 
     export let steps = 7
     export let last = 21
@@ -40,6 +41,7 @@
 
     export let spectrumFrom = "#74C476"
     export let spectrumTo = "#014720"
+    export let fillerColour = "gold"
 
     $: {
         gradient.setNumberRange(0, steps + 1)
@@ -66,7 +68,7 @@
                 .filter(([i, _]) => parseInt(i) >= filler_start && parseInt(i) <= filler_end)
                 .reduce((n, [_, v]) => n + v, 0)
 
-            pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, "gold"))
+            pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, fillerColour))
         }
         const infinite_pie_start = last + 1
 
@@ -90,10 +92,12 @@
         <input type="number" bind:value={steps} />
     </label>
 </div>
-<label class="checkbox">
-    <input type="checkbox" bind:checked={$include_suspended} />
-    Include suspended
-</label>
+{#if include_suspended_option}
+    <label class="checkbox">
+        <input type="checkbox" bind:checked={$include_suspended} />
+        Include suspended
+    </label>
+{/if}
 <slot />
 <br />
 <Pie data={pie_data} {legend_left} {legend_right}></Pie>

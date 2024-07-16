@@ -3,6 +3,7 @@
     import Bar from "./Bar.svelte"
     import type { BarDatum } from "./bar"
     import type { GraphsResponse_FutureDue } from "./proto/anki/stats_pb"
+    import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
 
     export let all: GraphsResponse_FutureDue
     export let mature: GraphsResponse_FutureDue
@@ -40,8 +41,10 @@
 
 <Bar
     data={{
-        row_colours: ["#31a354", "#74c476", "#fb6a4a", "#fd8d3c"],
+        row_colours: [MATURE_COLOUR, YOUNG_COLOUR, "#fb6a4a", "#fd8d3c"],
         row_labels: ["Mature", "Young", "Relearning", "Learning"],
         data: bars,
+        tick_spacing: 5,
+        isDate: true,
     }}
 ></Bar>

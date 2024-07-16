@@ -1,4 +1,5 @@
 {
     "loadDelayMs": 100,
-    "burdenNotLoad": false
+    "burdenNotLoad": false,
+    "confirmExpensiveStats": true
 }

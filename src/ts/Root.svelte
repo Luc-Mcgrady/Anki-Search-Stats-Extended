@@ -6,7 +6,6 @@
     import RetentionPie from "./RetentionPie.svelte"
     import CustomPie from "./CustomPie.svelte"
     import IntraDayDueBar from "./IntraDayDueBar.svelte"
-    import { patchFetch } from "./root"
     import {
         data,
         learn_data,
@@ -17,9 +16,14 @@
         card_data,
         include_suspended,
         burdenOrLoad,
+        revlogs,
+        tooltip,
+        showRevlogStats,
+        tooltipShown,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
+    import RevlogGraphs from "./RevlogGraphs.svelte"
 
     let interval_last = 21
     let interval_steps = 7
@@ -102,19 +106,76 @@
     {/if}
     {#if $card_data}
         <CardDataPies cardData={$card_data} />
+    {:else}
+        <h1>Loading Card Data Stats...</h1>
     {/if}
+    {#if $showRevlogStats}
+        {#if $revlogs && $card_data && $data?.added}
+            <RevlogGraphs
+                revlogData={$revlogs}
+                cardData={$card_data}
+                addedCards={$data.added.added}
+            />
+        {:else}
+            <h1>Preparing Review Stats...</h1>
+        {/if}
+    {:else}
+        <GraphContainer>
+            <div class="loadOption">
+                <h1>Review Graphs</h1>
+
+                <span>These statistics can take time to prepare.</span>
+                <button on:click={() => ($showRevlogStats = true)}>Prepare Graphs</button>
+                <span>
+                    To load these graphs by default, set "confirmExpensiveStats" to false in the
+                    addon config.
+                </span>
+            </div>
+        </GraphContainer>
+    {/if}
+
+    <div
+        class="tooltip"
+        style:opacity={$tooltipShown ? 1 : 0}
+        style:left={`${$tooltip.x}px`}
+        style:top={`${$tooltip.y}px`}
+    >
+        {#each $tooltip?.text ?? [] as text}
+            <span>{text}</span>
+            <br />
+        {/each}
+    </div>
 </div>
 
 <style lang="scss">
-    p {
-        font-size: small;
-        margin-top: 1em;
+    div.tooltip {
+        position: absolute;
+        opacity: 0;
+        white-space: nowrap;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 15px;
+        pointer-events: none;
+        transition: opacity var(--transition);
+        color: var(--fg);
+        background: var(--canvas-overlay);
     }
 
-    h1 {
-        border-bottom: 1px var(--border) solid;
-    }
+    div.loadOption {
+        background-color: rgba(255, 136, 0, 0.116);
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
 
+        border-radius: var(--border-radius-medium, 10px);
+        margin: -1em;
+        padding: 1em;
+
+        button {
+            font-size: 2em;
+            font-weight: 900;
+        }
+    }
     // Copied from anki/ts/graphs/GraphsPage.svelte
     .graphs-container {
         display: grid;
