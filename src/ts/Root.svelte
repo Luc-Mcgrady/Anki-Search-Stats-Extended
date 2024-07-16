@@ -6,7 +6,6 @@
     import RetentionPie from "./RetentionPie.svelte"
     import CustomPie from "./CustomPie.svelte"
     import IntraDayDueBar from "./IntraDayDueBar.svelte"
-    import { patchFetch } from "./root"
     import {
         data,
         learn_data,

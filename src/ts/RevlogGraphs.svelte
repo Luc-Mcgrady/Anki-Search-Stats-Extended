@@ -10,7 +10,6 @@
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import type { BarChart } from "./bar"
-    import Bar from "./Bar.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
