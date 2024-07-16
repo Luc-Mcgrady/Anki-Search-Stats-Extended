@@ -22,7 +22,12 @@ export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)
 
-searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
+export let tooltip = writable<Tooltip>({
+    text: [""],
+    x: 0,
+    y: 0,
+})
+export let tooltipShown = writable(false)
 
 const updateRevlogs = () => {
     const $cids = get(cids)
@@ -34,12 +39,7 @@ const updateRevlogs = () => {
     }
 }
 
+searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats ?? false))
 cids.subscribe(updateRevlogs)
 showRevlogStats.subscribe(updateRevlogs)
-
-export let tooltip = writable<Tooltip>({
-    text: [""],
-    x: 0,
-    y: 0,
-})
-export let tooltipShown = writable(false)
+showRevlogStats.subscribe(() => tooltip.update(($tooltip) => ({ text: $tooltip.text, x: 0, y: 0 })))
