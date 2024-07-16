@@ -9,6 +9,8 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
+    import type { BarChart } from "./bar"
+    import Bar from "./Bar.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -208,6 +210,17 @@
         },
     ]
 
+    let time_machine_bar: BarChart
+    $: time_machine_bar = {
+        row_colours: ["#70AFD6"],
+        row_labels: ["Cards"],
+        data: Array.from(time_machine_intervals).map((v, i) => ({
+            values: [v ?? 0],
+            label: i.toString(),
+        })),
+        tick_spacing: 5,
+    }
+
     let pieLast = 59
     let pieSteps = 10
 </script>
@@ -296,6 +309,21 @@
         </span>
     </label>
     <p>Shows your card type counts for a given date</p>
+</GraphContainer>
+<GraphContainer>
+    <h1>Review Interval Time Machine</h1>
+    <BarScrollable data={time_machine_bar} left_aligned />
+    <label>
+        <span>
+            {new Date(Date.now() + scroll * day_ms).toLocaleDateString()}:
+        </span>
+        <span class="scroll">
+            {time_machine_min}
+            <input type="range" min={time_machine_min} max={0} bind:value={scroll} />
+            0
+        </span>
+    </label>
+    <p>Shows your review intervals for a given date</p>
 </GraphContainer>
 
 <style>

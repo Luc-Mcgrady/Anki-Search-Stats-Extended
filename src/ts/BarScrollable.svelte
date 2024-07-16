@@ -10,13 +10,16 @@
     export let offset = 0
     export let bins = 30
     export let average = false
+    export let left_aligned = false
 
-    $: realOffset = Math.abs(offset)
+    $: realOffset = left_aligned
+        ? Math.abs(offset) - data.data.length + bins * binSize + 1
+        : -Math.abs(offset)
 
     $: binSize = binSize > 0 ? binSize : 1
     $: seperate_bars = data.data.slice(
-        -(bins * binSize) - realOffset,
-        realOffset == 0 ? undefined : -realOffset
+        -(bins * binSize) + realOffset,
+        realOffset == 0 ? undefined : realOffset
     )
 
     let bars: BarDatum[]
