@@ -194,8 +194,14 @@
         bind:steps={pieSteps}
         fillerColour={"blue"}
         legend_left={"Time (s)"}
+        include_suspended_option={false}
     ></IntervalPie>
     <p>How many cards have taken the given amount of time to answer over every review</p>
+    <p>
+        In order to exclude suspended cards from this or the following graphs, you will need to
+        manually add "-is:suspended" to your search Please consider that this may cause
+        inconsistencies if you leave it off for the above graphs
+    </p>
 </GraphContainer>
 <GraphContainer>
     <h1>Time Totals</h1>
@@ -210,6 +216,7 @@
         legend_left={"Per card (s)"}
         legend_right={"Total (s)"}
         totalDescriptor={"Seconds"}
+        include_suspended_option={false}
     ></IntervalPie>
     <p>
         The quantity of time that has been spent on cards which have taken the given amount of time

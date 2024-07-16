@@ -11,6 +11,7 @@
     export let legend_right = "Cards"
     export let countDescriptor = "Last Day"
     export let totalDescriptor = "Cards"
+    export let include_suspended_option = true
 
     export let steps = 7
     export let last = 21
@@ -91,10 +92,12 @@
         <input type="number" bind:value={steps} />
     </label>
 </div>
-<label class="checkbox">
-    <input type="checkbox" bind:checked={$include_suspended} />
-    Include suspended
-</label>
+{#if include_suspended_option}
+    <label class="checkbox">
+        <input type="checkbox" bind:checked={$include_suspended} />
+        Include suspended
+    </label>
+{/if}
 <slot />
 <br />
 <Pie data={pie_data} {legend_left} {legend_right}></Pie>
