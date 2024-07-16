@@ -285,5 +285,30 @@
 <GraphContainer>
     <h1>Card Count Time Machine</h1>
     <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"}></Pie>
-    <input type="range" min={time_machine_min} max={0} bind:value={scroll} />
+    <label>
+        <span>
+            {-scroll} days ago:
+        </span>
+        <span class="scroll">
+            {time_machine_min}
+            <input type="range" min={time_machine_min} max={0} bind:value={scroll} />
+            0
+        </span>
+    </label>
+    <p>Shows your card type counts for a given date</p>
 </GraphContainer>
+
+<style>
+    label {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.5em 1em;
+        align-items: baseline;
+        width: 100%;
+    }
+    .scroll {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.5em 1em;
+    }
+</style>
