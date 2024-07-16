@@ -117,16 +117,15 @@
                 addedCards={$data.added.added}
             />
         {:else}
-            <h1>Loading Review Stats...</h1>
+            <h1>Preparing Review Stats...</h1>
         {/if}
     {:else}
         <GraphContainer>
             <div class="loadOption">
-                <h1>Slow stats</h1>
+                <h1>Review Graphs</h1>
 
-                <span>Slower machines can hang while calculating these statistics</span>
-                <button on:click={() => ($showRevlogStats = true)}>Load Slow Graphs</button>
-
+                <span>These statistics can take time to prepare.</span>
+                <button on:click={() => ($showRevlogStats = true)}>Prepare Graphs</button>
                 <span>
                     To load these graphs by default, set "confirmExpensiveStats" to false in the
                     addon config.

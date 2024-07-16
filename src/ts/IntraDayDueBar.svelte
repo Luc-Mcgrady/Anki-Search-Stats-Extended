@@ -11,8 +11,6 @@
     let next_card_time: Date | null = null
     let next_card_time_until: string = ""
 
-    const hour = 60 * 60
-
     async function fetchCards(parentSearch: string): Promise<BarDatum[]> {
         const due_today_learn = await search(
             searchJoin(parentSearch, "prop:due=0 is:learn -is:review")

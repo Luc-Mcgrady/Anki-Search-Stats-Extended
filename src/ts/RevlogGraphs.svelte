@@ -241,8 +241,8 @@
     <p>How many cards have taken the given amount of time to answer over every review</p>
     <p>
         In order to exclude suspended cards from this or the following graphs, you will need to
-        manually add "-is:suspended" to your search Please consider that this may cause
-        inconsistencies if you leave it off for the above graphs
+        manually add "-is:suspended" to your search. Please consider that this may cause
+        inconsistencies if you leave it off for the above graphs.
     </p>
 </GraphContainer>
 <GraphContainer>
@@ -291,8 +291,7 @@
     <Candlestick data={burden_change_candlestick} bind:bins bind:binSize bind:offset={scroll} />
     <p>
         This shows the change in burden over time. A green bar shows a decrease in burden for that
-        period of time (improvement) while a red bar shows an increase. This graph is very
-        susceptible to rounding errors.
+        period of time (improvement) while a red bar shows an increase.
     </p>
 </GraphContainer>
 <GraphContainer>
