@@ -1,7 +1,7 @@
 export function defaultGraphBounds() {
     return {
-        width: 600,
-        height: 250,
+        width: SSEconfig.barWidth ?? 600,
+        height: SSEconfig.barHeight ?? 250,
         marginLeft: 70,
         marginRight: 70,
         marginTop: 20,
