@@ -34,9 +34,6 @@
         overflow: hidden;
     }
 
-    .graph :global(svg) {
-        max-height: 90vh;
-    }
     .graph :global(p) {
         font-size: small;
         margin-top: 1em;
