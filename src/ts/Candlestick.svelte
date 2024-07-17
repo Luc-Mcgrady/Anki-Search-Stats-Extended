@@ -57,18 +57,17 @@
 
     div.options {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 0.5em;
+        grid-template-columns: auto 1fr auto 1fr;
+        grid-template-areas: "a a b b";
+        gap: 0.5em;
         align-items: baseline;
-        padding-right: 0.5em;
     }
 
     label {
-        display: grid;
+        display: contents;
+    }
 
-        grid-template-columns: auto 1fr;
-        align-items: baseline;
-        white-space: nowrap;
-        gap: 0.5em;
+    input {
+        min-width: 5em;
     }
 </style>
