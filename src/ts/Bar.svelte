@@ -34,7 +34,4 @@
         display: flex;
         gap: 1em;
     }
-    svg {
-        max-height: 70vh;
-    }
 </style>

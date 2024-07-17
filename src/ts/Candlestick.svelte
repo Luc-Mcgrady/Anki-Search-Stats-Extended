@@ -51,10 +51,6 @@
 <svg bind:this={svg}></svg>
 
 <style>
-    svg {
-        max-height: 70vh;
-    }
-
     div.options {
         display: grid;
         grid-template-columns: auto 1fr auto 1fr;
