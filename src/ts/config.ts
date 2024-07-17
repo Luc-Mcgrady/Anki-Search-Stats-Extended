@@ -2,6 +2,8 @@ type SSEconfig = Partial<{
     loadDelayMs: number
     burdenNotLoad: boolean
     confirmExpensiveStats: boolean
+    barWidth: number
+    barHeight: number
 }>
 
 interface SSEother {

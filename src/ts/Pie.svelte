@@ -10,15 +10,17 @@
     export let legend_left = ""
     export let legend_right = ""
 
-    $: renderPie(data, svg as any, bounds.height / 2)
+    const diameter = 250
+
+    $: renderPie(data, svg as any, diameter / 2)
 </script>
 
 <div class="root">
-    <svg width={bounds.height} height={bounds.height}>
-        <g transform={`translate(${bounds.height / 2},${bounds.height / 2})`} bind:this={svg}></g>
+    <svg width={diameter} height={diameter}>
+        <g transform={`translate(${diameter / 2},${diameter / 2})`} bind:this={svg}></g>
     </svg>
 
-    <div style:max-height={`${bounds.height}px`} class="glossary">
+    <div style:max-height={`${diameter}px`} class="glossary">
         <div class="grid">
             <span></span>
             <span>{legend_left}:</span>
