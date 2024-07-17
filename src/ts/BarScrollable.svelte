@@ -64,12 +64,15 @@
     div.options {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0.5em 1em;
+        grid-gap: 0.5em;
         align-items: baseline;
+        padding-right: 0.5em;
     }
 
     label {
         display: grid;
+
+        grid-template-columns: auto 1fr;
         align-items: baseline;
         white-space: nowrap;
         gap: 0.5em;
