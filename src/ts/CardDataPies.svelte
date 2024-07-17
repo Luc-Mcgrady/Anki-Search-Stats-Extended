@@ -74,7 +74,6 @@
         spectrumTo={"#612207"}
         intervals={lapses_burden}
     >
-        <br />
         <ZeroInclusive />
     </IntervalPie>
     <p>
@@ -96,7 +95,6 @@
         spectrumTo={"#612207"}
         intervals={lapses}
     >
-        <br />
         <ZeroInclusive />
     </IntervalPie>
     <p>
@@ -121,7 +119,6 @@
         spectrumTo={"#612207"}
         intervals={lapses.map((e, i) => e * i)}
     >
-        <br />
         <ZeroInclusive />
     </IntervalPie>
     <p>
