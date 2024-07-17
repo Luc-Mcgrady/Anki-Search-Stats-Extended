@@ -27,6 +27,11 @@
         transition: box-shadow var(--transition) ease-in-out;
         page-break-inside: avoid;
         padding: 1em;
+
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        overflow: hidden;
     }
 
     .graph :global(p) {

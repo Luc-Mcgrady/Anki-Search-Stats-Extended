@@ -26,7 +26,6 @@ export function createAxis(
     tick_spacing: number = 1
 ) {
     const bounds = defaultGraphBounds()
-    bounds.width = 500
 
     d3.select(svg).selectAll("g").remove()
 
