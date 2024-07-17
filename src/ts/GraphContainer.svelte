@@ -20,6 +20,7 @@
     // Copied from anki/ts/graphs/TitledContainer.svelte
     .container {
         width: 100%;
+        max-height: 90vh;
         background: var(--canvas-elevated);
         border: 1px solid var(--border-subtle);
         border-radius: var(--border-radius-medium, 10px);
@@ -27,6 +28,11 @@
         transition: box-shadow var(--transition) ease-in-out;
         page-break-inside: avoid;
         padding: 1em;
+
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        overflow: hidden;
     }
 
     .graph :global(p) {

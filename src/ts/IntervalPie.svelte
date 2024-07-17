@@ -93,7 +93,7 @@
     </label>
 </div>
 {#if include_suspended_option}
-    <label class="checkbox">
+    <label class="checkbox include-suspended">
         <input type="checkbox" bind:checked={$include_suspended} />
         Include suspended
     </label>
@@ -135,5 +135,10 @@
 
     label.checkbox {
         user-select: none;
+    }
+
+    label.include-suspended {
+        display: block;
+        margin-top: 0.5em;
     }
 </style>
