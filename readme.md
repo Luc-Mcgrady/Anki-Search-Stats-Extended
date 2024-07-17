@@ -78,7 +78,7 @@ Then every-time you make any changes run make again.
 
 ### Windows
 
-You need to copy ./anki/sass to ./sass then generate the proto files by running
+You need to make the file `src/ts/proto` and then generate the proto files by running
 
 ```sh
 npm i
