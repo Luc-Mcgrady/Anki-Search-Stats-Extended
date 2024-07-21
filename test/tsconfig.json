@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "rootDirs": [
+            "../src/ts",
+            "../anki/ts"
+        ]
+        
+    },
+}
