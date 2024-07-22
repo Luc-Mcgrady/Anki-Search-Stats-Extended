@@ -11,17 +11,17 @@ export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[])
         id_card_data[card.id] = card
     }
 
-    let revlog_times = []
+    let revlog_times: number[] = []
     revlog_times[today] = 0
-    let review_day_times = []
+    let review_day_times: number[] = []
     review_day_times[today] = 0
-    let review_day_count = []
+    let review_day_count: number[] = []
     review_day_count[today] = 0
-    let introduced_day_count = []
+    let introduced_day_count: number[] = []
     introduced_day_count[today] = 0
-    let reintroduced_day_count = []
+    let reintroduced_day_count: number[] = []
     reintroduced_day_count[today] = 0
-    let day_forgotten = []
+    let day_forgotten: number[] = []
     day_forgotten[today] = 0
     let intervals: number[][] = []
     intervals[today] = []
