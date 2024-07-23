@@ -1,30 +1,30 @@
 import _ from "lodash"
 import type { CardData, Revlog } from "./search"
 
-const rollover = SSEother.rollover * 60 * 60 * 1000
+const rollover = (global as any)?.SSEother?.rollover ?? 4
 export const day_ms = 1000 * 60 * 60 * 24
 export const today = Math.floor((Date.now() - rollover) / day_ms)
 
-export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[]) {
+export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[], end: number = today) {
     let id_card_data: Record<number, CardData> = {}
     for (const card of cardData) {
         id_card_data[card.id] = card
     }
 
     let revlog_times: number[] = []
-    revlog_times[today] = 0
+    revlog_times[end] = 0
     let review_day_times: number[] = []
-    review_day_times[today] = 0
+    review_day_times[end] = 0
     let review_day_count: number[] = []
-    review_day_count[today] = 0
+    review_day_count[end] = 0
     let introduced_day_count: number[] = []
-    introduced_day_count[today] = 0
+    introduced_day_count[end] = 0
     let reintroduced_day_count: number[] = []
-    reintroduced_day_count[today] = 0
+    reintroduced_day_count[end] = 0
     let day_forgotten: number[] = []
-    day_forgotten[today] = 0
+    day_forgotten[end] = 0
     let intervals: number[][] = []
-    intervals[today] = []
+    intervals[end] = []
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
     let introduced = new Set<number>()
@@ -65,7 +65,7 @@ export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[])
 
         for (const intervalDay of _.range(
             day,
-            Math.floor((after_review?.id - rollover) / day_ms) || today + 1
+            Math.floor((after_review?.id - rollover) / day_ms) || end + 1
         )) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
             intervals[intervalDay][ivl] = (intervals[intervalDay][ivl] ?? 0) + 1

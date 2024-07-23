@@ -3,7 +3,7 @@
         "rootDirs": [
             "../src/ts",
             "../anki/ts"
-        ]
-        
+        ],
+      "esModuleInterop": true  
     },
 }
