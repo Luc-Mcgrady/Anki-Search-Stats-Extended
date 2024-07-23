@@ -74,10 +74,10 @@ export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[],
         last_cids[revlog.cid] = revlog
     }
 
-    const burden = intervals.map((v, i) => {
+    const burden = Array.from(intervals).map((v) => {
         v[0] = 0
         delete v[0]
-        return _.sum(v.map((val, ivl) => val / ivl))
+        return _.sum(v.map((val, ivl) => val / ivl)) ?? 0
     })
 
     const burden_change = burden.map((v, i) => v - (burden[i - 1] || 0))
