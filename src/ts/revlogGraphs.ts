@@ -1,7 +1,7 @@
 import _ from "lodash"
 import type { CardData, Revlog } from "./search"
 
-const rollover = (global as any)?.SSEother?.rollover ?? 4
+const rollover = SSEother.rollover ?? 4
 export const day_ms = 1000 * 60 * 60 * 24
 export const today = Math.floor((Date.now() - rollover) / day_ms)
 
@@ -64,8 +64,8 @@ export function calculateRevlogStats(
         }
     }
 
-    // "findLast" Used here to iterate backwards, never returns true
-    burden_revlogs.findLast((revlog) => {
+    // "reduceRight" Used here to iterate backwards, never returns true
+    burden_revlogs.reduceRight((_p, revlog) => {
         const day = Math.floor((revlog.id - rollover) / day_ms)
 
         const after_review = last_cids[revlog.cid]
@@ -81,7 +81,9 @@ export function calculateRevlogStats(
         }
 
         last_cids[revlog.cid] = revlog
-    })
+
+        return undefined
+    }, undefined)
 
     const burden = Array.from(intervals).map((v) => {
         v[0] = 0

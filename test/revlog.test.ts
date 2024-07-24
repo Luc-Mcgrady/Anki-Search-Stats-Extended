@@ -3,9 +3,6 @@ import { Revlog } from "../src/ts/search"
 
 let card_id = 0;
 
-global.SSEconfig = {}
-global.SSEother = {rollover: 4}
-
 class RevlogBuilder {
     state: Partial<Revlog>
     constructor() {
