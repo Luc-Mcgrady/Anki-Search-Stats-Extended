@@ -1,6 +1,7 @@
 import _ from "lodash"
 import type { CardData, Revlog } from "./search"
 
+//@ts-ignore
 const rollover = SSEother.rollover ?? 4
 export const day_ms = 1000 * 60 * 60 * 24
 export const today = Math.floor((Date.now() - rollover) / day_ms)
@@ -86,9 +87,12 @@ export function calculateRevlogStats(
     }, undefined)
 
     const burden = Array.from(intervals).map((v) => {
-        v[0] = 0
-        delete v[0]
-        return _.sum(v.map((val, ivl) => val / ivl)) ?? 0
+        if (!v) {
+            return 0
+        } else {
+            delete v[0]
+            return _.sum(v.map((val, ivl) => val / ivl)) ?? 0
+        }
     })
 
     const burden_change = burden.map((v, i) => v - (burden[i - 1] || 0))
