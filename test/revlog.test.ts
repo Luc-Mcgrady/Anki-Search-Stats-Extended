@@ -10,7 +10,6 @@ class RevlogBuilder {
             id: 0,
             cid: card_id++,
             ivl: 0,
-            lastIvl: 0
         }
     }
 
@@ -22,10 +21,6 @@ class RevlogBuilder {
             ivl,
             ease,
             time: time_spent,
-            lastIvl: this.state.ivl,
-            usn: 0,
-            factor: 0,
-            type: ivl == 0 ? 4 : (relearn ? 2 : 1)
         }
 
         return this.state as Revlog
