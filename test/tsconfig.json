@@ -4,6 +4,7 @@
             "../src/ts",
             "../anki/ts"
         ],
-      "esModuleInterop": true  
+        "esModuleInterop": true,
+        "lib": ["ES2023", "DOM"],     
     },
 }

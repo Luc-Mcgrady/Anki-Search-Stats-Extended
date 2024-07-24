@@ -5,7 +5,11 @@ const rollover = (global as any)?.SSEother?.rollover ?? 4
 export const day_ms = 1000 * 60 * 60 * 24
 export const today = Math.floor((Date.now() - rollover) / day_ms)
 
-export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[], end: number = today) {
+export function calculateRevlogStats(
+    revlogData: Revlog[],
+    cardData: CardData[],
+    end: number = today
+) {
     let id_card_data: Record<number, CardData> = {}
     for (const card of cardData) {
         id_card_data[card.id] = card
@@ -30,6 +34,7 @@ export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[],
     let introduced = new Set<number>()
     let reintroduced = new Set<number>()
     let last_cids: Record<number, Revlog> = {}
+    let burden_revlogs: Revlog[] = []
 
     for (const revlog of revlogData) {
         const day = Math.floor((revlog.id - rollover) / day_ms)
@@ -54,9 +59,13 @@ export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[],
             reintroduced.add(revlog.cid)
             forgotten.delete(revlog.cid)
         }
+        if (revlog.ivl >= 0) {
+            burden_revlogs.push(revlog)
+        }
     }
 
-    for (const revlog of revlogData.reverse()) {
+    // "findLast" Used here to iterate backwards, never returns true
+    burden_revlogs.findLast((revlog) => {
         const day = Math.floor((revlog.id - rollover) / day_ms)
 
         const after_review = last_cids[revlog.cid]
@@ -72,7 +81,7 @@ export function calculateRevlogStats(revlogData: Revlog[], cardData: CardData[],
         }
 
         last_cids[revlog.cid] = revlog
-    }
+    })
 
     const burden = Array.from(intervals).map((v) => {
         v[0] = 0
