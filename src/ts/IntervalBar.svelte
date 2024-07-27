@@ -8,8 +8,8 @@
     export let intervals: Record<number, number>
     export let pieInfo: IntervalPieInfo = {}
 
-    export let steps = 7
-    export let last = 21
+    export let binSize = 1
+    export let offset = 0
 
     let interval_array: number[] = []
     $: {
@@ -31,4 +31,4 @@
     }
 </script>
 
-<BarScrollable data={bar_data} left_aligned></BarScrollable>
+<BarScrollable data={bar_data} bind:binSize bind:offset left_aligned></BarScrollable>

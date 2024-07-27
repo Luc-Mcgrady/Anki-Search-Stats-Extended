@@ -1,27 +1,48 @@
 <script lang="ts">
+    import { onDestroy } from "svelte"
     import IntervalBar from "./IntervalBar.svelte"
     import type { IntervalPieInfo } from "./IntervalPie"
     import IntervalPie from "./IntervalPie.svelte"
     import NoGraph from "./NoGraph.svelte"
-    import { include_suspended } from "./stores"
+    import { graph_mode, include_suspended } from "./stores"
     export let include_suspended_option = true
     export let intervals: Record<number, number> | null
     export let pieInfo: IntervalPieInfo = {}
 
-    export let steps = 7
-    export let last = 21
+    export let steps = 7 // For bar, scroll
+    export let last = 21 // for bar, bar_size
 
-    let type = "Pie"
+    let returnSteps = steps
+    let returnLast = last
+
+    $: {
+        if ($graph_mode === "Pie") {
+            returnLast = last
+            returnSteps = steps
+        }
+    }
+
+    const unsubscibe = graph_mode.subscribe((mode) => {
+        if (mode === "Bar") {
+            steps = 0
+            last = 1
+        } else {
+            steps = returnSteps
+            last = returnLast
+        }
+    })
+
+    onDestroy(unsubscibe)
 </script>
 
 <div>
     <label>
-        Bar
-        <input type="radio" bind:group={type} value="Bar" />
+        Pie
+        <input type="radio" bind:group={$graph_mode} value="Pie" />
     </label>
     <label>
-        Pie
-        <input type="radio" bind:group={type} value="Pie" />
+        Bar
+        <input type="radio" bind:group={$graph_mode} value="Bar" />
     </label>
 </div>
 {#if include_suspended_option}
@@ -31,10 +52,10 @@
     </label>
 {/if}
 {#if intervals}
-    {#if type == "Pie"}
+    {#if $graph_mode == "Pie"}
         <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
     {:else}
-        <IntervalBar {intervals} {pieInfo}></IntervalBar>
+        <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps}></IntervalBar>
     {/if}
 {:else}
     <NoGraph></NoGraph>
