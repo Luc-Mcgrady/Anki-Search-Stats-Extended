@@ -10,7 +10,7 @@
     export let steps = 7
     export let last = 21
 
-    export let intervalPieInfo: IntervalPieInfo = {}
+    export let pieInfo: IntervalPieInfo = {}
 
     $: ({
         legend_left = "Intervals",
@@ -20,7 +20,7 @@
         spectrumFrom = "#74C476",
         spectrumTo = "#014720",
         fillerColour = "gold",
-    } = intervalPieInfo)
+    } = pieInfo)
 
     $: {
         if (steps < 1) {

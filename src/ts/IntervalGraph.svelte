@@ -1,4 +1,5 @@
 <script lang="ts">
+    import IntervalBar from "./IntervalBar.svelte"
     import type { IntervalPieInfo } from "./IntervalPie"
     import IntervalPie from "./IntervalPie.svelte"
     import NoGraph from "./NoGraph.svelte"
@@ -9,8 +10,20 @@
 
     export let steps = 7
     export let last = 21
+
+    let type = "Pie"
 </script>
 
+<div>
+    <label>
+        Bar
+        <input type="radio" bind:group={type} value="Bar" />
+    </label>
+    <label>
+        Pie
+        <input type="radio" bind:group={type} value="Pie" />
+    </label>
+</div>
 {#if include_suspended_option}
     <label class="checkbox include-suspended">
         <input type="checkbox" bind:checked={$include_suspended} />
@@ -18,7 +31,11 @@
     </label>
 {/if}
 {#if intervals}
-    <IntervalPie {intervals} intervalPieInfo={pieInfo} bind:last bind:steps></IntervalPie>
+    {#if type == "Pie"}
+        <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
+    {:else}
+        <IntervalBar {intervals} {pieInfo}></IntervalBar>
+    {/if}
 {:else}
     <NoGraph></NoGraph>
 {/if}
