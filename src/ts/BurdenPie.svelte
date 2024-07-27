@@ -2,7 +2,7 @@
     import IntervalGraph from "./IntervalGraph.svelte"
     import { burdenOrLoad } from "./stores"
 
-    export let intervals: Record<number, number>
+    export let intervals: Record<number, number> | null
 
     export let last: number = 21
     export let steps: number = 7

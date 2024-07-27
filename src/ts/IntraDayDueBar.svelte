@@ -4,10 +4,8 @@
     import type { BarDatum, ExtraRenderInput } from "./bar"
     import { getCardData, search, type CardData } from "./search"
     import { searchJoin } from "./root"
-    import { other } from "./stores"
+    import { other, searchString } from "./stores"
     import NoGraph from "./NoGraph.svelte"
-
-    export let parentSearch: string
 
     let next_card_time: Date | null = null
     let next_card_time_until: string = ""
@@ -98,7 +96,7 @@
             .attr("y", top)
     }
 
-    $: fetch = fetchCards(parentSearch)
+    $: fetch = $searchString ? fetchCards($searchString) : Promise.resolve([])
 </script>
 
 {#await fetch}

@@ -6,7 +6,7 @@
     import { burdenOrLoad, include_suspended, zero_inclusive } from "./stores"
     import ZeroInclusive from "./ZeroInclusive.svelte"
 
-    export let cardData: CardData[]
+    export let cardData: CardData[] | null
 
     let total_lapses: number
     let total_repetitions: number
@@ -25,7 +25,7 @@
         lapses_burden = []
         repetitions_burden = []
 
-        for (const card of cardData) {
+        for (const card of cardData ?? []) {
             if ($include_suspended || card.queue !== -1) {
                 total_lapses += card.lapses
                 total_repetitions += card.reps

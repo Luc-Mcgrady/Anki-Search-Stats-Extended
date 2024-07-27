@@ -3,12 +3,11 @@
     import type { PieDatum } from "./pie"
     import { searchJoin } from "./root"
     import { search as doSearch } from "./search"
+    import { searchString } from "./stores"
 
-    export let search: string
-
-    $: passed_search = searchJoin(search, "rated:1 -rated:1:1 is:review")
-    $: flunked_search = searchJoin(search, "rated:1 rated:1:1 is:review")
-    $: learning_search = searchJoin(search, "rated:1 -is:review is:learn")
+    $: passed_search = searchJoin($searchString, "rated:1 -rated:1:1 is:review")
+    $: flunked_search = searchJoin($searchString, "rated:1 rated:1:1 is:review")
+    $: learning_search = searchJoin($searchString, "rated:1 -is:review is:learn")
 
     let do_learning = true
     $: data_fetcher = dataGen(do_learning)

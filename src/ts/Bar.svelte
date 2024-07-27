@@ -1,6 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import { renderBarChart, type BarChart, type ExtraRenderInput } from "./bar"
+    import NoGraph from "./NoGraph.svelte"
 
     let svg: SVGElement | null = null
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -14,20 +15,19 @@
     }
 </script>
 
-<svg bind:this={svg}></svg>
-
 {#if !data.data.length}
-    No data
+    <NoGraph></NoGraph>
+{:else}
+    <div class="glossary">
+        {#each _.zip(data.row_labels, data.row_colours) as [label, colour]}
+            <div>
+                <span style={`color:${colour}`}>■&nbsp;</span>
+                {label}
+            </div>
+        {/each}
+    </div>
+    <svg bind:this={svg}></svg>
 {/if}
-
-<div class="glossary">
-    {#each _.zip(data.row_labels, data.row_colours) as [label, colour]}
-        <div>
-            <span style={`color:${colour}`}>■&nbsp;</span>
-            {label}
-        </div>
-    {/each}
-</div>
 
 <style>
     div.glossary {

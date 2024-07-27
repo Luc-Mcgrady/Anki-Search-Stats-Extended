@@ -2,9 +2,8 @@
     import Pie from "./Pie.svelte"
     import type { PieDatum } from "./pie"
     import { search as doSearch, getCardData } from "./search"
-    import { burdenOrLoad } from "./stores"
+    import { burdenOrLoad, searchString } from "./stores"
 
-    export let search: string
     export let mode = "Count"
 
     const pickable_colours = ["blue", "red", "green", "orange"]
@@ -47,9 +46,9 @@
         pie_data = [
             ...pie_data,
             {
-                label: search,
+                label: $searchString ?? "",
                 colour: pickable_colours[pickable_colours_i++],
-                value: await getQuery(search),
+                value: $searchString ? await getQuery($searchString) : 0,
             },
         ]
 
