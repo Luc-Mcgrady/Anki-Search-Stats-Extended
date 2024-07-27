@@ -16,6 +16,7 @@ export let revlogs = writable<null | Revlog[]>(null)
 
 export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
+export let custom_pie_mode = writable("Count")
 
 export let burdenOrLoad = writable("Load")
 export let other = writable<SSEother>()

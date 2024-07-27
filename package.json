@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cancelable-promise": "^4.3.1",
     "d3": "^7.8.5",
     "lodash": "^4.17.21",
     "rainbowvis.js": "^1.1.1",

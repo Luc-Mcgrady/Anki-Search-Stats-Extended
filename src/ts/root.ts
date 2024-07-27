@@ -29,8 +29,16 @@ function decodeRequest(req: string | Uint8Array) {
     return GraphsRequest.fromBinary(req)
 }
 
-export function searchJoin(user: string | null, added: string) {
-    return user ? `(${user}) (${added})` : added
+export function searchJoin(user: string | null, added: string | null): string {
+    if (user && added) {
+        return `(${user}) (${added})`
+    } else if (user && !added) {
+        return user!
+    } else if (!user && added) {
+        return added!
+    } else {
+        return ""
+    }
 }
 
 function bodySwap(req: string | Uint8Array, newSearch: string) {

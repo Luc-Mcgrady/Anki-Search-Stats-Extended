@@ -1,74 +1,35 @@
 <script lang="ts">
     import Pie from "./Pie.svelte"
-    import type { PieDatum } from "./pie"
-    import { search as doSearch, getCardData } from "./search"
-    import { burdenOrLoad, searchString } from "./stores"
-
-    export let mode = "Count"
+    import { burdenOrLoad, custom_pie_mode, searchString } from "./stores"
+    import _ from "lodash"
+    import NoGraph from "./NoGraph.svelte"
+    import { derived, writable, type Writable } from "svelte/store"
+    import type { SearchPieData } from "./CustomPie"
+    import CustomPieSearch from "./CustomPieSearch.svelte"
+    import { onMount } from "svelte"
 
     const pickable_colours = ["blue", "red", "green", "orange"]
     let pickable_colours_i = 0
 
-    let pie_data: PieDatum[] = []
+    let pie_data: Writable<SearchPieData>[] = []
 
-    reset()
+    onMount(reset)
 
-    async function getQuery(query: string): Promise<number> {
-        let cids: number[]
-        if (!query) {
-            query = "*"
-        }
-
-        try {
-            cids = await doSearch(query)
-        } catch {
-            return -1
-        }
-
-        if (mode === "Count") {
-            return cids.length
-        }
-        const cards = await getCardData(cids)
-        switch (mode) {
-            case $burdenOrLoad:
-                return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
-            case "Lapses":
-                return cards.reduce((p, n) => (p += n.lapses), 0)
-            case "Repetitions":
-                return cards.reduce((p, n) => (p += n.reps), 0)
-            default:
-                mode = "Invalid Mode"
-                return 0
-        }
-    }
-
-    async function newSearch() {
+    function newSearch() {
         pie_data = [
             ...pie_data,
-            {
+            writable({
                 label: $searchString ?? "",
+                search: "",
                 colour: pickable_colours[pickable_colours_i++],
-                value: $searchString ? await getQuery($searchString) : 0,
-            },
+                value: 0,
+            }),
         ]
 
         pickable_colours_i %= pickable_colours.length
     }
 
-    async function refresh() {
-        pie_data = await Promise.all(
-            pie_data.map(async (a) => ({
-                label: a.label,
-                colour: a.colour,
-                value: await getQuery(a.label),
-            }))
-        )
-    }
-
-    async function onChange(datum: PieDatum) {
-        datum.value = await getQuery(datum.label)
-        pie_data = [...pie_data]
-    }
+    $: pie_data_values = derived(pie_data, (a) => a)
 
     function reset() {
         pie_data = []
@@ -78,35 +39,33 @@
 
 <div class="options">
     <label>
-        <input type="radio" bind:group={mode} on:change={refresh} value="Count" />
+        <input type="radio" bind:group={$custom_pie_mode} value="Count" />
         Count
     </label>
     <label>
-        <input type="radio" bind:group={mode} on:change={refresh} value={$burdenOrLoad} />
+        <input type="radio" bind:group={$custom_pie_mode} value={$burdenOrLoad} />
         {$burdenOrLoad}
     </label>
     <label>
-        <input type="radio" bind:group={mode} on:change={refresh} value="Lapses" />
+        <input type="radio" bind:group={$custom_pie_mode} value="Lapses" />
         Lapses
     </label>
     <label>
-        <input type="radio" bind:group={mode} on:change={refresh} value="Repetitions" />
+        <input type="radio" bind:group={$custom_pie_mode} value="Repetitions" />
         Repetitions
     </label>
 </div>
 
-<Pie data={pie_data} legend_left="Search" legend_right={mode}></Pie>
+{#if _.sumBy($pie_data_values, (d) => d.value)}
+    <Pie data={$pie_data_values} legend_left="Search" legend_right={$custom_pie_mode}></Pie>
+{:else}
+    <NoGraph></NoGraph>
+{/if}
 <div class="searches">
     <span>Search</span>
     <span>Colour</span>
-    {#each pie_data as pie_data}
-        <input
-            type="text"
-            bind:value={pie_data.label}
-            placeholder="Search string"
-            on:change={() => onChange(pie_data)}
-        />
-        <input type="text" bind:value={pie_data.colour} placeholder="CSS Colour" />
+    {#each pie_data as data}
+        <CustomPieSearch {data}></CustomPieSearch>
     {/each}
     <input type="button" on:click={newSearch} value="New search" />
     <input type="button" on:click={reset} value="Reset" />
