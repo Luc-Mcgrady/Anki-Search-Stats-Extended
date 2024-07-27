@@ -71,7 +71,7 @@
             totalDescriptor: $burdenOrLoad,
             countDescriptor: "Highest Lapse count",
             legend_left: "Lapse count",
-            legend_right: "Card {$burdenOrLoad}",
+            legend_right: `Card ${$burdenOrLoad}`,
             spectrumFrom: "#bd3f09",
             spectrumTo: "#612207",
         }}
@@ -143,7 +143,7 @@
             totalDescriptor: $burdenOrLoad,
             countDescriptor: "Most Repetitions",
             legend_left: "Repetition count",
-            legend_right: "Card {$burdenOrLoad}",
+            legend_right: `Card ${$burdenOrLoad}`,
             spectrumFrom: "#5ca7f7",
             spectrumTo: "#0b4f99",
         }}
