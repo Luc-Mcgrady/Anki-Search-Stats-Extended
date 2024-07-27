@@ -35,7 +35,7 @@
     onDestroy(unsubscibe)
 </script>
 
-<div>
+<div class="radio">
     <label>
         Pie
         <input type="radio" bind:group={$graph_mode} value="Pie" />
@@ -69,5 +69,12 @@
     label.include-suspended {
         display: block;
         margin-top: 0.5em;
+    }
+
+    div.radio {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 1em;
     }
 </style>
