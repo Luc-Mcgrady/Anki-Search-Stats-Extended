@@ -86,7 +86,6 @@
         tick_spacing: 5,
     }
 
-    let time_machine_pie: PieDatum[]
     $: time_machine_intervals = intervals[today + realScroll] ?? []
     $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21))
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21))
@@ -94,7 +93,25 @@
         (p, [i, v]) => p + (parseInt(i) <= realScroll ? v : 0),
         0
     )
-    $: time_machine_min = _.min(Object.entries(addedCards).map(([k, v]) => parseInt(k))) ?? 0
+
+    let left_bound_at = "Review"
+
+    function minIndex(vals: Record<number, any>) {
+        console.log(vals)
+        return _.min(Object.keys(vals).map((k) => parseInt(k))) ?? 0
+    }
+
+    $: review_leftmost = minIndex(intervals) - today
+    $: added_leftmost = minIndex(addedCards)
+    let custom_leftmost = 0
+
+    $: time_machine_min = {
+        Review: review_leftmost,
+        Added: added_leftmost,
+        Custom: -Math.abs(custom_leftmost),
+    }[left_bound_at]
+
+    let time_machine_pie: PieDatum[]
     $: time_machine_pie = [
         {
             label: "Young",
@@ -211,13 +228,40 @@
             0
         </span>
     </label>
+    <div>
+        Start at <br />
+        <label>
+            <input type="radio" bind:group={left_bound_at} value="Added" />
+            First added
+        </label>
+        <label>
+            <input type="radio" bind:group={left_bound_at} value="Review" />
+            First review
+        </label>
+        <label>
+            <input
+                type="radio"
+                bind:group={left_bound_at}
+                value="Custom"
+                on:click={() => {
+                    if (time_machine_min) {
+                        custom_leftmost = time_machine_min
+                    }
+                }}
+            />
+            Custom
+        </label>
+        {#if left_bound_at == "Custom"}
+            <input type="number" bind:value={custom_leftmost} />
+        {/if}
+    </div>
     <span>Total: {time_machine_added}</span>
     <p>Shows your card type counts for a given date</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Review Interval Time Machine</h1>
     <BarScrollable data={time_machine_bar} left_aligned />
-    <label>
+    <label class="scroll">
         <span>
             {new Date(Date.now() + scroll * day_ms).toLocaleDateString()}:
         </span>
@@ -231,7 +275,7 @@
 </GraphContainer>
 
 <style>
-    label {
+    label.scroll {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: 0.5em 1em;
