@@ -5,6 +5,7 @@
     import { getCardData, search, type CardData } from "./search"
     import { searchJoin } from "./root"
     import { other } from "./stores"
+    import NoGraph from "./NoGraph.svelte"
 
     export let parentSearch: string
 
@@ -101,7 +102,7 @@
 </script>
 
 {#await fetch}
-    Loading...
+    <NoGraph>Loading...</NoGraph>
 {:then data}
     {#if data.reduce((p, n) => p + _.sum(n.values), 0) > 0}
         <!--If there is data-->
@@ -122,7 +123,6 @@
             {extraRender}
         />
     {:else}
-        <h4>No Intra-Day cards</h4>
-        <br />
+        <NoGraph>NO REVIEWS</NoGraph>
     {/if}
 {/await}

@@ -24,6 +24,9 @@
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
     import RevlogGraphs from "./RevlogGraphs.svelte"
+    import { defaultGraphBounds } from "./graph"
+
+    const { width, height } = defaultGraphBounds()
 
     let interval_last = 21
     let interval_steps = 7
@@ -36,7 +39,11 @@
 
 <h1>Search Stats Extended:</h1>
 
-<div class="graphs-container">
+<div
+    class="graphs-container"
+    style:--graph-width={`${width}px`}
+    style:--graph-height={`${height}px`}
+>
     {#if $data}
         {#if $data.futureDue && $learn_data?.futureDue && $mature_data?.futureDue && $relearn_data?.futureDue}
             <GraphContainer>
