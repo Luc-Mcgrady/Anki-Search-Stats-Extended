@@ -1,5 +1,5 @@
 <script lang="ts">
-    import IntervalPie from "./IntervalPie.svelte"
+    import IntervalGraph from "./IntervalGraph.svelte"
     import { burdenOrLoad } from "./stores"
 
     export let intervals: Record<number, number>
@@ -17,11 +17,13 @@
     }
 </script>
 
-<IntervalPie
+<IntervalGraph
     bind:last
     bind:steps
     intervals={burdens}
-    totalDescriptor={$burdenOrLoad}
-    legend_left="Intervals"
-    legend_right={$burdenOrLoad}
-></IntervalPie>
+    pieInfo={{
+        totalDescriptor: $burdenOrLoad,
+        legend_left: "Intervals",
+        legend_right: $burdenOrLoad,
+    }}
+></IntervalGraph>

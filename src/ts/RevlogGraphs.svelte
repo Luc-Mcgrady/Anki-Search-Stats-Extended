@@ -1,6 +1,6 @@
 <script lang="ts">
     import GraphContainer from "./GraphContainer.svelte"
-    import IntervalPie from "./IntervalPie.svelte"
+    import IntervalGraph from "./IntervalGraph.svelte"
     import type { CardData, Revlog } from "./search"
     import { burdenOrLoad, other } from "./stores"
     import Candlestick from "./Candlestick.svelte"
@@ -147,17 +147,19 @@
 
 <GraphContainer>
     <h1>Time Distribution</h1>
-    <IntervalPie
+    <IntervalGraph
         intervals={revlog_times}
-        countDescriptor={"Most Seconds"}
-        spectrumFrom={"#fcba03"}
-        spectrumTo={"#543e00"}
         bind:last={pieLast}
         bind:steps={pieSteps}
-        fillerColour={"blue"}
-        legend_left={"Time (s)"}
         include_suspended_option={false}
-    ></IntervalPie>
+        pieInfo={{
+            countDescriptor: "Most Seconds",
+            spectrumFrom: "#fcba03",
+            spectrumTo: "#543e00",
+            fillerColour: "blue",
+            legend_left: "Time (s)",
+        }}
+    ></IntervalGraph>
     <p>How many cards have taken the given amount of time to answer over every review</p>
     <p>
         In order to exclude suspended cards from this or the following graphs, you will need to
@@ -167,19 +169,21 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Time Totals</h1>
-    <IntervalPie
+    <IntervalGraph
         intervals={revlog_times.map((i, a) => i * a)}
-        countDescriptor={"Most Seconds"}
-        spectrumFrom={"#fcba03"}
-        spectrumTo={"#543e00"}
         bind:last={pieLast}
         bind:steps={pieSteps}
-        fillerColour={"blue"}
-        legend_left={"Per card (s)"}
-        legend_right={"Total (s)"}
-        totalDescriptor={"Seconds"}
         include_suspended_option={false}
-    ></IntervalPie>
+        pieInfo={{
+            countDescriptor: "Most Seconds",
+            spectrumFrom: "#fcba03",
+            spectrumTo: "#543e00",
+            fillerColour: "blue",
+            legend_left: "Per card (s)",
+            legend_right: "Total (s)",
+            totalDescriptor: "Seconds",
+        }}
+    ></IntervalGraph>
     <p>
         The quantity of time that has been spent on cards which have taken the given amount of time
         to answer over every review

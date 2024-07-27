@@ -2,7 +2,7 @@
     import type { CardData } from "./search"
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
-    import IntervalPie from "./IntervalPie.svelte"
+    import IntervalGraph from "./IntervalGraph.svelte"
     import { burdenOrLoad, include_suspended, zero_inclusive } from "./stores"
     import ZeroInclusive from "./ZeroInclusive.svelte"
 
@@ -63,19 +63,21 @@
 
 <GraphContainer>
     <h1>Lapse {$burdenOrLoad}</h1>
-    <IntervalPie
+    <IntervalGraph
+        intervals={lapses_burden}
         bind:steps={lapse_steps}
         bind:last={lapse_last}
-        totalDescriptor={$burdenOrLoad}
-        countDescriptor="Highest Lapse count"
-        legend_left="Lapse count"
-        legend_right="Card {$burdenOrLoad}"
-        spectrumFrom={"#bd3f09"}
-        spectrumTo={"#612207"}
-        intervals={lapses_burden}
+        pieInfo={{
+            totalDescriptor: $burdenOrLoad,
+            countDescriptor: "Highest Lapse count",
+            legend_left: "Lapse count",
+            legend_right: "Card {$burdenOrLoad}",
+            spectrumFrom: "#bd3f09",
+            spectrumTo: "#612207",
+        }}
     >
         <ZeroInclusive />
-    </IntervalPie>
+    </IntervalGraph>
     <p>
         This graph shows the sum of <code>1 / interval</code>
         for cards which have the given number of lapses. If you plan to suspend cards based on their
@@ -85,18 +87,20 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Lapse Distribution</h1>
-    <IntervalPie
+    <IntervalGraph
+        intervals={lapses}
         bind:steps={lapse_steps}
         bind:last={lapse_last}
-        countDescriptor="Highest Lapse Count"
-        legend_left="Lapse count"
-        legend_right="Card count"
-        spectrumFrom={"#bd3f09"}
-        spectrumTo={"#612207"}
-        intervals={lapses}
+        pieInfo={{
+            countDescriptor: "Highest Lapse Count",
+            legend_left: "Lapse count",
+            legend_right: "Card count",
+            spectrumFrom: "#bd3f09",
+            spectrumTo: "#612207",
+        }}
     >
         <ZeroInclusive />
-    </IntervalPie>
+    </IntervalGraph>
     <p>
         A card increases its lapse count whenever it is reviewed "again" while not in the learning
         state. Lapses are used to monitor which cards become "leeches". By default, whenever the
@@ -108,19 +112,21 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Lapse Total</h1>
-    <IntervalPie
+    <IntervalGraph
+        intervals={lapses.map((e, i) => e * i)}
         bind:steps={lapse_steps}
         bind:last={lapse_last}
-        totalDescriptor="Lapses"
-        countDescriptor="Most Lapses"
-        legend_left="Lapse count"
-        legend_right="Lapse total"
-        spectrumFrom={"#bd3f09"}
-        spectrumTo={"#612207"}
-        intervals={lapses.map((e, i) => e * i)}
+        pieInfo={{
+            totalDescriptor: "Lapses",
+            countDescriptor: "Most Lapses",
+            legend_left: "Lapse count",
+            legend_right: "Lapse total",
+            spectrumFrom: "#bd3f09",
+            spectrumTo: "#612207",
+        }}
     >
         <ZeroInclusive />
-    </IntervalPie>
+    </IntervalGraph>
     <p>
         This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3
         lapses per card, the lapse total for 3 would be 6.
@@ -129,16 +135,18 @@
 <!-- Repetition  -->
 <GraphContainer>
     <h1>Repetition {$burdenOrLoad}</h1>
-    <IntervalPie
+    <IntervalGraph
+        intervals={repetitions_burden}
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
-        totalDescriptor={$burdenOrLoad}
-        countDescriptor="Most Repetitions"
-        legend_left="Repetition count"
-        legend_right="Card {$burdenOrLoad}"
-        spectrumFrom={"#5ca7f7"}
-        spectrumTo={"#0b4f99"}
-        intervals={repetitions_burden}
+        pieInfo={{
+            totalDescriptor: $burdenOrLoad,
+            countDescriptor: "Most Repetitions",
+            legend_left: "Repetition count",
+            legend_right: "Card {$burdenOrLoad}",
+            spectrumFrom: "#5ca7f7",
+            spectrumTo: "#0b4f99",
+        }}
     />
     <p>
         This graph shows the sum of <code>1 / interval</code>
@@ -147,30 +155,34 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Distribution</h1>
-    <IntervalPie
+    <IntervalGraph
+        intervals={repetitions}
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
-        countDescriptor="Most Repetitions"
-        legend_left="Repetition count"
-        legend_right="Card count"
-        spectrumFrom={"#5ca7f7"}
-        spectrumTo={"#0b4f99"}
-        intervals={repetitions}
+        pieInfo={{
+            countDescriptor: "Most Repetitions",
+            legend_left: "Repetition count",
+            legend_right: "Card count",
+            spectrumFrom: "#5ca7f7",
+            spectrumTo: "#0b4f99",
+        }}
     />
     <p>A card gains a repetition (commonly called a review) whenever you review it.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Repetition Total</h1>
-    <IntervalPie
+    <IntervalGraph
+        intervals={repetitions.map((e, i) => e * i)}
         bind:steps={repetitions_steps}
         bind:last={repetitions_last}
-        totalDescriptor="Repetitions"
-        countDescriptor="Most Repetitions"
-        legend_left="Repetitions count"
-        legend_right="Repetition total"
-        spectrumFrom={"#5ca7f7"}
-        spectrumTo={"#0b4f99"}
-        intervals={repetitions.map((e, i) => e * i)}
+        pieInfo={{
+            totalDescriptor: "Repetitions",
+            countDescriptor: "Most Repetitions",
+            legend_left: "Repetitions count",
+            legend_right: "Repetition total",
+            spectrumFrom: "#5ca7f7",
+            spectrumTo: "#0b4f99",
+        }}
     />
     <p>
         This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a

@@ -2,7 +2,7 @@
     import DueBar from "./DueBar.svelte"
     import BurdenPie from "./BurdenPie.svelte"
     import GraphContainer from "./GraphContainer.svelte"
-    import IntervalPie from "./IntervalPie.svelte"
+    import IntervalGraph from "./IntervalGraph.svelte"
     import RetentionPie from "./RetentionPie.svelte"
     import CustomPie from "./CustomPie.svelte"
     import IntraDayDueBar from "./IntraDayDueBar.svelte"
@@ -92,7 +92,7 @@
         {/if}
         <GraphContainer>
             <h1>Interval Distribution</h1>
-            <IntervalPie {intervals} bind:last={interval_last} bind:steps={interval_steps} />
+            <IntervalGraph {intervals} bind:last={interval_last} bind:steps={interval_steps} />
             <p>Here you can more easily visualise the spread of your intervals</p>
         </GraphContainer>
         <GraphContainer>

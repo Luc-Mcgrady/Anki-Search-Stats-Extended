@@ -4,17 +4,23 @@
     import Pie from "./Pie.svelte"
     import type { PieDatum } from "./pie"
     import { PieDatumFactory } from "./pie"
-    import { include_suspended } from "./stores"
+    import type { IntervalPieInfo } from "./IntervalPie"
 
     export let intervals: Record<number, number>
-    export let legend_left = "Intervals"
-    export let legend_right = "Cards"
-    export let countDescriptor = "Last Day"
-    export let totalDescriptor = "Cards"
-    export let include_suspended_option = true
-
     export let steps = 7
     export let last = 21
+
+    export let intervalPieInfo: IntervalPieInfo = {}
+
+    $: ({
+        legend_left = "Intervals",
+        legend_right = "Cards",
+        countDescriptor = "Last Day",
+        totalDescriptor = "Cards",
+        spectrumFrom = "#74C476",
+        spectrumTo = "#014720",
+        fillerColour = "gold",
+    } = intervalPieInfo)
 
     $: {
         if (steps < 1) {
@@ -38,10 +44,6 @@
     $: realLast = steps * step + min - 1
 
     const gradient = new Rainbow()
-
-    export let spectrumFrom = "#74C476"
-    export let spectrumTo = "#014720"
-    export let fillerColour = "gold"
 
     $: {
         gradient.setNumberRange(0, steps + 1)
@@ -68,7 +70,9 @@
                 .filter(([i, _]) => parseInt(i) >= filler_start && parseInt(i) <= filler_end)
                 .reduce((n, [_, v]) => n + v, 0)
 
-            pie_data.push(PieDatumFactory(filler_start, filler_end, filler_pie_slice, fillerColour))
+            pie_data.push(
+                PieDatumFactory(filler_start, filler_end, filler_pie_slice, fillerColour ?? "gold")
+            )
         }
         const infinite_pie_start = last + 1
 
@@ -92,18 +96,12 @@
         <input type="number" bind:value={steps} />
     </label>
 </div>
-{#if include_suspended_option}
-    <label class="checkbox include-suspended">
-        <input type="checkbox" bind:checked={$include_suspended} />
-        Include suspended
-    </label>
-{/if}
 <slot />
 <br />
 <Pie data={pie_data} {legend_left} {legend_right}></Pie>
 
 <div class="totals">
-    <span>Total {totalDescriptor} {"<="} {last}:</span>
+    <span>Total {totalDescriptor ?? "Cards"} {"<="} {last}:</span>
     <span>{_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}</span>
     <span>Total {totalDescriptor}:</span>
     <span>{_.round(_.sum(pie_values), 2).toLocaleString()}</span>
@@ -131,14 +129,5 @@
 
     label {
         display: contents;
-    }
-
-    label.checkbox {
-        user-select: none;
-    }
-
-    label.include-suspended {
-        display: block;
-        margin-top: 0.5em;
     }
 </style>
