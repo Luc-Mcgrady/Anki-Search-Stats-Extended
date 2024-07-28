@@ -37,12 +37,12 @@
 
 <div class="radio">
     <label>
-        Pie
         <input type="radio" bind:group={$graph_mode} value="Pie" />
+        Pie
     </label>
     <label>
-        Bar
         <input type="radio" bind:group={$graph_mode} value="Bar" />
+        Bar
     </label>
 </div>
 {#if include_suspended_option}
