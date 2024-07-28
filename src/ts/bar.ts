@@ -14,8 +14,9 @@ export type BarChart = {
     row_colours: string[]
     data: BarDatum[]
     tick_spacing?: number
-    isDate?: boolean
     barWidth?: number
+
+    columnLabeler?: (thing: string, width?: number) => string
 }
 
 export function createAxis(
@@ -84,14 +85,15 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
         .on("mouseover", (e, d) => {
-            const date = tooltipDate(parseInt(d.data.label), chart.barWidth ?? 1)
-
-            const dateString = chart.isDate ? [`Date: ${date}`] : []
+            const columnString = [
+                chart.columnLabeler?.(d.data.label, chart.barWidth) ??
+                    barStringLabeler("Index", chart.barWidth)(d.data.label),
+            ]
 
             tooltipShown.set(true)
             tooltip.set({
                 text: [
-                    ...dateString,
+                    ...columnString,
                     ...d.data.values.map(
                         (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`
                     ),
@@ -103,6 +105,18 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .on("mouseleave", () => tooltipShown.set(false))
 
     return { x, y, svg: axis, maxValue }
+}
+
+export function barDateLabeler(label: string, width: number = 1) {
+    return tooltipDate(parseInt(label), width) + ":"
+}
+
+export function barStringLabeler(text: string, width: number = 1) {
+    width -= 1
+    return (label: string) => {
+        const rightmost = width > 0 ? `-${parseInt(label) + width}` : ""
+        return `${text} ${label}${rightmost}:`
+    }
 }
 
 export type ExtraRenderInput = ReturnType<typeof renderBarChart>

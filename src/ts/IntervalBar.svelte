@@ -1,6 +1,6 @@
 <script lang="ts">
     import _ from "lodash"
-    import type { BarChart } from "./bar"
+    import { barStringLabeler, type BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import type { IntervalPieInfo } from "./IntervalPie"
     import { YOUNG_COLOUR } from "./graph"
@@ -28,6 +28,7 @@
             values: [val ?? 0],
             label: i.toString(),
         })),
+        columnLabeler: barStringLabeler(`${pieInfo.legend_left ?? "Interval"} of`),
     }
 </script>
 

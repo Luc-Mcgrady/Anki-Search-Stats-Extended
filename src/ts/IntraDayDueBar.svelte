@@ -117,6 +117,7 @@
                 row_labels: ["Relearning", "Learning"],
                 row_colours: ["#fb6a4a", "#fd8d3c"],
                 data,
+                columnLabeler: (label) => `${label.padStart(2, "0")}:00`,
             }}
             {extraRender}
         />

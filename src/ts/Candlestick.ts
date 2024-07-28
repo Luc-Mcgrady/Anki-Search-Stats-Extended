@@ -66,11 +66,7 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
 
             tooltipShown.set(true)
             tooltip.set({
-                text: [
-                    `Date: ${date}`,
-                    `Change: ${delta.toFixed(2)}`,
-                    `Final: ${final.toFixed(2)}`,
-                ],
+                text: [`${date}:`, `Change: ${delta.toFixed(2)}`, `Final: ${final.toFixed(2)}`],
                 x: tooltipX(e),
                 y: e.pageY,
             })

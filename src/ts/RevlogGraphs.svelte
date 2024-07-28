@@ -9,7 +9,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import type { BarChart } from "./bar"
+    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
     import { calculateRevlogStats, day_ms, today } from "./revlogGraphs"
 
     export let revlogData: Revlog[]
@@ -46,7 +46,7 @@
             values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
         })),
         tick_spacing: 5,
-        isDate: true,
+        columnLabeler: barDateLabeler,
     }
 
     $: introduced_bar = {
@@ -63,7 +63,7 @@
             })
             .map((d, i) => d ?? { values: [0, 0], label: (i - today - scrollOffset).toString() }),
         tick_spacing: 5,
-        isDate: true,
+        columnLabeler: barDateLabeler,
     }
 
     $: forgotten_bar = {
@@ -74,7 +74,7 @@
             label: (i - today - scrollOffset).toString(),
         })),
         tick_spacing: 5,
-        isDate: true,
+        columnLabeler: barDateLabeler,
     }
 
     $: burden_change_candlestick = {
@@ -139,6 +139,7 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
+        columnLabeler: barStringLabeler("Interval of"),
     }
 
     let pieLast = 59

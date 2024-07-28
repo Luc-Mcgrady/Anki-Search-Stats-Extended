@@ -1,7 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import Bar from "./Bar.svelte"
-    import type { BarDatum } from "./bar"
+    import { barDateLabeler, type BarDatum } from "./bar"
     import type { GraphsResponse_FutureDue } from "./proto/anki/stats_pb"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
 
@@ -45,6 +45,6 @@
         row_labels: ["Mature", "Young", "Relearning", "Learning"],
         data: bars,
         tick_spacing: 5,
-        isDate: true,
+        columnLabeler: barDateLabeler,
     }}
 ></Bar>
