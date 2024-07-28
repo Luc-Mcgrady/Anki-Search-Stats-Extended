@@ -1,4 +1,5 @@
 <script lang="ts">
+    import CancelablePromise, { cancelable } from "cancelable-promise"
     import NoGraph from "./NoGraph.svelte"
     import Pie from "./Pie.svelte"
     import type { PieDatum } from "./pie"
@@ -11,9 +12,15 @@
     $: learning_search = searchJoin($searchString, "rated:1 -is:review is:learn")
 
     let do_learning = true
-    $: data_fetcher = dataGen(do_learning)
+    let data_fetcher = CancelablePromise.reject<PieDatum[]>()
+    $: {
+        if ($searchString !== null) {
+            data_fetcher.cancel()
+            data_fetcher = cancelable(dataGen(do_learning, $searchString))
+        }
+    }
 
-    async function dataGen(include_learning: boolean): Promise<PieDatum[]> {
+    async function dataGen(include_learning: boolean, search: string): Promise<PieDatum[]> {
         const passed = await doSearch(passed_search)
         const flunked = await doSearch(flunked_search)
         const learning = await doSearch(learning_search)
