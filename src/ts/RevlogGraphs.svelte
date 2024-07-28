@@ -10,7 +10,15 @@
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
-    import { calculateRevlogStats, day_ms, today } from "./revlogGraphs"
+    import {
+        binSize,
+        calculateRevlogStats,
+        day_ms,
+        pieLast,
+        pieSteps,
+        scroll,
+        today,
+    } from "./revlogGraphs"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -29,12 +37,10 @@
         intervals,
     } = calculateRevlogStats(revlogData, cardData))
 
-    let scroll = 0
-    $: realScroll = -Math.abs(scroll)
-    let bins = 30
-    let binSize = 1
-    let scrollOffset = bins * binSize - bins
-    $: start = today - bins * binSize + realScroll
+    $: realScroll = -Math.abs($scroll)
+    const bins = 30
+    const scrollOffset = bins * $binSize - bins
+    $: start = today - bins * $binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
 
@@ -140,17 +146,14 @@
         tick_spacing: 5,
         columnLabeler: barStringLabeler("Interval of"),
     }
-
-    let pieLast = 59
-    let pieSteps = 10
 </script>
 
 <GraphContainer>
     <h1>Time Distribution</h1>
     <IntervalGraph
         intervals={revlog_times}
-        bind:last={pieLast}
-        bind:steps={pieSteps}
+        bind:last={$pieLast}
+        bind:steps={$pieSteps}
         include_suspended_option={false}
         pieInfo={{
             countDescriptor: "Most Seconds",
@@ -171,8 +174,8 @@
     <h1>Time Totals</h1>
     <IntervalGraph
         intervals={revlog_times.map((i, a) => i * a)}
-        bind:last={pieLast}
-        bind:steps={pieSteps}
+        bind:last={$pieLast}
+        bind:steps={$pieSteps}
         include_suspended_option={false}
         pieInfo={{
             countDescriptor: "Most Seconds",
@@ -191,12 +194,18 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Review Speed Trend</h1>
-    <BarScrollable data={speed_trend_bar} bind:bins bind:binSize bind:offset={scroll} average />
+    <BarScrollable
+        data={speed_trend_bar}
+        {bins}
+        bind:binSize={$binSize}
+        bind:offset={$scroll}
+        average
+    />
     <p>The average amount of time it took you to answer each card on a given day.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>Introduced</h1>
-    <BarScrollable data={introduced_bar} bind:bins bind:binSize bind:offset={scroll} />
+    <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
 
     <p>
         A card is introduced when it is shown to you for the first time. A card is re-introduced
@@ -205,14 +214,19 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Forgotten</h1>
-    <BarScrollable data={forgotten_bar} bind:bins bind:binSize bind:offset={scroll} />
+    <BarScrollable data={forgotten_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
     <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
     <p>You "forget" a card when you manually mark it as new.</p>
 </GraphContainer>
 <GraphContainer>
     <h1>{$burdenOrLoad} Trend</h1>
-    <Candlestick data={burden_change_candlestick} bind:bins bind:binSize bind:offset={scroll} />
+    <Candlestick
+        data={burden_change_candlestick}
+        {bins}
+        bind:binSize={$binSize}
+        bind:offset={$scroll}
+    />
     <p>
         This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
         in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
@@ -228,7 +242,7 @@
         </span>
         <span class="scroll">
             {time_machine_min}
-            <input type="range" min={time_machine_min} max={0} bind:value={scroll} />
+            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
             0
         </span>
     </label>
@@ -267,11 +281,11 @@
     <BarScrollable data={time_machine_bar} left_aligned />
     <label class="scroll">
         <span>
-            {new Date(Date.now() + scroll * day_ms).toLocaleDateString()}:
+            {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
         </span>
         <span class="scroll">
             {time_machine_min}
-            <input type="range" min={time_machine_min} max={0} bind:value={scroll} />
+            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
             0
         </span>
     </label>
