@@ -12,6 +12,8 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 - **barWidth, barHeight**: Change the RESOLUTION at which the bar/candlestick charts are rendered. This can also be used to change their aspect ratio.
 
+- **piePercentages**: While true, A third percentage column is added to all pies.
+
 ## The Graphs
 
 ### Future due types
