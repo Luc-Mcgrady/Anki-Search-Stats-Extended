@@ -8,15 +8,17 @@
     export let data: Writable<SearchPieData>
     export let promise: CancelablePromise<number> = CancelablePromise.resolve(0)
     let last_search: string
+    let last_mode: string
 
     $: $data.label = searchJoin($searchString, $data.search)
-    $: if (last_search !== $data.label) {
+    $: if (last_search !== $data.label || last_mode !== $custom_pie_mode) {
         promise.cancel()
         promise = cancelable(getQuery($data.label, $custom_pie_mode))
         promise.then((result) => {
             $data.value = result
         })
         last_search = $data.label
+        last_mode = $custom_pie_mode
     }
 </script>
 
