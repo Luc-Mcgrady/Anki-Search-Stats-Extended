@@ -87,8 +87,8 @@
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
-    $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21))
-    $: time_machine_mature = _.sum(time_machine_intervals.slice(21))
+    $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21)) || 0
+    $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
     $: time_machine_added = Object.entries(addedCards).reduce(
         (p, [i, v]) => p + (parseInt(i) <= realScroll ? v : 0),
         0
