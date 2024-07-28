@@ -9,6 +9,9 @@
     const bounds = defaultGraphBounds()
     export let legend_left = ""
     export let legend_right = ""
+    export let percentage = false
+
+    $: total = _.sumBy(data, (d) => d.value)
 
     const diameter = 250
 
@@ -21,14 +24,23 @@
     </svg>
 
     <div style:max-height={`${diameter}px`} class="glossary">
-        <div class="grid">
+        <div
+            class="grid"
+            style:grid-template-columns={percentage ? "auto auto auto auto" : undefined}
+        >
             <span></span>
             <span>{legend_left}:</span>
             <span>{legend_right}</span>
+            {#if percentage}
+                %
+            {/if}
             {#each data as datum}
                 <span style:color={datum.colour} class="colour">■&nbsp;</span>
                 <span>{datum.label}:</span>
                 <span>{_.round(datum.value, 2).toLocaleString()}</span>
+                {#if percentage}
+                    {_.round((100 * datum.value) / total, 2)}%
+                {/if}
             {/each}
         </div>
     </div>

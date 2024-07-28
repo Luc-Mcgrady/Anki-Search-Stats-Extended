@@ -222,7 +222,7 @@
 </GraphContainer>
 <GraphContainer>
     <h1>Card Count Time Machine</h1>
-    <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"}></Pie>
+    <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage></Pie>
     <label>
         <span>
             {-realScroll} days ago:
