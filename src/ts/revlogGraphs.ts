@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { writable } from "svelte/store"
 import type { CardData, Revlog } from "./search"
 
 //@ts-ignore
@@ -118,11 +117,3 @@ export function calculateRevlogStats(
         intervals,
     }
 }
-
-// Revlog graph specific stores
-
-export let pieLast = writable(59)
-export let pieSteps = writable(10)
-
-export let scroll = writable(0)
-export let binSize = writable(1)

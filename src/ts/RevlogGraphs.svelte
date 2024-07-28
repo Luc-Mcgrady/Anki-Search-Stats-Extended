@@ -2,7 +2,7 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import type { CardData, Revlog } from "./search"
-    import { burdenOrLoad, other } from "./stores"
+    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -10,15 +10,7 @@
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
-    import {
-        binSize,
-        calculateRevlogStats,
-        day_ms,
-        pieLast,
-        pieSteps,
-        scroll,
-        today,
-    } from "./revlogGraphs"
+    import { calculateRevlogStats, day_ms, today } from "./revlogGraphs"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
