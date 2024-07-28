@@ -6,6 +6,7 @@
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
 
+    export let min = 1
     export let binSize = 1
     export let offset = 0
     export let bins = 30
@@ -13,7 +14,7 @@
     export let left_aligned = false
 
     $: realOffset = left_aligned
-        ? Math.abs(offset) - data.data.length + bins * binSize + 1
+        ? Math.abs(offset) - data.data.length + bins * binSize + min
         : -Math.abs(offset)
 
     $: binSize = binSize > 0 ? binSize : 1

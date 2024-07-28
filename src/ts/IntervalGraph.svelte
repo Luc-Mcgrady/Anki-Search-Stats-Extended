@@ -47,7 +47,7 @@
     </label>
 </div>
 <div>
-    {#if zero_inclusive_option}
+    {#if zero_inclusive_option && $graph_mode == "Pie"}
         <label class="checkbox">
             <input type="checkbox" bind:checked={$zero_inclusive} />
             Zero Inclusive
@@ -64,7 +64,13 @@
     {#if $graph_mode == "Pie"}
         <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
     {:else}
-        <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps}></IntervalBar>
+        <IntervalBar
+            {intervals}
+            {pieInfo}
+            bind:binSize={last}
+            bind:offset={steps}
+            min={zero_inclusive_option ? 0 : 1}
+        ></IntervalBar>
     {/if}
 {:else}
     <NoGraph></NoGraph>

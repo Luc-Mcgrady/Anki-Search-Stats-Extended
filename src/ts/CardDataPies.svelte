@@ -3,7 +3,7 @@
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import { burdenOrLoad, include_suspended, zero_inclusive } from "./stores"
+    import { burdenOrLoad, graph_mode, include_suspended, zero_inclusive } from "./stores"
 
     export let cardData: CardData[] | null
 
@@ -47,7 +47,7 @@
             }
         }
 
-        if (!$zero_inclusive) {
+        if (!$zero_inclusive && $graph_mode == "Pie") {
             delete lapses[0]
             delete lapses_burden[0]
         }
