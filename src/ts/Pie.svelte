@@ -16,8 +16,6 @@
 
     const diameter = 250
 
-    $: console.log(data)
-
     $: renderPie(data, svg as any, diameter / 2)
 </script>
 

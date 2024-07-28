@@ -97,7 +97,6 @@
     let left_bound_at = "Review"
 
     function minIndex(vals: Record<number, any>) {
-        console.log(vals)
         return _.min(Object.keys(vals).map((k) => parseInt(k))) ?? 0
     }
 
