@@ -13,23 +13,29 @@
     export let steps = 7 // For bar, scroll
     export let last = 21 // for bar, bar_size
 
-    let returnSteps = steps
-    let returnLast = last
+    let pieSteps = steps
+    let pieLast = last
+
+    let barScroll = 0
+    let barSize = 1
 
     $: {
         if ($graph_mode === "Pie") {
-            returnLast = last
-            returnSteps = steps
+            pieLast = last
+            pieSteps = steps
+        } else {
+            barScroll = steps
+            barSize = last
         }
     }
 
     const unsubscibe = graph_mode.subscribe((mode) => {
         if (mode === "Bar") {
-            steps = 0
-            last = 1
+            steps = barScroll
+            last = barSize
         } else {
-            steps = returnSteps
-            last = returnLast
+            steps = pieSteps
+            last = pieLast
         }
     })
 
