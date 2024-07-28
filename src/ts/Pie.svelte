@@ -2,6 +2,7 @@
     import _ from "lodash"
     import { defaultGraphBounds } from "./graph"
     import { renderPie, type PieDatum } from "./pie"
+    import { config } from "./stores"
 
     export let data: PieDatum[]
     let svg: SVGElement | null = null
@@ -9,7 +10,7 @@
     const bounds = defaultGraphBounds()
     export let legend_left = ""
     export let legend_right = ""
-    export let percentage = false
+    export let percentage = $config.piePercentages
 
     $: total = _.sumBy(data, (d) => d.value)
 

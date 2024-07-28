@@ -4,6 +4,7 @@ type SSEconfig = Partial<{
     confirmExpensiveStats: boolean
     barWidth: number
     barHeight: number
+    piePercentages: boolean
 }>
 
 interface SSEother {

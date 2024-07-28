@@ -3,5 +3,6 @@
     "burdenNotLoad": false,
     "confirmExpensiveStats": true,
     "barWidth": 600,
-    "barHeight": 250
+    "barHeight": 250,
+    "piePercentages": false
 }
