@@ -90,6 +90,8 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                     barStringLabeler("Index", chart.barWidth)(d.data.label),
             ]
 
+            const total = d.data.values.length > 1 ? [`Total: ${_.sum(d.data.values)}`] : []
+
             tooltipShown.set(true)
             tooltip.set({
                 text: [
@@ -97,6 +99,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                     ...d.data.values.map(
                         (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`
                     ),
+                    ...total,
                 ],
                 x: tooltipX(e),
                 y: e.pageY,
