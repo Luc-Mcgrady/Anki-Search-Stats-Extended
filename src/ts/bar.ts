@@ -87,7 +87,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .on("mouseover", (e, d) => {
             const columnString = [
                 chart.columnLabeler?.(d.data.label, chart.barWidth) ??
-                    barStringLabeler("Index", chart.barWidth)(d.data.label),
+                    barStringLabeler("Index")(d.data.label, chart.barWidth),
             ]
 
             const total = d.data.values.length > 1 ? [`Total: ${_.sum(d.data.values)}`] : []
@@ -114,10 +114,9 @@ export function barDateLabeler(label: string, width: number = 1) {
     return tooltipDate(parseInt(label), width) + ":"
 }
 
-export function barStringLabeler(text: string, width: number = 1) {
-    width -= 1
-    return (label: string) => {
-        const rightmost = width > 0 ? `-${parseInt(label) + width}` : ""
+export function barStringLabeler(text: string) {
+    return (label: string, width: number = 1) => {
+        const rightmost = width > 1 ? `-${parseInt(label) + width - 1}` : ""
         return `${text} ${label}${rightmost}:`
     }
 }
