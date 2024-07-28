@@ -4,8 +4,9 @@
     import type { IntervalPieInfo } from "./IntervalPie"
     import IntervalPie from "./IntervalPie.svelte"
     import NoGraph from "./NoGraph.svelte"
-    import { graph_mode, include_suspended } from "./stores"
+    import { graph_mode, include_suspended, zero_inclusive } from "./stores"
     export let include_suspended_option = true
+    export let zero_inclusive_option = false
     export let intervals: Record<number, number> | null
     export let pieInfo: IntervalPieInfo = {}
 
@@ -45,12 +46,20 @@
         Bar
     </label>
 </div>
-{#if include_suspended_option}
-    <label class="checkbox include-suspended">
-        <input type="checkbox" bind:checked={$include_suspended} />
-        Include suspended
-    </label>
-{/if}
+<div>
+    {#if zero_inclusive_option}
+        <label class="checkbox">
+            <input type="checkbox" bind:checked={$zero_inclusive} />
+            Zero Inclusive
+        </label>
+    {/if}
+    {#if include_suspended_option}
+        <label class="checkbox">
+            <input type="checkbox" bind:checked={$include_suspended} />
+            Include suspended
+        </label>
+    {/if}
+</div>
 {#if intervals}
     {#if $graph_mode == "Pie"}
         <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
@@ -64,11 +73,7 @@
 <style>
     label.checkbox {
         user-select: none;
-    }
-
-    label.include-suspended {
         display: block;
-        margin-top: 0.5em;
     }
 
     div.radio {

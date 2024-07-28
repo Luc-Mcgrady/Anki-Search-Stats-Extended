@@ -4,7 +4,6 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import { burdenOrLoad, include_suspended, zero_inclusive } from "./stores"
-    import ZeroInclusive from "./ZeroInclusive.svelte"
 
     export let cardData: CardData[] | null
 
@@ -75,9 +74,8 @@
             spectrumFrom: "#bd3f09",
             spectrumTo: "#612207",
         }}
-    >
-        <ZeroInclusive />
-    </IntervalGraph>
+        zero_inclusive_option
+    ></IntervalGraph>
     <p>
         This graph shows the sum of <code>1 / interval</code>
         for cards which have the given number of lapses. If you plan to suspend cards based on their
@@ -98,9 +96,8 @@
             spectrumFrom: "#bd3f09",
             spectrumTo: "#612207",
         }}
-    >
-        <ZeroInclusive />
-    </IntervalGraph>
+        zero_inclusive_option
+    ></IntervalGraph>
     <p>
         A card increases its lapse count whenever it is reviewed "again" while not in the learning
         state. Lapses are used to monitor which cards become "leeches". By default, whenever the
@@ -124,9 +121,8 @@
             spectrumFrom: "#bd3f09",
             spectrumTo: "#612207",
         }}
-    >
-        <ZeroInclusive />
-    </IntervalGraph>
+        zero_inclusive_option
+    ></IntervalGraph>
     <p>
         This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3
         lapses per card, the lapse total for 3 would be 6.
