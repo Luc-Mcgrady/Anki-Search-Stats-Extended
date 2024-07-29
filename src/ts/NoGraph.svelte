@@ -4,7 +4,7 @@
 
 <style>
     div {
-        width: var(--graph-width);
+        width: min(var(--graph-width), 100%);
         height: var(--graph-height);
 
         opacity: 0.5;
