@@ -63,17 +63,35 @@
         {((100 * data[0].value) / (data[0].value + data[1].value)).toFixed(2)}%
     </p>
     <small>
-        Passed = <code>{passed_search}</code>
-        <br />
-        Flunked =
-        <code>{flunked_search}</code>
-        <br />
-
+        <span>Passed =</span>
+        <span>
+            <code>{passed_search}</code>
+        </span>
+        <span>Flunked =</span>
+        <span>
+            <code>{flunked_search}</code>
+        </span>
         <label>
-            <input type="checkbox" bind:checked={do_learning} />
-            Learning =
-            <code>{learning_search}</code>
+            <span>
+                <input type="checkbox" bind:checked={do_learning} />
+                Learning =
+            </span>
+            <span>
+                <code>{learning_search}</code>
+            </span>
         </label>
-        <br />
     </small>
 {/await}
+
+<style>
+    label {
+        display: contents;
+    }
+    small {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.25em;
+        max-height: 5em;
+        overflow-y: auto;
+    }
+</style>
