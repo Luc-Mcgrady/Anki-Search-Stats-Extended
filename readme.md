@@ -13,6 +13,10 @@ Like the new anki stats screen? Want more? This is the addon for you.
 - **barWidth, barHeight**: Change the RESOLUTION at which the bar/candlestick charts are rendered. This can also be used to change their aspect ratio.
 
 - **piePercentages**: While true, A third percentage column is added to all pies.
+  E.g.  
+  ![image](https://github.com/user-attachments/assets/ebe205dc-2544-45ad-8cf6-25e02923a797)  
+  Has no effect on Card Count Time Machine.
+
 
 ## The Graphs
 
