@@ -20,12 +20,14 @@
         tooltip,
         showRevlogStats,
         tooltipShown,
+        graph_mode,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
     import RevlogGraphs from "./RevlogGraphs.svelte"
     import { defaultGraphBounds } from "./graph"
     import NoGraph from "./NoGraph.svelte"
+    import { mode } from "d3"
 
     const { width, height } = defaultGraphBounds()
 
@@ -89,7 +91,10 @@
     <GraphContainer>
         <h1>Interval Distribution</h1>
         <IntervalGraph {intervals} bind:last={interval_last} bind:steps={interval_steps} />
-        <p>Here you can more easily visualise the spread of your intervals</p>
+        <p>
+            Here you can more easily visualise the spread of your Intervals. This displays the same
+            data as regular anki's "Review Intervals" graph.
+        </p>
     </GraphContainer>
     <GraphContainer>
         <h1>Interval {$burdenOrLoad}</h1>
