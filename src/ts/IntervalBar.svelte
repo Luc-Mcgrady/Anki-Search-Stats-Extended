@@ -30,6 +30,7 @@
             label: i.toString(),
         })),
         columnLabeler: barStringLabeler(`${pieInfo.legend_left ?? "Interval"} of`),
+        tick_spacing: 5,
     }
 </script>
 
