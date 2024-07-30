@@ -111,14 +111,14 @@
     let time_machine_pie: PieDatum[]
     $: time_machine_pie = [
         {
-            label: "Young",
-            value: time_machine_young,
-            colour: YOUNG_COLOUR,
-        },
-        {
             label: "Mature",
             value: time_machine_mature,
             colour: MATURE_COLOUR,
+        },
+        {
+            label: "Young",
+            value: time_machine_young,
+            colour: YOUNG_COLOUR,
         },
         {
             label: "New",
