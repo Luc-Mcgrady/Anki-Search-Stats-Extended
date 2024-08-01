@@ -60,7 +60,7 @@ export function calculateRevlogStats(
             reintroduced.add(revlog.cid)
             forgotten.delete(revlog.cid)
         }
-        if (revlog.ivl >= 0) {
+        if (revlog.ivl >= 0 || id_card_data[revlog.cid].ivl < 0) {
             burden_revlogs.push(revlog)
         }
     }
