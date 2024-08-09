@@ -72,10 +72,21 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 Building this with make addon works on linux and will probably work on mac 
 
-Clone this repo recursively (It contains all anki's source files, sorry)
+### Cloning the Repository
+
+ To clone the repository along with its submodule (Anki codebase), you can use the following command:
+
+```sh
+git clone https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive --depth=1 --shallow-submodules
 ```
-https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive
-```
+
+This command performs a shallow clone, fetching only the latest commit
+for both the main repository and its submodule.
+
+Note: Unless you plan to perform Git actions that modify past commits
+(e.g., `git rebase`), using `--depth 1` and `--shallow-submodules` is a safe and
+efficient choice.
+It reduces the amount of data cloned and speeds up the process.
 
 ### Linux / Mac
 
