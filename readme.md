@@ -72,9 +72,12 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 Building this with make addon works on linux and will probably work on mac 
 
-Clone this repo recursively (It contains all anki's source files, sorry)
-```
-https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive
+### Cloning the Repository
+
+To clone the repository along with its submodule (the Anki codebase), you should use the following command:
+
+```sh
+git clone https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive --shallow-submodules
 ```
 
 ### Linux / Mac
