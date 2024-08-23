@@ -213,7 +213,7 @@
         </label>
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            Normalize
+            As Ratio
         </label>
         The first review you gave a newly introduced card. Important for FSRS.
     </GraphContainer>
@@ -243,7 +243,7 @@
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            Normalize
+            As Ratio
         </label>
         <p>
             The rating of every review you did that day, learning or otherwise. Normalizing displays
@@ -260,14 +260,14 @@
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            Normalize
+            As Ratio
         </label>
         <p>
-            The rating of the first review you did for every card that day. Normalize this and get <code
-            >
-                (1-again)%
-            </code>
-            to get your retention for that day.
+            The rating of the first review you did for every card that day. With the ratio,
+            calculate <code>(1-again)%</code>
+            to get your retention for that day (shown as
+            <code>% Correct</code>
+            ).
         </p>
     </GraphContainer>
 </GraphCategory>
