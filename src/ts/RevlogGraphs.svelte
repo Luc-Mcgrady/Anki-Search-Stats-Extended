@@ -200,7 +200,7 @@
         <p>You "forget" a card when you manually mark it as new.</p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Introductory Review</h1>
+        <h1>Introductory Rating</h1>
         <BarScrollable
             data={easeBarChart(introduced_ease, today, normalize_ease)}
             bind:binSize={$binSize}
