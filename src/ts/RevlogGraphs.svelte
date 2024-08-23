@@ -265,9 +265,9 @@
         <p>
             The rating of the first review you did for every card that day. With the ratio,
             calculate <code>(1-again)%</code>
-            to get your retention for that day (shown as
+            to get your retention for that day (shown as "
             <code>% Correct</code>
-            ).
+            " in the tooltip).
         </p>
     </GraphContainer>
 </GraphCategory>
