@@ -37,7 +37,7 @@ export function calculateRevlogStats(
 
     let intervals: number[][] = emptyArray([])
     let day_initial_ease: number[][] = emptyArray(initialEase())
-    let day_initial_relearned_ease: number[][] = emptyArray(initialEase())
+    let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
     let day_ease: number[][] = emptyArray(initialEase())
 
     let forgotten = new Set<number>()
@@ -68,11 +68,12 @@ export function calculateRevlogStats(
             }
         } else if (!introduced.has(revlog.cid)) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
-            incrementEase(day_initial_ease, day, ease)
 
+            incrementEase(day_initial_reintroduced_ease, day, ease)
             if (reintroduced.has(revlog.cid)) {
                 reintroduced_day_count[day] = (reintroduced_day_count[day] ?? 0) + 1
-                incrementEase(day_initial_relearned_ease, day, ease)
+            } else {
+                incrementEase(day_initial_ease, day, ease)
             }
             introduced.add(revlog.cid)
             reintroduced.add(revlog.cid)
@@ -124,7 +125,7 @@ export function calculateRevlogStats(
 
     return {
         day_initial_ease,
-        day_initial_relearned_ease,
+        day_initial_reintroduced_ease,
         day_ease,
         revlog_times,
         introduced_day_count,
@@ -145,7 +146,7 @@ export function easeBarChart(eases: number[][], offset = today): BarChart {
         row_colours: EASE_COLOURS,
         row_labels: EASE_LABELS,
         data: Array.from(eases).map((values, label) => ({
-            values: (values ?? [0, 0, 0, 0]).reverse(),
+            values: [...(values ?? [0, 0, 0, 0])].reverse(),
             label: (label - offset).toString(),
         })),
         tick_spacing: 5,

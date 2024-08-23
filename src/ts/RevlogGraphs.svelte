@@ -19,7 +19,7 @@
 
     $: ({
         day_initial_ease,
-        day_initial_relearned_ease,
+        day_initial_reintroduced_ease,
         day_ease,
         revlog_times,
         introduced_day_count,
@@ -129,6 +129,9 @@
         tick_spacing: 5,
         columnLabeler: barStringLabeler("Interval of"),
     }
+
+    let include_reintroduced = false
+    $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 </script>
 
 <GraphCategory>
@@ -195,8 +198,12 @@
     </GraphContainer>
     <GraphContainer>
         <h1>First review</h1>
-        <BarScrollable data={easeBarChart(day_initial_ease)}></BarScrollable>
-        The first review you gave a newly introduced card. Very important with FSRS.
+        <BarScrollable data={easeBarChart(introduced_ease)}></BarScrollable>
+        <label>
+            <input type="checkbox" bind:checked={include_reintroduced} />
+            Include re-introduced
+        </label>
+        The first review you gave a newly introduced card. Important for FSRS.
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
