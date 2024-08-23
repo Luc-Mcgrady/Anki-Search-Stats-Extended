@@ -18,8 +18,6 @@
     export let addedCards: Record<number, number>
 
     $: ({
-        review_day_times,
-        review_day_count,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -36,17 +34,6 @@
     $: start = today - bins * $binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
-
-    $: speed_trend_bar = {
-        row_colours: ["#fcba03"],
-        row_labels: ["Time Spent Per Review (s)"],
-        data: Array.from(review_day_count).map((data, i) => ({
-            label: (i - today - scrollOffset).toString(),
-            values: [(review_day_times[i] ?? 0) / ((data ?? 0) * 1000)],
-        })),
-        tick_spacing: 5,
-        columnLabeler: barDateLabeler,
-    }
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],

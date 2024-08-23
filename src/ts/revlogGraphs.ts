@@ -18,10 +18,6 @@ export function calculateRevlogStats(
 
     let revlog_times: number[] = []
     revlog_times[end] = 0
-    let review_day_times: number[] = []
-    review_day_times[end] = 0
-    let review_day_count: number[] = []
-    review_day_count[end] = 0
     let introduced_day_count: number[] = []
     introduced_day_count[end] = 0
     let reintroduced_day_count: number[] = []
@@ -41,9 +37,6 @@ export function calculateRevlogStats(
         const day = Math.floor((revlog.id - rollover) / day_ms)
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
-
-        review_day_times[day] = (review_day_times[day] ?? 0) + revlog.time
-        review_day_count[day] = (review_day_count[day] ?? 0) + 1
 
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
@@ -105,8 +98,6 @@ export function calculateRevlogStats(
     const remaining_forgotten = forgotten.size
 
     return {
-        review_day_times,
-        review_day_count,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
