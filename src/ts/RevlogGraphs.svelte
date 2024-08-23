@@ -132,6 +132,8 @@
 
     let include_reintroduced = false
     $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
+
+    let normalize_ease = false
 </script>
 
 <GraphCategory>
@@ -199,13 +201,18 @@
     <GraphContainer>
         <h1>First review</h1>
         <BarScrollable
-            data={easeBarChart(introduced_ease)}
+            data={easeBarChart(introduced_ease, today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
+            average={normalize_ease}
         />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
             Include re-introduced
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            Normalize
         </label>
         The first review you gave a newly introduced card. Important for FSRS.
     </GraphContainer>
@@ -228,11 +235,16 @@
     <GraphContainer>
         <h1>Ratings</h1>
         <BarScrollable
-            data={easeBarChart(day_ease)}
+            data={easeBarChart(day_ease, today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
+            average={normalize_ease}
         />
-        <p>What you rated every review that day</p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            Normalize
+        </label>
+        <p>The rating of every review you did that day. Normalizing gives displays it as a percent of all cards reviewed that day.</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
