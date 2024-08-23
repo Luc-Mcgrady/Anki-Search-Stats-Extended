@@ -13,13 +13,20 @@
             extraRender(chart)
         }
     }
+
+    let glossary: [string | undefined, string | undefined][]
+
+    $: {
+        glossary = _.zip(data.row_labels, data.row_colours)
+        if (data.reverse_legend) glossary = glossary.reverse()
+    }
 </script>
 
 {#if !data.data.length}
     <NoGraph></NoGraph>
 {:else}
     <div class="glossary">
-        {#each _.zip(data.row_labels, data.row_colours) as [label, colour]}
+        {#each glossary as [label, colour]}
             <div>
                 <span style={`color:${colour}`}>■&nbsp;</span>
                 {label}

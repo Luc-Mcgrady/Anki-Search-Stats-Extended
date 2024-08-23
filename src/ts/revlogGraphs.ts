@@ -149,5 +149,6 @@ export function easeBarChart(eases: number[][], offset = today): BarChart {
             label: (label - offset).toString(),
         })),
         tick_spacing: 5,
+        reverse_legend: true,
     }
 }

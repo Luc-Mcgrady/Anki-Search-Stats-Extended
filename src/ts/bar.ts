@@ -15,6 +15,7 @@ export type BarChart = {
     data: BarDatum[]
     tick_spacing?: number
     barWidth?: number
+    reverse_legend?: boolean
 
     columnLabeler?: (thing: string, width?: number) => string
 }
