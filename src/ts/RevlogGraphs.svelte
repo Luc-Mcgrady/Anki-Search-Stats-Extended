@@ -11,6 +11,7 @@
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
     import { calculateRevlogStats, day_ms, today } from "./revlogGraphs"
+    import GraphCategory from "./GraphCategory.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -140,149 +141,145 @@
     }
 </script>
 
-<GraphContainer>
-    <h1>Time Distribution</h1>
-    <IntervalGraph
-        intervals={revlog_times}
-        bind:last={$pieLast}
-        bind:steps={$pieSteps}
-        include_suspended_option={false}
-        pieInfo={{
-            countDescriptor: "Most Seconds",
-            spectrumFrom: "#fcba03",
-            spectrumTo: "#543e00",
-            fillerColour: "blue",
-            legend_left: "Time (s)",
-        }}
-    ></IntervalGraph>
-    <p>How many cards have taken the given amount of time to answer over every review</p>
-    <p>
-        In order to exclude suspended cards from this or the following graphs, you will need to
-        manually add "-is:suspended" to your search. Please consider that this may cause
-        inconsistencies if you leave it off for the above graphs.
-    </p>
-</GraphContainer>
-<GraphContainer>
-    <h1>Time Totals</h1>
-    <IntervalGraph
-        intervals={revlog_times.map((i, a) => i * a)}
-        bind:last={$pieLast}
-        bind:steps={$pieSteps}
-        include_suspended_option={false}
-        pieInfo={{
-            countDescriptor: "Most Seconds",
-            spectrumFrom: "#fcba03",
-            spectrumTo: "#543e00",
-            fillerColour: "blue",
-            legend_left: "Per card (s)",
-            legend_right: "Total (s)",
-            totalDescriptor: "Seconds",
-        }}
-    ></IntervalGraph>
-    <p>
-        The quantity of time that has been spent on cards which have taken the given amount of time
-        to answer over every review
-    </p>
-</GraphContainer>
-<GraphContainer>
-    <h1>Review Speed Trend</h1>
-    <BarScrollable
-        data={speed_trend_bar}
-        {bins}
-        bind:binSize={$binSize}
-        bind:offset={$scroll}
-        average
-    />
-    <p>The average amount of time it took you to answer each card on a given day.</p>
-</GraphContainer>
-<GraphContainer>
-    <h1>Introduced</h1>
-    <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+<GraphCategory>
+    <GraphContainer>
+        <h1>Time Distribution</h1>
+        <IntervalGraph
+            intervals={revlog_times}
+            bind:last={$pieLast}
+            bind:steps={$pieSteps}
+            include_suspended_option={false}
+            pieInfo={{
+                countDescriptor: "Most Seconds",
+                spectrumFrom: "#fcba03",
+                spectrumTo: "#543e00",
+                fillerColour: "blue",
+                legend_left: "Time (s)",
+            }}
+        ></IntervalGraph>
+        <p>How many cards have taken the given amount of time to answer over every review</p>
+        <p>
+            In order to exclude suspended cards from this or the following graphs, you will need to
+            manually add "-is:suspended" to your search. Please consider that this may cause
+            inconsistencies if you leave it off for the above graphs.
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Time Totals</h1>
+        <IntervalGraph
+            intervals={revlog_times.map((i, a) => i * a)}
+            bind:last={$pieLast}
+            bind:steps={$pieSteps}
+            include_suspended_option={false}
+            pieInfo={{
+                countDescriptor: "Most Seconds",
+                spectrumFrom: "#fcba03",
+                spectrumTo: "#543e00",
+                fillerColour: "blue",
+                legend_left: "Per card (s)",
+                legend_right: "Total (s)",
+                totalDescriptor: "Seconds",
+            }}
+        ></IntervalGraph>
+        <p>
+            The quantity of time that has been spent on cards which have taken the given amount of
+            time to answer over every review
+        </p>
+    </GraphContainer>
+</GraphCategory>
+<GraphCategory>
+    <GraphContainer>
+        <h1>Introduced</h1>
+        <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
 
-    <p>
-        A card is introduced when it is shown to you for the first time. A card is re-introduced
-        when it is shown to you for the first time after being forgotten.
-    </p>
-</GraphContainer>
-<GraphContainer>
-    <h1>Forgotten</h1>
-    <BarScrollable data={forgotten_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
-    <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
+        <p>
+            A card is introduced when it is shown to you for the first time. A card is re-introduced
+            when it is shown to you for the first time after being forgotten.
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Forgotten</h1>
+        <BarScrollable data={forgotten_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
-    <p>You "forget" a card when you manually mark it as new.</p>
-</GraphContainer>
-<GraphContainer>
-    <h1>{$burdenOrLoad} Trend</h1>
-    <Candlestick
-        data={burden_change_candlestick}
-        {bins}
-        bind:binSize={$binSize}
-        bind:offset={$scroll}
-    />
-    <p>
-        This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
-        in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
-        an increase.
-    </p>
-</GraphContainer>
-<GraphContainer>
-    <h1>Card Count Time Machine</h1>
-    <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage></Pie>
-    <label>
-        <span>
-            {-realScroll} days ago:
-        </span>
-        <span class="scroll">
-            {time_machine_min}
-            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-            0
-        </span>
-    </label>
-    <div>
-        Start at <br />
+        <p>You "forget" a card when you manually mark it as new.</p>
+    </GraphContainer>
+</GraphCategory>
+<GraphCategory>
+    <GraphContainer>
+        <h1>{$burdenOrLoad} Trend</h1>
+        <Candlestick
+            data={burden_change_candlestick}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+        />
+        <p>
+            This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
+            in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
+            an increase.
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Card Count Time Machine</h1>
+        <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage
+        ></Pie>
         <label>
-            <input type="radio" bind:group={left_bound_at} value="Added" />
-            First added
+            <span>
+                {-realScroll} days ago:
+            </span>
+            <span class="scroll">
+                {time_machine_min}
+                <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+                0
+            </span>
         </label>
-        <label>
-            <input type="radio" bind:group={left_bound_at} value="Review" />
-            First review
+        <div>
+            Start at <br />
+            <label>
+                <input type="radio" bind:group={left_bound_at} value="Added" />
+                First added
+            </label>
+            <label>
+                <input type="radio" bind:group={left_bound_at} value="Review" />
+                First review
+            </label>
+            <label>
+                <input
+                    type="radio"
+                    bind:group={left_bound_at}
+                    value="Custom"
+                    on:click={() => {
+                        if (time_machine_min) {
+                            custom_leftmost = time_machine_min
+                        }
+                    }}
+                />
+                Custom
+            </label>
+            {#if left_bound_at == "Custom"}
+                <input type="number" bind:value={custom_leftmost} />
+            {/if}
+        </div>
+        <span>Total: {time_machine_added}</span>
+        <p>Shows your card type counts for a given date</p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Review Interval Time Machine</h1>
+        <BarScrollable data={time_machine_bar} left_aligned />
+        <label class="scroll">
+            <span>
+                {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
+            </span>
+            <span class="scroll">
+                {time_machine_min}
+                <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+                0
+            </span>
         </label>
-        <label>
-            <input
-                type="radio"
-                bind:group={left_bound_at}
-                value="Custom"
-                on:click={() => {
-                    if (time_machine_min) {
-                        custom_leftmost = time_machine_min
-                    }
-                }}
-            />
-            Custom
-        </label>
-        {#if left_bound_at == "Custom"}
-            <input type="number" bind:value={custom_leftmost} />
-        {/if}
-    </div>
-    <span>Total: {time_machine_added}</span>
-    <p>Shows your card type counts for a given date</p>
-</GraphContainer>
-<GraphContainer>
-    <h1>Review Interval Time Machine</h1>
-    <BarScrollable data={time_machine_bar} left_aligned />
-    <label class="scroll">
-        <span>
-            {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
-        </span>
-        <span class="scroll">
-            {time_machine_min}
-            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-            0
-        </span>
-    </label>
-    <p>Shows your review intervals for a given date</p>
-</GraphContainer>
+        <p>Shows your review intervals for a given date</p>
+    </GraphContainer>
+</GraphCategory>
 
 <style>
     label.scroll {
