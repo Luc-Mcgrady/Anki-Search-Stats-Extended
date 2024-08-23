@@ -27,7 +27,7 @@
     import RevlogGraphs from "./RevlogGraphs.svelte"
     import { defaultGraphBounds } from "./graph"
     import NoGraph from "./NoGraph.svelte"
-    import { mode } from "d3"
+    import DayTimings from "./DayTimings.svelte"
 
     const { width, height } = defaultGraphBounds()
 
@@ -110,6 +110,12 @@
             you see it every day. If a card has an interval of 2 it has a {$burdenOrLoad.toLowerCase()}
             of 0.5 et cetera.
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Review Speed Trend</h1>
+        <DayTimings data={$data?.reviews} />
+        <p>The average amount of time it took you to answer each card on a given day.</p>
+        <p>Please note that this graph respects the <code>last 12 months / all history</code> option beneath the search bar.</p>
     </GraphContainer>
 
     <CardDataPies cardData={$card_data} />
