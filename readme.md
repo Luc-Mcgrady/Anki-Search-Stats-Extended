@@ -60,6 +60,11 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ![image](https://github.com/user-attachments/assets/b8110b00-7c56-42e6-a163-03676c0e75f9)
 
+### Rating Graphs
+
+![image](https://github.com/user-attachments/assets/36bea17e-814a-477b-ac5d-ff4f4fad2ce1)
+![image](https://github.com/user-attachments/assets/901fe7bf-53bf-4e53-ba09-d512b8fee38d)
+
 ### Burden Trend
 
 ![image](https://github.com/user-attachments/assets/acad50ec-72b1-4041-a5af-b63ad3e4fa67)
