@@ -1,4 +1,5 @@
 import _ from "lodash"
+import type { BarChart } from "./bar"
 import type { CardData, Revlog } from "./search"
 
 //@ts-ignore
@@ -16,27 +17,28 @@ export function calculateRevlogStats(
         id_card_data[card.id] = card
     }
 
-    function emptyArray() {
-        const empty_array = []
-        empty_array[end] = 0
+    function emptyArray<T>(init: T): T[] {
+        const empty_array: T[] = []
+        empty_array[end] = init
         return empty_array
     }
 
-    function empty2dArray() {
-        const empty_array = []
-        empty_array[end] = []
-        return empty_array
+    function initialEase() {
+        return [0, 0, 0, 0]
     }
 
     const empty_2d_array = []
     empty_2d_array[end] = []
 
-    let revlog_times: number[] = emptyArray()
-    let introduced_day_count: number[] = emptyArray()
-    let reintroduced_day_count: number[] = emptyArray()
-    let day_forgotten: number[] = emptyArray()
+    let revlog_times: number[] = emptyArray(0)
+    let introduced_day_count: number[] = emptyArray(0)
+    let reintroduced_day_count: number[] = emptyArray(0)
+    let day_forgotten: number[] = emptyArray(0)
 
-    let intervals: number[][] = empty2dArray()
+    let intervals: number[][] = emptyArray([])
+    let day_initial_ease: number[][] = emptyArray(initialEase())
+    let day_initial_relearned_ease: number[][] = emptyArray(initialEase())
+    let day_ease: number[][] = emptyArray(initialEase())
 
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
@@ -45,10 +47,18 @@ export function calculateRevlogStats(
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
 
+    function incrementEase(ease_array: number[][], day: number, ease: number) {
+        // Doesn't check for negative ease (manual reschedule)
+        ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
+        ease_array[day][ease] += 1
+    }
+
     for (const revlog of revlogData) {
         const day = Math.floor((revlog.id - rollover) / day_ms)
+        const ease = revlog.ease - 1
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
+        incrementEase(day_ease, day, ease)
 
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
@@ -58,8 +68,11 @@ export function calculateRevlogStats(
             }
         } else if (!introduced.has(revlog.cid)) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
+            incrementEase(day_initial_ease, day, ease)
+
             if (reintroduced.has(revlog.cid)) {
                 reintroduced_day_count[day] = (reintroduced_day_count[day] ?? 0) + 1
+                incrementEase(day_initial_relearned_ease, day, ease)
             }
             introduced.add(revlog.cid)
             reintroduced.add(revlog.cid)
@@ -110,6 +123,9 @@ export function calculateRevlogStats(
     const remaining_forgotten = forgotten.size
 
     return {
+        day_initial_ease,
+        day_initial_relearned_ease,
+        day_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -118,5 +134,20 @@ export function calculateRevlogStats(
         day_forgotten,
         remaining_forgotten,
         intervals,
+    }
+}
+
+const EASE_COLOURS = ["#a50026", "#fdbe70", "#b6e076", "#006837"].reverse()
+const EASE_LABELS = ["Again", "Hard", "Good", "Easy"].reverse()
+
+export function easeBarChart(eases: number[][], offset = today): BarChart {
+    return {
+        row_colours: EASE_COLOURS,
+        row_labels: EASE_LABELS,
+        data: Array.from(eases).map((values, label) => ({
+            values: (values ?? [0, 0, 0, 0]).reverse(),
+            label: (label - offset).toString(),
+        })),
+        tick_spacing: 5,
     }
 }

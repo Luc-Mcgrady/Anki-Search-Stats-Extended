@@ -10,7 +10,7 @@
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
-    import { calculateRevlogStats, day_ms, today } from "./revlogGraphs"
+    import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
 
     export let revlogData: Revlog[]
@@ -18,6 +18,9 @@
     export let addedCards: Record<number, number>
 
     $: ({
+        day_initial_ease,
+        day_initial_relearned_ease,
+        day_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -30,7 +33,7 @@
 
     $: realScroll = -Math.abs($scroll)
     const bins = 30
-    const scrollOffset = bins * $binSize - bins
+    const barOffset = bins * $binSize - bins
     $: start = today - bins * $binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
@@ -44,10 +47,10 @@
                 const reintroduced = reintroduced_day_count[i] ?? 0
                 return {
                     values: [introduced - reintroduced, reintroduced],
-                    label: (i - today - scrollOffset).toString(),
+                    label: (i - today - barOffset).toString(),
                 }
             })
-            .map((d, i) => d ?? { values: [0, 0], label: (i - today - scrollOffset).toString() }),
+            .map((d, i) => d ?? { values: [0, 0], label: (i - today - barOffset).toString() }),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }
@@ -57,7 +60,7 @@
         row_labels: ["Forgotten"],
         data: Array.from(day_forgotten).map((v, i) => ({
             values: [v ?? 0],
-            label: (i - today - scrollOffset).toString(),
+            label: (i - today - barOffset).toString(),
         })),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
@@ -66,7 +69,7 @@
     $: burden_change_candlestick = {
         start: burden_start,
         data: Array.from(burden_change).map((delta, i) => ({
-            label: (i - today - scrollOffset).toString(),
+            label: (i - today - barOffset).toString(),
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
@@ -178,7 +181,6 @@
     <GraphContainer>
         <h1>Introduced</h1>
         <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
-
         <p>
             A card is introduced when it is shown to you for the first time. A card is re-introduced
             when it is shown to you for the first time after being forgotten.
@@ -190,6 +192,11 @@
         <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
         <p>You "forget" a card when you manually mark it as new.</p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>First review</h1>
+        <BarScrollable data={easeBarChart(day_initial_ease)}></BarScrollable>
+        The first review you gave a newly introduced card. Very important with FSRS.
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
