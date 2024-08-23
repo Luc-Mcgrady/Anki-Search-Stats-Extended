@@ -17,6 +17,7 @@ export type BarChart = {
     barWidth?: number
     reverse_legend?: boolean
 
+    extraStats?: (data: BarDatum) => string[]
     columnLabeler?: (thing: string, width?: number) => string
 }
 
@@ -56,6 +57,10 @@ export function createAxis(
     return { x, y, axis }
 }
 
+export function totalCalc(data: BarDatum) {
+    return data.values.length > 1 ? [`Total: ${_.sum(data.values)}`] : []
+}
+
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
     const maxValue = _.sum(Object.values(max?.values ?? []))
@@ -73,6 +78,8 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .keys(_.range(0, chart.row_labels.length))
         .value((obj, key) => obj.values[key])(chart.data)
 
+    const { columnLabeler = barStringLabeler("Index"), extraStats = totalCalc } = chart
+
     axis.append("g")
         .selectAll("g")
         .data(stack)
@@ -86,12 +93,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
         .on("mouseover", (e, d) => {
-            const columnString = [
-                chart.columnLabeler?.(d.data.label, chart.barWidth) ??
-                    barStringLabeler("Index")(d.data.label, chart.barWidth),
-            ]
-
-            const total = d.data.values.length > 1 ? [`Total: ${_.sum(d.data.values)}`] : []
+            const columnString = [columnLabeler(d.data.label, chart.barWidth)]
 
             tooltipShown.set(true)
             tooltip.set({
@@ -100,7 +102,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                     ...d.data.values.map(
                         (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`
                     ),
-                    ...total,
+                    ...extraStats(d.data),
                 ],
                 x: tooltipX(e),
                 y: e.pageY,
