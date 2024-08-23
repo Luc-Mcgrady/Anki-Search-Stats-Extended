@@ -1,5 +1,5 @@
 import _ from "lodash"
-import type { BarChart } from "./bar"
+import { barDateLabeler, type BarChart } from "./bar"
 import type { CardData, Revlog } from "./search"
 
 //@ts-ignore
@@ -151,5 +151,6 @@ export function easeBarChart(eases: number[][], offset = today): BarChart {
         })),
         tick_spacing: 5,
         reverse_legend: true,
+        columnLabeler: barDateLabeler,
     }
 }

@@ -198,7 +198,11 @@
     </GraphContainer>
     <GraphContainer>
         <h1>First review</h1>
-        <BarScrollable data={easeBarChart(introduced_ease)}></BarScrollable>
+        <BarScrollable
+            data={easeBarChart(introduced_ease)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+        />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
             Include re-introduced
@@ -221,6 +225,17 @@
             an increase.
         </p>
     </GraphContainer>
+    <GraphContainer>
+        <h1>Ratings</h1>
+        <BarScrollable
+            data={easeBarChart(day_ease)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+        />
+        <p>What you rated every review that day</p>
+    </GraphContainer>
+</GraphCategory>
+<GraphCategory>
     <GraphContainer>
         <h1>Card Count Time Machine</h1>
         <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage
