@@ -70,7 +70,7 @@ export function calculateRevlogStats(
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
             }
-        } else if (!introduced.has(revlog.cid)) {
+        } else if (!introduced.has(revlog.cid) && revlog.ivl != 0) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
 
             incrementEase(day_initial_reintroduced_ease, day, ease)
