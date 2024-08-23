@@ -16,16 +16,28 @@ export function calculateRevlogStats(
         id_card_data[card.id] = card
     }
 
-    let revlog_times: number[] = []
-    revlog_times[end] = 0
-    let introduced_day_count: number[] = []
-    introduced_day_count[end] = 0
-    let reintroduced_day_count: number[] = []
-    reintroduced_day_count[end] = 0
-    let day_forgotten: number[] = []
-    day_forgotten[end] = 0
-    let intervals: number[][] = []
-    intervals[end] = []
+    function emptyArray() {
+        const empty_array = []
+        empty_array[end] = 0
+        return empty_array
+    }
+
+    function empty2dArray() {
+        const empty_array = []
+        empty_array[end] = []
+        return empty_array
+    }
+
+    const empty_2d_array = []
+    empty_2d_array[end] = []
+
+    let revlog_times: number[] = emptyArray()
+    let introduced_day_count: number[] = emptyArray()
+    let reintroduced_day_count: number[] = emptyArray()
+    let day_forgotten: number[] = emptyArray()
+
+    let intervals: number[][] = empty2dArray()
+
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
     let introduced = new Set<number>()
