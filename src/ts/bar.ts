@@ -1,4 +1,4 @@
-import * as d3 from "d3"
+import d3 from "d3"
 import _ from "lodash"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"

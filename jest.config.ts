@@ -69,7 +69,7 @@ const config: Config = {
   // A set of global variables that need to be available in all test environments
   globals: { 
     "ts-jest": {
-      tsConfig: "test/tsconfig.json",
+      tsconfig: "test/tsconfig.json",
     },
     SSEother: {}
   },
@@ -107,7 +107,7 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: "ts-jest",
+  // preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -131,7 +131,6 @@ const config: Config = {
 
   // A list of paths to directories that Jest should use to search for files in
   roots: [
-     "src/ts",
      "test"
   ],
 
@@ -142,7 +141,7 @@ const config: Config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ["./test/setup.js"],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -183,10 +182,9 @@ const config: Config = {
   // transform: undefined,
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/",
-  //   "\\.pnp\\.[^\\/]+$"
-  // ],
+  transformIgnorePatterns: [
+    "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
