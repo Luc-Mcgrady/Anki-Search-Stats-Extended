@@ -21,6 +21,7 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
+        day_review_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -199,7 +200,7 @@
         <p>You "forget" a card when you manually mark it as new.</p>
     </GraphContainer>
     <GraphContainer>
-        <h1>First review</h1>
+        <h1>Introductory Review</h1>
         <BarScrollable
             data={easeBarChart(introduced_ease, today, normalize_ease)}
             bind:binSize={$binSize}
@@ -244,7 +245,30 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             Normalize
         </label>
-        <p>The rating of every review you did that day. Normalizing gives displays it as a percent of all cards reviewed that day.</p>
+        <p>
+            The rating of every review you did that day, learning or otherwise. Normalizing displays
+            it as a percent of all cards reviewed that day.
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Review Ratings</h1>
+        <BarScrollable
+            data={easeBarChart(day_review_ease, today, normalize_ease)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            average={normalize_ease}
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            Normalize
+        </label>
+        <p>
+            The rating of the first review you did for every card that day. Normalize this and get <code
+            >
+                (1-again)%
+            </code>
+            to get your retention for that day.
+        </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
