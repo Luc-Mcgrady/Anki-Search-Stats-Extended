@@ -131,7 +131,7 @@
         columnLabeler: barStringLabeler("Interval of"),
     }
 
-    let include_reintroduced = false
+    let include_reintroduced = true
     $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
