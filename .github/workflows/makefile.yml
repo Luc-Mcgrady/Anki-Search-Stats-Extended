@@ -21,3 +21,14 @@ jobs:
     
     - name: Test
       run: npm run test
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install
+        run: npm i
+
+      - name: Format
+        run: npx prettier --config .prettierrc 'src/**/*' -c
