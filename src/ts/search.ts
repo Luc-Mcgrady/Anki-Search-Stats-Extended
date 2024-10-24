@@ -1,7 +1,11 @@
 import { realFetch } from "./root"
 
 async function endpoint(endpoint: string, body?: string) {
-    const resp = await realFetch(`/_anki/${endpoint}`, { method: "POST", body })
+    const resp = await realFetch(`/_anki/${endpoint}`, {
+        method: "POST",
+        body,
+        headers: { "Content-Type": "application/binary" },
+    })
     const blob = await resp.text()
     return JSON.parse(blob)
 }
