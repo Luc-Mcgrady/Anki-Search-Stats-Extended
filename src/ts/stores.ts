@@ -11,7 +11,7 @@ export let learn_data = writable<null | GraphsResponse>(null)
 export let relearn_data = writable<null | GraphsResponse>(null)
 
 export let graphsRequest = writable<null | GraphsRequest>(null)
-export let searchString = derived(graphsRequest, (searchRequest) => searchRequest?.search)
+export let searchString = derived(graphsRequest, (searchRequest) => searchRequest?.search ?? null)
 export let searchLimit = derived(graphsRequest, (searchRequest) => searchRequest?.days ?? 0)
 export let cids = writable<null | number[]>(null)
 export let card_data = writable<null | CardData[]>(null)
