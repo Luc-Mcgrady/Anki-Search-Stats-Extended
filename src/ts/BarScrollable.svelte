@@ -33,15 +33,21 @@
                 binSize > 0 ? (((limit + absOffset) % binSize) * x.step()) / binSize : x.step()
 
             console.log(x(limit.toString()), { limit, x, limitBin, realOffset, absOffset })
+            const border = 2
 
             svg.append("rect")
-                .attr("x", x(leftmost.toString()) ?? 2)
-                .attr("y", y(maxValue))
-                .attr("height", y(0))
-                .attr("width", (x(limitBin.toString()) ?? 0) + intraBinOffset)
+                .attr("x", x(leftmost.toString()) ?? border)
+                .attr("y", 0)
+                .attr("height", defaultGraphBounds().height - border)
+                .attr(
+                    "width",
+                    (x(limitBin.toString()) ??
+                        (realOffset < limitBin ? defaultGraphBounds().width - border : 0) -
+                            intraBinOffset) + intraBinOffset
+                )
                 .attr("fill", "url(#stripe)")
                 .style("outline", "red 2px solid")
-                .style("outline-offset", "-2px")
+                .style("outline-offset", `-${border}px`)
         }
     }
 
