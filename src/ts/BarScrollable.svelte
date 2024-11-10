@@ -17,12 +17,10 @@
 
     $: absOffset = Math.abs(offset)
     $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
+    $: leftmost = -(bins * binSize) + realOffset
 
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(
-        -(bins * binSize) + realOffset,
-        realOffset == 0 ? undefined : realOffset
-    )
+    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
 
     function inner_extra_render(chart: ExtraRenderInput) {
         extraRender(chart)
@@ -37,14 +35,13 @@
             console.log(x(limit.toString()), { limit, x, limitBin, realOffset, absOffset })
 
             svg.append("rect")
-                .attr("x", 0)
+                .attr("x", x(leftmost.toString()) ?? 2)
                 .attr("y", y(maxValue))
                 .attr("height", y(0))
-                .attr(
-                    "width",
-                    (x(limitBin.toString()) ?? defaultGraphBounds().width) + intraBinOffset
-                )
+                .attr("width", (x(limitBin.toString()) ?? 0) + intraBinOffset)
                 .attr("fill", "url(#stripe)")
+                .style("outline", "red 2px solid")
+                .style("outline-offset", "-2px")
         }
     }
 
