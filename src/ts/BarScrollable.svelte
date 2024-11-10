@@ -2,6 +2,7 @@
     import _ from "lodash"
     import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
     import Bar from "./Bar.svelte"
+    import { bin } from "d3"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -12,16 +13,36 @@
     export let bins = 30
     export let average = false
     export let left_aligned = false
+    export let limit: number = 0
 
-    $: realOffset = left_aligned
-        ? Math.abs(offset) - data.data.length + bins * binSize + min
-        : -Math.abs(offset)
+    $: absOffset = Math.abs(offset)
+    $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
 
     $: binSize = binSize > 0 ? binSize : 1
     $: seperate_bars = data.data.slice(
         -(bins * binSize) + realOffset,
         realOffset == 0 ? undefined : realOffset
     )
+
+    function inner_extra_render(chart: ExtraRenderInput) {
+        extraRender(chart)
+
+        if (limit != 0) {
+            const { svg, x, y, maxValue } = chart
+
+            const limitBin = Math.floor((limit + absOffset) / binSize) * binSize + min - absOffset
+            const intraBinOffset = 0 // (((limit + realOffset) % binSize) * x.step()) / binSize
+
+            console.log(x(limit.toString()), limit, x, limitBin)
+
+            svg.append("rect")
+                .attr("x", x(realOffset.toString()) ?? 0)
+                .attr("y", y(maxValue))
+                .attr("height", y(0))
+                .attr("width", (x(limitBin.toString()) ?? 0) - intraBinOffset)
+                .attr("fill", "url(#stripe)")
+        }
+    }
 
     let bars: BarDatum[]
     $: {
@@ -59,7 +80,7 @@
     </label>
 </div>
 
-<Bar data={{ ...data, data: bars, barWidth: binSize }} {extraRender}></Bar>
+<Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
 <style>
     div.options {
