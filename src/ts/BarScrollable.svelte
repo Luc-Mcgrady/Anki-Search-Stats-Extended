@@ -15,7 +15,7 @@
     export let bins = 30
     export let average = false
     export let left_aligned = false
-    export let limit: number = 0
+    export let limit: number = -1
 
     $: absOffset = Math.abs(offset)
     $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
