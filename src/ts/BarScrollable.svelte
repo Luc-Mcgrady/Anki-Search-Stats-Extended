@@ -3,6 +3,8 @@
     import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
     import Bar from "./Bar.svelte"
     import { defaultGraphBounds } from "./graph"
+    import { tooltip, tooltipShown } from "./stores"
+    import { tooltipX } from "./tooltip"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -25,30 +27,37 @@
     function inner_extra_render(chart: ExtraRenderInput) {
         extraRender(chart)
 
-        if (limit != 0) {
-            const { svg, x, y, maxValue } = chart
+        const { svg, x, y, maxValue } = chart
 
-            const limitBin = Math.ceil((limit + absOffset) / binSize) * binSize + min - absOffset
-            const intraBinOffset =
-                binSize > 0 ? (((limit + absOffset) % binSize) * x.step()) / binSize : x.step()
+        const limitBin = Math.ceil((limit + absOffset) / binSize) * binSize + min - absOffset
+        const intraBinOffset =
+            binSize > 0 ? (((limit + absOffset) % binSize) * x.step()) / binSize : x.step()
 
-            console.log(x(limit.toString()), { limit, x, limitBin, realOffset, absOffset })
-            const border = 2
+        console.log(x(limit.toString()), { limit, x, limitBin, realOffset, absOffset })
+        const border = 2
 
-            svg.append("rect")
-                .attr("x", x(leftmost.toString()) ?? border)
-                .attr("y", 0)
-                .attr("height", defaultGraphBounds().height - border)
-                .attr(
-                    "width",
-                    (x(limitBin.toString()) ??
-                        (realOffset < limitBin ? defaultGraphBounds().width - border : 0) -
-                            intraBinOffset) + intraBinOffset
-                )
-                .attr("fill", "url(#stripe)")
-                .style("outline", "red 2px solid")
-                .style("outline-offset", `-${border}px`)
-        }
+        svg.append("rect")
+            .attr("x", x(leftmost.toString()) ?? border)
+            .attr("y", 0)
+            .attr("height", limit != -1 ? defaultGraphBounds().height - border : 0) // Hide if the limit is 0
+            .attr(
+                "width",
+                (x(limitBin.toString()) ??
+                    (realOffset < limitBin ? defaultGraphBounds().width - border : 0) -
+                        intraBinOffset) + intraBinOffset
+            )
+            .attr("fill", "url(#stripe)")
+            .style("outline", "red 2px solid")
+            .style("outline-offset", `-${border}px`)
+            .on("mouseover", (e, d) => {
+                tooltipShown.set(true)
+                tooltip.set({
+                    text: ['To calculate this area, select "all history" under the search bar'],
+                    x: tooltipX(e),
+                    y: e.pageY,
+                })
+            })
+            .on("mouseleave", () => tooltipShown.set(false))
     }
 
     let bars: BarDatum[]
