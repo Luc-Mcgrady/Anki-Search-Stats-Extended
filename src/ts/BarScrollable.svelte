@@ -2,7 +2,7 @@
     import _ from "lodash"
     import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
     import Bar from "./Bar.svelte"
-    import { bin } from "d3"
+    import { defaultGraphBounds } from "./graph"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -30,16 +30,20 @@
         if (limit != 0) {
             const { svg, x, y, maxValue } = chart
 
-            const limitBin = Math.floor((limit + absOffset) / binSize) * binSize + min - absOffset
-            const intraBinOffset = 0 // (((limit + realOffset) % binSize) * x.step()) / binSize
+            const limitBin = Math.ceil((limit + absOffset) / binSize) * binSize + min - absOffset
+            const intraBinOffset =
+                binSize > 0 ? (((limit + absOffset) % binSize) * x.step()) / binSize : x.step()
 
-            console.log(x(limit.toString()), limit, x, limitBin)
+            console.log(x(limit.toString()), { limit, x, limitBin, realOffset, absOffset })
 
             svg.append("rect")
-                .attr("x", x(realOffset.toString()) ?? 0)
+                .attr("x", 0)
                 .attr("y", y(maxValue))
                 .attr("height", y(0))
-                .attr("width", (x(limitBin.toString()) ?? 0) - intraBinOffset)
+                .attr(
+                    "width",
+                    (x(limitBin.toString()) ?? defaultGraphBounds().width) + intraBinOffset
+                )
                 .attr("fill", "url(#stripe)")
         }
     }

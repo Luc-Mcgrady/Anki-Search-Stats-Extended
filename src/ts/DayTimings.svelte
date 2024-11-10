@@ -24,7 +24,7 @@
 
     $: console.log({ time_spent, data, bar })
 
-    $: limit = -$searchLimit
+    $: limit = -1 - $searchLimit
 </script>
 
 <BarScrollable data={bar} bind:offset average {limit} />
