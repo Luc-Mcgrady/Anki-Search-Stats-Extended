@@ -49,15 +49,27 @@
             .attr("fill", "url(#stripe)")
             .style("outline", "red 2px solid")
             .style("outline-offset", `-${border}px`)
+            .style("cursor", "pointer")
             .on("mouseover", (e, d) => {
                 tooltipShown.set(true)
                 tooltip.set({
-                    text: ['To calculate this area, select "all history" under the search bar'],
+                    text: [
+                        'To calculate this area, select "all history" under the search bar.',
+                        "Alternatively, click here.",
+                    ],
                     x: tooltipX(e),
                     y: e.pageY,
                 })
             })
             .on("mouseleave", () => tooltipShown.set(false))
+            .on("click", () => {
+                ;(
+                    document.querySelector(
+                        "body > div:nth-child(1) > div.range-box.svelte-19q2rko > div:nth-child(3) > label:nth-child(2) > input[type=radio]"
+                    )! as HTMLInputElement
+                ).click()
+                tooltipShown.set(false)
+            })
     }
 
     let bars: BarDatum[]
