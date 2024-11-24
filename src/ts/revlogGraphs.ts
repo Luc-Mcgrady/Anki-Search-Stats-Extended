@@ -36,10 +36,13 @@ export function calculateRevlogStats(
     let day_forgotten: number[] = emptyArray(0)
 
     let intervals: number[][] = emptyArray([])
+
     let day_initial_ease: number[][] = emptyArray(initialEase())
     let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
+
     let day_ease: number[][] = emptyArray(initialEase())
     let day_review_ease = emptyArray(initialEase())
+    let day_review_ease_mature = emptyArray(initialEase())
 
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
@@ -63,6 +66,9 @@ export function calculateRevlogStats(
 
         if (revlog.lastIvl > 0) {
             incrementEase(day_review_ease, day, ease)
+            if (revlog.lastIvl >= 21) {
+                incrementEase(day_review_ease_mature, day, ease)
+            }
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
@@ -132,6 +138,7 @@ export function calculateRevlogStats(
         day_initial_reintroduced_ease,
         day_ease,
         day_review_ease,
+        day_review_ease_mature,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,

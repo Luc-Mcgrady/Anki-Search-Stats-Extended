@@ -22,6 +22,7 @@
         day_initial_reintroduced_ease,
         day_ease,
         day_review_ease,
+        day_review_ease_mature,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -135,6 +136,7 @@
     $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
+    let mature_ease = false
 </script>
 
 <GraphCategory>
@@ -253,7 +255,11 @@
     <GraphContainer>
         <h1>Review Ratings</h1>
         <BarScrollable
-            data={easeBarChart(day_review_ease, today, normalize_ease)}
+            data={easeBarChart(
+                mature_ease ? day_review_ease_mature : day_review_ease,
+                today,
+                normalize_ease
+            )}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
@@ -261,6 +267,10 @@
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={mature_ease} />
+            Mature
         </label>
         <p>
             The rating of the first review you did for every card that day. With the ratio,
