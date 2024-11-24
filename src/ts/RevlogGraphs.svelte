@@ -2,7 +2,7 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import type { CardData, Revlog } from "./search"
-    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll } from "./stores"
+    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll, searchLimit } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -137,6 +137,7 @@
 
     let normalize_ease = false
     let mature_ease = false
+    $: limit = -1 - $searchLimit
 </script>
 
 <GraphCategory>
@@ -188,7 +189,13 @@
 <GraphCategory>
     <GraphContainer>
         <h1>Introduced</h1>
-        <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <BarScrollable
+            data={introduced_bar}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+        />
         <p>
             A card is introduced when it is shown to you for the first time. A card is re-introduced
             when it is shown to you for the first time after being forgotten.
@@ -196,7 +203,13 @@
     </GraphContainer>
     <GraphContainer>
         <h1>Forgotten</h1>
-        <BarScrollable data={forgotten_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <BarScrollable
+            data={forgotten_bar}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+        />
         <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
         <p>You "forget" a card when you manually mark it as new.</p>
@@ -208,6 +221,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
@@ -242,6 +256,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -263,6 +278,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
