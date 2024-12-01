@@ -23,6 +23,7 @@
         day_ease,
         day_review_ease,
         day_review_ease_mature,
+        sibling_time_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -278,6 +279,28 @@
             to get your retention for that day (shown as "
             <code>% Correct</code>
             " in the tooltip).
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Sibling Similarity</h1>
+        <BarScrollable
+            data={easeBarChart(sibling_time_ease, 1, normalize_ease)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            average={normalize_ease}
+            left_aligned
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={mature_ease} />
+            Mature
+        </label>
+        <p>
+            The rating you gave cards plotted by the number of days since you reviewed a sibling of
+            that card (card originating from the same note).
         </p>
     </GraphContainer>
 </GraphCategory>

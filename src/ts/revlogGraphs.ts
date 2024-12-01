@@ -7,6 +7,11 @@ const rollover = SSEother.rollover ?? 4
 export const day_ms = 1000 * 60 * 60 * 24
 export const today = Math.floor((Date.now() - rollover) / day_ms)
 
+interface SiblingReview {
+    cid: number
+    day: number
+}
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
@@ -51,14 +56,21 @@ export function calculateRevlogStats(
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
 
+    let last_siblings: SiblingReview[] = []
+    let sibling_time_ease: number[][] = emptyArray(initialEase())
+
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
         ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
         ease_array[day][ease] += 1
     }
 
+    function dayFromId(id: number) {
+        return Math.floor((id - rollover) / day_ms)
+    }
+
     for (const revlog of revlogData) {
-        const day = Math.floor((revlog.id - rollover) / day_ms)
+        const day = dayFromId(revlog.id)
         const ease = revlog.ease - 1
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
@@ -68,6 +80,19 @@ export function calculateRevlogStats(
             incrementEase(day_review_ease, day, ease)
             if (revlog.lastIvl >= 21) {
                 incrementEase(day_review_ease_mature, day, ease)
+            }
+
+            const last_sibling = last_siblings[revlog.nid]
+            if (
+                revlog.lastIvl >= 21 &&
+                last_sibling !== undefined &&
+                last_sibling.cid != revlog.cid
+            ) {
+                incrementEase(sibling_time_ease, day - last_sibling.day, ease)
+            }
+            last_siblings[revlog.nid] = {
+                cid: revlog.cid,
+                day,
             }
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
@@ -96,7 +121,7 @@ export function calculateRevlogStats(
 
     // "reduceRight" Used here to iterate backwards, never returns true
     burden_revlogs.reduceRight((_p, revlog) => {
-        const day = Math.floor((revlog.id - rollover) / day_ms)
+        const day = dayFromId(revlog.id)
 
         const after_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
@@ -139,6 +164,7 @@ export function calculateRevlogStats(
         day_ease,
         day_review_ease,
         day_review_ease_mature,
+        sibling_time_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,

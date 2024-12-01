@@ -50,12 +50,12 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
-REVLOG_COLUMNS = ["id", "cid", "ease", "ivl", "lastIvl", "time"]
+REVLOG_COLUMNS = ["revlog.id", "cid", "ease", "revlog.ivl", "lastIvl", "time", "nid"]
 
 def revlogs() -> bytes:
     cards = request.data.strip(b"[]").decode()
-    revlogs = mw.col.db.all(f"SELECT {','.join(REVLOG_COLUMNS)} FROM revlog WHERE cid IN ({cards}) ORDER BY id")
-    revlogs = [{k: v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
+    revlogs = mw.col.db.all(f"SELECT {','.join(REVLOG_COLUMNS)} FROM revlog JOIN cards ON revlog.cid = cards.id WHERE cid IN ({cards}) ORDER BY revlog.id")
+    revlogs = [{k.replace("revlog.", ""): v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
     return Response(json.dumps(revlogs))
 
 post_handlers["revlogs"] = revlogs
