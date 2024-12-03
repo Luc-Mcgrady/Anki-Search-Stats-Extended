@@ -11,11 +11,11 @@
     export let data: CandlestickGraph
     export let limit = 0
 
-    $: realOffset = Math.abs(offset)
+    $: realOffset = -Math.abs(offset)
 
     $: leftmost = -(bins * binSize) + realOffset
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : -realOffset)
+    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
 
     let bars: CandlestickDatum[]
     $: {
