@@ -109,7 +109,7 @@ export function limit_area_width(
     if (realOffset === undefined) {
         realOffset = -absOffset
     }
-    const limitBin = Math.floor((limit + absOffset) / binSize) * binSize + min - absOffset
+    const limitBin = Math.ceil((limit + absOffset) / binSize) * binSize + min - absOffset
     return (
         x(limitBin.toString()) ??
         (realOffset < limitBin ? defaultGraphBounds().width - limit_area_border : 0)
