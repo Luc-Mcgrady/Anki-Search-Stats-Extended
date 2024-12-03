@@ -40,6 +40,10 @@
 
     $: burden_start = burden[start] ?? 0
 
+    function barLabel(i: number) {
+        return (i - today - barOffset).toString()
+    }
+
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
         row_labels: ["Introduced", "Re-introduced"],
@@ -49,10 +53,10 @@
                 const reintroduced = reintroduced_day_count[i] ?? 0
                 return {
                     values: [introduced - reintroduced, reintroduced],
-                    label: (i - today - barOffset).toString(),
+                    label: barLabel(i),
                 }
             })
-            .map((d, i) => d ?? { values: [0, 0], label: (i - today - barOffset).toString() }),
+            .map((d, i) => d ?? { values: [0, 0], label: barLabel(i) }),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }
@@ -62,7 +66,7 @@
         row_labels: ["Forgotten"],
         data: Array.from(day_forgotten).map((v, i) => ({
             values: [v ?? 0],
-            label: (i - today - barOffset).toString(),
+            label: barLabel(i),
         })),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
@@ -71,7 +75,7 @@
     $: burden_change_candlestick = {
         start: burden_start,
         data: Array.from(burden_change).map((delta, i) => ({
-            label: (i - today - barOffset).toString(),
+            label: barLabel(i),
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
