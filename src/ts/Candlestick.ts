@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { createAxis } from "./bar"
+import { createAxis, type ExtraRenderInput } from "./bar"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
@@ -22,7 +22,7 @@ export type CandlestickGraph = {
     bar_width?: number
 }
 
-export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
+export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement): ExtraRenderInput {
     let total = graph.start
 
     const deltas: CandlestickDelta[] = graph.data.map((datum) => {
@@ -74,4 +74,6 @@ export function plotCandlestick(graph: CandlestickGraph, svg: SVGElement) {
         .on("mouseout", (e, v) => {
             tooltipShown.set(false)
         })
+
+    return { x, y, svg: axis, maxValue: max }
 }

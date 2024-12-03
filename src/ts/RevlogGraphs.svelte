@@ -244,6 +244,7 @@
         <Candlestick
             data={burden_change_candlestick}
             {bins}
+            {limit}
             bind:binSize={$binSize}
             bind:offset={$scroll}
         />

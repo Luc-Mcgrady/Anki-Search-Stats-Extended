@@ -1,10 +1,13 @@
 <script lang="ts">
     import _ from "lodash"
-    import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
+    import {
+        limitArea,
+        limit_area_width,
+        type BarChart,
+        type BarDatum,
+        type ExtraRenderInput,
+    } from "./bar"
     import Bar from "./Bar.svelte"
-    import { defaultGraphBounds } from "./graph"
-    import { tooltip, tooltipShown } from "./stores"
-    import { tooltipX } from "./tooltip"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -27,49 +30,7 @@
     function inner_extra_render(chart: ExtraRenderInput) {
         extraRender(chart)
 
-        const { svg, x, y, maxValue } = chart
-
-        const limitBin = Math.ceil((limit + absOffset) / binSize) * binSize + min - absOffset
-        const intraBinOffset =
-            binSize > 0 ? (((limit + absOffset) % binSize) * x.step()) / binSize : x.step()
-
-        console.log(x(limit.toString()), { limit, x, limitBin, realOffset, absOffset })
-        const border = 2
-
-        svg.append("rect")
-            .attr("x", x(leftmost.toString()) ?? border)
-            .attr("y", 0)
-            .attr("height", limit != -1 ? defaultGraphBounds().height - border : 0) // Hide if the limit is 0
-            .attr(
-                "width",
-                (x(limitBin.toString()) ??
-                    (realOffset < limitBin ? defaultGraphBounds().width - border : 0) -
-                        intraBinOffset) + intraBinOffset
-            )
-            .attr("fill", "url(#stripe)")
-            .style("outline", "red 2px solid")
-            .style("outline-offset", `-${border}px`)
-            .style("cursor", "pointer")
-            .on("mouseover", (e, d) => {
-                tooltipShown.set(true)
-                tooltip.set({
-                    text: [
-                        'To calculate this area, select "all history" under the search bar.',
-                        "Alternatively, click here.",
-                    ],
-                    x: tooltipX(e),
-                    y: e.pageY,
-                })
-            })
-            .on("mouseleave", () => tooltipShown.set(false))
-            .on("click", () => {
-                ;(
-                    document.querySelector(
-                        "body > div:nth-child(1) > div.range-box.svelte-19q2rko > div:nth-child(3) > label:nth-child(2) > input[type=radio]"
-                    )! as HTMLInputElement
-                ).click()
-                tooltipShown.set(false)
-            })
+        limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
     }
 
     let bars: BarDatum[]
