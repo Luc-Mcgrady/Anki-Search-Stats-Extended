@@ -11,22 +11,20 @@
 
     $: realOffset = Math.abs(offset)
 
+    $: leftmost = -(bins * binSize) + realOffset
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(
-        -(bins * binSize) - realOffset,
-        realOffset == 0 ? undefined : -realOffset
-    )
+    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : -realOffset)
 
     let bars: CandlestickDatum[]
     $: {
-        bars = []
+        bars = _.range(leftmost, realOffset, binSize).map((i) => ({
+            label: (i + 1).toString(), // I have no idea if +1 is right but at least its consistent with the other graphs
+            delta: 0,
+        }))
+
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
-            if (!bars[newIndex]?.delta) {
-                bars[newIndex] = { ...bar }
-            } else {
-                bars[newIndex].delta += bar.delta || 0
-            }
+            bars[newIndex].delta += bar.delta || 0
         }
     }
 
@@ -35,6 +33,7 @@
             const chart = plotCandlestick({ ...data, data: bars, bar_width: binSize }, svg as any)
         }
     }
+
 </script>
 
 <div class="options">
