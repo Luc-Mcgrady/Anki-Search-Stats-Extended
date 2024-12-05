@@ -75,6 +75,7 @@ export function limitArea(
         .style("outline", "red 2px solid")
         .style("outline-offset", `-${limit_area_border}px`)
         .style("cursor", "pointer")
+        .style("display", width <= 0 ? "none" : "default")
         .on("mouseover", (e: MouseEvent) => {
             tooltipShown.set(true)
             tooltip.set({
@@ -105,6 +106,9 @@ export function limit_area_width(
     min: number,
     realOffset?: number
 ) {
+    if (limit === -1) {
+        return 0
+    }
     const absOffset = Math.abs(offset)
     if (realOffset === undefined) {
         realOffset = -absOffset
