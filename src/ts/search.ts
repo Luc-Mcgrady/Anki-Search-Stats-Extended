@@ -9,10 +9,13 @@ async function endpoint(endpoint: string, body?: string) {
 
     if (!resp.ok) {
         alert(`Search Stats Extended has encountered an error.
-If you have recently updated the addon please ensure you have restarted Anki.
 
-If the problem persists copy the following information into a github issue along with a description of what you were doing at the time:
-https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new
+--- *** If you have recently updated the addon please ensure you have restarted Anki. *** ---
+
+
+
+
+If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
 
 ${await resp.text()}`)
         throw resp.status
