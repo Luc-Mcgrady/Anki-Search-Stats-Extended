@@ -3,7 +3,7 @@
     import BurdenPie from "./BurdenPie.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import RetentionPie from "./RetentionPie.svelte"
+    import OldRetentionPie from "./OldRetentionPie.svelte"
     import CustomPie from "./CustomPie.svelte"
     import IntraDayDueBar from "./IntraDayDueBar.svelte"
     import {
@@ -75,7 +75,11 @@
         </GraphContainer>
         <GraphContainer>
             <h1>Today's Retention</h1>
-            <RetentionPie></RetentionPie>
+            {#if $data?.trueRetention}
+                <NoGraph>Placeholder</NoGraph>
+            {:else}
+                <OldRetentionPie></OldRetentionPie>
+            {/if}
             <p>
                 Retention is used to compare how many cards you got right and wrong on first
                 looking.
