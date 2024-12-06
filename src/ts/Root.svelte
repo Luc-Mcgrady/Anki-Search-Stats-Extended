@@ -68,7 +68,8 @@
             <IntraDayDueBar></IntraDayDueBar>
             <p>
                 This graph shows you which hours todays cards are/were due in. <br />
-                Useful if you have long intra-day learning intervals.
+                Useful if you use FSRS-5 with automatic learning steps or have long intra-day learning
+                intervals.
             </p>
         </GraphContainer>
         <GraphContainer>

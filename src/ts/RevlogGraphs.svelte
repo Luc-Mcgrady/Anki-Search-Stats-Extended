@@ -208,8 +208,8 @@
         </p>
         {#if truncated}
             <Warning>
-                Re-introduced only works for cards first reviewed in the time period while the
-                search's date range is limited.
+                Re-introduced only works for cards first reviewed in the time period while "All
+                history" is not selected.
             </Warning>
         {/if}
     </GraphContainer>
@@ -227,8 +227,8 @@
         <p>You "forget" a card when you manually mark it as new.</p>
         {#if truncated}
             <Warning>
-                This graph only works for cards first reviewed in the time period while the search's
-                date range is limited.
+                This graph only works for cards first reviewed in the time period while "All
+                history" is not selected.
             </Warning>
         {/if}
     </GraphContainer>
@@ -268,9 +268,7 @@
             an increase.
         </p>
         {#if truncated}
-            <Warning>
-                This graph may be inaccurate while the search's date range is limited.
-            </Warning>
+            <Warning>This graph may be inaccurate while "all history" is not selected.</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
