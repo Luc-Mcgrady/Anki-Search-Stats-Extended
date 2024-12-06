@@ -264,7 +264,7 @@
             an increase.
         </p>
         {#if truncated}
-            <Warning>This graph may be inaccurate while "all history" is not selected.</Warning>
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
@@ -359,6 +359,7 @@
         </div>
         <span>Total: {time_machine_added}</span>
         <p>Shows your card type counts for a given date</p>
+        <Warning>May be inaccurate while "all history" is not selected.</Warning>
     </GraphContainer>
     <GraphContainer>
         <h1>Review Interval Time Machine</h1>
@@ -374,6 +375,7 @@
             </span>
         </label>
         <p>Shows your review intervals for a given date</p>
+        <Warning>May be inaccurate while "all history" is not selected.</Warning>
     </GraphContainer>
 </GraphCategory>
 
