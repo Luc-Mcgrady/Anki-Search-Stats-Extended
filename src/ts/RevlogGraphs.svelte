@@ -208,8 +208,7 @@
         </p>
         {#if truncated}
             <Warning>
-                Re-introduced only works for cards first reviewed in the time period while "All
-                history" is not selected.
+                Re-introduced does not work for cards introduced before the cutoff date.
             </Warning>
         {/if}
     </GraphContainer>
@@ -226,10 +225,7 @@
 
         <p>You "forget" a card when you manually mark it as new.</p>
         {#if truncated}
-            <Warning>
-                This graph only works for cards first reviewed in the time period while "All
-                history" is not selected.
-            </Warning>
+            <Warning>Does not work for cards introduced before the cutoff date.</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
