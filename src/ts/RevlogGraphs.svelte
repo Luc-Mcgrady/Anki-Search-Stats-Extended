@@ -12,6 +12,7 @@
     import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
+    import Warning from "./Warning.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -136,7 +137,9 @@
     }
 
     let include_reintroduced = true
-    $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
+    $: truncated = $searchLimit !== 0
+    $: introduced_ease =
+        include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
     let mature_ease = false
@@ -203,6 +206,12 @@
             A card is introduced when it is shown to you for the first time. A card is re-introduced
             when it is shown to you for the first time after being forgotten.
         </p>
+        {#if truncated}
+            <Warning>
+                Re-introduced only works for cards first reviewed in the time period while the
+                search's date range is limited.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Forgotten</h1>
@@ -216,6 +225,12 @@
         <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
         <p>You "forget" a card when you manually mark it as new.</p>
+        {#if truncated}
+            <Warning>
+                This graph only works for cards first reviewed in the time period while the search's
+                date range is limited.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Introductory Rating</h1>
@@ -252,6 +267,11 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
+        {#if truncated}
+            <Warning>
+                This graph may be inaccurate while the search's date range is limited.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Ratings</h1>

@@ -4,5 +4,6 @@
     "confirmExpensiveStats": true,
     "barWidth": 600,
     "barHeight": 250,
-    "piePercentages": false
+    "piePercentages": false,
+    "warnings": true
 }

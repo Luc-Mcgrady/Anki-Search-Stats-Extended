@@ -5,6 +5,7 @@ type SSEconfig = Partial<{
     barWidth: number
     barHeight: number
     piePercentages: boolean
+    warnings: boolean
 }>
 
 interface SSEother {
