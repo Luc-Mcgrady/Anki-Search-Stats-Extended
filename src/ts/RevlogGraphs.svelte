@@ -35,13 +35,12 @@
 
     $: realScroll = -Math.abs($scroll)
     const bins = 30
-    const barOffset = bins * $binSize - bins
     $: start = today - bins * $binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
 
     function barLabel(i: number) {
-        return (i - today - barOffset).toString()
+        return (i - today).toString()
     }
 
     $: introduced_bar = {
