@@ -359,7 +359,9 @@
         </div>
         <span>Total: {time_machine_added}</span>
         <p>Shows your card type counts for a given date</p>
-        <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {#if truncated}
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Review Interval Time Machine</h1>
@@ -375,7 +377,9 @@
             </span>
         </label>
         <p>Shows your review intervals for a given date</p>
-        <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {#if truncated}
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {/if}
     </GraphContainer>
 </GraphCategory>
 
