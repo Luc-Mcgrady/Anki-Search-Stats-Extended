@@ -96,7 +96,7 @@
             .attr("y", top)
     }
 
-    $: fetch = $searchString ? fetchCards($searchString) : Promise.resolve([])
+    $: fetch = $searchString !== null ? fetchCards($searchString) : Promise.resolve([])
 </script>
 
 {#await fetch}
