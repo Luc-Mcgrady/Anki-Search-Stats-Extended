@@ -29,6 +29,7 @@
     import NoGraph from "./NoGraph.svelte"
     import DayTimings from "./DayTimings.svelte"
     import GraphCategory from "./GraphCategory.svelte"
+    import Warning from "./Warning.svelte"
 
     const { width, height } = defaultGraphBounds()
 
@@ -137,19 +138,19 @@
             <h1>Preparing Review Stats...</h1>
         {/if}
     {:else}
-        <GraphCategory>
-            <GraphContainer>
-                <div class="loadOption">
+        <GraphContainer>
+            <div class="loadOption">
+                <Warning always>
                     <h1>Review Graphs</h1>
-                    <span>These statistics can take time to prepare.</span>
-                    <button on:click={() => ($showRevlogStats = true)}>Prepare Graphs</button>
-                    <span>
-                        To load these graphs by default, set "confirmExpensiveStats" to false in the
-                        addon config.
-                    </span>
-                </div>
-            </GraphContainer>
-        </GraphCategory>
+                    These statistics can take time to prepare.
+                </Warning>
+                <button on:click={() => ($showRevlogStats = true)}>Prepare Graphs</button>
+                <span>
+                    To load these graphs by default, set "confirmExpensiveStats" to false in the
+                    addon config.
+                </span>
+            </div>
+        </GraphContainer>
     {/if}
 </div>
 
@@ -184,6 +185,7 @@
         display: flex;
         flex-direction: column;
         gap: 1em;
+        min-height: 500px;
 
         border-radius: var(--border-radius-medium, 10px);
         margin: -1em;
@@ -192,6 +194,11 @@
         button {
             font-size: 2em;
             font-weight: 900;
+        }
+
+        & :global(span) {
+            border-radius: var(--border-radius-medium, 10px);
+            padding: 0.5em;
         }
     }
 </style>

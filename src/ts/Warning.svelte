@@ -1,8 +1,9 @@
 <script lang="ts">
     import { config } from "./stores"
+    export let always = false
 </script>
 
-{#if $config.warnings}
+{#if always || $config.warnings}
     <span>
         <slot></slot>
     </span>
