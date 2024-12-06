@@ -55,7 +55,7 @@ const updateRevlogs = () => {
     }
 }
 
-searchString.subscribe(() => showRevlogStats.set(get(config)?.confirmExpensiveStats ?? false))
+searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats || false))
 cids.subscribe(updateRevlogs)
 showRevlogStats.subscribe(updateRevlogs)
 tooltipShown.subscribe(() =>
