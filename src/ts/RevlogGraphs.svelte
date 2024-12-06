@@ -2,7 +2,7 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import type { CardData, Revlog } from "./search"
-    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll } from "./stores"
+    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll, searchLimit } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -12,6 +12,7 @@
     import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
+    import Warning from "./Warning.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -35,10 +36,13 @@
 
     $: realScroll = -Math.abs($scroll)
     const bins = 30
-    const barOffset = bins * $binSize - bins
     $: start = today - bins * $binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
+
+    function barLabel(i: number) {
+        return (i - today).toString()
+    }
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
@@ -49,10 +53,10 @@
                 const reintroduced = reintroduced_day_count[i] ?? 0
                 return {
                     values: [introduced - reintroduced, reintroduced],
-                    label: (i - today - barOffset).toString(),
+                    label: barLabel(i),
                 }
             })
-            .map((d, i) => d ?? { values: [0, 0], label: (i - today - barOffset).toString() }),
+            .map((d, i) => d ?? { values: [0, 0], label: barLabel(i) }),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }
@@ -62,7 +66,7 @@
         row_labels: ["Forgotten"],
         data: Array.from(day_forgotten).map((v, i) => ({
             values: [v ?? 0],
-            label: (i - today - barOffset).toString(),
+            label: barLabel(i),
         })),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
@@ -71,7 +75,7 @@
     $: burden_change_candlestick = {
         start: burden_start,
         data: Array.from(burden_change).map((delta, i) => ({
-            label: (i - today - barOffset).toString(),
+            label: barLabel(i),
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
@@ -133,10 +137,13 @@
     }
 
     let include_reintroduced = true
-    $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
+    $: truncated = $searchLimit !== 0
+    $: introduced_ease =
+        include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
     let mature_ease = false
+    $: limit = -1 - $searchLimit
 </script>
 
 <GraphCategory>
@@ -188,18 +195,42 @@
 <GraphCategory>
     <GraphContainer>
         <h1>Introduced</h1>
-        <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <BarScrollable
+            data={introduced_bar}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+        />
         <p>
             A card is introduced when it is shown to you for the first time. A card is re-introduced
             when it is shown to you for the first time after being forgotten.
         </p>
+        {#if truncated}
+            <Warning>
+                Re-introduced only works for cards first reviewed in the time period while the
+                search's date range is limited.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Forgotten</h1>
-        <BarScrollable data={forgotten_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <BarScrollable
+            data={forgotten_bar}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+        />
         <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
         <p>You "forget" a card when you manually mark it as new.</p>
+        {#if truncated}
+            <Warning>
+                This graph only works for cards first reviewed in the time period while the search's
+                date range is limited.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Introductory Rating</h1>
@@ -208,6 +239,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
@@ -226,6 +258,7 @@
         <Candlestick
             data={burden_change_candlestick}
             {bins}
+            {limit}
             bind:binSize={$binSize}
             bind:offset={$scroll}
         />
@@ -234,6 +267,11 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
+        {#if truncated}
+            <Warning>
+                This graph may be inaccurate while the search's date range is limited.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Ratings</h1>
@@ -242,6 +280,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -263,6 +302,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />

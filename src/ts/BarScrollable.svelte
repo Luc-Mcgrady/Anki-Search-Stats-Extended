@@ -1,6 +1,12 @@
 <script lang="ts">
     import _ from "lodash"
-    import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
+    import {
+        limitArea,
+        limit_area_width,
+        type BarChart,
+        type BarDatum,
+        type ExtraRenderInput,
+    } from "./bar"
     import Bar from "./Bar.svelte"
 
     export let data: BarChart
@@ -12,16 +18,20 @@
     export let bins = 30
     export let average = false
     export let left_aligned = false
+    export let limit: number = -1
 
-    $: realOffset = left_aligned
-        ? Math.abs(offset) - data.data.length + bins * binSize + min
-        : -Math.abs(offset)
+    $: absOffset = Math.abs(offset)
+    $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
+    $: leftmost = -(bins * binSize) + realOffset
 
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(
-        -(bins * binSize) + realOffset,
-        realOffset == 0 ? undefined : realOffset
-    )
+    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
+
+    function inner_extra_render(chart: ExtraRenderInput) {
+        extraRender(chart)
+
+        limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
+    }
 
     let bars: BarDatum[]
     $: {
@@ -59,7 +69,7 @@
     </label>
 </div>
 
-<Bar data={{ ...data, data: bars, barWidth: binSize }} {extraRender}></Bar>
+<Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
 <style>
     div.options {

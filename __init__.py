@@ -32,7 +32,7 @@ from flask import request, Response
 import json
 
 from aqt.mediasrv import post_handlers
-
+from anki.utils import int_time
 
 def card_search() -> bytes:
     search = request.data
@@ -51,10 +51,21 @@ def card_data() -> bytes:
 post_handlers["cardData"] = card_data
 
 REVLOG_COLUMNS = ["id", "cid", "ease", "ivl", "lastIvl", "time"]
+DAY_SECONDS = 60 * 60 * 24
 
 def revlogs() -> bytes:
-    cards = request.data.strip(b"[]").decode()
-    revlogs = mw.col.db.all(f"SELECT {','.join(REVLOG_COLUMNS)} FROM revlog WHERE cid IN ({cards}) ORDER BY id")
+    req = json.loads(request.data)
+    cards = ','.join(str(cid) for cid in req["cids"])
+    day_range = req["day_range"]
+
+    if day_range > 0:
+        rollover = mw.col.get_preferences().scheduling.rollover
+        today = (int_time(1 / DAY_SECONDS) - rollover) 
+        lower_limit = (today - day_range + 4) * DAY_SECONDS * 1000 # +4 ?!?!?
+    else:
+        lower_limit = 0
+
+    revlogs = mw.col.db.all(f"SELECT {','.join(REVLOG_COLUMNS)} FROM revlog WHERE cid IN ({cards}) AND id > ({lower_limit}) ORDER BY id")
     revlogs = [{k: v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
     return Response(json.dumps(revlogs))
 

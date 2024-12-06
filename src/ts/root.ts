@@ -4,11 +4,11 @@ import {
     card_data,
     cids,
     data,
+    graphsRequest,
     learn_data,
     mature_data,
     not_suspended_data,
     relearn_data,
-    searchString,
 } from "./stores"
 
 export async function decodeResponse(resp: Response) {
@@ -71,7 +71,7 @@ export function patchFetch() {
 
             const search_request = decodeRequest(origBody)
 
-            searchString.set(search_request?.search)
+            graphsRequest.set(search_request)
 
             const cidSearch = search(search_request?.search)
 

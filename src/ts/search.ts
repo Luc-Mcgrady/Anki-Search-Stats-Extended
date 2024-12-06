@@ -51,6 +51,6 @@ export async function getCardData(cids: number[]) {
     return (await endpoint("cardData", JSON.stringify(cids))) as CardData[]
 }
 
-export async function getRevlogs(cids: number[]) {
-    return (await endpoint("revlogs", JSON.stringify(cids))) as Revlog[]
+export async function getRevlogs(cids: number[], day_range: number) {
+    return (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as Revlog[]
 }

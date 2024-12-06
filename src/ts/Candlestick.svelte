@@ -1,6 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
+    import { limit_area_width, limitArea } from "./bar"
 
     let svg: SVGElement | null = null
 
@@ -8,31 +9,32 @@
     export let offset = 0
     export let bins = 30
     export let data: CandlestickGraph
+    export let limit = 0
 
-    $: realOffset = Math.abs(offset)
+    $: realOffset = -Math.abs(offset)
 
+    $: leftmost = -(bins * binSize) + realOffset
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(
-        -(bins * binSize) - realOffset,
-        realOffset == 0 ? undefined : -realOffset
-    )
+    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
 
     let bars: CandlestickDatum[]
     $: {
-        bars = []
+        bars = _.range(leftmost, realOffset, binSize).map((i) => ({
+            label: (i + 1).toString(), // I have no idea if +1 is right but at least its consistent with the other graphs
+            delta: 0,
+        }))
+
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
-            if (!bars[newIndex]?.delta) {
-                bars[newIndex] = { ...bar }
-            } else {
-                bars[newIndex].delta += bar.delta || 0
-            }
+            bars[newIndex].delta += bar.delta || 0
         }
     }
 
     $: {
         if (svg && data.data.length) {
             const chart = plotCandlestick({ ...data, data: bars, bar_width: binSize }, svg as any)
+
+            limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, 1))
         }
     }
 </script>

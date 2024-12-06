@@ -57,6 +57,69 @@ export function createAxis(
     return { x, y, axis }
 }
 
+const limit_area_border = 2
+
+export function limitArea(
+    chart: ExtraRenderInput,
+    width: number,
+    height = defaultGraphBounds().height
+) {
+    const { svg } = chart
+
+    svg.append("rect")
+        .attr("x", limit_area_border)
+        .attr("y", 0)
+        .attr("height", height) // Hide if the limit is 0
+        .attr("width", width)
+        .attr("fill", "url(#stripe)")
+        .style("outline", "red 2px solid")
+        .style("outline-offset", `-${limit_area_border}px`)
+        .style("cursor", "pointer")
+        .style("display", width <= 0 ? "none" : "default")
+        .on("mouseover", (e: MouseEvent) => {
+            tooltipShown.set(true)
+            tooltip.set({
+                text: [
+                    'To calculate this area, select "all history" under the search bar.',
+                    "Alternatively, click here.",
+                ],
+                x: tooltipX(e),
+                y: e.pageY,
+            })
+        })
+        .on("mouseleave", () => tooltipShown.set(false))
+        .on("click", () => {
+            ;(
+                document.querySelector(
+                    "body > div:nth-child(1) > div.range-box.svelte-19q2rko > div:nth-child(3) > label:nth-child(2) > input[type=radio]"
+                )! as HTMLInputElement
+            ).click()
+            tooltipShown.set(false)
+        })
+}
+
+export function limit_area_width(
+    x: d3.ScaleBand<string>,
+    limit: number,
+    offset: number,
+    binSize: number,
+    min: number,
+    realOffset?: number
+) {
+    if (limit === -1) {
+        return 0
+    }
+    const absOffset = Math.abs(offset)
+    if (realOffset === undefined) {
+        realOffset = -absOffset
+    }
+    const limitBin = Math.ceil((limit + absOffset) / binSize) * binSize + min - absOffset
+    return (
+        x(limitBin.toString()) ??
+        (realOffset < limitBin ? defaultGraphBounds().width - limit_area_border : 0)
+    )
+}
+
 export function totalCalc(data: BarDatum) {
     return data.values.length > 1 ? [`Total: ${_.sum(data.values)}`] : []
 }
