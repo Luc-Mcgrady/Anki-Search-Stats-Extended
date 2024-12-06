@@ -1,32 +1,25 @@
 import { realFetch } from "./root"
 
 async function endpoint(endpoint: string, body?: string) {
-    try {
-        const resp = await realFetch(`/_anki/${endpoint}`, {
-            method: "POST",
-            body,
-            headers: { "Content-Type": "application/binary" },
-        })
-        const blob = await resp.text()
-        return JSON.parse(blob)
-    } catch (e: any) {
-        // Error handling
-        const errorDetails =
-            e instanceof Error
-                ? `Error: ${e.message}\nStack: ${e.stack}`
-                : `Unexpected error: ${JSON.stringify(e)}`
+    const resp = await realFetch(`/_anki/${endpoint}`, {
+        method: "POST",
+        body,
+        headers: { "Content-Type": "application/binary" },
+    })
 
-        alert(`Search Stats Extended has encountered an error, 
+    if (!resp.ok) {
+        alert(`Search Stats Extended has encountered an error.
 If you have recently updated the addon please ensure you have restarted Anki.
 
 If the problem persists copy the following information into a github issue along with a description of what you were doing at the time:
-
-${errorDetails}
-
 https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new
-`)
-        throw e
+
+${await resp.text()}`)
+        throw resp.status
     }
+
+    const blob = await resp.text()
+    return JSON.parse(blob)
 }
 
 export async function search(search: string) {
