@@ -1,5 +1,6 @@
 import * as d3 from "d3"
 import _ from "lodash"
+import createTrend from "trendline"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
@@ -120,6 +121,35 @@ export function limit_area_width(
     )
 }
 
+export function trendLine({ svg, x, y, chart }: ExtraRenderInput) {
+    const correct = chart.data.map((datum) => ({
+        x: parseInt(datum.label),
+        y: 1 - datum.values[3],
+    }))
+
+    console.log({ correct })
+
+    const trend = createTrend(correct, "x", "y")
+    const rightmost = _.maxBy(chart.data, (datum) => parseInt(datum.label))
+    const leftmost = _.minBy(chart.data, (datum) => parseInt(datum.label))
+
+    if (rightmost == undefined || leftmost == undefined) {
+        return
+    }
+
+    const half_step = x.step() / 2
+
+    svg.append("line")
+        .attr("x1", (x(leftmost.label) ?? 0) + half_step)
+        .attr("y1", y(trend.yStart))
+        .attr("x2", (x(rightmost.label) ?? 0) + half_step)
+        .attr("y2", y(trend.calcY(parseInt(rightmost.label))))
+        .style("stroke", "black")
+        .style("stroke-width")
+
+    return trend
+}
+
 export function totalCalc(data: BarDatum) {
     return data.values.length > 1 ? [`Total: ${_.sum(data.values)}`] : []
 }
@@ -173,7 +203,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         })
         .on("mouseleave", () => tooltipShown.set(false))
 
-    return { x, y, svg: axis, maxValue }
+    return { x, y, svg: axis, maxValue, chart }
 }
 
 export function barDateLabeler(label: string, width: number = 1) {

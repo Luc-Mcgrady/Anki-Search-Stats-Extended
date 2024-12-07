@@ -3,11 +3,13 @@
     import {
         limitArea,
         limit_area_width,
+        trendLine,
         type BarChart,
         type BarDatum,
         type ExtraRenderInput,
     } from "./bar"
     import Bar from "./Bar.svelte"
+    import createTrend from "trendline"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -19,6 +21,7 @@
     export let average = false
     export let left_aligned = false
     export let limit: number = -1
+    export let trend = false
 
     $: absOffset = Math.abs(offset)
     $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
@@ -27,10 +30,16 @@
     $: binSize = binSize > 0 ? binSize : 1
     $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
 
+    export let trend_values: ReturnType<typeof createTrend> | undefined = undefined
+
     function inner_extra_render(chart: ExtraRenderInput) {
         extraRender(chart)
 
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
+
+        if (trend) {
+            trend_values = trendLine(chart)
+        }
     }
 
     let bars: BarDatum[]

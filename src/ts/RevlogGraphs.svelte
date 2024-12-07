@@ -9,7 +9,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
+    import { barDateLabeler, barStringLabeler, trendLine, type BarChart } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
@@ -313,6 +313,7 @@
             average={normalize_ease}
             binSize={10}
             left_aligned
+            trend
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
