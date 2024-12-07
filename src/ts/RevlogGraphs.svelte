@@ -156,7 +156,7 @@
         young: fatigue_rating_ease,
         mature: fatigue_mature_ease,
     }
-    const rating_filters: Record<CardEnum, number[][]> = {
+    $: rating_filters = {
         all: day_ease,
         young: day_review_ease,
         mature: day_review_ease_mature,
@@ -287,7 +287,7 @@
     <GraphContainer>
         <h1>Ratings</h1>
         <BarScrollable
-            data={easeBarChart(day_ease, today, normalize_ease)}
+            data={easeBarChart(rating_filters[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
@@ -297,35 +297,10 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
+        <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            The rating of every review you did that day, learning or otherwise. Normalizing displays
-            it as a percent of all cards reviewed that day.
-        </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>Review Ratings</h1>
-        <BarScrollable
-            data={easeBarChart(
-                mature_ease ? day_review_ease_mature : day_review_ease,
-                today,
-                normalize_ease
-            )}
-            bind:binSize={$binSize}
-            bind:offset={$scroll}
-            average={normalize_ease}
-            {limit}
-        />
-        <label>
-            <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
-        </label>
-        <label>
-            <input type="checkbox" bind:checked={mature_ease} />
-            Mature
-        </label>
-        <p>
-            The rating of the first review you did for every card that day. With the ratio,
-            calculate <code>(1-again)%</code>
+            The rating of every review you did that day, learning or otherwise. The ratio displays
+            it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
             to get your retention for that day (shown as "
             <code>% Correct</code>
             " in the tooltip).
