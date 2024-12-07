@@ -344,7 +344,7 @@
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
-        <p>Ratings plotted by how many cards you saw previously that day to you reviewing them</p>
+        <p>Ratings plotted by how many reviews you did total in that day before rating them.</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
