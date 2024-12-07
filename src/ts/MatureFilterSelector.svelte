@@ -9,7 +9,7 @@
     </label>
     <label>
         <input type="radio" bind:group value="young" />
-        Young
+        Young+Mature
     </label>
     <label>
         <input type="radio" bind:group value="mature" />
