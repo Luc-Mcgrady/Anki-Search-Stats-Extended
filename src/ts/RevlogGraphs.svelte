@@ -24,6 +24,7 @@
         day_ease,
         day_review_ease,
         day_review_ease_mature,
+        fatigue_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -313,6 +314,24 @@
             <code>% Correct</code>
             " in the tooltip).
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Fatigue</h1>
+        <BarScrollable
+            data={easeBarChart(fatigue_ease, 0, normalize_ease)}
+            average={normalize_ease}
+            binSize={10}
+            left_aligned
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={mature_ease} />
+            Mature
+        </label>
+        <p>The</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
