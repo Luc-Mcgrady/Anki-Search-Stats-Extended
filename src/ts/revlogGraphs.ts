@@ -53,6 +53,10 @@ export function calculateRevlogStats(
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
 
+    let day_count: number[] = []
+
+    console.log(day_count)
+
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
         ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
@@ -66,12 +70,14 @@ export function calculateRevlogStats(
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
         incrementEase(day_ease, day, ease)
 
+        day_count[day] = (day_count[day] ?? 0) + 1
+        incrementEase(fatigue_ease, day_count[day], ease)
+
         if (revlog.lastIvl > 0) {
             incrementEase(day_review_ease, day, ease)
             if (revlog.lastIvl >= 21) {
                 incrementEase(day_review_ease_mature, day, ease)
             }
-            incrementEase(fatigue_ease, _.sum(day_ease[day]), ease)
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
@@ -96,6 +102,8 @@ export function calculateRevlogStats(
             burden_revlogs.push(revlog)
         }
     }
+
+    console.log(day_count)
 
     // "reduceRight" Used here to iterate backwards, never returns true
     burden_revlogs.reduceRight((_p, revlog) => {

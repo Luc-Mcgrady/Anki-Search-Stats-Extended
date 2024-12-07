@@ -327,11 +327,7 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
-        <label>
-            <input type="checkbox" bind:checked={mature_ease} />
-            Mature
-        </label>
-        <p>The</p>
+        <p>Ratings plotted by how many cards you saw previously that day to you reviewing them</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
