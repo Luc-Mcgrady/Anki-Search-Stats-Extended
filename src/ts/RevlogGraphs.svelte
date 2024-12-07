@@ -13,6 +13,7 @@
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
+    import MatureFilterSelector from "./MatureFilterSelector.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -25,6 +26,8 @@
         day_review_ease,
         day_review_ease_mature,
         fatigue_ease,
+        fatigue_rating_ease,
+        fatigue_mature_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -145,6 +148,19 @@
     let normalize_ease = false
     let mature_ease = false
     $: limit = -1 - $searchLimit
+
+    type CardEnum = "all" | "young" | "mature"
+    let mature_filter: CardEnum = "mature"
+    $: fatigue_filters = {
+        all: fatigue_ease,
+        young: fatigue_rating_ease,
+        mature: fatigue_mature_ease,
+    }
+    const rating_filters: Record<CardEnum, number[][]> = {
+        all: day_ease,
+        young: day_review_ease,
+        mature: day_review_ease_mature,
+    }
 </script>
 
 <GraphCategory>
@@ -318,7 +334,7 @@
     <GraphContainer>
         <h1>Fatigue</h1>
         <BarScrollable
-            data={easeBarChart(fatigue_ease, 0, normalize_ease)}
+            data={easeBarChart(fatigue_filters[mature_filter], 0, normalize_ease)}
             average={normalize_ease}
             binSize={10}
             left_aligned
@@ -327,6 +343,7 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
+        <MatureFilterSelector bind:group={mature_filter} />
         <p>Ratings plotted by how many cards you saw previously that day to you reviewing them</p>
     </GraphContainer>
 </GraphCategory>
