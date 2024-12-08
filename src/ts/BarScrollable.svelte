@@ -7,9 +7,9 @@
         type BarChart,
         type BarDatum,
         type ExtraRenderInput,
+        type TrendLine,
     } from "./bar"
     import Bar from "./Bar.svelte"
-    import createTrend from "trendline"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput) => {}
@@ -30,7 +30,7 @@
     $: binSize = binSize > 0 ? binSize : 1
     $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
 
-    export let trend_values: ReturnType<typeof createTrend> | undefined = undefined
+    export let trend_values: TrendLine = undefined
 
     function inner_extra_render(chart: ExtraRenderInput) {
         extraRender(chart)

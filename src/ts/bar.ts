@@ -121,6 +121,8 @@ export function limit_area_width(
     )
 }
 
+export type TrendLine = ReturnType<typeof trendLine>
+
 export function trendLine({ svg, x, y, chart }: ExtraRenderInput) {
     const correct = chart.data.map((datum) => ({
         x: parseInt(datum.label),
