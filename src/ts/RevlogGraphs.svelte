@@ -9,7 +9,12 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, trendLine, type BarChart } from "./bar"
+    import {
+        barDateLabeler,
+        barStringLabeler,
+        type BarChart,
+        type TrendLine,
+    } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
@@ -161,6 +166,9 @@
         young: day_review_ease,
         mature: day_review_ease_mature,
     }
+
+    let fatigue_trend: TrendLine
+    let fatigue_bin_size = 10
 </script>
 
 <GraphCategory>
@@ -311,15 +319,25 @@
         <BarScrollable
             data={easeBarChart(fatigue_filters[mature_filter], 0, normalize_ease)}
             average={normalize_ease}
-            binSize={10}
+            bind:binSize={fatigue_bin_size}
             left_aligned
             trend
+            bind:trend_values={fatigue_trend}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
+
+        {#if fatigue_trend}
+            Trend = {(
+                (fatigue_trend.calcY(fatigue_bin_size) - fatigue_trend.yStart) *
+                100
+            ).toPrecision(2)}% retention per {fatigue_bin_size}
+        {/if}
+        reviews
+
         <p>Ratings plotted by how many reviews you did total in that day before rating them.</p>
     </GraphContainer>
 </GraphCategory>
