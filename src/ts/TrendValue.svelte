@@ -8,8 +8,7 @@
 
 {#if trend}
     Trend =
-    {((trend.calcY(n) - trend.yStart) * (percentage ? 100 : 1)).toPrecision(2)}
-    {#if percentage}
+    {((trend.calcY(n) - trend.yStart) * (percentage ? 100 : 1)).toPrecision(2)}{#if percentage}
         %
     {/if}
     <slot />

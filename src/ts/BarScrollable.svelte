@@ -23,7 +23,7 @@
     export let left_aligned = false
     export let limit: number = -1
     export let trend = false
-    export let trend_x = "retention"
+    export let trend_x = "retention per"
     export let trend_y = "day"
     export let trend_y_plural = "days"
 
