@@ -4,7 +4,7 @@
     import NoGraph from "./NoGraph.svelte"
 
     let svg: SVGElement | null = null
-    export let extraRender = (chart: ExtraRenderInput) => {}
+    export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
 
     export let data: BarChart
     $: {
