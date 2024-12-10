@@ -162,10 +162,11 @@
         mature: day_review_ease_mature,
     }
 
-    let fatigue_trend: TrendLine
     let fatigue_bin_size = 10
 
+    let fatigue_trend: TrendLine
     let review_trend: TrendLine
+    let burden_trend: TrendLine
 </script>
 
 <GraphCategory>
@@ -277,6 +278,7 @@
             data={burden_change_candlestick}
             {bins}
             {limit}
+            bind:trend_data={burden_trend}
             bind:binSize={$binSize}
             bind:offset={$scroll}
         />
@@ -285,6 +287,14 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
+        <TrendValue trend={burden_trend} n={$binSize}>
+            Burden per
+            {#if $binSize > 1}
+                {$binSize} days
+            {:else}
+                day
+            {/if}
+        </TrendValue>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
@@ -305,7 +315,7 @@
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
-        <TrendValue trend={review_trend} n={$binSize}>
+        <TrendValue trend={review_trend} n={$binSize} percentage>
             Retention per
             {#if $binSize > 1}
                 {$binSize} days
@@ -337,7 +347,7 @@
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
 
-        <TrendValue trend={fatigue_trend} n={fatigue_bin_size}>
+        <TrendValue trend={fatigue_trend} n={fatigue_bin_size} percentage>
             Retention per previous
             {#if fatigue_bin_size > 1}
                 {fatigue_bin_size}
