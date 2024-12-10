@@ -10,7 +10,7 @@
         type TrendLine,
     } from "./bar"
     import Bar from "./Bar.svelte"
-    import Candlestick from "./Candlestick.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
@@ -23,6 +23,9 @@
     export let left_aligned = false
     export let limit: number = -1
     export let trend = false
+    export let trend_x = "retention"
+    export let trend_y = "day"
+    export let trend_y_plural = "days"
 
     $: absOffset = Math.abs(offset)
     $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
@@ -87,6 +90,22 @@
 </div>
 
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
+
+{#if trend_values}
+    <TrendValue trend={trend_values} n={binSize} percentage>
+        {trend_x}
+        {#if binSize > 1}
+            {binSize}
+            {#if trend_y_plural}
+                {trend_y_plural}
+            {:else}
+                {trend_y}s
+            {/if}
+        {:else}
+            {trend_y}
+        {/if}
+    </TrendValue>
+{/if}
 
 <style>
     div.options {

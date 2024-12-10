@@ -258,6 +258,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            trend={normalize_ease}
             {limit}
         />
         <label>
@@ -308,6 +309,7 @@
             bind:trend_values={review_trend}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_x={"Retention per"}
             {limit}
         />
         <label>
@@ -315,14 +317,6 @@
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
-        <TrendValue trend={review_trend} n={$binSize} percentage>
-            Retention per
-            {#if $binSize > 1}
-                {$binSize} days
-            {:else}
-                day
-            {/if}
-        </TrendValue>
         <p>
             The rating of every review you did that day, learning or otherwise. The ratio displays
             it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
@@ -339,6 +333,9 @@
             bind:binSize={fatigue_bin_size}
             left_aligned
             trend={normalize_ease}
+            trend_x={"Retention per previous"}
+            trend_y={"review that day"}
+            trend_y_plural={"reviews that day."}
             bind:trend_values={fatigue_trend}
         />
         <label>
@@ -346,17 +343,6 @@
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
-
-        <TrendValue trend={fatigue_trend} n={fatigue_bin_size} percentage>
-            Retention per previous
-            {#if fatigue_bin_size > 1}
-                {fatigue_bin_size}
-                reviews
-            {:else}
-                review
-            {/if}
-        </TrendValue>
-
         <p>Ratings plotted by how many reviews you did total in that day before rating them.</p>
     </GraphContainer>
 </GraphCategory>
