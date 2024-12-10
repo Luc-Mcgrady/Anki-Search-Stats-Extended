@@ -146,11 +146,10 @@
         include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
-    let mature_ease = false
     $: limit = -1 - $searchLimit
 
     type CardEnum = "all" | "young" | "mature"
-    let mature_filter: CardEnum = "mature"
+    let mature_filter: CardEnum = "young"
     $: fatigue_filters = {
         all: fatigue_ease,
         young: fatigue_rating_ease,
@@ -329,7 +328,7 @@
             Trend = {(
                 (fatigue_trend.calcY(fatigue_bin_size) - fatigue_trend.yStart) *
                 100
-            ).toPrecision(2)}% retention per
+            ).toPrecision(2)}% retention per previous
             {#if fatigue_bin_size > 1}
                 {fatigue_bin_size}
                 reviews
