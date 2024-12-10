@@ -39,6 +39,8 @@
 
         if (trend) {
             trend_values = trendLine(chart)
+        } else {
+            trend_values = undefined
         }
     }
 

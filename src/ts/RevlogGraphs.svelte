@@ -9,12 +9,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import {
-        barDateLabeler,
-        barStringLabeler,
-        type BarChart,
-        type TrendLine,
-    } from "./bar"
+    import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
@@ -321,7 +316,7 @@
             average={normalize_ease}
             bind:binSize={fatigue_bin_size}
             left_aligned
-            trend
+            trend={normalize_ease}
             bind:trend_values={fatigue_trend}
         />
         <label>
@@ -334,9 +329,14 @@
             Trend = {(
                 (fatigue_trend.calcY(fatigue_bin_size) - fatigue_trend.yStart) *
                 100
-            ).toPrecision(2)}% retention per {fatigue_bin_size}
+            ).toPrecision(2)}% retention per
+            {#if fatigue_bin_size > 1}
+                {fatigue_bin_size}
+                reviews
+            {:else}
+                review
+            {/if}
         {/if}
-        reviews
 
         <p>Ratings plotted by how many reviews you did total in that day before rating them.</p>
     </GraphContainer>
