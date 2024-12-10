@@ -14,6 +14,7 @@
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -163,6 +164,8 @@
 
     let fatigue_trend: TrendLine
     let fatigue_bin_size = 10
+
+    let review_trend: TrendLine
 </script>
 
 <GraphCategory>
@@ -292,7 +295,9 @@
             data={easeBarChart(rating_filters[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
+            bind:trend_values={review_trend}
             average={normalize_ease}
+            trend={normalize_ease}
             {limit}
         />
         <label>
@@ -300,6 +305,14 @@
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
+        <TrendValue trend={review_trend} n={$binSize}>
+            Retention per
+            {#if $binSize > 1}
+                {$binSize} days
+            {:else}
+                day
+            {/if}
+        </TrendValue>
         <p>
             The rating of every review you did that day, learning or otherwise. The ratio displays
             it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
@@ -324,18 +337,15 @@
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
 
-        {#if fatigue_trend}
-            Trend = {(
-                (fatigue_trend.calcY(fatigue_bin_size) - fatigue_trend.yStart) *
-                100
-            ).toPrecision(2)}% retention per previous
+        <TrendValue trend={fatigue_trend} n={fatigue_bin_size}>
+            Retention per previous
             {#if fatigue_bin_size > 1}
                 {fatigue_bin_size}
                 reviews
             {:else}
                 review
             {/if}
-        {/if}
+        </TrendValue>
 
         <p>Ratings plotted by how many reviews you did total in that day before rating them.</p>
     </GraphContainer>
