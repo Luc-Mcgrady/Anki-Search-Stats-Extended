@@ -10,9 +10,10 @@
         type TrendLine,
     } from "./bar"
     import Bar from "./Bar.svelte"
+    import Candlestick from "./Candlestick.svelte"
 
     export let data: BarChart
-    export let extraRender = (chart: ExtraRenderInput) => {}
+    export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
 
     export let min = 1
     export let binSize = 1
@@ -32,13 +33,18 @@
 
     export let trend_values: TrendLine = undefined
 
-    function inner_extra_render(chart: ExtraRenderInput) {
+    function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
         extraRender(chart)
 
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
 
+        const correct = chart.chart.data.map((datum) => ({
+            x: parseInt(datum.label),
+            y: 1 - datum.values[3],
+        }))
+
         if (trend) {
-            trend_values = trendLine(chart)
+            trend_values = trendLine(chart, correct)
         } else {
             trend_values = undefined
         }

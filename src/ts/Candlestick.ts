@@ -25,7 +25,7 @@ export type CandlestickGraph = {
 export function plotCandlestick(
     graph: CandlestickGraph,
     svg: SVGElement
-): Omit<ExtraRenderInput, "chart"> {
+): ExtraRenderInput<CandlestickGraph> {
     let total = graph.start
 
     const deltas: CandlestickDelta[] = graph.data.map((datum) => {
@@ -78,5 +78,5 @@ export function plotCandlestick(
             tooltipShown.set(false)
         })
 
-    return { x, y, svg: axis, maxValue: max }
+    return { x, y, svg: axis, maxValue: max, chart: graph }
 }
