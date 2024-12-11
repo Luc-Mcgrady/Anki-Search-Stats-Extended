@@ -343,16 +343,11 @@
             As Ratio
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
-
-        {#if fatigue_trend}
-            Trend = {(
-                (fatigue_trend.calcY(fatigue_bin_size) - fatigue_trend.yStart) *
-                100
-            ).toPrecision(2)}% retention per {fatigue_bin_size}
-        {/if}
-        reviews
-
-        <p>Ratings plotted by how many reviews you did total in that day before rating them.</p>
+        <p>
+            Ratings plotted by how many reviews you did total in that day before rating them. Bear
+            in mind this may be affected by the review order and the fact that learn cards are
+            reviewed more than once in the case of "All"
+        </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
