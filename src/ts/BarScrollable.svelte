@@ -10,9 +10,10 @@
         type TrendLine,
     } from "./bar"
     import Bar from "./Bar.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let data: BarChart
-    export let extraRender = (chart: ExtraRenderInput) => {}
+    export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
 
     export let min = 1
     export let binSize = 1
@@ -22,6 +23,9 @@
     export let left_aligned = false
     export let limit: number = -1
     export let trend = false
+    export let trend_x = "retention per"
+    export let trend_y = "day"
+    export let trend_y_plural = "days"
 
     $: absOffset = Math.abs(offset)
     $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
@@ -32,13 +36,20 @@
 
     export let trend_values: TrendLine = undefined
 
-    function inner_extra_render(chart: ExtraRenderInput) {
+    function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
         extraRender(chart)
 
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
 
+        const correct = chart.chart.data.map((datum) => ({
+            x: parseInt(datum.label),
+            y: 1 - datum.values[3],
+        }))
+
         if (trend) {
-            trend_values = trendLine(chart)
+            trend_values = trendLine(chart, correct)
+        } else {
+            trend_values = undefined
         }
     }
 
@@ -79,6 +90,22 @@
 </div>
 
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
+
+{#if trend_values}
+    <TrendValue trend={trend_values} n={binSize} percentage>
+        {trend_x}
+        {#if binSize > 1}
+            {binSize}
+            {#if trend_y_plural}
+                {trend_y_plural}
+            {:else}
+                {trend_y}s
+            {/if}
+        {:else}
+            {trend_y}
+        {/if}
+    </TrendValue>
+{/if}
 
 <style>
     div.options {

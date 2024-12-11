@@ -9,16 +9,12 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import {
-        barDateLabeler,
-        barStringLabeler,
-        type BarChart,
-        type TrendLine,
-    } from "./bar"
+    import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -151,11 +147,10 @@
         include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
-    let mature_ease = false
     $: limit = -1 - $searchLimit
 
     type CardEnum = "all" | "young" | "mature"
-    let mature_filter: CardEnum = "mature"
+    let mature_filter: CardEnum = "young"
     $: fatigue_filters = {
         all: fatigue_ease,
         young: fatigue_rating_ease,
@@ -167,8 +162,11 @@
         mature: day_review_ease_mature,
     }
 
-    let fatigue_trend: TrendLine
     let fatigue_bin_size = 10
+
+    let fatigue_trend: TrendLine
+    let review_trend: TrendLine
+    let burden_trend: TrendLine
 </script>
 
 <GraphCategory>
@@ -260,6 +258,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            trend={normalize_ease}
             {limit}
         />
         <label>
@@ -280,6 +279,7 @@
             data={burden_change_candlestick}
             {bins}
             {limit}
+            bind:trend_data={burden_trend}
             bind:binSize={$binSize}
             bind:offset={$scroll}
         />
@@ -288,6 +288,14 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
+        <TrendValue trend={burden_trend} n={$binSize}>
+            Burden per
+            {#if $binSize > 1}
+                {$binSize} days
+            {:else}
+                day
+            {/if}
+        </TrendValue>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
@@ -298,7 +306,10 @@
             data={easeBarChart(rating_filters[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
+            bind:trend_values={review_trend}
             average={normalize_ease}
+            trend={normalize_ease}
+            trend_x={"Retention per"}
             {limit}
         />
         <label>
@@ -321,7 +332,10 @@
             average={normalize_ease}
             bind:binSize={fatigue_bin_size}
             left_aligned
-            trend
+            trend={normalize_ease}
+            trend_x={"Retention per previous"}
+            trend_y={"review that day"}
+            trend_y_plural={"reviews that day."}
             bind:trend_values={fatigue_trend}
         />
         <label>
