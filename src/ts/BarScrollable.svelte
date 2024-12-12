@@ -15,7 +15,6 @@
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
 
-    export let min = 1
     export let binSize = 1
     export let offset = 0
     export let bins = 30
@@ -27,12 +26,18 @@
     export let trend_y = "day"
     export let trend_y_plural = "days"
 
+    $: min = left_aligned ? 0 : 1
     $: absOffset = Math.abs(offset)
-    $: realOffset = left_aligned ? absOffset - data.data.length + bins * binSize + min : -absOffset
-    $: leftmost = -(bins * binSize) + realOffset
+    $: realOffset = left_aligned ? absOffset + bins * binSize + min : -absOffset
+    $: leftmost = realOffset - bins * binSize
 
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
+    $: seperate_bars = data.data.slice(
+        leftmost,
+        realOffset == 0 || realOffset >= data.data.length ? undefined : realOffset
+    )
+
+    $: console.log({ leftmost, realOffset })
 
     export let trend_values: TrendLine = undefined
 
@@ -55,17 +60,19 @@
 
     let bars: BarDatum[]
     $: {
-        bars = []
+        bars = _.range(leftmost, realOffset, binSize).map((i) => ({
+            label: (i + min).toString(),
+            values: data.row_labels.map((_) => 0),
+        }))
+
+        console.log({ bars: [...bars], seperate_bars })
+
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
-            if (!bars[newIndex]?.values) {
-                bars[newIndex] = { ...bar, values: bar.values.map((a) => a || 0) }
-            } else {
-                bars[newIndex].values = bars[newIndex].values.map(
-                    (a, i) => a + (bar?.values[i] || 0)
-                )
-            }
+
+            bars[newIndex].values = bars[newIndex].values.map((a, i) => a + (bar?.values[i] || 0))
         }
+
         if (average) {
             bars.map((bar, i) => {
                 const count = seperate_bars
