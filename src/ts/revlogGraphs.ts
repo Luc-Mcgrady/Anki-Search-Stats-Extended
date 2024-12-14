@@ -72,7 +72,7 @@ export function calculateRevlogStats(
 
         // Check for reschedules
         if (revlog.time != 0) {
-            day_review_count[day] = (day_review_count[day] ?? 0) + 1
+            day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease, day_review_count[day], ease)
         }
 
