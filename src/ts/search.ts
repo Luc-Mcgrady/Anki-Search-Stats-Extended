@@ -6,6 +6,21 @@ async function endpoint(endpoint: string, body?: string) {
         body,
         headers: { "Content-Type": "application/binary" },
     })
+
+    if (!resp.ok) {
+        alert(`Search Stats Extended has encountered an error.
+
+--- *** If you have recently updated the addon please ensure you have restarted Anki. *** ---
+
+
+
+
+If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
+
+${await resp.text()}`)
+        throw resp.status
+    }
+
     const blob = await resp.text()
     return JSON.parse(blob)
 }
@@ -52,6 +67,6 @@ export async function getCardData(cids: number[]) {
     return (await endpoint("cardData", JSON.stringify(cids))) as CardData[]
 }
 
-export async function getRevlogs(cids: number[]) {
-    return (await endpoint("revlogs", JSON.stringify(cids))) as Revlog[]
+export async function getRevlogs(cids: number[], day_range: number) {
+    return (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as Revlog[]
 }

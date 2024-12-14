@@ -4,7 +4,7 @@
     import NoGraph from "./NoGraph.svelte"
 
     let svg: SVGElement | null = null
-    export let extraRender = (chart: ExtraRenderInput) => {}
+    export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
 
     export let data: BarChart
     $: {
@@ -33,7 +33,17 @@
             </div>
         {/each}
     </div>
-    <svg bind:this={svg}></svg>
+    <svg bind:this={svg}>
+        <pattern
+            id="stripe"
+            patternUnits="userSpaceOnUse"
+            width="10"
+            height="10"
+            patternTransform="rotate(45)"
+        >
+            <line x1="0" y="0" x2="0" y2="10" stroke="#921717" stroke-width="10" />
+        </pattern>
+    </svg>
 {/if}
 
 <style>

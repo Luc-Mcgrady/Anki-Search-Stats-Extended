@@ -1,3 +1,5 @@
+<script lang="ts"></script>
+
 <dir class="container graph">
     <slot />
 </dir>

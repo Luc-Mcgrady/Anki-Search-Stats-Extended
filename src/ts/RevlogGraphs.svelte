@@ -2,16 +2,25 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import type { CardData, Revlog } from "./search"
-    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll } from "./stores"
+    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll, searchLimit } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
-    import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
+    import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
+    import {
+        calculateRevlogStats,
+        day_ms,
+        easeBarChart,
+        today,
+        type revlogBuckets,
+    } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
+    import Warning from "./Warning.svelte"
+    import MatureFilterSelector from "./MatureFilterSelector.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -21,9 +30,8 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
-        day_review_ease,
-        day_review_ease_mature,
         sibling_time_ease,
+        fatigue_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -36,10 +44,13 @@
 
     $: realScroll = -Math.abs($scroll)
     const bins = 30
-    const barOffset = bins * $binSize - bins
     $: start = today - bins * $binSize + realScroll
 
     $: burden_start = burden[start] ?? 0
+
+    function barLabel(i: number) {
+        return (i - today).toString()
+    }
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
@@ -50,10 +61,10 @@
                 const reintroduced = reintroduced_day_count[i] ?? 0
                 return {
                     values: [introduced - reintroduced, reintroduced],
-                    label: (i - today - barOffset).toString(),
+                    label: barLabel(i),
                 }
             })
-            .map((d, i) => d ?? { values: [0, 0], label: (i - today - barOffset).toString() }),
+            .map((d, i) => d ?? { values: [0, 0], label: barLabel(i) }),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }
@@ -63,7 +74,7 @@
         row_labels: ["Forgotten"],
         data: Array.from(day_forgotten).map((v, i) => ({
             values: [v ?? 0],
-            label: (i - today - barOffset).toString(),
+            label: barLabel(i),
         })),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
@@ -72,7 +83,7 @@
     $: burden_change_candlestick = {
         start: burden_start,
         data: Array.from(burden_change).map((delta, i) => ({
-            label: (i - today - barOffset).toString(),
+            label: barLabel(i),
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
@@ -134,10 +145,19 @@
     }
 
     let include_reintroduced = true
-    $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
+    $: truncated = $searchLimit !== 0
+    $: introduced_ease =
+        include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
-    let mature_ease = false
+    $: limit = -1 - $searchLimit
+
+    let mature_filter: keyof revlogBuckets = "young"
+
+    let fatigue_bin_size = 10
+
+    let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
+    let burden_trend: TrendLine
 </script>
 
 <GraphCategory>
@@ -189,18 +209,38 @@
 <GraphCategory>
     <GraphContainer>
         <h1>Introduced</h1>
-        <BarScrollable data={introduced_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <BarScrollable
+            data={introduced_bar}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+        />
         <p>
             A card is introduced when it is shown to you for the first time. A card is re-introduced
             when it is shown to you for the first time after being forgotten.
         </p>
+        {#if truncated}
+            <Warning>
+                Re-introduced does not work for cards introduced before the cutoff date.
+            </Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Forgotten</h1>
-        <BarScrollable data={forgotten_bar} {bins} bind:binSize={$binSize} bind:offset={$scroll} />
+        <BarScrollable
+            data={forgotten_bar}
+            {bins}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+        />
         <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
         <p>You "forget" a card when you manually mark it as new.</p>
+        {#if truncated}
+            <Warning>Does not work for cards introduced before the cutoff date.</Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Introductory Rating</h1>
@@ -209,6 +249,8 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            trend={normalize_ease}
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
@@ -227,6 +269,8 @@
         <Candlestick
             data={burden_change_candlestick}
             {bins}
+            {limit}
+            bind:trend_data={burden_trend}
             bind:binSize={$binSize}
             bind:offset={$scroll}
         />
@@ -235,47 +279,39 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
+        <TrendValue trend={burden_trend} n={$binSize}>
+            Burden per
+            {#if $binSize > 1}
+                {$binSize} days
+            {:else}
+                day
+            {/if}
+        </TrendValue>
+        {#if truncated}
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Ratings</h1>
         <BarScrollable
-            data={easeBarChart(day_ease, today, normalize_ease)}
+            data={easeBarChart(day_ease[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per"}
+            trend_percentage
+            {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
+        <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            The rating of every review you did that day, learning or otherwise. Normalizing displays
-            it as a percent of all cards reviewed that day.
-        </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>Review Ratings</h1>
-        <BarScrollable
-            data={easeBarChart(
-                mature_ease ? day_review_ease_mature : day_review_ease,
-                today,
-                normalize_ease
-            )}
-            bind:binSize={$binSize}
-            bind:offset={$scroll}
-            average={normalize_ease}
-        />
-        <label>
-            <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
-        </label>
-        <label>
-            <input type="checkbox" bind:checked={mature_ease} />
-            Mature
-        </label>
-        <p>
-            The rating of the first review you did for every card that day. With the ratio,
-            calculate <code>(1-again)%</code>
+            The rating of every review you did that day, learning or otherwise. The ratio displays
+            it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
             to get your retention for that day (shown as "
             <code>% Correct</code>
             " in the tooltip).
@@ -294,13 +330,35 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
-        <label>
-            <input type="checkbox" bind:checked={mature_ease} />
-            Mature
-        </label>
         <p>
             The rating you gave cards plotted by the number of days since you reviewed a sibling of
             that card (card originating from the same note).
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Fatigue</h1>
+        <BarScrollable
+            data={easeBarChart(fatigue_ease[mature_filter], 0, normalize_ease)}
+            average={normalize_ease}
+            bind:binSize={fatigue_bin_size}
+            left_aligned
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per previous"}
+            trend_y={"review that day"}
+            trend_y_plural={"reviews that day."}
+            trend_percentage
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+
+        <MatureFilterSelector bind:group={mature_filter} />
+        <p>
+            Ratings plotted by how many reviews you did total in that day before rating them. Bear
+            in mind this may be affected by the review order and the fact that learn cards are
+            reviewed more than once in the case of "All"
         </p>
     </GraphContainer>
 </GraphCategory>
@@ -348,6 +406,9 @@
         </div>
         <span>Total: {time_machine_added}</span>
         <p>Shows your card type counts for a given date</p>
+        {#if truncated}
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>Review Interval Time Machine</h1>
@@ -363,6 +424,9 @@
             </span>
         </label>
         <p>Shows your review intervals for a given date</p>
+        {#if truncated}
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {/if}
     </GraphContainer>
 </GraphCategory>
 

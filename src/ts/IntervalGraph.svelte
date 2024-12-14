@@ -70,13 +70,7 @@
     {#if $graph_mode == "Pie"}
         <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
     {:else}
-        <IntervalBar
-            {intervals}
-            {pieInfo}
-            bind:binSize={last}
-            bind:offset={steps}
-            min={zero_inclusive_option ? 0 : 1}
-        ></IntervalBar>
+        <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps}></IntervalBar>
     {/if}
 {:else}
     <NoGraph></NoGraph>

@@ -4,6 +4,7 @@
     import { calcTimePerReview } from "./dayTimings"
     import type { GraphsResponse_ReviewCountsAndTimes } from "./proto/anki/stats_pb"
     import { today } from "./revlogGraphs"
+    import { searchLimit } from "./stores"
 
     export let data: GraphsResponse_ReviewCountsAndTimes | undefined
     $: time_spent = data ? calcTimePerReview(data) : []
@@ -22,6 +23,15 @@
     }
 
     $: console.log({ time_spent, data, bar })
+
+    $: limit = -1 - $searchLimit
 </script>
 
-<BarScrollable data={bar} bind:offset average />
+<BarScrollable
+    data={bar}
+    bind:offset
+    average
+    {limit}
+    trend
+    trend_x={"Average seconds per card per"}
+/>

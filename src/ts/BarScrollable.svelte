@@ -1,41 +1,80 @@
 <script lang="ts">
     import _ from "lodash"
-    import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
+    import {
+        limitArea,
+        limit_area_width,
+        trendLine,
+        type BarChart,
+        type BarDatum,
+        type ExtraRenderInput,
+        type TrendLine,
+    } from "./bar"
     import Bar from "./Bar.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let data: BarChart
-    export let extraRender = (chart: ExtraRenderInput) => {}
+    export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
 
-    export let min = 1
     export let binSize = 1
     export let offset = 0
     export let bins = 30
     export let average = false
     export let left_aligned = false
+    export let limit: number = -1
+    export let trend = false
+    export let trend_x = "retention per"
+    export let trend_y = "day"
+    export let trend_y_plural = "days"
+    export let trend_by: (values: number[]) => number = _.sum
+    export let trend_percentage = false
 
-    $: realOffset = left_aligned
-        ? Math.abs(offset) - data.data.length + bins * binSize + min
-        : -Math.abs(offset)
+    $: min = left_aligned ? 0 : 1
+    $: absOffset = Math.abs(offset)
+    $: realOffset = left_aligned ? absOffset + bins * binSize + min : -absOffset
+    $: leftmost = realOffset - bins * binSize
 
     $: binSize = binSize > 0 ? binSize : 1
     $: seperate_bars = data.data.slice(
-        -(bins * binSize) + realOffset,
-        realOffset == 0 ? undefined : realOffset
+        leftmost,
+        realOffset == 0 || realOffset >= data.data.length ? undefined : realOffset
     )
+
+    $: console.log({ leftmost, realOffset })
+
+    export let trend_values: TrendLine = undefined
+
+    function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
+        extraRender(chart)
+
+        limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
+
+        const trend_data = chart.chart.data.map((datum) => ({
+            x: parseInt(datum.label),
+            y: trend_by(datum.values),
+        }))
+
+        if (trend) {
+            trend_values = trendLine(chart, trend_data)
+        } else {
+            trend_values = undefined
+        }
+    }
 
     let bars: BarDatum[]
     $: {
-        bars = []
+        bars = _.range(leftmost, realOffset, binSize).map((i) => ({
+            label: (i + min).toString(),
+            values: data.row_labels.map((_) => 0),
+        }))
+
+        console.log({ bars: [...bars], seperate_bars })
+
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
-            if (!bars[newIndex]?.values) {
-                bars[newIndex] = { ...bar, values: bar.values.map((a) => a || 0) }
-            } else {
-                bars[newIndex].values = bars[newIndex].values.map(
-                    (a, i) => a + (bar?.values[i] || 0)
-                )
-            }
+
+            bars[newIndex].values = bars[newIndex].values.map((a, i) => a + (bar?.values[i] || 0))
         }
+
         if (average) {
             bars.map((bar, i) => {
                 const count = seperate_bars
@@ -59,7 +98,23 @@
     </label>
 </div>
 
-<Bar data={{ ...data, data: bars, barWidth: binSize }} {extraRender}></Bar>
+<Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
+
+{#if trend_values}
+    <TrendValue trend={trend_values} n={binSize} percentage={trend_percentage}>
+        {trend_x}
+        {#if binSize > 1}
+            {binSize}
+            {#if trend_y_plural}
+                {trend_y_plural}
+            {:else}
+                {trend_y}s
+            {/if}
+        {:else}
+            {trend_y}
+        {/if}
+    </TrendValue>
+{/if}
 
 <style>
     div.options {
