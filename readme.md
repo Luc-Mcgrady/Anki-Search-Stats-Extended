@@ -20,6 +20,8 @@ Like the new anki stats screen? Want more? This is the addon for you.
 - **warnings**: If set to false, removes any text warning of the cutoff date in the review graphs (denoted by yellow).
   ![image](https://github.com/user-attachments/assets/ced82fdf-3a50-44bb-9535-413d2134a8bd)
 
+- **trends**: If set to false, disables trend lines.
+
 ## The Graphs
 
 ### Future due types

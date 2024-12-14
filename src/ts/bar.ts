@@ -130,6 +130,10 @@ export type TrendDatum = {
 }
 
 export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendDatum[]) {
+    if (!SSEconfig.trends) {
+        return
+    }
+
     data = data.filter((a) => !!a.y)
 
     console.log({ data })
