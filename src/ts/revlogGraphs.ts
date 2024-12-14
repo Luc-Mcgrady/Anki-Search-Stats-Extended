@@ -61,6 +61,7 @@ export function calculateRevlogStats(
 
     let day_ease = emptyRevlogBuckets()
     let fatigue_ease = emptyRevlogBuckets()
+    let time_ease_seconds = emptyRevlogBuckets()
 
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
@@ -86,6 +87,7 @@ export function calculateRevlogStats(
     for (const revlog of revlogData) {
         const day = dayFromId(revlog.id)
         const ease = revlog.ease - 1
+        const second = Math.round(revlog.time / 1000)
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
 
@@ -94,17 +96,19 @@ export function calculateRevlogStats(
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
             incrementEase(day_ease.all, day, ease)
+            incrementEase(time_ease_seconds.all, second, ease)
         }
 
         if (revlog.lastIvl > 0) {
             incrementEase(day_ease.young, day, ease)
+            incrementEase(fatigue_ease.young, day_review_count[day], ease)
+            incrementEase(time_ease_seconds.young, second, ease)
             if (revlog.lastIvl >= 21) {
                 incrementEase(day_ease.mature, day, ease)
                 incrementEase(fatigue_ease.mature, day_review_count[day], ease)
-            }
+                incrementEase(time_ease_seconds.mature, second, ease)
 
-            const last_sibling = last_siblings[revlog.nid]
-            if (revlog.lastIvl >= 21) {
+                const last_sibling = last_siblings[revlog.nid]
                 if (last_sibling !== undefined && last_sibling.cid != revlog.cid) {
                     incrementEase(sibling_time_ease, day - last_sibling.day, ease)
                 }
@@ -115,7 +119,6 @@ export function calculateRevlogStats(
             } else {
                 last_siblings[revlog.nid] = undefined
             }
-            incrementEase(fatigue_ease.young, day_review_count[day], ease)
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
@@ -179,13 +182,15 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
+    console.log({ time_ease_seconds })
 
     return {
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
-        sibling_time_ease,
         fatigue_ease,
+        time_ease_seconds,
+        sibling_time_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,

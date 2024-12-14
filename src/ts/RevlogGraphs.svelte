@@ -30,9 +30,10 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
-        sibling_time_ease,
         fatigue_ease,
         revlog_times,
+        time_ease_seconds,
+        sibling_time_ease,
         introduced_day_count,
         reintroduced_day_count,
         burden,
@@ -367,6 +368,27 @@
             in mind this may be affected by the review order and the fact that learn cards are
             reviewed more than once in the case of "All"
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Time Ratings</h1>
+        <BarScrollable
+            data={easeBarChart(time_ease_seconds[mature_filter], 0, normalize_ease)}
+            average={normalize_ease}
+            left_aligned
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per"}
+            trend_y={"second spent thinking"}
+            trend_y_plural={"seconds spent thinking"}
+            trend_percentage
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+
+        <MatureFilterSelector bind:group={mature_filter} />
+        <p>Ratings plotted by how long you spent before reviewing them</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
