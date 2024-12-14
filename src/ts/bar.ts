@@ -1,6 +1,7 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import createTrend from "trendline"
+import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
@@ -221,7 +222,7 @@ export function barStringLabeler(text: string) {
     }
 }
 
-export type ExtraRenderInput<T> = {
+export type ExtraRenderInput<T = BarChart | CandlestickGraph> = {
     x: d3.ScaleBand<string>
     y: d3.ScaleLinear<number, number, never>
     svg: d3.Selection<SVGGElement, unknown, null, undefined>
