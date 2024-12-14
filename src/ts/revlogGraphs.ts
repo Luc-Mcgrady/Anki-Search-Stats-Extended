@@ -69,7 +69,7 @@ export function calculateRevlogStats(
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
 
-    let last_siblings: SiblingReview[] = []
+    let last_siblings: (undefined | SiblingReview)[] = []
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
 
@@ -104,16 +104,16 @@ export function calculateRevlogStats(
             }
 
             const last_sibling = last_siblings[revlog.nid]
-            if (
-                revlog.lastIvl >= 21 &&
-                last_sibling !== undefined &&
-                last_sibling.cid != revlog.cid
-            ) {
-                incrementEase(sibling_time_ease, day - last_sibling.day, ease)
-            }
-            last_siblings[revlog.nid] = {
-                cid: revlog.cid,
-                day,
+            if (revlog.lastIvl >= 21) {
+                if (last_sibling !== undefined && last_sibling.cid != revlog.cid) {
+                    incrementEase(sibling_time_ease, day - last_sibling.day, ease)
+                }
+                last_siblings[revlog.nid] = {
+                    cid: revlog.cid,
+                    day,
+                }
+            } else {
+                last_siblings[revlog.nid] = undefined
             }
             incrementEase(fatigue_ease.young, day_review_count[day], ease)
         }

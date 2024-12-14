@@ -325,6 +325,10 @@
             bind:offset={$scroll}
             average={normalize_ease}
             left_aligned
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per"}
+            trend_y={"days since last sibling review"}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -332,7 +336,8 @@
         </label>
         <p>
             The rating you gave cards plotted by the number of days since you reviewed a sibling of
-            that card (card originating from the same note).
+            that card (card originating from the same note). Reviews from the same card or cards
+            where either card are not young are not counted.
         </p>
     </GraphContainer>
     <GraphContainer>
