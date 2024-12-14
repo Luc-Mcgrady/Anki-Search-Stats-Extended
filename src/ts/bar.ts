@@ -1,5 +1,7 @@
 import * as d3 from "d3"
 import _ from "lodash"
+import createTrend from "trendline"
+import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
@@ -60,10 +62,11 @@ export function createAxis(
 const limit_area_border = 2
 
 export function limitArea(
-    chart: ExtraRenderInput,
+    chart: ExtraRenderInput<unknown>,
     width: number,
     height = defaultGraphBounds().height
 ) {
+    // I might get around to passing just the SVG at some point, for now idc
     const { svg } = chart
 
     svg.append("rect")
@@ -120,6 +123,46 @@ export function limit_area_width(
     )
 }
 
+export type TrendLine = ReturnType<typeof trendLine>
+export type TrendDatum = {
+    x: number
+    y: number
+}
+
+export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendDatum[]) {
+    if (!SSEconfig.trends) {
+        return
+    }
+
+    data = data.filter((a) => !!a.y)
+
+    console.log({ data })
+
+    const trend = createTrend(data, "x", "y")
+    const leftmost = _.minBy(data, (datum) => datum.x)
+    const rightmost = _.maxBy(data, (datum) => datum.x)
+
+    if (rightmost == undefined || leftmost == undefined) {
+        return
+    }
+
+    const half_step = x.step() / 2
+
+    console.log({ leftmost, rightmost })
+
+    svg.append("line")
+        .attr("x1", (x(leftmost.x.toString()) ?? 0) + half_step)
+        .attr("y1", y(trend.calcY(leftmost.x))) // trend.yStart is at 0 which we are not
+        .attr("x2", (x(rightmost.x.toString()) ?? 0) + half_step)
+        .attr("y2", y(trend.calcY(rightmost.x)))
+        .style("stroke", "black")
+        .style("stroke-width")
+
+    console.log({ trend })
+
+    return trend
+}
+
 export function totalCalc(data: BarDatum) {
     return data.values.length > 1 ? [`Total: ${_.sum(data.values)}`] : []
 }
@@ -173,7 +216,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         })
         .on("mouseleave", () => tooltipShown.set(false))
 
-    return { x, y, svg: axis, maxValue }
+    return { x, y, svg: axis, maxValue, chart }
 }
 
 export function barDateLabeler(label: string, width: number = 1) {
@@ -187,4 +230,10 @@ export function barStringLabeler(text: string) {
     }
 }
 
-export type ExtraRenderInput = ReturnType<typeof renderBarChart>
+export type ExtraRenderInput<T = BarChart | CandlestickGraph> = {
+    x: d3.ScaleBand<string>
+    y: d3.ScaleLinear<number, number, never>
+    svg: d3.Selection<SVGGElement, unknown, null, undefined>
+    maxValue: number
+    chart: T
+}

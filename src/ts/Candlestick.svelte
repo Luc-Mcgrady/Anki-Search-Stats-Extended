@@ -1,7 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
-    import { limit_area_width, limitArea } from "./bar"
+    import { limit_area_width, limitArea, trendLine, type TrendLine } from "./bar"
 
     let svg: SVGElement | null = null
 
@@ -10,6 +10,8 @@
     export let bins = 30
     export let data: CandlestickGraph
     export let limit = 0
+    export let trend = true
+    export let trend_data: TrendLine = undefined
 
     $: realOffset = -Math.abs(offset)
 
@@ -35,6 +37,17 @@
             const chart = plotCandlestick({ ...data, data: bars, bar_width: binSize }, svg as any)
 
             limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, 1))
+
+            if (trend) {
+                let total = chart.chart.start
+                const trend_points = chart.chart.data.map((datum) => {
+                    total += datum.delta
+                    return { x: parseInt(datum.label), y: total }
+                })
+
+                console.log(trend_points)
+                trend_data = trendLine(chart, trend_points)
+            }
         }
     }
 </script>

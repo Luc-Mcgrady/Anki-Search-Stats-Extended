@@ -10,7 +10,6 @@
 
     export let binSize = 1
     export let offset = 0
-    export let min = 1
 
     let interval_array: number[] = []
     $: {
@@ -34,4 +33,4 @@
     }
 </script>
 
-<BarScrollable data={bar_data} {min} bind:binSize bind:offset left_aligned></BarScrollable>
+<BarScrollable data={bar_data} bind:binSize bind:offset left_aligned></BarScrollable>

@@ -44,12 +44,18 @@ export function calculateRevlogStats(
     let day_review_ease = emptyArray(initialEase())
     let day_review_ease_mature = emptyArray(initialEase())
 
+    let fatigue_ease: number[][] = []
+    let fatigue_rating_ease: number[][] = []
+    let fatigue_mature_ease: number[][] = []
+
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
     let introduced = new Set<number>()
     let reintroduced = new Set<number>()
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
+
+    let day_review_count: number[] = []
 
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
@@ -64,11 +70,19 @@ export function calculateRevlogStats(
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
         incrementEase(day_ease, day, ease)
 
+        // Check for reschedules
+        if (revlog.time != 0) {
+            day_review_count[day] = (day_review_count[day] ?? 0) + 1
+            incrementEase(fatigue_ease, day_review_count[day], ease)
+        }
+
         if (revlog.lastIvl > 0) {
             incrementEase(day_review_ease, day, ease)
             if (revlog.lastIvl >= 21) {
                 incrementEase(day_review_ease_mature, day, ease)
+                incrementEase(fatigue_mature_ease, day_review_count[day], ease)
             }
+            incrementEase(fatigue_rating_ease, day_review_count[day], ease)
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
@@ -139,6 +153,9 @@ export function calculateRevlogStats(
         day_ease,
         day_review_ease,
         day_review_ease_mature,
+        fatigue_ease,
+        fatigue_rating_ease,
+        fatigue_mature_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,

@@ -9,10 +9,12 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
+    import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
     import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
+    import MatureFilterSelector from "./MatureFilterSelector.svelte"
+    import TrendValue from "./TrendValue.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -24,6 +26,9 @@
         day_ease,
         day_review_ease,
         day_review_ease_mature,
+        fatigue_ease,
+        fatigue_rating_ease,
+        fatigue_mature_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -142,8 +147,25 @@
         include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
-    let mature_ease = false
     $: limit = -1 - $searchLimit
+
+    type CardEnum = "all" | "young" | "mature"
+    let mature_filter: CardEnum = "young"
+    $: fatigue_filters = {
+        all: fatigue_ease,
+        young: fatigue_rating_ease,
+        mature: fatigue_mature_ease,
+    }
+    $: rating_filters = {
+        all: day_ease,
+        young: day_review_ease,
+        mature: day_review_ease_mature,
+    }
+
+    let fatigue_bin_size = 10
+
+    let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
+    let burden_trend: TrendLine
 </script>
 
 <GraphCategory>
@@ -235,6 +257,7 @@
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            trend={normalize_ease}
             {limit}
         />
         <label>
@@ -255,6 +278,7 @@
             data={burden_change_candlestick}
             {bins}
             {limit}
+            bind:trend_data={burden_trend}
             bind:binSize={$binSize}
             bind:offset={$scroll}
         />
@@ -263,6 +287,14 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
+        <TrendValue trend={burden_trend} n={$binSize}>
+            Burden per
+            {#if $binSize > 1}
+                {$binSize} days
+            {:else}
+                day
+            {/if}
+        </TrendValue>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
@@ -270,48 +302,52 @@
     <GraphContainer>
         <h1>Ratings</h1>
         <BarScrollable
-            data={easeBarChart(day_ease, today, normalize_ease)}
+            data={easeBarChart(rating_filters[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per"}
+            trend_percentage
             {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
+        <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            The rating of every review you did that day, learning or otherwise. Normalizing displays
-            it as a percent of all cards reviewed that day.
-        </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>Review Ratings</h1>
-        <BarScrollable
-            data={easeBarChart(
-                mature_ease ? day_review_ease_mature : day_review_ease,
-                today,
-                normalize_ease
-            )}
-            bind:binSize={$binSize}
-            bind:offset={$scroll}
-            average={normalize_ease}
-            {limit}
-        />
-        <label>
-            <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
-        </label>
-        <label>
-            <input type="checkbox" bind:checked={mature_ease} />
-            Mature
-        </label>
-        <p>
-            The rating of the first review you did for every card that day. With the ratio,
-            calculate <code>(1-again)%</code>
+            The rating of every review you did that day, learning or otherwise. The ratio displays
+            it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
             to get your retention for that day (shown as "
             <code>% Correct</code>
             " in the tooltip).
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Fatigue</h1>
+        <BarScrollable
+            data={easeBarChart(fatigue_filters[mature_filter], 0, normalize_ease)}
+            average={normalize_ease}
+            bind:binSize={fatigue_bin_size}
+            left_aligned
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per previous"}
+            trend_y={"review that day"}
+            trend_y_plural={"reviews that day."}
+            trend_percentage
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+        <MatureFilterSelector bind:group={mature_filter} />
+        <p>
+            Ratings plotted by how many reviews you did total in that day before rating them. Bear
+            in mind this may be affected by the review order and the fact that learn cards are
+            reviewed more than once in the case of "All"
         </p>
     </GraphContainer>
 </GraphCategory>

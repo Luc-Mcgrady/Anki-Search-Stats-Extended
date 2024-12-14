@@ -1,7 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import Bar from "./Bar.svelte"
-    import type { BarDatum, ExtraRenderInput } from "./bar"
+    import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
     import { getCardData, search, type CardData } from "./search"
     import { searchJoin } from "./root"
     import { other, searchString } from "./stores"
@@ -65,7 +65,7 @@
         return data
     }
 
-    function extraRender({ x, y, svg, maxValue }: ExtraRenderInput) {
+    function extraRender({ x, y, svg, maxValue }: ExtraRenderInput<BarChart>) {
         const now = new Date(Date.now())
         const lineX =
             x(now.getHours().toFixed(0))! + // Go to the label
