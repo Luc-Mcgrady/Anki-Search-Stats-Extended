@@ -48,7 +48,7 @@
 
         const correct = chart.chart.data.map((datum) => ({
             x: parseInt(datum.label),
-            y: 1 - datum.values[3],
+            y: _.sum(datum.values) == 0 ? 0 : 1 - datum.values[3],
         }))
 
         if (trend) {
