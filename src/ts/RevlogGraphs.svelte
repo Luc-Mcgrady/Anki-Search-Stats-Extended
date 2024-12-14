@@ -339,7 +339,7 @@
         <p>
             The rating you gave cards plotted by the number of days since you reviewed a sibling of
             that card (card originating from the same note). Reviews from the same card or cards
-            where either card are not young are not counted.
+            where either card are not mature are not counted.
         </p>
     </GraphContainer>
     <GraphContainer>
