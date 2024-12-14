@@ -164,8 +164,7 @@
 
     let fatigue_bin_size = 10
 
-    let fatigue_trend: TrendLine
-    let review_trend: TrendLine
+    let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
 </script>
 
@@ -306,10 +305,11 @@
             data={easeBarChart(rating_filters[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
-            bind:trend_values={review_trend}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_by={retention_trend}
             trend_x={"Retention per"}
+            trend_percentage
             {limit}
         />
         <label>
@@ -333,10 +333,11 @@
             bind:binSize={fatigue_bin_size}
             left_aligned
             trend={normalize_ease}
+            trend_by={retention_trend}
             trend_x={"Retention per previous"}
             trend_y={"review that day"}
             trend_y_plural={"reviews that day."}
-            bind:trend_values={fatigue_trend}
+            trend_percentage
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />

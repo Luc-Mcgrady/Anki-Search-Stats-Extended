@@ -25,6 +25,8 @@
     export let trend_x = "retention per"
     export let trend_y = "day"
     export let trend_y_plural = "days"
+    export let trend_by: (values: number[]) => number = _.sum
+    export let trend_percentage = false
 
     $: min = left_aligned ? 0 : 1
     $: absOffset = Math.abs(offset)
@@ -46,13 +48,13 @@
 
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
 
-        const correct = chart.chart.data.map((datum) => ({
+        const trend_data = chart.chart.data.map((datum) => ({
             x: parseInt(datum.label),
-            y: _.sum(datum.values) == 0 ? 0 : 1 - datum.values[3],
+            y: trend_by(datum.values),
         }))
 
         if (trend) {
-            trend_values = trendLine(chart, correct)
+            trend_values = trendLine(chart, trend_data)
         } else {
             trend_values = undefined
         }
@@ -99,7 +101,7 @@
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
 {#if trend_values}
-    <TrendValue trend={trend_values} n={binSize} percentage>
+    <TrendValue trend={trend_values} n={binSize} percentage={trend_percentage}>
         {trend_x}
         {#if binSize > 1}
             {binSize}

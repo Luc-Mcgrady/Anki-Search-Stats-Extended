@@ -27,4 +27,11 @@
     $: limit = -1 - $searchLimit
 </script>
 
-<BarScrollable data={bar} bind:offset average {limit} />
+<BarScrollable
+    data={bar}
+    bind:offset
+    average
+    {limit}
+    trend
+    trend_x={"Average seconds per card per"}
+/>
