@@ -60,6 +60,7 @@ export interface Revlog {
     //factor: number
     time: number
     //type: number
+    nid: number
 }
 
 export async function getCardData(cids: number[]) {

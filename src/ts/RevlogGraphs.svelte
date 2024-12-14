@@ -30,6 +30,7 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
+        sibling_time_ease,
         fatigue_ease,
         revlog_times,
         introduced_day_count,
@@ -316,6 +317,31 @@
             " in the tooltip).
         </p>
     </GraphContainer>
+</GraphCategory>
+<GraphCategory>
+    <GraphContainer>
+        <h1>Sibling Similarity</h1>
+        <BarScrollable
+            data={easeBarChart(sibling_time_ease, 1, normalize_ease)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            average={normalize_ease}
+            left_aligned
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_x={"Retention per"}
+            trend_y={"days since last sibling review"}
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+        <p>
+            The rating you gave cards plotted by the number of days since you reviewed a sibling of
+            that card (card originating from the same note). Reviews from the same card or cards
+            where either card are not mature are not counted.
+        </p>
+    </GraphContainer>
     <GraphContainer>
         <h1>Fatigue</h1>
         <BarScrollable
@@ -334,6 +360,7 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
+
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
             Ratings plotted by how many reviews you did total in that day before rating them. Bear
