@@ -10,7 +10,13 @@
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
-    import { calculateRevlogStats, day_ms, easeBarChart, today } from "./revlogGraphs"
+    import {
+        calculateRevlogStats,
+        day_ms,
+        easeBarChart,
+        today,
+        type revlogBuckets,
+    } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
@@ -24,11 +30,7 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
-        day_review_ease,
-        day_review_ease_mature,
         fatigue_ease,
-        fatigue_rating_ease,
-        fatigue_mature_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
@@ -149,18 +151,7 @@
     let normalize_ease = false
     $: limit = -1 - $searchLimit
 
-    type CardEnum = "all" | "young" | "mature"
-    let mature_filter: CardEnum = "young"
-    $: fatigue_filters = {
-        all: fatigue_ease,
-        young: fatigue_rating_ease,
-        mature: fatigue_mature_ease,
-    }
-    $: rating_filters = {
-        all: day_ease,
-        young: day_review_ease,
-        mature: day_review_ease_mature,
-    }
+    let mature_filter: keyof revlogBuckets = "young"
 
     let fatigue_bin_size = 10
 
@@ -302,7 +293,7 @@
     <GraphContainer>
         <h1>Ratings</h1>
         <BarScrollable
-            data={easeBarChart(rating_filters[mature_filter], today, normalize_ease)}
+            data={easeBarChart(day_ease[mature_filter], today, normalize_ease)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
@@ -328,7 +319,7 @@
     <GraphContainer>
         <h1>Fatigue</h1>
         <BarScrollable
-            data={easeBarChart(fatigue_filters[mature_filter], 0, normalize_ease)}
+            data={easeBarChart(fatigue_ease[mature_filter], 0, normalize_ease)}
             average={normalize_ease}
             bind:binSize={fatigue_bin_size}
             left_aligned
