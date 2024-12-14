@@ -317,6 +317,8 @@
             " in the tooltip).
         </p>
     </GraphContainer>
+</GraphCategory>
+<GraphCategory>
     <GraphContainer>
         <h1>Sibling Similarity</h1>
         <BarScrollable
