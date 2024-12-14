@@ -142,7 +142,7 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler("Interval of"),
+        columnLabeler: barStringLabeler("Interval of $s"),
     }
 
     let include_reintroduced = true
@@ -246,7 +246,7 @@
     <GraphContainer>
         <h1>Introductory Rating</h1>
         <BarScrollable
-            data={easeBarChart(introduced_ease, today, normalize_ease)}
+            data={easeBarChart(introduced_ease, today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
@@ -295,7 +295,7 @@
     <GraphContainer>
         <h1>Ratings</h1>
         <BarScrollable
-            data={easeBarChart(day_ease[mature_filter], today, normalize_ease)}
+            data={easeBarChart(day_ease[mature_filter], today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
@@ -323,7 +323,12 @@
     <GraphContainer>
         <h1>Sibling Similarity</h1>
         <BarScrollable
-            data={easeBarChart(sibling_time_ease, 1, normalize_ease)}
+            data={easeBarChart(
+                sibling_time_ease,
+                1,
+                normalize_ease,
+                barStringLabeler("$s Days since sibling review")
+            )}
             bind:binSize={$binSize}
             bind:offset={$scroll}
             average={normalize_ease}
@@ -346,7 +351,12 @@
     <GraphContainer>
         <h1>Fatigue</h1>
         <BarScrollable
-            data={easeBarChart(fatigue_ease[mature_filter], 0, normalize_ease)}
+            data={easeBarChart(
+                fatigue_ease[mature_filter],
+                0,
+                normalize_ease,
+                barStringLabeler("$s Previous reviews")
+            )}
             average={normalize_ease}
             bind:binSize={fatigue_bin_size}
             left_aligned
@@ -372,7 +382,12 @@
     <GraphContainer>
         <h1>Time Ratings</h1>
         <BarScrollable
-            data={easeBarChart(time_ease_seconds[mature_filter], 0, normalize_ease)}
+            data={easeBarChart(
+                time_ease_seconds[mature_filter],
+                0,
+                normalize_ease,
+                barStringLabeler("$s Seconds")
+            )}
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}

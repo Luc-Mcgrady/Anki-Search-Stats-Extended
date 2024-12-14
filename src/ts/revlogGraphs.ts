@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { barDateLabeler, totalCalc, type BarChart, type BarDatum } from "./bar"
+import { totalCalc, type BarChart, type BarDatum } from "./bar"
 import type { CardData, Revlog } from "./search"
 
 //@ts-ignore
@@ -209,7 +209,12 @@ function retentionStats(data: BarDatum) {
     return [`${(100 * (1 - data.values[3])).toFixed(2)}% Correct`]
 }
 
-export function easeBarChart(eases: number[][], offset = today, normalize = false): BarChart {
+export function easeBarChart(
+    eases: number[][],
+    offset = today,
+    normalize = false,
+    columnLabeler: BarChart["columnLabeler"] = undefined
+): BarChart {
     return {
         row_colours: EASE_COLOURS,
         row_labels: EASE_LABELS,
@@ -224,7 +229,7 @@ export function easeBarChart(eases: number[][], offset = today, normalize = fals
         }),
         tick_spacing: 5,
         reverse_legend: true,
-        columnLabeler: barDateLabeler,
+        columnLabeler,
         extraStats: normalize ? retentionStats : totalCalc,
     }
 }

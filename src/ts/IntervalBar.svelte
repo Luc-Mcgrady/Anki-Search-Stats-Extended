@@ -28,7 +28,7 @@
             values: [val ?? 0],
             label: i.toString(),
         })),
-        columnLabeler: barStringLabeler(`${pieInfo.legend_left ?? "Interval"} of`),
+        columnLabeler: barStringLabeler(`${pieInfo.legend_left ?? "Interval"} of $s`),
         tick_spacing: 5,
     }
 </script>

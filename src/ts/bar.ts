@@ -226,7 +226,8 @@ export function barDateLabeler(label: string, width: number = 1) {
 export function barStringLabeler(text: string) {
     return (label: string, width: number = 1) => {
         const rightmost = width > 1 ? `-${parseInt(label) + width - 1}` : ""
-        return `${text} ${label}${rightmost}:`
+        const value = `${label}${rightmost}`
+        return `${text.replace("$s", value)}:`
     }
 }
 
