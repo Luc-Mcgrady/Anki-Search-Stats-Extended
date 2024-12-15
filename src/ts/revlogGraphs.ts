@@ -58,7 +58,7 @@ export function calculateRevlogStats(
     let reintroduced_day_count: number[] = emptyArray(0)
     let day_forgotten: number[] = emptyArray(0)
 
-    let intervals: number[][] = emptyArray([])
+    let intervals: number[][] = []
 
     let day_initial_ease: number[][] = emptyArray(initialEase())
     let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
@@ -147,15 +147,16 @@ export function calculateRevlogStats(
     // "reduceRight" Used here to iterate backwards, never returns true
     burden_revlogs.reduceRight((_p, revlog) => {
         const day = dayFromMs(revlog.id)
+        const current = id_card_data[revlog.cid]
 
         const after_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
-        const ivl = after_review ? revlog.ivl : id_card_data[revlog.cid].ivl
+        let ivl = after_review ? revlog.ivl : current.ivl
+        ivl = ivl >= 0 ? ivl : 1
 
-        for (const intervalDay of _.range(
-            day,
-            Math.floor((after_review?.id - rollover) / day_ms) || end + 1
-        )) {
+        let to = after_review ? dayFromMs(after_review.id) : end
+
+        for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
             intervals[intervalDay][ivl] = (intervals[intervalDay][ivl] ?? 0) + 1
         }
