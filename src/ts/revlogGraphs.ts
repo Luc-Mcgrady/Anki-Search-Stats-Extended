@@ -2,10 +2,14 @@ import _ from "lodash"
 import { totalCalc, type BarChart, type BarDatum } from "./bar"
 import type { CardData, Revlog } from "./search"
 
-//@ts-ignore
-const rollover = SSEother.rollover ?? 4
+const rollover = SSEother.rollover ?? 0
 export const day_ms = 1000 * 60 * 60 * 24
-export const today = Math.floor((Date.now() - rollover) / day_ms)
+
+function dayFromMs(ms: number) {
+    return Math.floor((ms - rollover * 60 * 60 * 1000) / day_ms)
+}
+
+export const today = dayFromMs(Date.now())
 
 interface SiblingReview {
     cid: number
@@ -80,12 +84,8 @@ export function calculateRevlogStats(
         ease_array[day][ease] += 1
     }
 
-    function dayFromId(id: number) {
-        return Math.floor((id - rollover) / day_ms)
-    }
-
     for (const revlog of revlogData) {
-        const day = dayFromId(revlog.id)
+        const day = dayFromMs(revlog.id)
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
 
@@ -146,7 +146,7 @@ export function calculateRevlogStats(
 
     // "reduceRight" Used here to iterate backwards, never returns true
     burden_revlogs.reduceRight((_p, revlog) => {
-        const day = dayFromId(revlog.id)
+        const day = dayFromMs(revlog.id)
 
         const after_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
