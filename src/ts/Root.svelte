@@ -75,7 +75,7 @@
         </GraphContainer>
         <GraphContainer>
             <h1>Today's Retention</h1>
-            {#if $data?.trueRetention}
+            {#if false && $data?.trueRetention}
                 <NoGraph>Placeholder</NoGraph>
             {:else}
                 <OldRetentionPie></OldRetentionPie>
