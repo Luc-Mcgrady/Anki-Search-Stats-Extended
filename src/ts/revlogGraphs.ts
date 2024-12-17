@@ -1,11 +1,12 @@
 import _ from "lodash"
-import { totalCalc, type BarChart, type BarDatum } from "./bar"
+import type { BarChart, BarDatum } from "./bar"
 import type { CardData, Revlog } from "./search"
+import { totalCalc } from "./barHelpers"
 
 const rollover = SSEother.rollover ?? 0
 export const day_ms = 1000 * 60 * 60 * 24
 
-function dayFromMs(ms: number) {
+export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover * 60 * 60 * 1000) / day_ms)
 }
 
@@ -22,15 +23,20 @@ export type revlogBuckets = {
     mature: number[][]
 }
 
+export function IDify<T extends { id: number }>(array: T[]) {
+    let id_data: Record<number, T> = {}
+    for (const e of array) {
+        id_data[e.id] = e
+    }
+    return id_data
+}
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
     end: number = today
 ) {
-    let id_card_data: Record<number, CardData> = {}
-    for (const card of cardData) {
-        id_card_data[card.id] = card
-    }
+    let id_card_data = IDify(cardData)
 
     function emptyArray<T>(init: T): T[] {
         const empty_array: T[] = []

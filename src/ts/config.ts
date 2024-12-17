@@ -9,7 +9,67 @@ type SSEconfig = Partial<{
     trends: boolean
 }>
 
+type DeckConfig = {
+    id: number
+    mod: number
+    name: string
+    usn: number
+    maxTaken: number
+    autoplay: boolean
+    timer: number
+    replayq: boolean
+    new: {
+        bury: boolean
+        delays: Array<any>
+        initialFactor: number
+        ints: Array<number>
+        order: number
+        perDay: number
+    }
+    rev: {
+        bury: boolean
+        ease4: number
+        ivlFct: number
+        maxIvl: number
+        perDay: number
+        hardFactor: number
+    }
+    lapse: {
+        delays: Array<any>
+        leechAction: number
+        leechFails: number
+        minInt: number
+        mult: number
+    }
+    dyn: boolean
+    newMix: number
+    newPerDayMinimum: number
+    interdayLearningMix: number
+    reviewOrder: number
+    newSortOrder: number
+    newGatherPriority: number
+    buryInterdayLearning: boolean
+    fsrsWeights: Array<number>
+    fsrsParams5: Array<number>
+    desiredRetention: number
+    ignoreRevlogsBeforeDate: string
+    easyDaysPercentages: Array<number>
+    stopTimerOnAnswer: boolean
+    secondsToShowQuestion: number
+    secondsToShowAnswer: number
+    questionAction: number
+    answerAction: number
+    waitForAudio: boolean
+    sm2Retention: number
+    weightSearch: string
+    autoAnswer: number
+    autoAgain: number
+    autoAlert: number
+}
+
 interface SSEother {
     rollover: number
     learn_ahead_secs: number
+    deck_configs: Record<number, DeckConfig>
+    deck_config_ids: Record<number, number>
 }

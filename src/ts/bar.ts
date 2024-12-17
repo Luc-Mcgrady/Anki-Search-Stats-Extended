@@ -5,6 +5,7 @@ import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
+import { totalCalc } from "./barHelpers"
 
 export type BarDatum = {
     values: number[]
@@ -161,10 +162,6 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
     console.log({ trend })
 
     return trend
-}
-
-export function totalCalc(data: BarDatum) {
-    return data.values.length > 1 ? [`Total: ${_.sum(data.values)}`] : []
 }
 
 export function renderBarChart(chart: BarChart, svg: SVGElement) {

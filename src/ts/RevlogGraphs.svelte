@@ -21,6 +21,7 @@
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import TrendValue from "./TrendValue.svelte"
+    import MemorisedBar from "./MemorisedBar.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -471,6 +472,9 @@
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <MemorisedBar />
     </GraphContainer>
 </GraphCategory>
 

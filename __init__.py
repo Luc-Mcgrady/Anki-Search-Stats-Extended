@@ -16,7 +16,9 @@ def new_refresh(self: NewDeckStats):
     config = mw.addonManager.getConfig(__name__)
     other = {
         "rollover": mw.col.get_preferences().scheduling.rollover,
-        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs
+        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs,
+        "deck_configs": {conf["id"]: conf for conf in mw.col.decks.all_config()},
+        "deck_config_ids": {deck["id"]: deck.get("conf", None) for deck in mw.col.decks.all()}
     }
     setVars = (
         f"const css = `{innerCss}`;" 
@@ -78,5 +80,5 @@ def revlogs() -> bytes:
     revlogs = [{k.replace("revlog.", ""): v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
     return Response(json.dumps(revlogs))
 
-post_handlers["revlogs"] = revlogs
 
+post_handlers["revlogs"] = revlogs
