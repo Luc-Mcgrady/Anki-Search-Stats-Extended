@@ -189,7 +189,6 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
-    console.log({ time_ease_seconds })
 
     return {
         day_initial_ease,

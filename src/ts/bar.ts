@@ -137,8 +137,6 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
 
     data = data.filter((a) => !!a.y)
 
-    console.log({ data })
-
     const trend = createTrend(data, "x", "y")
     const leftmost = _.minBy(data, (datum) => datum.x)
     const rightmost = _.maxBy(data, (datum) => datum.x)
@@ -149,8 +147,6 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
 
     const half_step = x.step() / 2
 
-    console.log({ leftmost, rightmost })
-
     svg.append("line")
         .attr("x1", (x(leftmost.x.toString()) ?? 0) + half_step)
         .attr("y1", y(trend.calcY(leftmost.x))) // trend.yStart is at 0 which we are not
@@ -158,8 +154,6 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
         .attr("y2", y(trend.calcY(rightmost.x)))
         .style("stroke", "black")
         .style("stroke-width")
-
-    console.log({ trend })
 
     return trend
 }
