@@ -474,7 +474,10 @@
         {/if}
     </GraphContainer>
     <GraphContainer>
+        <h1>Memorised</h1>
         <MemorisedBar />
+        An fsrs estimate of how many cards you knew at that given time. The sum of the retrivabilities
+        of the cards on that date.
     </GraphContainer>
 </GraphCategory>
 
