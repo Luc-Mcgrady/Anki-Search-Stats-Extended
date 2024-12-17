@@ -252,6 +252,7 @@
             bind:offset={$scroll}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_by={retention_trend}
             {limit}
         />
         <label>
