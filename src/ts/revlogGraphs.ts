@@ -1,7 +1,7 @@
 import _ from "lodash"
 import type { BarChart, BarDatum } from "./bar"
-import type { CardData, Revlog } from "./search"
 import { totalCalc } from "./barHelpers"
+import type { CardData, Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const day_ms = 1000 * 60 * 60 * 24

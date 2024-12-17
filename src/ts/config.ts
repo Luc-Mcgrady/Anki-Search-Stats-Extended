@@ -1,4 +1,4 @@
-type SSEconfig = Partial<{
+export type SSEconfig = Partial<{
     loadDelayMs: number
     burdenNotLoad: boolean
     confirmExpensiveStats: boolean
@@ -9,7 +9,7 @@ type SSEconfig = Partial<{
     trends: boolean
 }>
 
-type DeckConfig = {
+export type DeckConfig = {
     id: number
     mod: number
     name: string
@@ -67,7 +67,7 @@ type DeckConfig = {
     autoAlert: number
 }
 
-interface SSEother {
+export interface SSEother {
     rollover: number
     learn_ahead_secs: number
     deck_configs: Record<number, DeckConfig>

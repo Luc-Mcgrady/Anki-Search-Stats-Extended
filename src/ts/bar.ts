@@ -1,11 +1,11 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import createTrend from "trendline"
+import { totalCalc } from "./barHelpers"
 import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
-import { totalCalc } from "./barHelpers"
 
 export type BarDatum = {
     values: number[]

@@ -1,4 +1,5 @@
 import { derived, get, writable } from "svelte/store"
+import type { SSEconfig, SSEother } from "./config"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { getRevlogs, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"

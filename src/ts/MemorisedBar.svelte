@@ -12,7 +12,14 @@
         data = {
             row_labels: ["MEm"],
             row_colours: ["blue"],
-            data: Array.from(getMemorisedDays($revlogs, $card_data)).map((stab, i) => ({
+            data: Array.from(
+                getMemorisedDays(
+                    $revlogs,
+                    $card_data,
+                    SSEother.deck_configs,
+                    SSEother.deck_config_ids
+                )
+            ).map((stab, i) => ({
                 label: i.toString(),
                 values: [stab],
             })),
@@ -20,7 +27,7 @@
 </script>
 
 {#if data}
-    <BarScrollable {data} />
+    <BarScrollable {data} average />
 {:else if !show}
     <NoGraph>Show?</NoGraph>
 {:else}

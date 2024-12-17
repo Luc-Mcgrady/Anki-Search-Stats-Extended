@@ -8,7 +8,8 @@ const revlogs = [
     card.review(-3000),
     card.review(-3000),
     card.review(5),
-    card.review(10)
+    card.review(10),
+    card.review(110),
 ]
 
 const mappings = {1: 1}
@@ -18,10 +19,12 @@ const configs: Record<number, Partial<DeckConfig>> = {1: {id: 1, fsrsWeights: [
 ]}}
 
 test("memorised", ()=>{
-    console.log(getMemorisedDays(revlogs, [{
+    console.log({revlogs})
+    const memorised = getMemorisedDays(revlogs, [{
         ...card.card(),
         did: 1
     } as any],
     configs,
-    mappings))
+    mappings)
+    console.log(memorised)
 })

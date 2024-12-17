@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { type Card, createEmptyCard, type FSRS, fsrs as Fsrs } from "ts-fsrs"
+import type { DeckConfig } from "./config"
 import { dayFromMs, IDify, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
 
@@ -7,7 +8,12 @@ type CardCid = Card & {
     cid: number
 }
 
-export function getMemorisedDays(revlogs: Revlog[], cards: CardData[]) {
+export function getMemorisedDays(
+    revlogs: Revlog[],
+    cards: CardData[],
+    configs: typeof SSEother.deck_configs,
+    config_mapping: typeof SSEother.deck_config_ids
+) {
     let deckFsrs: Record<number, FSRS> = {}
     let fsrsCards: Record<number, CardCid> = {}
 
@@ -29,11 +35,11 @@ export function getMemorisedDays(revlogs: Revlog[], cards: CardData[]) {
         if (!card) {
             debugger
         }
-        return SSEother.deck_configs[SSEother.deck_config_ids[card.did]]
+        return configs[config_mapping[card.did]]
     }
 
     function forgetting_curve(fsrs: FSRS, card: Card, from: number, to: number) {
-        for (const day of _.range(from, to)) {
+        for (const day of _.range(from, to - 1)) {
             const retrievability = fsrs.forgetting_curve(day - from, card.stability)
             retrivabilityDays[day] = retrivabilityDays[day]
                 ? retrivabilityDays[day] + retrievability
@@ -44,17 +50,21 @@ export function getMemorisedDays(revlogs: Revlog[], cards: CardData[]) {
     for (const revlog of revlogs) {
         const { ease: grade } = revlog
 
-        if (grade == 0 || revlog.time == 0) {
-            continue
-        }
-
         const config = card_config(revlog.cid)
         const fsrs = getFsrs(config)
 
         const now = new Date(revlog.id)
 
         const new_card = !fsrsCards[revlog.cid]
-        const card: CardCid =
+
+        if (grade == 0) {
+            if (revlog.ivl == 0 && !new_card) {
+                delete fsrsCards[revlog.cid]
+            }
+            continue
+        }
+
+        let card: CardCid =
             fsrsCards[revlog.cid] ??
             createEmptyCard(new Date(revlog.cid), (card) => ({
                 ...card,
@@ -68,7 +78,8 @@ export function getMemorisedDays(revlogs: Revlog[], cards: CardData[]) {
             const previous = dayFromMs(card.last_review!.getTime())
             forgetting_curve(fsrs, card, previous, dayFromMs(revlog.id))
 
-            fsrs.next(card, now, grade)
+            const log = fsrs.next(card, now, grade)
+            card = { ...log.card, cid: card.cid }
         }
 
         fsrsCards[revlog.cid] = card
