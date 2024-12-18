@@ -181,8 +181,6 @@ export function calculateRevlogStats(
         }
     })
 
-    const burden_change = burden.map((v, i) => v - (burden[i - 1] || 0))
-
     for (const card_time of Object.values(card_times)) {
         const key = Math.floor(card_time / 1000)
         revlog_times[key] = (revlog_times[key] ?? 0) + 1
@@ -201,7 +199,6 @@ export function calculateRevlogStats(
         introduced_day_count,
         reintroduced_day_count,
         burden,
-        burden_change,
         day_forgotten,
         remaining_forgotten,
         intervals,

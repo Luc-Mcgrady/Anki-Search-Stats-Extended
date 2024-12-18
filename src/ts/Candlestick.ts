@@ -80,3 +80,7 @@ export function plotCandlestick(
 
     return { x, y, svg: axis, maxValue: max, chart: graph }
 }
+
+export function DeltaIfy(arr: number[]) {
+    return arr.map((v, i) => v - (arr[i - 1] || 0))
+}
