@@ -68,7 +68,7 @@
     </div>
 
     {#if choice == "bar"}
-        <BarScrollable data={bar_data} {limit} average bind:offset />
+        <BarScrollable data={bar_data} {limit} average bind:offset bind:binSize bind:bins />
     {:else if choice == "trend"}
         <Candlestick
             data={candlestick_data}
