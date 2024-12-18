@@ -21,6 +21,8 @@
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import TrendValue from "./TrendValue.svelte"
+    import MemorisedBar from "./MemorisedBar.svelte"
+    import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -37,12 +39,12 @@
         introduced_day_count,
         reintroduced_day_count,
         burden,
-        burden_change,
         day_forgotten,
         remaining_forgotten,
         intervals,
     } = calculateRevlogStats(revlogData, cardData))
 
+    $: burden_change = DeltaIfy(burden)
     $: realScroll = -Math.abs($scroll)
     const bins = 30
     $: start = today - bins * $binSize + realScroll
@@ -88,6 +90,8 @@
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
+        up_colour: CANDLESTICK_RED,
+        down_colour: CANDLESTICK_GREEN,
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
@@ -472,6 +476,14 @@
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Memorised</h1>
+        <MemorisedBar />
+        <p>
+            An fsrs estimate of how many cards you knew at that given time. The sum of the
+            retrivabilities of the cards on that date.
+        </p>
     </GraphContainer>
 </GraphCategory>
 

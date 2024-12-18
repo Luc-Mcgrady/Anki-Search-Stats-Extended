@@ -1,6 +1,7 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import createTrend from "trendline"
+import { totalCalc } from "./barHelpers"
 import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
@@ -155,10 +156,6 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
         .style("stroke-width")
 
     return trend
-}
-
-export function totalCalc(data: BarDatum) {
-    return data.values.length > 1 ? [`Total: ${_.sum(data.values)}`] : []
 }
 
 export function renderBarChart(chart: BarChart, svg: SVGElement) {

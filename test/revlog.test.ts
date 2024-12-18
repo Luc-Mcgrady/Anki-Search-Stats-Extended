@@ -1,47 +1,7 @@
+import { DeltaIfy } from "../src/ts/Candlestick"
 import { calculateRevlogStats, day_ms } from "../src/ts/revlogGraphs"
-import { Revlog } from "../src/ts/search"
-
-let card_id = 0;
-let start_id = 1;
-
-class RevlogBuilder {
-    state: Partial<Revlog>
-    constructor() {
-        this.state = {
-            id: start_id++,
-            cid: card_id++,
-            ivl: 0,
-        }
-    }
-
-    review(ivl: number, time_spent: number = 0, ease: 0 | 1 | 2 | 3 | 4 = 0, relearn: boolean = false) {
-
-        this.state = {
-            id: this.state.id + (this.state.ivl > 0 ? this.state.ivl * day_ms : -this.state.ivl),
-            cid: this.state.cid,
-            ivl,
-            ease,
-            time: time_spent,
-        }
-
-        return this.state as Revlog
-    }
-
-    wait(ms: number) {
-        this.state = {
-            ...this.state,
-            id: this.state.id + ms
-        }
-        return this.state
-    }
-
-    card() {
-        return {
-            id: this.state.cid,
-            ivl: this.state.ivl
-        }
-    }
-}
+import type { Revlog } from "../src/ts/search"
+import { RevlogBuilder } from "./revlogBuilder"
 
 const burden_revlog_builder1 = new RevlogBuilder()
 const burden_revlog_builder2 = new RevlogBuilder()
@@ -70,7 +30,7 @@ const burden_revlogs : Revlog[] = [
 // console.log(burden_revlogs.map(revlog=>({id: revlog.id / day_ms, ...revlog})))
 
 const end = 11
-const {burden_change, burden, intervals} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
+const {burden, intervals} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
 
 test("Burden", () =>{
     // expect(burden.length).toEqual(end + 1)
@@ -78,5 +38,5 @@ test("Burden", () =>{
 })
 
 test("Burden delta", () =>{
-    expect(burden_change).toMatchObject([1, -0.5, 0, -0.5, 0, 1, -0.75, 1, 0, 0, 0])
+    expect(DeltaIfy(burden)).toMatchObject([1, -0.5, 0, -0.5, 0, 1, -0.75, 1, 0, 0, 0])
 })

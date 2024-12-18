@@ -1,4 +1,5 @@
 import Root from "./Root.svelte"
+import type { SSEconfig, SSEother } from "./config"
 import { patchFetch } from "./root"
 import { burdenOrLoad, config, other } from "./stores"
 
