@@ -20,13 +20,18 @@ export type CandlestickGraph = {
     start: number
     tick_spacing?: number
     bar_width?: number
+    up_colour?: string
+    down_colour?: string
 }
+
+export const CANDLESTICK_GREEN = "green"
+export const CANDLESTICK_RED = "red"
 
 export function plotCandlestick(
     graph: CandlestickGraph,
     svg: SVGElement
 ): ExtraRenderInput<CandlestickGraph> {
-    let total = graph.start
+    let { start: total, up_colour = CANDLESTICK_GREEN, down_colour = CANDLESTICK_RED } = graph
 
     const deltas: CandlestickDelta[] = graph.data.map((datum) => {
         let begin = total
@@ -57,7 +62,7 @@ export function plotCandlestick(
         .selectAll("g")
         .data(deltas)
         .join("rect")
-        .attr("fill", (d) => (d.positive ? "red" : "green"))
+        .attr("fill", (d) => (d.positive ? up_colour : down_colour))
         .attr("x", (d) => x(d.label)!)
         .attr("y", (d) => y(d.end))
         .attr("height", (d) => y(d.begin) - y(d.end))

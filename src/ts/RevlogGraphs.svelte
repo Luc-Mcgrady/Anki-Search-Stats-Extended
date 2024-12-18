@@ -22,7 +22,7 @@
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import TrendValue from "./TrendValue.svelte"
     import MemorisedBar from "./MemorisedBar.svelte"
-    import { DeltaIfy } from "./Candlestick"
+    import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -90,6 +90,8 @@
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
+        up_colour: CANDLESTICK_RED,
+        down_colour: CANDLESTICK_GREEN,
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
