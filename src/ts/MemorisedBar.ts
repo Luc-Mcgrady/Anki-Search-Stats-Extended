@@ -39,7 +39,7 @@ export function getMemorisedDays(
     }
 
     function forgetting_curve(fsrs: FSRS, card: Card, from: number, to: number) {
-        for (const day of _.range(from, to - 1)) {
+        for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, card.stability)
             retrivabilityDays[day] = retrivabilityDays[day]
                 ? retrivabilityDays[day] + retrievability
