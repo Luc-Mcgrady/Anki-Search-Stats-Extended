@@ -31,7 +31,7 @@
     $: if (data)
         bar_data = {
             row_labels: ["Memorised"],
-            row_colours: ["blue"],
+            row_colours: ["#4abdff"],
             data: data.map((stab, i) => ({
                 label: i.toString(),
                 values: [stab],
