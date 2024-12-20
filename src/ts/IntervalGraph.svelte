@@ -5,6 +5,7 @@
     import IntervalPie from "./IntervalPie.svelte"
     import NoGraph from "./NoGraph.svelte"
     import { graph_mode, include_suspended, zero_inclusive } from "./stores"
+    import GraphTypeSelector from "./GraphTypeSelector.svelte"
     export let include_suspended_option = true
     export let zero_inclusive_option = false
     export let intervals: Record<number, number> | null
@@ -42,7 +43,7 @@
     onDestroy(unsubscibe)
 </script>
 
-<div class="radio">
+<GraphTypeSelector>
     <label>
         <input type="radio" bind:group={$graph_mode} value="Pie" />
         Pie
@@ -51,7 +52,7 @@
         <input type="radio" bind:group={$graph_mode} value="Bar" />
         Bar
     </label>
-</div>
+</GraphTypeSelector>
 <div>
     {#if zero_inclusive_option && $graph_mode == "Pie"}
         <label class="checkbox">
@@ -80,12 +81,5 @@
     label.checkbox {
         user-select: none;
         display: block;
-    }
-
-    div.radio {
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        gap: 1em;
     }
 </style>

@@ -3,6 +3,7 @@
     import BarScrollable from "./BarScrollable.svelte"
     import { DeltaIfy, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
+    import GraphTypeSelector from "./GraphTypeSelector.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { card_data, revlogs, searchLimit } from "./stores"
@@ -54,7 +55,7 @@
 </script>
 
 {#if bar_data && candlestick_data}
-    <div>
+    <GraphTypeSelector>
         <label>
             <input type="radio" value="trend" bind:group={choice} />
             Trend
@@ -63,7 +64,7 @@
             <input type="radio" value="bar" bind:group={choice} />
             Total
         </label>
-    </div>
+    </GraphTypeSelector>
 
     {#if choice == "bar"}
         <BarScrollable data={bar_data} {limit} average bind:offset bind:binSize bind:bins />
