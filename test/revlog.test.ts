@@ -21,7 +21,7 @@ const burden_revlogs : Revlog[] = [
     burden_revlog_builder2.review(1) as Revlog,
     burden_revlog_builder2.wait(2*day_ms) as Revlog,
     burden_revlog_builder2.review(-5000) as Revlog, 
-]
+] as Revlog[]
 
 //Card1: 1, 0.5, 0.5, 0, 0, 1, 0.25, 0.25, 0.25, 0.25 0.25
 //Card2: 0, 0,   0,   0, 0, 0, 0,    1,    1,    1    1(learning)

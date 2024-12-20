@@ -1,16 +1,17 @@
 import { RevlogBuilder } from "./revlogBuilder"
 import {getMemorisedDays} from "../src/ts/MemorisedBar"
 import type {DeckConfig} from "../src/ts/config"
+import { Revlog } from "../src/ts/search"
 
 const card = new RevlogBuilder()
 
 const revlogs = [
-    card.review(-3000),
-    card.review(-3000),
-    card.review(5),
-    card.review(10),
-    card.review(110),
-]
+    card.review(-3000, 1, 3),
+    card.review(-3000, 1, 3),
+    card.review(5, 1, 3),
+    card.review(10, 1, 3),
+    card.review(20, 1, 3),
+] as Revlog[]
 
 const mappings = {1: 1}
 const configs: Record<number, Partial<DeckConfig>> = {1: {id: 1, fsrsWeights: [
@@ -19,12 +20,16 @@ const configs: Record<number, Partial<DeckConfig>> = {1: {id: 1, fsrsWeights: [
 ]}}
 
 test("memorised", ()=>{
-    console.log({revlogs})
     const memorised = getMemorisedDays(revlogs, [{
         ...card.card(),
         did: 1
     } as any],
     configs,
     mappings)
-    console.log(memorised)
+    console.log({memorised})
+    expect(memorised.length).not.toBe(0)
+    expect(memorised[0]).toBe(1)
+    expect(memorised[5]).toBe(1)
+    expect(memorised[15]).toBe(1)
+    expect(memorised[16]).not.toBe(0)
 })

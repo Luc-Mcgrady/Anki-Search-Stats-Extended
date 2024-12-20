@@ -1,5 +1,5 @@
 import { day_ms } from "../src/ts/revlogGraphs";
-import type { Revlog } from "../src/ts/search";
+import type { CardData, Revlog } from "../src/ts/search";
 
 let card_id = 0;
 let start_id = 1;
@@ -14,7 +14,7 @@ export class RevlogBuilder {
         }
     }
 
-    review(ivl: number, time_spent: number = 0, ease: 0 | 1 | 2 | 3 | 4 = 0, relearn: boolean = false) {
+    review(ivl: number, time_spent: number = 0, ease: 0 | 1 | 2 | 3 | 4 = 0, relearn: boolean = false) : Partial<Revlog> {
 
         this.state = {
             id: this.state.id + (this.state.ivl > 0 ? this.state.ivl * day_ms : -this.state.ivl),
@@ -24,10 +24,10 @@ export class RevlogBuilder {
             time: time_spent,
         }
 
-        return this.state as Revlog
+        return this.state
     }
 
-    wait(ms: number) {
+    wait(ms: number): Partial<Revlog> {
         this.state = {
             ...this.state,
             id: this.state.id + ms
@@ -35,10 +35,11 @@ export class RevlogBuilder {
         return this.state
     }
 
-    card() {
+    card(): Partial<CardData> {
         return {
             id: this.state.cid,
-            ivl: this.state.ivl
+            ivl: this.state.ivl,
+            did: 1
         }
     }
 }
