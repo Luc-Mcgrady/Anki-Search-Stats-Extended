@@ -1,15 +1,19 @@
 <script lang="ts">
-    import type { TrendLine } from "./bar"
+    import type { TrendLine, TrendInfo } from "./trend"
 
     export let trend: TrendLine
     export let n: number = 1
-    export let percentage: boolean = false
-    export let absolute = false
 
-    export let x
-    export let x_s = x + "s"
-    export let y
-    export let y_s = y + "s"
+    export let info: TrendInfo = {}
+
+    $: ({
+        x = "x",
+        x_s = x + "s",
+        y = "y",
+        y_s = y + "s",
+        percentage = false,
+        absolute = false,
+    } = info)
 
     let trend_value: number
     $: if (trend) {
@@ -25,6 +29,8 @@
             (percentage ? "%" : "")
         )
     }
+
+    $: trend_day_value = trend_value / n
 </script>
 
 {#if trend_value}
@@ -32,17 +38,27 @@
     Trend =
     <div>
         <div>
-            {display(trend_value / n)}
-            {y}
+            {display(trend_day_value)}
+            {#if trend_day_value == 1}
+                {y}
+            {:else}
+                {y_s}
+            {/if}
             per {x}
         </div>
         {#if n > 1}
             <div>
                 {display(trend_value)}
-                {y_s}
+                {#if trend_value == 1}
+                    {y}
+                {:else}
+                    {y_s}
+                {/if}
                 per {n}
                 {x_s}
             </div>
+        {:else}
+            <br />
         {/if}
     </div>
 {/if}

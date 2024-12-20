@@ -5,6 +5,7 @@
     import type { GraphsResponse_ReviewCountsAndTimes } from "./proto/anki/stats_pb"
     import { today } from "./revlogGraphs"
     import { searchLimit } from "./stores"
+    import TrendValue from "./TrendValue.svelte"
 
     export let data: GraphsResponse_ReviewCountsAndTimes | undefined
     $: time_spent = data ? calcTimePerReview(data) : []
@@ -33,6 +34,8 @@
     average
     {limit}
     trend
-    trend_y="average second"
-    trend_x="day"
->
+    trend_info={{
+        x: "day",
+        y: "average second",
+    }}
+/>

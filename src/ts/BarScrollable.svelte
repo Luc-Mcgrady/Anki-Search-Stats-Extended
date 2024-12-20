@@ -3,14 +3,13 @@
     import {
         limitArea,
         limit_area_width,
-        trendLine,
         type BarChart,
         type BarDatum,
         type ExtraRenderInput,
-        type TrendLine,
     } from "./bar"
     import Bar from "./Bar.svelte"
     import TrendValue from "./TrendValue.svelte"
+    import { trendLine, type TrendInfo, type TrendLine } from "./trend"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
@@ -22,11 +21,8 @@
     export let left_aligned = false
     export let limit: number = -1
     export let trend = false
-    export let trend_x = "retention per"
-    export let trend_y = "day"
-    export let trend_y_plural = "days"
     export let trend_by: (values: number[]) => number = _.sum
-    export let trend_percentage = false
+    export let trend_info: TrendInfo = {}
 
     $: min = left_aligned ? 0 : 1
     $: absOffset = Math.abs(offset)
@@ -101,14 +97,7 @@
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
 {#if trend_values}
-    <TrendValue
-        trend={trend_values}
-        n={binSize}
-        percentage={trend_percentage}
-        x={trend_x}
-        y={trend_y}
-        y_s={trend_y_plural}
-    ></TrendValue>
+    <TrendValue trend={trend_values} n={binSize} info={trend_info} />
 {/if}
 
 <style>

@@ -9,7 +9,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
+    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
     import {
         calculateRevlogStats,
         day_ms,
@@ -23,6 +23,7 @@
     import TrendValue from "./TrendValue.svelte"
     import MemorisedBar from "./MemorisedBar.svelte"
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
+    import type { TrendLine } from "./trend"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -285,7 +286,11 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
-        <TrendValue trend={burden_trend} n={$binSize} y={"burden"} x={"day"} />
+        <TrendValue
+            trend={burden_trend}
+            n={$binSize}
+            info={{ x: "day", y: "burden", y_s: "burden" }}
+        />
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
@@ -299,8 +304,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per"}
-            trend_percentage
+            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
             {limit}
         />
         <label>
@@ -333,8 +337,12 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per"}
-            trend_y={"days since last sibling review"}
+            trend_info={{
+                x: "day since last sibling review",
+                x_s: "days since last sibling review",
+                y: "retention",
+                y_s: "retention",
+            }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -360,10 +368,13 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per previous"}
-            trend_y={"review that day"}
-            trend_y_plural={"reviews that day."}
-            trend_percentage
+            trend_info={{
+                x: "review that day",
+                x_s: "reviews that day",
+                y: "retention",
+                y_s: "retention",
+                percentage: true,
+            }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -390,10 +401,13 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per"}
-            trend_y={"second spent thinking"}
-            trend_y_plural={"seconds spent thinking"}
-            trend_percentage
+            trend_info={{
+                x: "second spent thinking",
+                x_s: "seconds spent thinking",
+                y: "retention",
+                y_s: "retention",
+                percentage: true,
+            }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />

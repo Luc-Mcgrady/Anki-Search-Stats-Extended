@@ -1,14 +1,13 @@
 <script lang="ts">
-    import type { BarChart, TrendLine } from "./bar"
+    import type { BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import { DeltaIfy, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
-    import { today } from "./revlogGraphs"
     import { card_data, revlogs, searchLimit } from "./stores"
+    import type { TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
-    import Warning from "./Warning.svelte"
 
     let show = false
     let choice = "trend"
@@ -77,7 +76,11 @@
             bind:binSize
             bind:bins
         ></Candlestick>
-        <TrendValue trend={trend_data} n={binSize} absolute y={learned} x={"day"}></TrendValue>
+        <TrendValue
+            trend={trend_data}
+            n={binSize}
+            info={{ absolute: true, y: learned, y_s: learned, x: "day" }}
+        ></TrendValue>
     {:else}
         <NoGraph>
             Assuming you didn't just inspect element the values to be wrong, you have broken the
