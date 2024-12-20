@@ -77,14 +77,7 @@
             bind:binSize
             bind:bins
         ></Candlestick>
-        <TrendValue trend={trend_data} n={binSize} absolute>
-            Cards {learned} per
-            {#if binSize == 1}
-                day
-            {:else}
-                {binSize} days
-            {/if}
-        </TrendValue>
+        <TrendValue trend={trend_data} n={binSize} absolute y={learned} x={"day"}></TrendValue>
     {:else}
         <NoGraph>
             Assuming you didn't just inspect element the values to be wrong, you have broken the

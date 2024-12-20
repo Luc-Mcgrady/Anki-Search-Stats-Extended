@@ -101,19 +101,14 @@
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
 {#if trend_values}
-    <TrendValue trend={trend_values} n={binSize} percentage={trend_percentage}>
-        {trend_x}
-        {#if binSize > 1}
-            {binSize}
-            {#if trend_y_plural}
-                {trend_y_plural}
-            {:else}
-                {trend_y}s
-            {/if}
-        {:else}
-            {trend_y}
-        {/if}
-    </TrendValue>
+    <TrendValue
+        trend={trend_values}
+        n={binSize}
+        percentage={trend_percentage}
+        x={trend_x}
+        y={trend_y}
+        y_s={trend_y_plural}
+    ></TrendValue>
 {/if}
 
 <style>

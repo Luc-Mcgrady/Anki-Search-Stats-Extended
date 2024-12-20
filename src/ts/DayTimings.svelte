@@ -33,5 +33,6 @@
     average
     {limit}
     trend
-    trend_x={"Average seconds per card per"}
-/>
+    trend_y="average second"
+    trend_x="day"
+>

@@ -285,14 +285,7 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
-        <TrendValue trend={burden_trend} n={$binSize}>
-            Burden per
-            {#if $binSize > 1}
-                {$binSize} days
-            {:else}
-                day
-            {/if}
-        </TrendValue>
+        <TrendValue trend={burden_trend} n={$binSize} y={"burden"} x={"day"} />
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
