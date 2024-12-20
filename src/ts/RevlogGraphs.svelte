@@ -480,6 +480,13 @@
     <GraphContainer>
         <h1>Memorised</h1>
         <MemorisedBar />
+        {#if truncated}
+            <Warning>It is heavily advised you use "All history" for this graph</Warning>
+            <Warning>
+                This graph re-simulates your review history, leaving the beginning out can greatly
+                affect the results.
+            </Warning>
+        {/if}
         <p>
             An fsrs estimate of how many cards you knew at that given time. The sum of the
             retrivabilities of the cards on that date.

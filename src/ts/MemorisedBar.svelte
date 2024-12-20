@@ -49,7 +49,6 @@
             tick_spacing: 5,
         }
 
-    $: truncated = $searchLimit !== 0 // TODO move this into stores.ts
     $: limit = -1 - $searchLimit
 
     $: learned = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
@@ -96,13 +95,6 @@
     <NoGraph>
         <button on:click={() => (show = true)}>Show?</button>
     </NoGraph>
-    {#if truncated}
-        <Warning>It is heavily advised you use "All history" for this graph</Warning>
-        <Warning>
-            This graph re-simulates your review history, leaving the beginning out can greatly
-            affect the results.
-        </Warning>
-    {/if}
 {:else}
     <NoGraph>Loading</NoGraph>
 {/if}
