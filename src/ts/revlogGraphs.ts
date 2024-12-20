@@ -160,7 +160,7 @@ export function calculateRevlogStats(
         let ivl = after_review ? revlog.ivl : current.ivl
         ivl = ivl >= 0 ? ivl : 1
 
-        let to = after_review ? dayFromMs(after_review.id) : end
+        let to = after_review ? dayFromMs(after_review.id) : end + 1
 
         for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
