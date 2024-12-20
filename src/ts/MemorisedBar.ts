@@ -58,9 +58,6 @@ export function getMemorisedDays(
         const new_card = !fsrsCards[revlog.cid]
 
         if (grade == 0) {
-            if (revlog.ivl == 0 && !new_card) {
-                delete fsrsCards[revlog.cid]
-            }
             continue
         }
 
