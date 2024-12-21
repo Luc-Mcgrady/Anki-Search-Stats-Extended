@@ -90,7 +90,7 @@
         </NoGraph>
     {/if}
 {:else if !show}
-    <NoGraph>
+    <NoGraph faded={false}>
         {#if !truncated}
             <button class="big" on:click={() => (show = true)}>Show?</button>
         {:else}

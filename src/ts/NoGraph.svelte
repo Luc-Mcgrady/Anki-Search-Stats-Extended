@@ -1,6 +1,8 @@
-<script lang="ts"></script>
+<script lang="ts">
+    export let faded = true
+</script>
 
-<div>
+<div style:opacity={faded ? 0.5 : 1}>
     <slot>NO DATA</slot>
 </div>
 
