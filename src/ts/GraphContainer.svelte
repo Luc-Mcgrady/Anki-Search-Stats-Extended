@@ -5,7 +5,7 @@
 </dir>
 
 <style lang="scss">
-    @use "../../anki/sass/elevation" as *;
+    @use "../../anki/ts/lib/sass/elevation.scss" as *;
     // Copied from anki/ts/graphs/Graph.svelte
     .graph {
         /* See graph-styles.ts for constants referencing global styles */
