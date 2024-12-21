@@ -257,6 +257,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
+            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
             {limit}
         />
         <label>
@@ -342,6 +343,7 @@
                 x_s: "days since last sibling review",
                 y: "retention",
                 y_s: "retention",
+                percentage: true,
             }}
         />
         <label>
