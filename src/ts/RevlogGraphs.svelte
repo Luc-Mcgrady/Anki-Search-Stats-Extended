@@ -323,7 +323,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>Memorised</h1>
-        <MemorisedBar />
+        <MemorisedBar {bins} bind:offset={$scroll} bind:binSize={$binSize} />
         {#if truncated}
             <Warning>It is heavily advised you use "All history" for this graph</Warning>
             <Warning>
