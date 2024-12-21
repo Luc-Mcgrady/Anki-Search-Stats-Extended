@@ -1,7 +1,8 @@
 <script lang="ts">
     import _ from "lodash"
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
-    import { limit_area_width, limitArea, trendLine, type TrendLine } from "./bar"
+    import { limit_area_width, limitArea } from "./bar"
+    import { trendLine, type TrendLine } from "./trend"
 
     let svg: SVGElement | null = null
 

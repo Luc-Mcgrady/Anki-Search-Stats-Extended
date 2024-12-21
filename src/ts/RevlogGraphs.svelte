@@ -9,7 +9,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart, type TrendLine } from "./bar"
+    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
     import {
         calculateRevlogStats,
         day_ms,
@@ -21,6 +21,9 @@
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import TrendValue from "./TrendValue.svelte"
+    import MemorisedBar from "./MemorisedBar.svelte"
+    import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
+    import type { TrendLine } from "./trend"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -37,12 +40,12 @@
         introduced_day_count,
         reintroduced_day_count,
         burden,
-        burden_change,
         day_forgotten,
         remaining_forgotten,
         intervals,
     } = calculateRevlogStats(revlogData, cardData))
 
+    $: burden_change = DeltaIfy(burden)
     $: realScroll = -Math.abs($scroll)
     const bins = 30
     $: start = today - bins * $binSize + realScroll
@@ -88,6 +91,8 @@
             delta: delta ?? 0,
         })),
         tick_spacing: 5,
+        up_colour: CANDLESTICK_RED,
+        down_colour: CANDLESTICK_GREEN,
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
@@ -281,14 +286,11 @@
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
             an increase.
         </p>
-        <TrendValue trend={burden_trend} n={$binSize}>
-            Burden per
-            {#if $binSize > 1}
-                {$binSize} days
-            {:else}
-                day
-            {/if}
-        </TrendValue>
+        <TrendValue
+            trend={burden_trend}
+            n={$binSize}
+            info={{ x: "day", y: "burden", y_s: "burden" }}
+        />
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
@@ -302,8 +304,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per"}
-            trend_percentage
+            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
             {limit}
         />
         <label>
@@ -336,8 +337,12 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per"}
-            trend_y={"days since last sibling review"}
+            trend_info={{
+                x: "day since last sibling review",
+                x_s: "days since last sibling review",
+                y: "retention",
+                y_s: "retention",
+            }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -363,10 +368,13 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per previous"}
-            trend_y={"review that day"}
-            trend_y_plural={"reviews that day."}
-            trend_percentage
+            trend_info={{
+                x: "review that day",
+                x_s: "reviews that day",
+                y: "retention",
+                y_s: "retention",
+                percentage: true,
+            }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -393,10 +401,13 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_x={"Retention per"}
-            trend_y={"second spent thinking"}
-            trend_y_plural={"seconds spent thinking"}
-            trend_percentage
+            trend_info={{
+                x: "second spent thinking",
+                x_s: "seconds spent thinking",
+                y: "retention",
+                y_s: "retention",
+                percentage: true,
+            }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
@@ -472,6 +483,21 @@
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Memorised</h1>
+        <MemorisedBar />
+        {#if truncated}
+            <Warning>It is heavily advised you use "All history" for this graph</Warning>
+            <Warning>
+                This graph re-simulates your review history, leaving the beginning out can greatly
+                affect the results.
+            </Warning>
+        {/if}
+        <p>
+            An fsrs estimate of how many cards you knew at that given time. The sum of the
+            retrivabilities of the cards on that date.
+        </p>
     </GraphContainer>
 </GraphCategory>
 

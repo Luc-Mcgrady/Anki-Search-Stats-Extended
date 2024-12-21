@@ -1,11 +1,12 @@
 import _ from "lodash"
-import { totalCalc, type BarChart, type BarDatum } from "./bar"
+import type { BarChart, BarDatum } from "./bar"
+import { totalCalc } from "./barHelpers"
 import type { CardData, Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const day_ms = 1000 * 60 * 60 * 24
 
-function dayFromMs(ms: number) {
+export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover * 60 * 60 * 1000) / day_ms)
 }
 
@@ -22,15 +23,20 @@ export type revlogBuckets = {
     mature: number[][]
 }
 
+export function IDify<T extends { id: number }>(array: T[]) {
+    let id_data: Record<number, T> = {}
+    for (const e of array) {
+        id_data[e.id] = e
+    }
+    return id_data
+}
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
     end: number = today
 ) {
-    let id_card_data: Record<number, CardData> = {}
-    for (const card of cardData) {
-        id_card_data[card.id] = card
-    }
+    let id_card_data = IDify(cardData)
 
     function emptyArray<T>(init: T): T[] {
         const empty_array: T[] = []
@@ -154,7 +160,7 @@ export function calculateRevlogStats(
         let ivl = after_review ? revlog.ivl : current.ivl
         ivl = ivl >= 0 ? ivl : 1
 
-        let to = after_review ? dayFromMs(after_review.id) : end
+        let to = after_review ? dayFromMs(after_review.id) : end + 1
 
         for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
@@ -175,8 +181,6 @@ export function calculateRevlogStats(
         }
     })
 
-    const burden_change = burden.map((v, i) => v - (burden[i - 1] || 0))
-
     for (const card_time of Object.values(card_times)) {
         const key = Math.floor(card_time / 1000)
         revlog_times[key] = (revlog_times[key] ?? 0) + 1
@@ -195,7 +199,6 @@ export function calculateRevlogStats(
         introduced_day_count,
         reintroduced_day_count,
         burden,
-        burden_change,
         day_forgotten,
         remaining_forgotten,
         intervals,
