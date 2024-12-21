@@ -142,19 +142,23 @@
             <h1>Preparing Review Stats...</h1>
         {/if}
     {:else}
-        <GraphContainer>
-            <div class="loadOption">
-                <Warning always>
-                    <h1>Review Graphs</h1>
-                    These statistics can take time to prepare.
-                </Warning>
-                <button on:click={() => ($showRevlogStats = true)}>Prepare Graphs</button>
-                <span>
-                    To load these graphs by default, set "confirmExpensiveStats" to false in the
-                    addon config.
-                </span>
+        <GraphCategory>
+            <div style:grid-column="1/-1">
+                <GraphContainer>
+                    <div class="loadOption">
+                        <Warning always>
+                            <h1>Review Graphs</h1>
+                            These statistics can take time to prepare.
+                        </Warning>
+                        <button on:click={() => ($showRevlogStats = true)}>Prepare Graphs</button>
+                        <span>
+                            To load these graphs by default, set "confirmExpensiveStats" to false in
+                            the addon config.
+                        </span>
+                    </div>
+                </GraphContainer>
             </div>
-        </GraphContainer>
+        </GraphCategory>
     {/if}
 </div>
 
