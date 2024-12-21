@@ -35,8 +35,6 @@
         realOffset == 0 || realOffset >= data.data.length ? undefined : realOffset
     )
 
-    $: console.log({ leftmost, realOffset })
-
     export let trend_values: TrendLine = undefined
 
     function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
@@ -62,8 +60,6 @@
             label: (i + min).toString(),
             values: data.row_labels.map((_) => 0),
         }))
-
-        console.log({ bars: [...bars], seperate_bars })
 
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)

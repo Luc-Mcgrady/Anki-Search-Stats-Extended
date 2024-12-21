@@ -23,8 +23,6 @@
         columnLabeler: barDateLabeler,
     }
 
-    $: console.log({ time_spent, data, bar })
-
     $: limit = -1 - $searchLimit
 </script>
 

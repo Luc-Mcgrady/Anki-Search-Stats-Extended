@@ -46,7 +46,6 @@
                     return { x: parseInt(datum.label), y: total }
                 })
 
-                console.log(trend_points)
                 trend_data = trendLine(chart, trend_points)
             }
         }
