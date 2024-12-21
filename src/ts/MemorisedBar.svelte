@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { BarChart } from "./bar"
+    import { SetDateInfinite, type BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import { DeltaIfy, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
@@ -51,6 +51,7 @@
 
     $: limit = -1 - $searchLimit
 
+    $: truncated = $searchLimit !== 0
     $: learned = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
 </script>
 
@@ -90,8 +91,20 @@
     {/if}
 {:else if !show}
     <NoGraph>
-        <button on:click={() => (show = true)}>Show?</button>
+        {#if !truncated}
+            <button class="big" on:click={() => (show = true)}>Show?</button>
+        {:else}
+            <button class="big" on:click={SetDateInfinite}>Increase date range</button>
+            <button on:click={() => (show = true)}>Show?</button>
+        {/if}
     </NoGraph>
 {:else}
     <NoGraph>Loading</NoGraph>
 {/if}
+
+<style>
+    .big {
+        width: 100%;
+        height: 100%;
+    }
+</style>

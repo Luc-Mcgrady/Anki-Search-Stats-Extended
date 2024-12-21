@@ -61,6 +61,14 @@ export function createAxis(
 
 const limit_area_border = 2
 
+export function SetDateInfinite() {
+    ;(
+        document.querySelector(
+            "body > div:nth-child(1) > div.range-box.svelte-1s41sbj > div:nth-child(3) > label:nth-child(2)"
+        )! as HTMLInputElement
+    ).click()
+}
+
 export function limitArea(
     chart: ExtraRenderInput<unknown>,
     width: number,
@@ -92,11 +100,7 @@ export function limitArea(
         })
         .on("mouseleave", () => tooltipShown.set(false))
         .on("click", () => {
-            ;(
-                document.querySelector(
-                    "body > div:nth-child(1) > div.range-box.svelte-19q2rko > div:nth-child(3) > label:nth-child(2) > input[type=radio]"
-                )! as HTMLInputElement
-            ).click()
+            SetDateInfinite()
             tooltipShown.set(false)
         })
 }
