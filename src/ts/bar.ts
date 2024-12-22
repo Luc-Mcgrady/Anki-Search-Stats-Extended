@@ -64,7 +64,7 @@ const limit_area_border = 2
 export function SetDateInfinite() {
     ;(
         document.querySelector(
-            "body > div:nth-child(1) > div.range-box.svelte-1s41sbj > div:nth-child(3) > label:nth-child(2)"
+            "body > div:nth-child(1) > div > div:nth-child(3) > label:nth-child(2)"
         )! as HTMLInputElement
     ).click()
 }
