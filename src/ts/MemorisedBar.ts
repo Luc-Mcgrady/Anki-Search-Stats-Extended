@@ -33,7 +33,7 @@ export function getMemorisedDays(
     function card_config(cid: number) {
         const card = cards_by_id[cid]
         if (!card) {
-            debugger
+            return undefined
         }
         return configs[config_mapping[card.did]]
     }
@@ -51,6 +51,9 @@ export function getMemorisedDays(
         const { ease: grade } = revlog
 
         const config = card_config(revlog.cid)
+        if (!config) {
+            continue
+        }
         const fsrs = getFsrs(config)
 
         const now = new Date(revlog.id)
