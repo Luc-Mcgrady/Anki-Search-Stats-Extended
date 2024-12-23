@@ -94,6 +94,7 @@ export function calculateRevlogStats(
         const day = dayFromMs(revlog.id)
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
+        const card = id_card_data[revlog.cid]
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
 
@@ -113,17 +114,20 @@ export function calculateRevlogStats(
                 incrementEase(day_ease.mature, day, ease)
                 incrementEase(fatigue_ease.mature, day_review_count[day], ease)
                 incrementEase(time_ease_seconds.mature, second, ease)
-
-                const last_sibling = last_siblings[revlog.nid]
-                if (last_sibling !== undefined && last_sibling.cid != revlog.cid) {
-                    incrementEase(sibling_time_ease, day - last_sibling.day, ease)
-                }
-                last_siblings[revlog.nid] = {
-                    cid: revlog.cid,
-                    day,
+                if (card) {
+                    const last_sibling = last_siblings[card.nid]
+                    if (last_sibling !== undefined && last_sibling.cid != revlog.cid) {
+                        incrementEase(sibling_time_ease, day - last_sibling.day, ease)
+                    }
+                    last_siblings[card.nid] = {
+                        cid: revlog.cid,
+                        day,
+                    }
                 }
             } else {
-                last_siblings[revlog.nid] = undefined
+                if (card) {
+                    last_siblings[card.nid] = undefined
+                }
             }
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
@@ -145,8 +149,10 @@ export function calculateRevlogStats(
             reintroduced.add(revlog.cid)
             forgotten.delete(revlog.cid)
         }
-        if (revlog.ivl >= 0 || id_card_data[revlog.cid].ivl < 0) {
-            burden_revlogs.push(revlog)
+        if (card) {
+            if (revlog.ivl >= 0 || card.ivl < 0) {
+                burden_revlogs.push(revlog)
+            }
         }
     }
 

@@ -52,7 +52,7 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
-REVLOG_COLUMNS = ["revlog.id", "cid", "ease", "revlog.ivl", "lastIvl", "time", "nid"]
+REVLOG_COLUMNS = ["revlog.id", "cid", "ease", "revlog.ivl", "lastIvl", "time"]
 DAY_SECONDS = 60 * 60 * 24
 
 def revlogs() -> bytes:
@@ -71,10 +71,7 @@ def revlogs() -> bytes:
     SELECT 
         {','.join(REVLOG_COLUMNS)} 
     FROM revlog 
-    JOIN cards ON revlog.cid = cards.id 
-    WHERE 
-        cid IN ({cards}) 
-        AND revlog.id > ({lower_limit}) 
+    WHERE revlog.id > ({lower_limit}) 
     ORDER BY revlog.id
     """)
     revlogs = [{k.replace("revlog.", ""): v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
