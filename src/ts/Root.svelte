@@ -209,4 +209,13 @@
             padding: 0.5em;
         }
     }
+
+    :global(.hover-bar) {
+        fill: white;
+        opacity: 0;
+
+        &:hover {
+            opacity: 0.1;
+        }
+    }
 </style>

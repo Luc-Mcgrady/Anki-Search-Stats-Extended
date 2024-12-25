@@ -158,17 +158,27 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("y", (d) => y(d[1]))
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
-        .on("mouseover", (e, d) => {
-            const columnString = [columnLabeler(d.data.label, chart.barWidth)]
+
+    axis.append("g")
+        .selectAll("g")
+        .data(chart.data)
+        .join("rect")
+        .attr("class", "hover-bar")
+        .attr("height", y(0))
+        .attr("width", x.bandwidth())
+        .attr("x", (d) => x(d.label)!)
+        .attr("y", () => y(maxValue))
+        .on("mouseover", function (e: MouseEvent, d) {
+            const columnString = [columnLabeler(d.label, chart.barWidth)]
 
             tooltipShown.set(true)
             tooltip.set({
                 text: [
                     ...columnString,
-                    ...d.data.values.map(
+                    ...d.values.map(
                         (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`
                     ),
-                    ...extraStats(d.data),
+                    ...extraStats(d),
                 ],
                 x: tooltipX(e),
                 y: e.pageY,
