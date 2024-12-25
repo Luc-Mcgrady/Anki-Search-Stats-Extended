@@ -47,8 +47,10 @@ export function getMemorisedDays(
         }
     }
 
+    console.log({ revlogs })
+
     for (const revlog of revlogs) {
-        const { ease: grade } = revlog
+        const grade = revlog.ease
 
         const config = card_config(revlog.cid)
         if (!config || grade == 0) {
@@ -70,11 +72,13 @@ export function getMemorisedDays(
                 cid: revlog.cid,
             }))
 
-        if (!new_card && revlog.ivl > 0) {
+        if (!new_card) {
             const previous = dayFromMs(card.last_review!.getTime())
             forgetting_curve(fsrs, card, previous, dayFromMs(revlog.id))
 
+            console.log(grade)
             const log = fsrs.next(card, now, grade)
+            console.log(log)
             card = { ...log.card, cid: card.cid }
         }
 
