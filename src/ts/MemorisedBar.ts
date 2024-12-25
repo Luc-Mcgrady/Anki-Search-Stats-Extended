@@ -4,10 +4,6 @@ import type { DeckConfig } from "./config"
 import { dayFromMs, IDify, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
 
-type CardCid = Card & {
-    cid: number
-}
-
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -15,7 +11,7 @@ export function getMemorisedDays(
     config_mapping: typeof SSEother.deck_config_ids
 ) {
     let deckFsrs: Record<number, FSRS> = {}
-    let fsrsCards: Record<number, CardCid> = {}
+    let fsrsCards: Record<number, Card> = {}
 
     let cards_by_id = IDify(cards)
 
@@ -62,14 +58,13 @@ export function getMemorisedDays(
 
         const new_card = !fsrsCards[revlog.cid]
 
-        let card: CardCid =
+        let card =
             fsrsCards[revlog.cid] ??
             createEmptyCard(new Date(revlog.cid), (card) => ({
                 ...card,
                 difficulty: fsrs.init_difficulty(grade),
                 stability: fsrs.init_stability(grade),
                 last_review: now,
-                cid: revlog.cid,
             }))
 
         if (!new_card) {
@@ -79,15 +74,15 @@ export function getMemorisedDays(
             console.log(grade)
             const log = fsrs.next(card, now, grade)
             console.log(log)
-            card = { ...log.card, cid: card.cid }
+            card = log.card
         }
 
         fsrsCards[revlog.cid] = card
     }
 
-    for (const card of Object.values(fsrsCards)) {
+    for (const [cid, card] of Object.entries(fsrsCards)) {
         const previous = dayFromMs(card.last_review!.getTime())
-        const fsrs = getFsrs(card_config(card.cid)!)
+        const fsrs = getFsrs(card_config(parseInt(cid))!)
         forgetting_curve(fsrs, card, previous, today)
     }
 
