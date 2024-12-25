@@ -127,6 +127,24 @@ export function limit_area_width(
     )
 }
 
+export function hoverBars<T extends { label: string }>(
+    { axis, x }: ReturnType<typeof createAxis>,
+    data: T[],
+    y: number,
+    height: number
+) {
+    return axis
+        .append("g")
+        .selectAll("g")
+        .data(data)
+        .join("rect")
+        .attr("class", "hover-bar")
+        .attr("height", y)
+        .attr("width", x.bandwidth())
+        .attr("x", (d) => x(d.label)!)
+        .attr("y", () => height)
+}
+
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
     const maxValue = _.sum(Object.values(max?.values ?? []))
@@ -159,15 +177,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
-    axis.append("g")
-        .selectAll("g")
-        .data(chart.data)
-        .join("rect")
-        .attr("class", "hover-bar")
-        .attr("height", y(0))
-        .attr("width", x.bandwidth())
-        .attr("x", (d) => x(d.label)!)
-        .attr("y", () => y(maxValue))
+    hoverBars({ axis, x, y }, chart.data, y(0), y(maxValue))
         .on("mouseover", function (e: MouseEvent, d) {
             const columnString = [columnLabeler(d.label, chart.barWidth)]
 

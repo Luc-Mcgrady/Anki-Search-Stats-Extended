@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { createAxis, type ExtraRenderInput } from "./bar"
+import { createAxis, hoverBars, type ExtraRenderInput } from "./bar"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
@@ -67,6 +67,8 @@ export function plotCandlestick(
         .attr("y", (d) => y(d.end))
         .attr("height", (d) => y(d.begin) - y(d.end))
         .attr("width", x.bandwidth())
+
+    hoverBars({ axis, x, y }, deltas, y(min), y(max))
         .on("mouseover", (e, d) => {
             const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
             const final = d.positive ? d.end : d.begin
