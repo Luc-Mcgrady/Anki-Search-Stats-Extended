@@ -71,7 +71,9 @@ def revlogs() -> bytes:
     SELECT 
         {','.join(REVLOG_COLUMNS)} 
     FROM revlog 
-    WHERE revlog.id > ({lower_limit}) 
+    WHERE
+        cid IN ({cards}) 
+        AND revlog.id > ({lower_limit}) 
     ORDER BY revlog.id
     """)
     revlogs = [{k.replace("revlog.", ""): v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
