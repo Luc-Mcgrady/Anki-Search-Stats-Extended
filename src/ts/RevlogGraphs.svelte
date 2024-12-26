@@ -339,7 +339,7 @@
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Sibling Similarity</h1>
+        <h1>Naive Sibling Similarity</h1>
         <BarScrollable
             data={easeBarChart(
                 sibling_time_ease,
@@ -372,7 +372,7 @@
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Fatigue</h1>
+        <h1>Naive Fatigue</h1>
         <BarScrollable
             data={easeBarChart(
                 fatigue_ease[mature_filter],
