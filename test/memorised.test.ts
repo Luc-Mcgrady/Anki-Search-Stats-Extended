@@ -39,10 +39,10 @@ test("Stability", ()=>{
     const FSRS = fsrs()
 
     const revlogs = [
-        card.review(-3000, 1),
-        card.review(1, 3),
+        card.review(1, 1),
         card.review(3, 3),
         card.review(21, 3),
+        card.review(80, 3),
     ] as Revlog[]
 
     const memorised = getMemorisedDays(revlogs, [{
