@@ -57,3 +57,30 @@ test("Stability", ()=>{
     expect(memorised[card.last_review + OFFSET]).toBeCloseTo(FSRS.forgetting_curve(OFFSET, 31.722975))
 
 })
+
+test("Stability On Forget", ()=>{
+    const card = new RevlogBuilder()
+    const FSRS = fsrs()
+
+    const revlogs = [
+        card.review(1, 1),
+        card.review(3, 3),
+        card.review(0, 0),
+        card.review(1, 1),
+        card.review(3, 3),
+        card.review(21, 3),
+        card.review(80, 3),
+    ] as Revlog[]
+
+    const memorised = getMemorisedDays(revlogs, [{
+        ...card.card(),
+        did: 1
+    } as any],
+    configs,
+    mappings)
+
+    const OFFSET = 10
+
+    expect(memorised[card.last_review + OFFSET]).toBeCloseTo(FSRS.forgetting_curve(OFFSET, 31.722975))
+
+})

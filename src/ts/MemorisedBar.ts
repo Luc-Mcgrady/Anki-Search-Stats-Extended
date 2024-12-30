@@ -37,44 +37,51 @@ export function getMemorisedDays(
     function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number) {
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
-            retrivabilityDays[day] = retrivabilityDays[day]
-                ? retrivabilityDays[day] + retrievability
-                : retrievability
+            retrivabilityDays[day] = (retrivabilityDays[day] || 0) + retrievability
         }
     }
 
-    for (const revlog of revlogs) {
-        const grade = revlog.ease
+    let last_stability: number[] = []
 
+    for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
-        if (!config || grade == 0) {
+        if (!config) {
             continue
         }
-        const fsrs = getFsrs(config)
 
-        const now = new Date(revlog.id)
-
+        const grade = revlog.ease
         const new_card = !fsrsCards[revlog.cid]
-
+        const now = new Date(revlog.id)
+        const fsrs = getFsrs(config)
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
 
-        if (!new_card) {
+        if (revlog.ivl == 0 && !new_card) {
+            card = fsrs.forget(card, now).card
+            fsrsCards[revlog.cid] = card
+        }
+        if (grade == 0) {
+            continue
+        }
+        if (last_stability[revlog.cid]) {
             const previous = dayFromMs(card.last_review!.getTime())
-            forgetting_curve(fsrs, card.stability, previous, dayFromMs(revlog.id))
+            const stability = last_stability[revlog.cid]
+            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id))
         }
 
         //console.log(grade)
         const log = fsrs.next(card, now, grade)
         //console.log(log)
         card = log.card
+        last_stability[revlog.cid] = card.stability // To prevent "forget" affecting the forgetting curve
 
         fsrsCards[revlog.cid] = card
     }
 
     for (const [cid, card] of Object.entries(fsrsCards)) {
+        const num_cid = parseInt(cid)
         const previous = dayFromMs(card.last_review!.getTime())
-        const fsrs = getFsrs(card_config(parseInt(cid))!)
-        forgetting_curve(fsrs, card.stability, previous, today)
+        const fsrs = getFsrs(card_config(num_cid)!)
+        forgetting_curve(fsrs, last_stability[num_cid], previous, today)
     }
 
     console.log({ deckFsrs })
