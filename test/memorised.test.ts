@@ -34,6 +34,7 @@ test("Day Timings", ()=>{
     expect(memorised[16]).not.toBe(0)
 })
 
+// https://github.com/open-spaced-repetition/fsrs-rs/blob/a7aaa40498bae992e0be0a1e9a1380e4992aee60/src/inference.rs#L433-L465
 test("Stability", ()=>{
     const card = new RevlogBuilder()
     const FSRS = fsrs()
