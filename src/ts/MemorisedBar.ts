@@ -77,14 +77,31 @@ export function getMemorisedDays(
         fsrsCards[revlog.cid] = card
     }
 
+    let inaccurate_cids: any[] = []
+    let accurate_cids: number[] = []
+
     for (const [cid, card] of Object.entries(fsrsCards)) {
         const num_cid = parseInt(cid)
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
         forgetting_curve(fsrs, last_stability[num_cid], previous, today)
+        if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
+            const expected = last_stability[num_cid].toFixed(2)
+            const actual = JSON.parse(cards_by_id[num_cid].data).s.toFixed(2)
+            if (expected != actual) {
+                inaccurate_cids.push({ cid: num_cid, expected, actual })
+            } else {
+                accurate_cids.push(num_cid)
+            }
+        }
     }
 
-    console.log({ deckFsrs })
+    if (inaccurate_cids.length) {
+        console.warn(
+            `The stability of the following ${inaccurate_cids.length}/${inaccurate_cids.length + accurate_cids.length} cards differ between SSE and anki:`,
+            { inaccurate_cids, accurate_cids }
+        )
+    }
 
     return retrivabilityDays
 }
