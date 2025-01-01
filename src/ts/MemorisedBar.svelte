@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { SetDateInfinite, type BarChart } from "./bar"
+    import { barDateLabeler, SetDateInfinite, type BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import { DeltaIfy, type CandlestickGraph } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
@@ -37,6 +37,7 @@
                 values: [stab],
             })),
             tick_spacing: 5,
+            columnLabeler: barDateLabeler,
         }
 
     $: if (data)
