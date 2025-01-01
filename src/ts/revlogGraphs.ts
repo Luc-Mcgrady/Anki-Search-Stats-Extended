@@ -68,6 +68,7 @@ export function calculateRevlogStats(
 
     let day_initial_ease: number[][] = emptyArray(initialEase())
     let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
+    let interval_ease = emptyArray(initialEase())
 
     let day_ease = emptyRevlogBuckets()
     let fatigue_ease = emptyRevlogBuckets()
@@ -106,6 +107,7 @@ export function calculateRevlogStats(
             incrementEase(time_ease_seconds.all, second, ease)
         }
 
+        incrementEase(interval_ease, revlog.lastIvl < 0 ? 0 : revlog.lastIvl, ease)
         if (revlog.lastIvl > 0) {
             incrementEase(day_ease.young, day, ease)
             incrementEase(fatigue_ease.young, day_review_count[day], ease)
@@ -201,6 +203,7 @@ export function calculateRevlogStats(
         fatigue_ease,
         time_ease_seconds,
         sibling_time_ease,
+        interval_ease,
         revlog_times,
         introduced_day_count,
         reintroduced_day_count,
