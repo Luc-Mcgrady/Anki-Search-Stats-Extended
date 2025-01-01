@@ -344,8 +344,12 @@
             </Warning>
         {/if}
         <p>
-            An fsrs estimate of how many cards you knew at that given time. The sum of the
-            retrivabilities of the cards on that date.
+            An FSRS estimate of how many cards you knew at that given time. This depends on FSRS's
+            current parameters and will use the defaults if none are found (Even if you are using
+            SM-2). <br />
+            <br />
+            In FSRS, each card has a percentage chance of being recalled known as retrivability. This
+            is a sum of those percentages over time.
         </p>
     </GraphContainer>
 </GraphCategory>
@@ -377,7 +381,7 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
-        <p>Ratings plotted by the interval they had when you rated them.</p>
+        <p>Ratings plotted by the interval they had before you rated them.</p>
     </GraphContainer>
     {#if $config?.badGraphs}
         <GraphContainer>
@@ -408,10 +412,14 @@
                 As Ratio
             </label>
             <p>
-                The rating you gave cards plotted by the number of days since you reviewed a sibling
-                of that card (card originating from the same note). Reviews from the same card or
-                cards where either card are not mature are not counted.
+                The rating you gave cards plotted by the number of days since you reviewed <b>
+                    a sibling
+                </b>
+                of that card (card originating from the same note). Reviews from the same card or cards
+                where either card are not mature are not counted. Please consider the "interval ratings"
+                graph as you interpret this one.
             </p>
+            <small><Warning always>Bad Graph</Warning></small>
         </GraphContainer>
     {/if}
     <GraphContainer>
@@ -429,8 +437,8 @@
             trend={normalize_ease}
             trend_by={retention_trend}
             trend_info={{
-                x: "review that day",
-                x_s: "reviews that day",
+                x: "prior review that day",
+                x_s: "prior reviews that day",
                 y: "retention",
                 y_s: "retention",
                 percentage: true,
@@ -475,7 +483,10 @@
         </label>
 
         <MatureFilterSelector bind:group={mature_filter} />
-        <p>Ratings plotted by how long you spent before reviewing them</p>
+        <p>
+            Ratings plotted by how long you spent looking at a card before rating it. Respects the
+            deck presets "Maximum answer seconds" of the moment the answer was reviewed.
+        </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
