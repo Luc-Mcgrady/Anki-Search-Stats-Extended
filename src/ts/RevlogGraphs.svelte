@@ -423,7 +423,7 @@
         </GraphContainer>
     {/if}
     <GraphContainer>
-        <h1>Naive Fatigue</h1>
+        <h1>Rating Fatigue</h1>
         <BarScrollable
             data={easeBarChart(
                 fatigue_ease[mature_filter],
@@ -452,8 +452,8 @@
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
             Ratings plotted by how many reviews you did total in that day before rating them. Bear
-            in mind this may be affected by the review order and the fact that learn cards are
-            reviewed more than once in the case of "All"
+            in mind <b>this may be affected by the review order</b>
+            and the fact that learn cards are reviewed more than once in the case of "All".
         </p>
     </GraphContainer>
     <GraphContainer>
