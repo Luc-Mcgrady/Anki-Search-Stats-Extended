@@ -7,6 +7,7 @@ export type SSEconfig = Partial<{
     piePercentages: boolean
     warnings: boolean
     trends: boolean
+    badGraphs: boolean
 }>
 
 export type DeckConfig = {

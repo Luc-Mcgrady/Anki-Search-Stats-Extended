@@ -6,5 +6,6 @@
     "barHeight": 250,
     "piePercentages": false,
     "warnings": true,
-    "trends": true
+    "trends": true,
+    "badGraphs": false
 }

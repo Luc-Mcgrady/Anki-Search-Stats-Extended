@@ -2,7 +2,16 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import type { CardData, Revlog } from "./search"
-    import { binSize, burdenOrLoad, other, pieLast, pieSteps, scroll, searchLimit } from "./stores"
+    import {
+        binSize,
+        burdenOrLoad,
+        config,
+        other,
+        pieLast,
+        pieSteps,
+        scroll,
+        searchLimit,
+    } from "./stores"
     import Candlestick from "./Candlestick.svelte"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -370,39 +379,41 @@
         </label>
         <p>Ratings plotted by the interval they had when you rated them.</p>
     </GraphContainer>
-    <GraphContainer>
-        <h1>Naive Sibling Similarity</h1>
-        <BarScrollable
-            data={easeBarChart(
-                sibling_time_ease,
-                1,
-                normalize_ease,
-                barStringLabeler("$s Days since sibling review")
-            )}
-            bind:binSize={interval_bin_size}
-            bind:offset={interval_scroll}
-            average={normalize_ease}
-            left_aligned
-            trend={normalize_ease}
-            trend_by={retention_trend}
-            trend_info={{
-                x: "day since last sibling review",
-                x_s: "days since last sibling review",
-                y: "retention",
-                y_s: "retention",
-                percentage: true,
-            }}
-        />
-        <label>
-            <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
-        </label>
-        <p>
-            The rating you gave cards plotted by the number of days since you reviewed a sibling of
-            that card (card originating from the same note). Reviews from the same card or cards
-            where either card are not mature are not counted.
-        </p>
-    </GraphContainer>
+    {#if $config?.badGraphs}
+        <GraphContainer>
+            <h1>Naive Sibling Similarity</h1>
+            <BarScrollable
+                data={easeBarChart(
+                    sibling_time_ease,
+                    1,
+                    normalize_ease,
+                    barStringLabeler("$s Days since sibling review")
+                )}
+                bind:binSize={interval_bin_size}
+                bind:offset={interval_scroll}
+                average={normalize_ease}
+                left_aligned
+                trend={normalize_ease}
+                trend_by={retention_trend}
+                trend_info={{
+                    x: "day since last sibling review",
+                    x_s: "days since last sibling review",
+                    y: "retention",
+                    y_s: "retention",
+                    percentage: true,
+                }}
+            />
+            <label>
+                <input type="checkbox" bind:checked={normalize_ease} />
+                As Ratio
+            </label>
+            <p>
+                The rating you gave cards plotted by the number of days since you reviewed a sibling
+                of that card (card originating from the same note). Reviews from the same card or
+                cards where either card are not mature are not counted.
+            </p>
+        </GraphContainer>
+    {/if}
     <GraphContainer>
         <h1>Naive Fatigue</h1>
         <BarScrollable
