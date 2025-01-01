@@ -129,20 +129,19 @@ export function limit_area_width(
 
 export function hoverBars<T extends { label: string }>(
     { axis, x }: ReturnType<typeof createAxis>,
-    data: T[],
-    y: number,
-    height: number
+    data: T[]
 ) {
+    const { height } = defaultGraphBounds()
     return axis
         .append("g")
         .selectAll("g")
         .data(data)
         .join("rect")
         .attr("class", "hover-bar")
-        .attr("height", y)
+        .attr("height", height)
         .attr("width", x.bandwidth())
         .attr("x", (d) => x(d.label)!)
-        .attr("y", () => height)
+        .attr("y", 0)
 }
 
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
@@ -177,7 +176,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
-    hoverBars({ axis, x, y }, chart.data, y(0), y(maxValue))
+    hoverBars({ axis, x, y }, chart.data)
         .on("mouseover", function (e: MouseEvent, d) {
             const columnString = [columnLabeler(d.label, chart.barWidth)]
 

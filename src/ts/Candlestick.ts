@@ -68,7 +68,7 @@ export function plotCandlestick(
         .attr("height", (d) => y(d.begin) - y(d.end))
         .attr("width", x.bandwidth())
 
-    hoverBars({ axis, x, y }, deltas, y(min), y(max))
+    hoverBars({ axis, x, y }, deltas)
         .on("mouseover", (e, d) => {
             const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
             const final = d.positive ? d.end : d.begin
