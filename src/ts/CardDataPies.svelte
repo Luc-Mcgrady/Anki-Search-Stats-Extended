@@ -5,54 +5,16 @@
     import IntervalGraph from "./IntervalGraph.svelte"
     import { burdenOrLoad, graph_mode, include_suspended, zero_inclusive } from "./stores"
     import GraphCategory from "./GraphCategory.svelte"
+    import { calculateCardDataPies } from "./CardDataPies"
 
     export let cardData: CardData[] | null
 
-    let total_lapses: number
-    let total_repetitions: number
-    let total_under_repetitions: number
-    let lapses: number[]
-    let repetitions: number[]
-    let lapses_burden: number[]
-    let repetitions_burden: number[]
-
-    $: {
-        total_lapses = 0
-        total_repetitions = 0
-        total_under_repetitions = 0
-        lapses = []
-        repetitions = []
-        lapses_burden = []
-        repetitions_burden = []
-
-        for (const card of cardData ?? []) {
-            if ($include_suspended || card.queue !== -1) {
-                total_lapses += card.lapses
-                total_repetitions += card.reps
-
-                if (card.reps < repetitions_last) {
-                    total_under_repetitions += card.reps
-                }
-
-                if (card.reps > 0) {
-                    lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
-                    repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
-
-                    if (card.ivl > 0) {
-                        lapses_burden[card.lapses] =
-                            (lapses_burden[card.lapses] ?? 0) + 1 / card.ivl
-                        repetitions_burden[card.reps] =
-                            (repetitions_burden[card.reps] ?? 0) + 1 / card.ivl
-                    }
-                }
-            }
-        }
-
-        if (!$zero_inclusive && $graph_mode == "Pie") {
-            delete lapses[0]
-            delete lapses_burden[0]
-        }
-    }
+    $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
+    $: ({ lapses, repetitions, lapses_burden, repetitions_burden } = calculateCardDataPies(
+        cardData ?? [],
+        $include_suspended,
+        true_zero_inclusive
+    ))
 
     let lapse_last = 7
     let lapse_steps = 7
