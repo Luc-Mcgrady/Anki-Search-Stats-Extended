@@ -88,7 +88,7 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ## Development
 
-Building this with make addon works on linux and will probably work on mac 
+Building this with make works on linux and will probably work on mac 
 
 ### Cloning the Repository
 
