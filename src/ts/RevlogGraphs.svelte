@@ -43,6 +43,7 @@
         day_forgotten,
         remaining_forgotten,
         intervals,
+        interval_ease,
     } = calculateRevlogStats(revlogData, cardData))
 
     $: burden_change = DeltaIfy(burden)
@@ -161,6 +162,8 @@
     let mature_filter: keyof revlogBuckets = "young"
 
     let fatigue_bin_size = 10
+    let interval_scroll = 1
+    let interval_bin_size = 1
 
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
@@ -339,6 +342,35 @@
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
+        <h1>Interval Ratings</h1>
+        <BarScrollable
+            data={easeBarChart(
+                interval_ease,
+                1,
+                normalize_ease,
+                barStringLabeler("Interval of $s")
+            )}
+            bind:binSize={interval_bin_size}
+            bind:offset={interval_scroll}
+            average={normalize_ease}
+            left_aligned
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_info={{
+                x: "day greater interval",
+                x_s: "days greater interval",
+                y: "retention",
+                y_s: "retention",
+                percentage: true,
+            }}
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            As Ratio
+        </label>
+        <p>Ratings plotted by the interval they had when you rated them.</p>
+    </GraphContainer>
+    <GraphContainer>
         <h1>Naive Sibling Similarity</h1>
         <BarScrollable
             data={easeBarChart(
@@ -347,8 +379,8 @@
                 normalize_ease,
                 barStringLabeler("$s Days since sibling review")
             )}
-            bind:binSize={$binSize}
-            bind:offset={$scroll}
+            bind:binSize={interval_bin_size}
+            bind:offset={interval_scroll}
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
