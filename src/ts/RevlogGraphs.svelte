@@ -1,7 +1,7 @@
 <script lang="ts">
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import type { CardData, Revlog } from "./search"
+    import { catchErrors, type CardData, type Revlog } from "./search"
     import {
         binSize,
         burdenOrLoad,
@@ -53,7 +53,7 @@
         remaining_forgotten,
         intervals,
         interval_ease,
-    } = calculateRevlogStats(revlogData, cardData))
+    } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
     $: realScroll = -Math.abs($scroll)

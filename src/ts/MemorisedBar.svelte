@@ -6,6 +6,7 @@
     import GraphTypeSelector from "./GraphTypeSelector.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
+    import { catchErrors } from "./search"
     import { card_data, revlogs, searchLimit } from "./stores"
     import type { TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
@@ -25,7 +26,14 @@
 
     $: if ($revlogs && $card_data && show)
         data = Array.from(
-            getMemorisedDays($revlogs, $card_data, SSEother.deck_configs, SSEother.deck_config_ids)
+            catchErrors(() =>
+                getMemorisedDays(
+                    $revlogs,
+                    $card_data,
+                    SSEother.deck_configs,
+                    SSEother.deck_config_ids
+                )
+            )
         )
 
     $: if (data)
