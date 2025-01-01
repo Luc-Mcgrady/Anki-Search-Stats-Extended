@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { createAxis, hoverBars, type ExtraRenderInput } from "./bar"
+import { createAxis, defaultX, defaultY, hoverBars, type ExtraRenderInput } from "./bar"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
@@ -50,13 +50,9 @@ export function plotCandlestick(
     const max = _.maxBy(deltas, (datum) => datum.end)?.end ?? 0
     const min = _.minBy(deltas, (datum) => datum.begin)?.begin ?? 0
 
-    const { axis, x, y } = createAxis(
-        svg,
-        deltas.map((datum) => datum.label),
-        max,
-        min,
-        graph.tick_spacing
-    )
+    const x = defaultX(deltas.map((datum) => datum.label))
+    const y = defaultY(min, max)
+    const axis = createAxis(svg, graph.tick_spacing, x, y)
 
     axis.append("g")
         .selectAll("g")
@@ -68,7 +64,7 @@ export function plotCandlestick(
         .attr("height", (d) => y(d.begin) - y(d.end))
         .attr("width", x.bandwidth())
 
-    hoverBars({ axis, x, y }, deltas)
+    hoverBars(axis, x, deltas)
         .on("mouseover", (e, d) => {
             const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
             const final = d.positive ? d.end : d.begin
