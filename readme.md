@@ -22,6 +22,8 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 - **trends**: If set to false, disables trend lines.
 
+- **badGraphs**: If sets to false hides the "sibling similarity" graph. In the future may hide other graphs which I add and find are misleading/hard to interpret.
+
 ## The Graphs
 
 ### Future due types
@@ -68,6 +70,8 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ![image](https://github.com/user-attachments/assets/36bea17e-814a-477b-ac5d-ff4f4fad2ce1)
 ![image](https://github.com/user-attachments/assets/901fe7bf-53bf-4e53-ba09-d512b8fee38d)
+![image](https://github.com/user-attachments/assets/2ed5646f-268a-419e-b0f0-4803bf453590)
+
 
 ### Burden Trend
 
@@ -76,6 +80,11 @@ Like the new anki stats screen? Want more? This is the addon for you.
 ### Card Count / Interval Time Machines
 
 ![image](https://github.com/user-attachments/assets/a8804de9-c60e-412d-8bf0-7c04e1a2423c)
+
+## FSRS Memorised over time
+
+![image](https://github.com/user-attachments/assets/8c83f277-c4cf-4312-8075-1a42a800942d)
+
 
 ## Development
 
