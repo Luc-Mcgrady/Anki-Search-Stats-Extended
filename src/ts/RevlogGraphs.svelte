@@ -451,9 +451,9 @@
 
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            Ratings plotted by how many reviews you did total in that day before rating them. Bear
-            in mind <b>this may be affected by the review order</b>
-            and the fact that learn cards are reviewed more than once in the case of "All".
+            Ratings plotted by how many reviews (that match the search) you did total in that day
+            before rating them.
+            <b>This will be affected by the card review/display order.</b>
         </p>
     </GraphContainer>
     <GraphContainer>
