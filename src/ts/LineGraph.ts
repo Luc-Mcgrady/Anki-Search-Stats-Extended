@@ -57,12 +57,15 @@ export function renderLineChart(svg: SVGElement, values: number[]) {
         .attr("x", (d) => x(d.date)!)
         .attr("y", 0)
         .on("mouseover", (e: MouseEvent, d) => {
-            tooltipShown.set(true)
+            const value_string = d.value > 10 ? d.value.toFixed(0) : d.value.toPrecision(2)
             tooltip.set({
                 x: tooltipX(e),
                 y: e.pageY,
-                text: [d.date.toLocaleDateString(), `Memorised: ${d.value.toFixed(0)}`],
+                text: [`${d.date.toLocaleDateString()}:`, `Memorised: ${value_string}`],
             })
         })
-        .on("mouseleave", () => tooltipShown.set(false))
+
+    axis.on("mouseover", () => tooltipShown.set(true)).on("mouseleave", () =>
+        tooltipShown.set(false)
+    )
 }

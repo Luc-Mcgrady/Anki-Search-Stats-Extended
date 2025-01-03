@@ -4,8 +4,6 @@
     let svg: SVGElement | undefined
 
     export let data: number[]
-    export let scroll: number
-    export let zoom: number
 
     $: if (svg) renderLineChart(svg, data)
 </script>

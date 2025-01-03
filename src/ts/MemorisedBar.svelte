@@ -45,7 +45,7 @@
 </script>
 
 {#if data}
-    <LineGraph {data} scroll={today} zoom={10}></LineGraph>
+    <LineGraph {data}></LineGraph>
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}
