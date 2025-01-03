@@ -1,8 +1,10 @@
 import * as d3 from "d3"
 import { defaultGraphBounds } from "./graph"
 import { day_ms } from "./revlogGraphs"
+import { tooltip, tooltipShown } from "./stores"
+import { tooltipX } from "./tooltip"
 
-export function renderLineChart(svg: SVGElement, values: number[], scroll: number, range: number) {
+export function renderLineChart(svg: SVGElement, values: number[]) {
     const { width, height } = defaultGraphBounds()
 
     type Point = { value: number; date: Date }
@@ -44,4 +46,23 @@ export function renderLineChart(svg: SVGElement, values: number[], scroll: numbe
                 .x((d) => x(d.date))
                 .y((d) => y(d.value))
         )
+
+    axis.append("g")
+        .selectAll("g")
+        .data(date_values.filter((a) => a))
+        .join("rect")
+        .attr("class", "hover-bar")
+        .attr("height", height)
+        .attr("width", date_values.length / width)
+        .attr("x", (d) => x(d.date)!)
+        .attr("y", 0)
+        .on("mouseover", (e: MouseEvent, d) => {
+            tooltipShown.set(true)
+            tooltip.set({
+                x: tooltipX(e),
+                y: e.pageY,
+                text: [d.date.toLocaleDateString(), `Memorised: ${d.value.toFixed(0)}`],
+            })
+        })
+        .on("mouseleave", () => tooltipShown.set(false))
 }

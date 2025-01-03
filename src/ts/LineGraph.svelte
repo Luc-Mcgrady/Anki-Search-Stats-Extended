@@ -7,7 +7,7 @@
     export let scroll: number
     export let zoom: number
 
-    $: if (svg) renderLineChart(svg, data, scroll, zoom)
+    $: if (svg) renderLineChart(svg, data)
 </script>
 
 <svg bind:this={svg}></svg>
