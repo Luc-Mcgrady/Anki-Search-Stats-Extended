@@ -139,7 +139,7 @@ export function limit_area_width(
 export function hoverBars<T extends { label: string }>(
     axis: ReturnType<typeof createAxis>,
     x: d3.AxisScale<d3.AxisDomain>,
-    data: T[],
+    data: T[]
 ) {
     const { height } = defaultGraphBounds()
     return axis
