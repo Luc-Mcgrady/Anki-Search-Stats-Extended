@@ -36,6 +36,9 @@ export let pieSteps = writable(10)
 export let scroll = writable(0)
 export let binSize = writable(1)
 
+export let dateScroll = writable(0)
+export let dateBinSize = writable(1)
+
 //Tooltip related stores
 
 export let tooltip = writable<Tooltip>({

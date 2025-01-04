@@ -33,6 +33,7 @@
     import MemorisedBar from "./MemorisedBar.svelte"
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
+    import LineOrCandlestick from "./LineOrCandlestick.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -92,17 +93,6 @@
         })),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
-    }
-
-    $: burden_change_candlestick = {
-        start: burden_start,
-        data: Array.from(burden_change).map((delta, i) => ({
-            label: barLabel(i),
-            delta: delta ?? 0,
-        })),
-        tick_spacing: 5,
-        up_colour: CANDLESTICK_RED,
-        down_colour: CANDLESTICK_GREEN,
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
@@ -286,14 +276,7 @@
 <GraphCategory>
     <GraphContainer>
         <h1>{$burdenOrLoad} Trend</h1>
-        <Candlestick
-            data={burden_change_candlestick}
-            {bins}
-            {limit}
-            bind:trend_data={burden_trend}
-            bind:binSize={$binSize}
-            bind:offset={$scroll}
-        />
+        <LineOrCandlestick data={burden} />
         <p>
             This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
@@ -335,7 +318,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>Memorised</h1>
-        <MemorisedBar {bins} bind:offset={$scroll} bind:binSize={$binSize} />
+        <MemorisedBar />
         {#if truncated}
             <Warning>It is heavily advised you use "All history" for this graph</Warning>
             <Warning>
