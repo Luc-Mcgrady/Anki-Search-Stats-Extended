@@ -1,11 +1,11 @@
 <script lang="ts">
     import { SetDateInfinite } from "./bar"
-    import LineGraph from "./LineGraph.svelte"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { catchErrors } from "./search"
     import { card_data, revlogs, searchLimit } from "./stores"
+    import type { TrendLine } from "./trend"
 
     let show = false
     let data: number[] | undefined = undefined
@@ -23,10 +23,13 @@
         )
 
     $: truncated = $searchLimit !== 0
+    $: label = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
+
+    let trend_data: TrendLine
 </script>
 
 {#if data}
-    <LineOrCandlestick {data} />
+    <LineOrCandlestick {data} {label} {trend_data} />
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}

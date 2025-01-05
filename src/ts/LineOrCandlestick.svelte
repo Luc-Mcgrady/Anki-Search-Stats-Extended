@@ -8,13 +8,13 @@
 
     let type = "total"
     export let data: number[]
+    export let label = "value"
 
     let bins = 30
     let binSize = 1
     let offset = 0
 
     $: limit = -1 - $searchLimit
-    $: learned = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
 
     let candlestick_data: CandlestickGraph
     $: if (data)
@@ -27,7 +27,7 @@
             tick_spacing: 5,
         }
 
-    let trend_data: TrendLine
+    export let trend_data: TrendLine | undefined
 </script>
 
 <GraphTypeSelector>
@@ -42,7 +42,7 @@
 </GraphTypeSelector>
 
 {#if type == "total"}
-    <LineGraph {data} />
+    <LineGraph {data} {label} />
 {:else}
-    <Candlestick data={candlestick_data} bind:bins bind:binSize {limit} />
+    <Candlestick data={candlestick_data} bind:bins bind:binSize {limit} {trend_data} />
 {/if}

@@ -4,7 +4,7 @@ import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
 
-export function renderLineChart(svg: SVGElement, values: number[]) {
+export function renderLineChart(svg: SVGElement, values: number[], label = "Value") {
     const { width, height } = defaultGraphBounds()
 
     type Point = { value: number; date: Date }
@@ -61,7 +61,7 @@ export function renderLineChart(svg: SVGElement, values: number[]) {
             tooltip.set({
                 x: tooltipX(e),
                 y: e.pageY,
-                text: [`${d.date.toLocaleDateString()}:`, `Memorised: ${value_string}`],
+                text: [`${d.date.toLocaleDateString()}:`, `${label}: ${value_string}`],
             })
         })
 

@@ -276,7 +276,7 @@
 <GraphCategory>
     <GraphContainer>
         <h1>{$burdenOrLoad} Trend</h1>
-        <LineOrCandlestick data={burden} />
+        <LineOrCandlestick data={burden} label={$burdenOrLoad} trend_data={burden_trend} />
         <p>
             This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
