@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { type Card, createEmptyCard, type FSRS, fsrs as Fsrs, generatorParameters, default_enable_short_term, default_enable_fuzz } from "ts-fsrs"
+import { type Card, createEmptyCard, type FSRS, fsrs as Fsrs, generatorParameters } from "ts-fsrs"
 import type { DeckConfig } from "./config"
 import { dayFromMs, IDify, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
@@ -18,11 +18,13 @@ export function getMemorisedDays(
     function getFsrs(config: DeckConfig) {
         const id = config.id
         if (!deckFsrs[id]) {
-            deckFsrs[id] = Fsrs(generatorParameters({
-                w: config.fsrsParams5 ? config.fsrsParams5 : config.fsrsWeights,
-                enable_fuzz: false,
-                enable_short_term: true
-            }))
+            deckFsrs[id] = Fsrs(
+                generatorParameters({
+                    w: config.fsrsParams5 ? config.fsrsParams5 : config.fsrsWeights,
+                    enable_fuzz: false,
+                    enable_short_term: true,
+                })
+            )
         }
         return deckFsrs[id]
     }
@@ -80,7 +82,7 @@ export function getMemorisedDays(
         fsrsCards[revlog.cid] = card
     }
 
-    console.log({deckFsrs})
+    // console.log({ deckFsrs })
 
     let inaccurate_cids: any[] = []
     let accurate_cids: number[] = []
