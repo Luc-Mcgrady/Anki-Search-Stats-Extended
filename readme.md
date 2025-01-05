@@ -103,9 +103,15 @@ git clone https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recurs
 run make to setup source files
 ```
 make
-``` 
+```
 
 Then every-time you make any changes run make again.
+
+### Mac Proto Issues
+It is possible that you may run into issues with protoc on mac.
+
+https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/22#issue-2769153566
+
 
 ### Windows
 
