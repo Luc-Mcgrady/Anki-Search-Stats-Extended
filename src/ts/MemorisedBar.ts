@@ -1,5 +1,12 @@
 import _ from "lodash"
-import { type Card, createEmptyCard, type FSRS, fsrs as Fsrs, generatorParameters } from "ts-fsrs"
+import {
+    type Card,
+    createEmptyCard,
+    type FSRS,
+    fsrs as Fsrs,
+    FSRSVersion,
+    generatorParameters,
+} from "ts-fsrs"
 import type { DeckConfig } from "./config"
 import { dayFromMs, IDify, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
@@ -10,6 +17,8 @@ export function getMemorisedDays(
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids
 ) {
+    console.log(`ts-fsrs ${FSRSVersion}`)
+
     let deckFsrs: Record<number, FSRS> = {}
     let fsrsCards: Record<number, Card> = {}
 
