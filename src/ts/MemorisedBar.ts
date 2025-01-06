@@ -84,10 +84,12 @@ export function getMemorisedDays(
         let memoryState: FSRSState | null = null
         let elapsed = 0
         if (card.last_review) {
-            memoryState = {
-                difficulty: card.difficulty,
-                stability: card.stability,
-            }
+            memoryState = card.stability
+                ? {
+                      difficulty: card.difficulty,
+                      stability: card.stability,
+                  }
+                : null
             const oldDate = new Date(card.last_review.getTime() - 4 * 60 * 60 * 1000)
             oldDate.setHours(0, 0, 0, 0)
             const newDate = new Date(now.getTime() - 4 * 60 * 60 * 1000)
