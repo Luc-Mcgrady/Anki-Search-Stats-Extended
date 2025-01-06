@@ -115,7 +115,6 @@ export function getMemorisedDays(
             const expected = last_stability[num_cid]
             const actual = JSON.parse(cards_by_id[num_cid].data).s
             if (Math.abs(expected - actual) > 0.01) {
-                console.log(num_cid, expected.toFixed(2), actual.toFixed(2))
                 inaccurate_cids.push({
                     cid: num_cid,
                     expected: expected.toFixed(2),
