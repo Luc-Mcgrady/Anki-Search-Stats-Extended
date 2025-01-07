@@ -140,8 +140,11 @@ export function getMemorisedDays(
     }
 
     if (inaccurate_cids.length) {
+        const mean_error = _.meanBy(inaccurate_cids, (a) =>
+            Math.abs(a.expected - a.actual)
+        ).toFixed(2)
         console.warn(
-            `The stability of the following ${inaccurate_cids.length}/${inaccurate_cids.length + accurate_cids.length} cards differ between SSE and anki:`,
+            `The stability of the following ${inaccurate_cids.length}/${inaccurate_cids.length + accurate_cids.length} cards differ between SSE and anki with a mean error of ${mean_error}:`,
             { inaccurate_cids, accurate_cids }
         )
     }
