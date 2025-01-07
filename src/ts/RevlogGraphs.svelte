@@ -260,7 +260,7 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
-        The first review you gave a newly introduced card. Important for FSRS.
+        <p>The first review you gave a newly introduced card. Important for FSRS.</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
@@ -326,9 +326,13 @@
             An FSRS estimate of how many cards you knew at that given time. This depends on FSRS's
             current parameters and will use the defaults if none are found (Even if you are using
             SM-2). <br />
+            This graph will not work properly with an incomplete review history and will not respect
+            "ignore reviews before".
+            <br />
             <br />
             In FSRS, each card has a percentage chance of being recalled known as retrivability. This
             is a sum of those percentages over time.
+            <br />
         </p>
     </GraphContainer>
 </GraphCategory>
