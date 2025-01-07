@@ -40,11 +40,11 @@
 <GraphTypeSelector>
     <label>
         <input type="radio" value="total" bind:group={type} />
-        total
+        Total
     </label>
     <label>
         <input type="radio" value="trend" bind:group={type} />
-        trend
+        Trend
     </label>
 </GraphTypeSelector>
 
