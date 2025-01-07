@@ -38,7 +38,10 @@ from anki.utils import int_time
 
 def card_search() -> bytes:
     search = request.data
-    return Response(str(list(mw.col.find_cards(search))))
+    try:
+        return Response(str(list(mw.col.find_cards(search))))
+    except: 
+        return None
 
 post_handlers["cardSearch"] = card_search
 
