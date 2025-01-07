@@ -23,12 +23,25 @@ export type BarChart = {
     columnLabeler?: (thing: string, width?: number) => string
 }
 
+const { width, height } = defaultGraphBounds()
+
+export function defaultX(labels: string[]) {
+    return d3
+        .scaleBand()
+        .domain(labels)
+        .range([0, width])
+        .padding(0.1) as d3.ScaleBand<d3.AxisDomain>
+}
+
+export function defaultY(min: number, max: number) {
+    return d3.scaleLinear().domain([max, min]).range([0, height])
+}
+
 export function createAxis(
     svg: SVGElement,
-    labels: string[],
-    max: number,
-    min: number,
-    tick_spacing: number = 1
+    tick_spacing: number = 1,
+    x: d3.AxisScale<d3.AxisDomain>,
+    y: d3.ScaleLinear<any, any, any>
 ) {
     const bounds = defaultGraphBounds()
 
@@ -38,10 +51,6 @@ export function createAxis(
         .select(svg)
         .attr("viewBox", `-40 -10 ${bounds.width + 50} ${bounds.height + 50}`)
         .append("g")
-
-    const x = d3.scaleBand().domain(labels).range([0, bounds.width]).padding(0.1)
-
-    const y = d3.scaleLinear().domain([max, min]).range([0, bounds.height])
 
     axis.append("g").call(d3.axisLeft(y)).attr("opacity", 0.5)
 
@@ -56,7 +65,7 @@ export function createAxis(
             )
         )
 
-    return { x, y, axis }
+    return axis
 }
 
 const limit_area_border = 2
@@ -106,7 +115,7 @@ export function limitArea(
 }
 
 export function limit_area_width(
-    x: d3.ScaleBand<string>,
+    x: d3.ScaleBand<d3.AxisDomain>,
     limit: number,
     offset: number,
     binSize: number,
@@ -128,7 +137,8 @@ export function limit_area_width(
 }
 
 export function hoverBars<T extends { label: string }>(
-    { axis, x }: ReturnType<typeof createAxis>,
+    axis: ReturnType<typeof createAxis>,
+    x: d3.AxisScale<d3.AxisDomain>,
     data: T[]
 ) {
     const { height } = defaultGraphBounds()
@@ -139,7 +149,7 @@ export function hoverBars<T extends { label: string }>(
         .join("rect")
         .attr("class", "hover-bar")
         .attr("height", height)
-        .attr("width", x.bandwidth())
+        .attr("width", x.bandwidth!())
         .attr("x", (d) => x(d.label)!)
         .attr("y", 0)
 }
@@ -148,13 +158,9 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
     const maxValue = _.sum(Object.values(max?.values ?? []))
 
-    const { axis, x, y } = createAxis(
-        svg,
-        chart.data.map((datum) => datum.label),
-        maxValue,
-        0,
-        chart.tick_spacing
-    )
+    const x = defaultX(chart.data.map((datum) => datum.label))
+    const y = defaultY(0, maxValue)
+    const axis = createAxis(svg, chart.tick_spacing, x, y)
 
     const stack = d3
         .stack<BarDatum, number>()
@@ -176,7 +182,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
-    hoverBars({ axis, x, y }, chart.data)
+    hoverBars(axis, x, chart.data)
         .on("mouseover", function (e: MouseEvent, d) {
             const columnString = [columnLabeler(d.label, chart.barWidth)]
 
@@ -211,7 +217,7 @@ export function barStringLabeler(text: string) {
 }
 
 export type ExtraRenderInput<T = BarChart | CandlestickGraph> = {
-    x: d3.ScaleBand<string>
+    x: d3.ScaleBand<d3.AxisDomain>
     y: d3.ScaleLinear<number, number, never>
     svg: d3.Selection<SVGGElement, unknown, null, undefined>
     maxValue: number

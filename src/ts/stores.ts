@@ -37,7 +37,6 @@ export let scroll = writable(0)
 export let binSize = writable(1)
 
 //Tooltip related stores
-
 export let tooltip = writable<Tooltip>({
     text: [""],
     x: 0,

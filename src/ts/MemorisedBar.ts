@@ -6,6 +6,8 @@ import {
     type FSRS,
     fsrs as Fsrs,
     type FSRSState,
+    FSRSVersion,
+    generatorParameters,
 } from "ts-fsrs"
 import type { DeckConfig } from "./config"
 import { dayFromMs, IDify, today } from "./revlogGraphs"
@@ -17,6 +19,8 @@ export function getMemorisedDays(
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids
 ) {
+    console.log(`ts-fsrs ${FSRSVersion}`)
+
     let deckFsrs: Record<number, FSRS> = {}
     let fsrsCards: Record<number, Card> = {}
 
@@ -25,9 +29,13 @@ export function getMemorisedDays(
     function getFsrs(config: DeckConfig) {
         const id = config.id
         if (!deckFsrs[id]) {
-            deckFsrs[id] = Fsrs({
-                w: config.fsrsParams5,
-            })
+            deckFsrs[id] = Fsrs(
+                generatorParameters({
+                    w: config.fsrsParams5 ? config.fsrsParams5 : config.fsrsWeights,
+                    enable_fuzz: false,
+                    enable_short_term: true,
+                })
+            )
         }
         return deckFsrs[id]
     }
@@ -60,6 +68,7 @@ export function getMemorisedDays(
         const new_card = !fsrsCards[revlog.cid]
         const now = new Date(revlog.id)
         const fsrs = getFsrs(config)
+        //console.log({fsrs})
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
 
         if (revlog.ivl == 0 && !new_card) {
@@ -104,6 +113,8 @@ export function getMemorisedDays(
 
         fsrsCards[revlog.cid] = card
     }
+
+    // console.log({ deckFsrs })
 
     let inaccurate_cids: any[] = []
     let accurate_cids: number[] = []
