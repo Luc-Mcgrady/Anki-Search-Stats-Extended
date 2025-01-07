@@ -21,7 +21,7 @@
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import TrendValue from "./TrendValue.svelte"
     import MemorisedBar from "./MemorisedBar.svelte"
-    import { DeltaIfy } from "./Candlestick"
+    import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
 
@@ -266,7 +266,13 @@
 <GraphCategory>
     <GraphContainer>
         <h1>{$burdenOrLoad} Trend</h1>
-        <LineOrCandlestick data={burden} label={$burdenOrLoad} bind:trend_data={burden_trend} />
+        <LineOrCandlestick
+            data={burden}
+            label={$burdenOrLoad}
+            bind:trend_data={burden_trend}
+            up_colour={CANDLESTICK_RED}
+            down_colour={CANDLESTICK_GREEN}
+        />
         <p>
             This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows

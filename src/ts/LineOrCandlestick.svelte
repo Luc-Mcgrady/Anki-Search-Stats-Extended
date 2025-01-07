@@ -1,5 +1,10 @@
 <script lang="ts">
-    import { DeltaIfy, type CandlestickGraph } from "./Candlestick"
+    import {
+        CANDLESTICK_GREEN,
+        CANDLESTICK_RED,
+        DeltaIfy,
+        type CandlestickGraph,
+    } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import GraphTypeSelector from "./GraphTypeSelector.svelte"
     import LineGraph from "./LineGraph.svelte"
@@ -9,6 +14,8 @@
     let type = "total"
     export let data: number[]
     export let label = "value"
+    export let up_colour = CANDLESTICK_GREEN
+    export let down_colour = CANDLESTICK_RED
 
     let bins = 30
 
@@ -23,6 +30,8 @@
                 delta,
             })),
             tick_spacing: 5,
+            up_colour,
+            down_colour,
         }
 
     export let trend_data: TrendLine | undefined
