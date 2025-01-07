@@ -39,6 +39,7 @@ export function renderLineChart(svg: SVGElement, values: number[], label = "Valu
         .attr("fill", "none")
         .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
+        .style("pointer-events", "none")
         .attr(
             "d",
             d3
