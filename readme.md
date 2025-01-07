@@ -75,7 +75,7 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ### Burden Trend
 
-![image](https://github.com/user-attachments/assets/acad50ec-72b1-4041-a5af-b63ad3e4fa67)
+![image](https://github.com/user-attachments/assets/38716099-591c-4945-9d31-8c6fb7b4e09b)
 
 ### Card Count / Interval Time Machines
 
@@ -83,8 +83,7 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 ## FSRS Memorised over time
 
-![image](https://github.com/user-attachments/assets/8c83f277-c4cf-4312-8075-1a42a800942d)
-
+![image](https://github.com/user-attachments/assets/480aad12-7c32-402d-bdfc-30b1f019fc7e)
 
 ## Development
 
