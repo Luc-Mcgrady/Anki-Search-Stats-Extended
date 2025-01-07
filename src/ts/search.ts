@@ -72,9 +72,9 @@ export interface Revlog {
     ease: 0 | 1 | 2 | 3 | 4
     ivl: number
     lastIvl: number
-    //factor: number
+    factor: number
     time: number
-    //type: number
+    type: number
 }
 
 export async function getCardData(cids: number[]) {

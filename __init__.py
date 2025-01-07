@@ -52,7 +52,7 @@ def card_data() -> bytes:
 
 post_handlers["cardData"] = card_data
 
-REVLOG_COLUMNS = ["revlog.id", "cid", "ease", "revlog.ivl", "lastIvl", "time"]
+REVLOG_COLUMNS = ["id", "cid", "ease", "ivl", "lastIvl", "time", "factor", "type"]
 DAY_SECONDS = 60 * 60 * 24
 
 def revlogs() -> bytes:

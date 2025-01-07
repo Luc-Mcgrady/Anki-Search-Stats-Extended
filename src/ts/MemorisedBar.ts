@@ -2,8 +2,10 @@ import _ from "lodash"
 import {
     type Card,
     createEmptyCard,
+    dateDiffInDays,
     type FSRS,
     fsrs as Fsrs,
+    type FSRSState,
     FSRSVersion,
     generatorParameters,
 } from "ts-fsrs"
@@ -73,7 +75,12 @@ export function getMemorisedDays(
             card = fsrs.forget(card, now).card
             fsrsCards[revlog.cid] = card
         }
+        // set due date or reschedule
         if (grade == 0) {
+            continue
+        }
+        // cram
+        if (revlog.type == 3 && revlog.factor == 0) {
             continue
         }
         if (last_stability[revlog.cid]) {
@@ -83,9 +90,25 @@ export function getMemorisedDays(
         }
 
         //console.log(grade)
-        const log = fsrs.next(card, now, grade)
-        //console.log(log)
-        card = log.card
+        let memoryState: FSRSState | null = null
+        let elapsed = 0
+        if (card.last_review) {
+            memoryState = card.stability
+                ? {
+                      difficulty: card.difficulty,
+                      stability: card.stability,
+                  }
+                : null
+            const oldDate = new Date(card.last_review.getTime() - 4 * 60 * 60 * 1000)
+            oldDate.setHours(0, 0, 0, 0)
+            const newDate = new Date(now.getTime() - 4 * 60 * 60 * 1000)
+            newDate.setHours(0, 0, 0, 0)
+            elapsed = dateDiffInDays(oldDate, newDate)
+        }
+        const newState = fsrs.next_state(memoryState, elapsed, grade)
+        card.last_review = now
+        card.stability = newState.stability
+        card.difficulty = newState.difficulty
         last_stability[revlog.cid] = card.stability // To prevent "forget" affecting the forgetting curve
 
         fsrsCards[revlog.cid] = card
@@ -102,10 +125,14 @@ export function getMemorisedDays(
         const fsrs = getFsrs(card_config(num_cid)!)
         forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1)
         if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
-            const expected = last_stability[num_cid].toFixed(2)
-            const actual = JSON.parse(cards_by_id[num_cid].data).s.toFixed(2)
-            if (expected != actual) {
-                inaccurate_cids.push({ cid: num_cid, expected, actual })
+            const expected = last_stability[num_cid]
+            const actual = JSON.parse(cards_by_id[num_cid].data).s
+            if (Math.abs(expected - actual) > 0.01) {
+                inaccurate_cids.push({
+                    cid: num_cid,
+                    expected: expected.toFixed(2),
+                    actual: actual.toFixed(2),
+                })
             } else {
                 accurate_cids.push(num_cid)
             }
