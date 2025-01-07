@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { CardData } from "./search"
+    import { catchErrors, type CardData } from "./search"
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
@@ -10,10 +10,8 @@
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden } = calculateCardDataPies(
-        cardData ?? [],
-        $include_suspended,
-        true_zero_inclusive
+    $: ({ lapses, repetitions, lapses_burden, repetitions_burden } = catchErrors(() =>
+        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
 
     let lapse_last = 7
