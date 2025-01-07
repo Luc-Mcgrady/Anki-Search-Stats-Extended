@@ -10,7 +10,7 @@ import {
     generatorParameters,
 } from "ts-fsrs"
 import type { DeckConfig } from "./config"
-import { dayFromMs, IDify, today } from "./revlogGraphs"
+import { dayFromMs, IDify, rollover_ms, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
 
 export function getMemorisedDays(
@@ -99,9 +99,9 @@ export function getMemorisedDays(
                       stability: card.stability,
                   }
                 : null
-            const oldDate = new Date(card.last_review.getTime() - 4 * 60 * 60 * 1000)
+            const oldDate = new Date(card.last_review.getTime() - rollover_ms)
             oldDate.setHours(0, 0, 0, 0)
-            const newDate = new Date(now.getTime() - 4 * 60 * 60 * 1000)
+            const newDate = new Date(now.getTime() - rollover_ms)
             newDate.setHours(0, 0, 0, 0)
             elapsed = dateDiffInDays(oldDate, newDate)
         }

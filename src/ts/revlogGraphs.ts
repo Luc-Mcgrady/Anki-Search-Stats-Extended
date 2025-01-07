@@ -4,10 +4,11 @@ import { totalCalc } from "./barHelpers"
 import type { CardData, Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
+export const rollover_ms = rollover * 60 * 60 * 1000
 export const day_ms = 1000 * 60 * 60 * 24
 
 export function dayFromMs(ms: number) {
-    return Math.floor((ms - rollover * 60 * 60 * 1000) / day_ms)
+    return Math.floor((ms - rollover_ms) / day_ms)
 }
 
 export const today = dayFromMs(Date.now())
