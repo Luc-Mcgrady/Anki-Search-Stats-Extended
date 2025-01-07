@@ -53,7 +53,7 @@ export function renderLineChart(svg: SVGElement, values: number[], label = "Valu
         .join("rect")
         .attr("class", "hover-bar")
         .attr("height", height)
-        .attr("width", date_values.length / width)
+        .attr("width", date_values.length / width + 1)
         .attr("x", (d) => x(d.date)!)
         .attr("y", 0)
         .on("mouseover", (e: MouseEvent, d) => {
