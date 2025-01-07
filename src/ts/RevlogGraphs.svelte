@@ -2,17 +2,7 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import { catchErrors, type CardData, type Revlog } from "./search"
-    import {
-        binSize,
-        burdenOrLoad,
-        config,
-        other,
-        pieLast,
-        pieSteps,
-        scroll,
-        searchLimit,
-    } from "./stores"
-    import Candlestick from "./Candlestick.svelte"
+    import { binSize, burdenOrLoad, config, pieLast, pieSteps, scroll, searchLimit } from "./stores"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
@@ -31,7 +21,7 @@
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import TrendValue from "./TrendValue.svelte"
     import MemorisedBar from "./MemorisedBar.svelte"
-    import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
+    import { DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
 
@@ -276,7 +266,7 @@
 <GraphCategory>
     <GraphContainer>
         <h1>{$burdenOrLoad} Trend</h1>
-        <LineOrCandlestick data={burden} label={$burdenOrLoad} trend_data={burden_trend} />
+        <LineOrCandlestick data={burden} label={$burdenOrLoad} bind:trend_data={burden_trend} />
         <p>
             This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
             in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows

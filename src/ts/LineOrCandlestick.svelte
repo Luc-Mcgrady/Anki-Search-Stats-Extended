@@ -3,7 +3,7 @@
     import Candlestick from "./Candlestick.svelte"
     import GraphTypeSelector from "./GraphTypeSelector.svelte"
     import LineGraph from "./LineGraph.svelte"
-    import { searchLimit } from "./stores"
+    import { binSize, scroll, searchLimit } from "./stores"
     import type { TrendLine } from "./trend"
 
     let type = "total"
@@ -11,15 +11,13 @@
     export let label = "value"
 
     let bins = 30
-    let binSize = 1
-    let offset = 0
 
     $: limit = -1 - $searchLimit
 
     let candlestick_data: CandlestickGraph
     $: if (data)
         candlestick_data = {
-            start: data[data.length - bins * binSize - Math.abs(offset) - 1] || 0,
+            start: data[data.length - bins * $binSize - Math.abs($scroll) - 1] || 0,
             data: Array.from(DeltaIfy(data)).map((delta, i) => ({
                 label: i.toString(),
                 delta,
@@ -44,5 +42,12 @@
 {#if type == "total"}
     <LineGraph {data} {label} />
 {:else}
-    <Candlestick data={candlestick_data} bind:bins bind:binSize {limit} {trend_data} />
+    <Candlestick
+        data={candlestick_data}
+        bind:bins
+        bind:binSize={$binSize}
+        {limit}
+        bind:trend_data
+        bind:offset={$scroll}
+    />
 {/if}
