@@ -40,7 +40,7 @@ export function getMemorisedDays(
         return deckFsrs[id]
     }
 
-    let retrivabilityDays: number[] = []
+    let retrievabilityDays: number[] = []
     function card_config(cid: number) {
         const card = cards_by_id[cid]
         if (!card) {
@@ -52,7 +52,7 @@ export function getMemorisedDays(
     function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number) {
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
-            retrivabilityDays[day] = (retrivabilityDays[day] || 0) + retrievability
+            retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
         }
     }
 
@@ -149,5 +149,5 @@ export function getMemorisedDays(
         )
     }
 
-    return retrivabilityDays
+    return retrievabilityDays
 }

@@ -330,7 +330,7 @@
             "ignore reviews before".
             <br />
             <br />
-            In FSRS, each card has a percentage chance of being recalled known as retrivability. This
+            In FSRS, each card has a percentage chance of being recalled known as retrievability. This
             is a sum of those percentages over time.
             <br />
         </p>
