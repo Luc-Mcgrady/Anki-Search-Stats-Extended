@@ -58,6 +58,26 @@ export function getMemorisedDays(
 
     let last_stability: number[] = []
 
+    interface LossBin {
+        real: number
+        predicted: number
+        count: number
+    }
+
+    function incrementLoss(index: number, predicted: number, real: number) {
+        let bin = fatigue_bins[index] || { predicted: 0, real: 0, count: 0 }
+
+        bin.predicted = (bin.predicted || 0) + predicted
+        bin.real = (bin.real || 0) + real
+        bin.count = (bin.count || 0) + 1
+
+        fatigue_bins[index] = bin
+    }
+
+    let fatigue_bins: LossBin[] = []
+    let today_so_far = 0
+    let last_date = new Date()
+
     for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
         if (!config) {
@@ -104,6 +124,16 @@ export function getMemorisedDays(
             const newDate = new Date(now.getTime() - rollover_ms)
             newDate.setHours(0, 0, 0, 0)
             elapsed = dateDiffInDays(oldDate, newDate)
+
+            if (newDate.getTime() != last_date.getTime()) {
+                today_so_far = 0
+                last_date = newDate
+            }
+            incrementLoss(
+                today_so_far++,
+                fsrs.forgetting_curve(elapsed, card.stability),
+                grade > 1 ? 1 : 0
+            )
         }
         const newState = fsrs.next_state(memoryState, elapsed, grade)
         card.last_review = now
@@ -149,5 +179,11 @@ export function getMemorisedDays(
         )
     }
 
-    return retrievabilityDays
+    const fatigueMSE = fatigue_bins.map(({ real, predicted, count }) =>
+        count > 100 ? (real - predicted) ** 2 / count : 0
+    )
+
+    console.log({ fatigueMSE, fatigue_bins })
+
+    return { retrievabilityDays, fatigueMSE }
 }
