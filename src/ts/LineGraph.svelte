@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { renderLineChart } from "./LineGraph"
+    import { renderLineChart, type LineGraphData } from "./LineGraph"
 
     let svg: SVGElement | undefined
 
     export let label: string
-    export let data: number[]
+    export let data: LineGraphData
 
     $: if (svg) renderLineChart(svg, data, label)
 </script>

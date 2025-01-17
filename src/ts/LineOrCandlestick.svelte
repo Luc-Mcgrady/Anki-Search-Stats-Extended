@@ -7,12 +7,13 @@
     } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import GraphTypeSelector from "./GraphTypeSelector.svelte"
+    import type { LineGraphData } from "./LineGraph"
     import LineGraph from "./LineGraph.svelte"
     import { binSize, scroll, searchLimit } from "./stores"
     import type { TrendLine } from "./trend"
 
     let type = "total"
-    export let data: number[]
+    export let data: LineGraphData
     export let label = "value"
     export let up_colour = CANDLESTICK_GREEN
     export let down_colour = CANDLESTICK_RED
@@ -22,10 +23,14 @@
     $: limit = -1 - $searchLimit
 
     let candlestick_data: CandlestickGraph
-    $: if (data)
+    $: if (data && data.values[0]) {
+        // Will only plot the first line in the candlestick
+        debugger
         candlestick_data = {
-            start: data[data.length - bins * $binSize - Math.abs($scroll) - 1] || 0,
-            data: Array.from(DeltaIfy(data)).map((delta, i) => ({
+            start:
+                data.values[0][data.values[0].length - bins * $binSize - Math.abs($scroll) - 1] ||
+                0,
+            data: Array.from(DeltaIfy(data.values[0])).map((delta, i) => ({
                 label: i.toString(),
                 delta,
             })),
@@ -33,6 +38,7 @@
             up_colour,
             down_colour,
         }
+    }
 
     export let trend_data: TrendLine | undefined
 </script>

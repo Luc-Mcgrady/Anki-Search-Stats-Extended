@@ -267,7 +267,11 @@
     <GraphContainer>
         <h1>{$burdenOrLoad} Trend</h1>
         <LineOrCandlestick
-            data={burden}
+            data={{
+                values: [burden],
+                labels: [$burdenOrLoad],
+                colours: ["steelblue"],
+            }}
             label={$burdenOrLoad}
             bind:trend_data={burden_trend}
             up_colour={CANDLESTICK_RED}

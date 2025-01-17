@@ -7,9 +7,10 @@
     import { binSize, card_data, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
+    import type { LineGraphData } from "./LineGraph"
 
     let show = false
-    let data: number[] | undefined = undefined
+    let data: number[][] | undefined = undefined
 
     $: if ($revlogs && $card_data && show)
         data = Array.from(
@@ -35,11 +36,19 @@
         absolute: true,
     }
 
+    let line_graph: LineGraphData
+    $: if (data)
+        line_graph = {
+            values: data,
+            labels: ["cards", "notes"],
+            colours: ["steelblue", "orange"],
+        }
+
     let trend_data: TrendLine
 </script>
 
-{#if data}
-    <LineOrCandlestick {data} label="Cards" bind:trend_data />
+{#if line_graph}
+    <LineOrCandlestick data={line_graph} label="Cards" bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
 {:else if !show}
     <NoGraph faded={false}>

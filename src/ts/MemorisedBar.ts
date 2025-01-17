@@ -41,6 +41,7 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let cardRetrievabilityDays: number[] = []
     function card_config(cid: number) {
         const card = cards_by_id[cid]
         if (!card) {
@@ -49,10 +50,19 @@ export function getMemorisedDays(
         return configs[config_mapping[card.did]]
     }
 
-    function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number) {
+    let notes = _.groupBy(cards, (c) => c.nid)
+
+    function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number, cid: number) {
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
+            cardRetrievabilityDays[day] =
+                (cardRetrievabilityDays[day] || 0) +
+                retrievability /
+                    notes[cards_by_id[cid].nid].reduce(
+                        (a, c) => (dayFromMs(c.id) >= day ? a + 1 : a),
+                        0
+                    )
         }
     }
 
@@ -86,7 +96,7 @@ export function getMemorisedDays(
         if (last_stability[revlog.cid]) {
             const previous = dayFromMs(card.last_review!.getTime())
             const stability = last_stability[revlog.cid]
-            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id))
+            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), revlog.cid)
         }
 
         //console.log(grade)
@@ -123,7 +133,7 @@ export function getMemorisedDays(
         const num_cid = parseInt(cid)
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
-        forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1)
+        forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, num_cid)
         if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
             const expected = last_stability[num_cid]
             const actual = JSON.parse(cards_by_id[num_cid].data).s
@@ -149,5 +159,7 @@ export function getMemorisedDays(
         )
     }
 
-    return retrievabilityDays
+    console.log({ retrievabilityDays, cardRetrievabilityDays })
+
+    return [retrievabilityDays, cardRetrievabilityDays]
 }
