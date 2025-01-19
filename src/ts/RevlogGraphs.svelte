@@ -449,10 +449,10 @@
         </p>
     </GraphContainer>
     {#if $fatigueLoss}
-        <h1>FSRS Loss by Previous Day Reviews</h1>
         <GraphContainer>
+            <h1>FSRS Loss by Fatigue</h1>
             <BarScrollable
-                binSize={10}
+                bind:binSize={fatigue_bin_size}
                 data={{
                     row_colours: ["red"],
                     row_labels: ["RMSE"],
@@ -464,8 +464,20 @@
                 left_aligned
                 average
                 loss
+                trend
+                trend_info={{
+                    x: "prior review that day",
+                    x_s: "prior reviews that day",
+                    y: "loss",
+                    y_s: "loss",
+                }}
             ></BarScrollable>
             <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
+            <p>
+                This graph displays how inaccurate FSRS is by the number of reviews you did prior in
+                that day. <br />
+                Useful if you want to set a learn limit.
+            </p>
         </GraphContainer>
     {/if}
     <GraphContainer>
