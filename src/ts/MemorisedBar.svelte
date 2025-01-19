@@ -7,7 +7,7 @@
     import NoGraph from "./NoGraph.svelte"
     import { emptyBuckets, today, type Buckets } from "./revlogGraphs"
     import { catchErrors } from "./search"
-    import { binSize, card_data, revlogs, searchLimit } from "./stores"
+    import { binSize, card_data, fatigueLoss, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
 
@@ -21,10 +21,8 @@
         )
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
-        fatigueRMSEBuckets = data.fatigueRMSE
+        $fatigueLoss = data.fatigueRMSE
     }
-
-    $: fatigueRMSE = fatigueRMSEBuckets ? Array.from(fatigueRMSEBuckets[group]) : undefined
 
     $: truncated = $searchLimit !== 0
     $: label = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
@@ -38,17 +36,6 @@
         absolute: true,
     }
 
-    let loss_bar: BarChart
-    $: if (fatigueRMSE)
-        loss_bar = {
-            row_colours: ["red"],
-            row_labels: ["RMSE"],
-            data: fatigueRMSE.map((v, i) => ({
-                label: i.toString(),
-                values: v,
-            })),
-        }
-
     let trend_data: TrendLine
     let group: keyof typeof fatigueRMSEBuckets = "young"
 </script>
@@ -56,8 +43,6 @@
 {#if retrievabilityDays}
     <LineOrCandlestick data={retrievabilityDays} label="Cards" bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
-    <BarScrollable binSize={10} data={loss_bar} left_aligned average loss></BarScrollable>
-    <MatureFilterSelector bind:group></MatureFilterSelector>
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}

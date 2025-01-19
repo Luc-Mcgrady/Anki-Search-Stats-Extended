@@ -2,7 +2,16 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import { catchErrors, type CardData, type Revlog } from "./search"
-    import { binSize, burdenOrLoad, config, pieLast, pieSteps, scroll, searchLimit } from "./stores"
+    import {
+        binSize,
+        burdenOrLoad,
+        config,
+        fatigueLoss,
+        pieLast,
+        pieSteps,
+        scroll,
+        searchLimit,
+    } from "./stores"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
@@ -439,6 +448,26 @@
             <b>This will be affected by the card review/display order.</b>
         </p>
     </GraphContainer>
+    {#if $fatigueLoss}
+        <h1>FSRS Loss by Previous Day Reviews</h1>
+        <GraphContainer>
+            <BarScrollable
+                binSize={10}
+                data={{
+                    row_colours: ["red"],
+                    row_labels: ["RMSE"],
+                    data: $fatigueLoss[mature_filter].map((v, i) => ({
+                        label: i.toString(),
+                        values: v,
+                    })),
+                }}
+                left_aligned
+                average
+                loss
+            ></BarScrollable>
+            <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
+        </GraphContainer>
+    {/if}
     <GraphContainer>
         <h1>Time Ratings</h1>
         <BarScrollable
