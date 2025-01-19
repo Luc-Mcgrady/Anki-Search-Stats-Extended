@@ -179,11 +179,12 @@ export function getMemorisedDays(
         )
     }
 
-    const fatigueMSE = fatigue_bins.map(({ real, predicted, count }) =>
-        count > 100 ? (real - predicted) ** 2 / count : 0
-    )
+    const fatigueRMSE = fatigue_bins.map(({ real, predicted, count }) => [
+        ((real - predicted) / count) ** 2 * count,
+        count,
+    ])
 
-    console.log({ fatigueMSE, fatigue_bins })
+    console.log({ fatigueRMSE, fatigue_bins })
 
-    return { retrievabilityDays, fatigueMSE }
+    return { retrievabilityDays, fatigueRMSE }
 }

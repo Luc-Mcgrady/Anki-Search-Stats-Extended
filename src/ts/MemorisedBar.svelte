@@ -4,7 +4,6 @@
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
-    import { easeBarChart } from "./revlogGraphs"
     import { catchErrors } from "./search"
     import { binSize, card_data, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
@@ -12,7 +11,7 @@
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
-    let fatigueMSE: number[] | undefined = undefined
+    let fatigueRMSE: number[][] | undefined = undefined
 
     $: if ($revlogs && $card_data && show) {
         let data = catchErrors(() =>
@@ -20,7 +19,7 @@
         )
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
-        fatigueMSE = Array.from(data.fatigueMSE)
+        fatigueRMSE = Array.from(data.fatigueRMSE)
     }
 
     $: truncated = $searchLimit !== 0
@@ -36,13 +35,13 @@
     }
 
     let loss_bar: BarChart
-    $: if (fatigueMSE)
+    $: if (fatigueRMSE)
         loss_bar = {
             row_colours: ["red"],
-            row_labels: ["MSE"],
-            data: fatigueMSE.map((v, i) => ({
+            row_labels: ["RMSE"],
+            data: fatigueRMSE.map((v, i) => ({
                 label: i.toString(),
-                values: [v],
+                values: v,
             })),
         }
 
@@ -52,7 +51,7 @@
 {#if retrievabilityDays}
     <LineOrCandlestick data={retrievabilityDays} label="Cards" bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
-    <BarScrollable data={loss_bar} left_aligned></BarScrollable>
+    <BarScrollable data={loss_bar} left_aligned average loss></BarScrollable>
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}
