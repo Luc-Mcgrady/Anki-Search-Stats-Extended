@@ -11,7 +11,7 @@ export type BarDatum = {
     label: string
 }
 
-export type LossBar = [number, number]
+export type LossBar = [number, number] // [MSE, Count]
 
 export type BarChart = {
     row_labels: string[]

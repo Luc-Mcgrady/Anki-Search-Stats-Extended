@@ -11,7 +11,7 @@ import {
 } from "ts-fsrs"
 import type { LossBar } from "./bar"
 import type { DeckConfig } from "./config"
-import { type Buckets, dayFromMs, IDify, rollover_ms, today } from "./revlogGraphs"
+import { type Buckets, dayFromMs, emptyBuckets, IDify, rollover_ms, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
 
 interface LossBin {
@@ -75,7 +75,7 @@ export function getMemorisedDays(
         return bin
     }
 
-    let fatigue_bins: Buckets<LossBin[]> = { all: [], young: [], mature: [] }
+    let fatigue_bins: Buckets<LossBin[]> = emptyBuckets(() => [])
     let today_so_far = 0
     let last_date = new Date()
 
@@ -132,26 +132,25 @@ export function getMemorisedDays(
             }
 
             const predicted = fsrs.forgetting_curve(elapsed, card.stability)
+            const y = grade > 1 ? 1 : 0
+            let card_type: LossBin[]
 
             fatigue_bins.all[today_so_far] = incrementLoss(
                 fatigue_bins.all[today_so_far],
                 predicted,
-                grade > 1 ? 1 : 0
+                y
             )
             if (elapsed >= 1) {
-                fatigue_bins.young[today_so_far] = incrementLoss(
-                    fatigue_bins.young[today_so_far],
-                    predicted,
-                    grade > 1 ? 1 : 0
-                )
+                fatigue_bins.not_learn[today_so_far] = incrementLoss(fatigue_bins.not_learn[today_so_far], predicted, y)
                 if (elapsed >= 21) {
-                    fatigue_bins.mature[today_so_far] = incrementLoss(
-                        fatigue_bins.mature[today_so_far],
-                        predicted,
-                        grade > 1 ? 1 : 0
-                    )
+                    card_type = fatigue_bins.mature
+                } else {
+                    card_type = fatigue_bins.young
                 }
+            } else {
+                card_type = fatigue_bins.learn
             }
+            card_type[today_so_far] = incrementLoss(card_type[today_so_far], predicted, y)
 
             today_so_far += 1
         }
