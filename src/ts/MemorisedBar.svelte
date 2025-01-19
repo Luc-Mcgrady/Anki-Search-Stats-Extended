@@ -37,7 +37,6 @@
     }
 
     let trend_data: TrendLine
-    let group: keyof typeof fatigueRMSEBuckets = "young"
 </script>
 
 {#if retrievabilityDays}

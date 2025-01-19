@@ -141,7 +141,11 @@ export function getMemorisedDays(
                 y
             )
             if (elapsed >= 1) {
-                fatigue_bins.not_learn[today_so_far] = incrementLoss(fatigue_bins.not_learn[today_so_far], predicted, y)
+                fatigue_bins.not_learn[today_so_far] = incrementLoss(
+                    fatigue_bins.not_learn[today_so_far],
+                    predicted,
+                    y
+                )
                 if (elapsed >= 21) {
                     card_type = fatigue_bins.mature
                 } else {

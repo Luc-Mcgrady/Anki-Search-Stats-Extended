@@ -157,7 +157,7 @@
     let normalize_ease = false
     $: limit = -1 - $searchLimit
 
-    let mature_filter: keyof RevlogBuckets = "young"
+    let mature_filter: keyof RevlogBuckets = "not_learn"
 
     let fatigue_bin_size = 10
     let interval_scroll = 1
