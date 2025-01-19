@@ -1,9 +1,11 @@
 <script lang="ts">
-    import { SetDateInfinite, type BarChart } from "./bar"
+    import { SetDateInfinite, type BarChart, type LossBar } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
+    import { emptyBuckets, today, type Buckets } from "./revlogGraphs"
     import { catchErrors } from "./search"
     import { binSize, card_data, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
@@ -11,7 +13,7 @@
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
-    let fatigueRMSE: number[][] | undefined = undefined
+    let fatigueRMSEBuckets: Buckets<LossBar[]> = emptyBuckets(() => [])
 
     $: if ($revlogs && $card_data && show) {
         let data = catchErrors(() =>
@@ -19,8 +21,10 @@
         )
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
-        fatigueRMSE = Array.from(data.fatigueRMSE)
+        fatigueRMSEBuckets = data.fatigueRMSE
     }
+
+    $: fatigueRMSE = fatigueRMSEBuckets ? Array.from(fatigueRMSEBuckets[group]) : undefined
 
     $: truncated = $searchLimit !== 0
     $: label = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
@@ -46,12 +50,14 @@
         }
 
     let trend_data: TrendLine
+    let group: keyof typeof fatigueRMSEBuckets = "young"
 </script>
 
 {#if retrievabilityDays}
     <LineOrCandlestick data={retrievabilityDays} label="Cards" bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
-    <BarScrollable data={loss_bar} left_aligned average loss></BarScrollable>
+    <BarScrollable binSize={10} data={loss_bar} left_aligned average loss></BarScrollable>
+    <MatureFilterSelector bind:group></MatureFilterSelector>
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}

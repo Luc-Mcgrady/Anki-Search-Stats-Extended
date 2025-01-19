@@ -65,7 +65,9 @@
         for (const [i, bar] of seperate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
 
-            bars[newIndex].values = bars[newIndex].values.map((a, i) => a + (bar?.values[i] || 0))
+            bars[newIndex].values = bars[newIndex].values.map(
+                (a, i) => a + (bar?.values ? bar?.values[i] || 0 : 0)
+            )
         }
 
         if (average) {
@@ -75,7 +77,7 @@
                     .reduce((p, n) => p + (_.sum(n.values) > 0 ? 1 : 0), 0)
 
                 if (loss) {
-                    bar.values = bar.values = [Math.sqrt(bar.values[0] / bar.values[1])]
+                    bar.values = bar.values ? [Math.sqrt(bar.values[0] / bar.values[1])] : [0, 0]
                 } else {
                     bar.values = bar.values.map((a) => a / (count || 1))
                 }

@@ -18,11 +18,21 @@ interface SiblingReview {
     day: number
 }
 
-export type revlogBuckets = {
-    all: number[][]
-    young: number[][]
-    mature: number[][]
+export type Buckets<T> = {
+    all: T
+    young: T
+    mature: T
 }
+
+export function emptyBuckets<T>(init: () => T): Buckets<T> {
+    return {
+        young: init(),
+        mature: init(),
+        all: init(),
+    }
+}
+
+export type RevlogBuckets = Buckets<number[][]>
 
 export function IDify<T extends { id: number }>(array: T[]) {
     let id_data: Record<number, T> = {}
@@ -49,12 +59,8 @@ export function calculateRevlogStats(
         return [0, 0, 0, 0]
     }
 
-    function emptyRevlogBuckets(): revlogBuckets {
-        return {
-            all: emptyArray(initialEase()),
-            young: emptyArray(initialEase()),
-            mature: emptyArray(initialEase()),
-        }
+    function emptyRevlogBuckets(): RevlogBuckets {
+        return emptyBuckets(() => emptyArray(initialEase()))
     }
 
     const empty_2d_array = []

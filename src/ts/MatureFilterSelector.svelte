@@ -1,5 +1,7 @@
 <script lang="ts">
-    export let group
+    import type { Buckets } from "./revlogGraphs"
+
+    export let group: keyof Buckets<unknown>
 </script>
 
 <div>
