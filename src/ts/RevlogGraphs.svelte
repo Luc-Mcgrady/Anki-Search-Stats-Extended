@@ -476,7 +476,7 @@
             <p>
                 This graph displays how inaccurate FSRS is by the number of reviews you did prior in
                 that day. <br />
-                Useful if you want to set a learn limit.
+                Useful if you want to set a review limit.
             </p>
         </GraphContainer>
     {/if}
