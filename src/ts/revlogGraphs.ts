@@ -232,11 +232,15 @@ export function calculateRevlogStats(
     }
 }
 
-const EASE_COLOURS = ["#a50026", "#fdbe70", "#b6e076", "#006837"].reverse()
-const EASE_LABELS = ["Again", "Hard", "Good", "Easy"].reverse()
+export const EASE_COLOURS = ["#a50026", "#fdbe70", "#b6e076", "#006837"].reverse()
+export const EASE_LABELS = ["Again", "Hard", "Good", "Easy"].reverse()
 
-function retentionStats(data: BarDatum) {
-    return [`${(100 * (1 - data.values[3])).toFixed(2)}% Correct`]
+export function retentionStats(data: BarDatum) {
+    return [formatRetention(1 - data.values[3])]
+}
+
+export function formatRetention(value: number) {
+    return `${(100 * value).toFixed(2)}% Correct`
 }
 
 export function easeBarChart(

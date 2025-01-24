@@ -73,4 +73,5 @@ export interface SSEother {
     learn_ahead_secs: number
     deck_configs: Record<number, DeckConfig>
     deck_config_ids: Record<number, number>
+    days_elapsed: number
 }

@@ -1,3 +1,5 @@
+import { FSRS } from "ts-fsrs"
+import { day_ms } from "./revlogGraphs"
 import type { CardData } from "./search"
 
 export function calculateCardDataPies(
@@ -9,6 +11,9 @@ export function calculateCardDataPies(
     let repetitions: number[] = []
     let lapses_burden: number[] = []
     let repetitions_burden: number[] = []
+    let target_R_days: [number, number][] = [] // [Fail, Pass]
+    target_R_days[300] = [0, 0]
+    const days_elapsed = SSEother.days_elapsed
 
     for (const card of cardData ?? []) {
         if (include_suspended || card.queue !== -1) {
@@ -20,14 +25,31 @@ export function calculateCardDataPies(
 
                 lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + burden
                 repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + burden
+
+                const stability = JSON.parse(card.data).s
+                if (stability) {
+                    let due = card.due > 0 ? card.due - days_elapsed : 0
+                    const target_R = FSRS.prototype.forgetting_curve(
+                        card.ivl > 0 ? card.ivl : -card.ivl / day_ms,
+                        stability
+                    )
+                    const bar = target_R_days[due] ?? [0, 0]
+
+                    bar[0] += 1 - target_R
+                    bar[1] += target_R
+
+                    target_R_days[due] = bar
+                }
             }
         }
     }
+
+    console.log({ target_R_days })
 
     if (!zero_inclusive) {
         delete lapses[0]
         delete lapses_burden[0]
     }
 
-    return { lapses, repetitions, lapses_burden, repetitions_burden }
+    return { lapses, repetitions, lapses_burden, repetitions_burden, target_R_days }
 }

@@ -6,12 +6,15 @@
     import { burdenOrLoad, graph_mode, include_suspended, zero_inclusive } from "./stores"
     import GraphCategory from "./GraphCategory.svelte"
     import { calculateCardDataPies } from "./CardDataPies"
+    import BarScrollable from "./BarScrollable.svelte"
+    import type { BarChart } from "./bar"
+    import { EASE_COLOURS } from "./revlogGraphs"
 
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden } = catchErrors(() =>
-        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
+    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
+        () => calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
 
     let lapse_last = 7
@@ -19,9 +22,29 @@
 
     let repetitions_last = 21
     let repetitions_steps = 7
+
+    let normalize = true
+    let target_R_days_bar: BarChart
+    $: target_R_days_bar = {
+        row_colours: [EASE_COLOURS[3], EASE_COLOURS[1]].reverse(), // The EASE_COLOURS are in reverse order
+        row_labels: ["Fail", "Pass"].reverse(),
+        reverse_legend: true,
+        data: target_R_days.map((values, label) => ({
+            values: (normalize ? values.map((a) => a / _.sum(values)) : values).reverse(),
+            label: label.toString(),
+        })),
+    }
 </script>
 
 <GraphCategory>
+    <GraphContainer>
+        <h1>Future Due Retention</h1>
+        <BarScrollable data={target_R_days_bar} left_aligned average={normalize}></BarScrollable>
+        <label>
+            <input type="checkbox" bind:checked={normalize} />
+            As Ratio
+        </label>
+    </GraphContainer>
     <GraphContainer>
         <h1>Lapse {$burdenOrLoad}</h1>
         <IntervalGraph
