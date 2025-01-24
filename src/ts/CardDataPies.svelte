@@ -3,7 +3,7 @@
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import { burdenOrLoad, graph_mode, include_suspended, zero_inclusive } from "./stores"
+    import { burdenOrLoad, data, graph_mode, include_suspended, zero_inclusive } from "./stores"
     import GraphCategory from "./GraphCategory.svelte"
     import { calculateCardDataPies } from "./CardDataPies"
     import BarScrollable from "./BarScrollable.svelte"
@@ -11,6 +11,7 @@
     import { EASE_COLOURS } from "./revlogGraphs"
 
     export let cardData: CardData[] | null
+    let target_R_days_bar: BarChart
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
     $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
@@ -24,15 +25,20 @@
     let repetitions_steps = 7
 
     let normalize = true
-    let target_R_days_bar: BarChart
-    $: target_R_days_bar = {
-        row_colours: [EASE_COLOURS[3], EASE_COLOURS[1]].reverse(), // The EASE_COLOURS are in reverse order
-        row_labels: ["Fail", "Pass"].reverse(),
-        reverse_legend: true,
-        data: target_R_days.map((values, label) => ({
-            values: (normalize ? values.map((a) => a / _.sum(values)) : values).reverse(),
-            label: label.toString(),
-        })),
+    $: target_R_days_values = $data
+        ? target_R_days.map((v, i) => [v, ($data.futureDue?.futureDue[i] || 0) - v])
+        : []
+    $: {
+        ;(target_R_days_bar = {
+            row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
+            row_labels: ["Pass", "Fail"],
+            reverse_legend: true,
+            data: target_R_days_values.map((values, label) => ({
+                values: normalize ? values.map((a) => a / _.sum(values)) : values,
+                label: label.toString(),
+            })),
+        }),
+            console.log(target_R_days_bar)
     }
 </script>
 

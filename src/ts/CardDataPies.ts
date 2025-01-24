@@ -11,8 +11,7 @@ export function calculateCardDataPies(
     let repetitions: number[] = []
     let lapses_burden: number[] = []
     let repetitions_burden: number[] = []
-    let target_R_days: [number, number][] = [] // [Fail, Pass]
-    target_R_days[300] = [0, 0]
+    let target_R_days: number[] = []
     const days_elapsed = SSEother.days_elapsed
 
     for (const card of cardData ?? []) {
@@ -28,17 +27,12 @@ export function calculateCardDataPies(
 
                 const stability = JSON.parse(card.data).s
                 if (stability) {
-                    let due = card.due > 0 ? card.due - days_elapsed : 0
+                    let due = card.due < 100_000 ? card.due - days_elapsed : 0
                     const target_R = FSRS.prototype.forgetting_curve(
                         card.ivl > 0 ? card.ivl : -card.ivl / day_ms,
                         stability
                     )
-                    const bar = target_R_days[due] ?? [0, 0]
-
-                    bar[0] += 1 - target_R
-                    bar[1] += target_R
-
-                    target_R_days[due] = bar
+                    target_R_days[due] = (target_R_days[due] ?? 0) + target_R
                 }
             }
         }
