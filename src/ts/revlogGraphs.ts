@@ -18,11 +18,25 @@ interface SiblingReview {
     day: number
 }
 
-export type revlogBuckets = {
-    all: number[][]
-    young: number[][]
-    mature: number[][]
+export type Buckets<T> = {
+    learn: T
+    young: T
+    mature: T
+    not_learn: T
+    all: T
 }
+
+export function emptyBuckets<T>(init: () => T): Buckets<T> {
+    return {
+        learn: init(),
+        not_learn: init(),
+        young: init(),
+        mature: init(),
+        all: init(),
+    }
+}
+
+export type RevlogBuckets = Buckets<number[][]>
 
 export function IDify<T extends { id: number }>(array: T[]) {
     let id_data: Record<number, T> = {}
@@ -49,12 +63,8 @@ export function calculateRevlogStats(
         return [0, 0, 0, 0]
     }
 
-    function emptyRevlogBuckets(): revlogBuckets {
-        return {
-            all: emptyArray(initialEase()),
-            young: emptyArray(initialEase()),
-            mature: emptyArray(initialEase()),
-        }
+    function emptyRevlogBuckets(): RevlogBuckets {
+        return emptyBuckets(() => emptyArray(initialEase()))
     }
 
     const empty_2d_array = []
@@ -110,9 +120,9 @@ export function calculateRevlogStats(
 
         incrementEase(interval_ease, revlog.lastIvl < 0 ? 0 : revlog.lastIvl, ease)
         if (revlog.lastIvl > 0) {
-            incrementEase(day_ease.young, day, ease)
-            incrementEase(fatigue_ease.young, day_review_count[day], ease)
-            incrementEase(time_ease_seconds.young, second, ease)
+            incrementEase(day_ease.not_learn, day, ease)
+            incrementEase(fatigue_ease.not_learn, day_review_count[day], ease)
+            incrementEase(time_ease_seconds.not_learn, second, ease)
             if (revlog.lastIvl >= 21) {
                 incrementEase(day_ease.mature, day, ease)
                 incrementEase(fatigue_ease.mature, day_review_count[day], ease)
@@ -128,10 +138,17 @@ export function calculateRevlogStats(
                     }
                 }
             } else {
+                incrementEase(day_ease.young, day, ease)
+                incrementEase(fatigue_ease.young, day_review_count[day], ease)
+                incrementEase(time_ease_seconds.young, second, ease)
                 if (card) {
                     last_siblings[card.nid] = undefined
                 }
             }
+        } else {
+            incrementEase(day_ease.learn, day, ease)
+            incrementEase(fatigue_ease.learn, day_review_count[day], ease)
+            incrementEase(time_ease_seconds.learn, second, ease)
         }
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
