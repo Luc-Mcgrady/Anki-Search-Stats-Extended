@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.2",
     "cancelable-promise": "^4.3.1",

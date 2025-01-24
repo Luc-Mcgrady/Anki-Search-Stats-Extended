@@ -138,3 +138,8 @@ Check the makefile for more information
 Due to the way its set up you don't have to reload anki for javascript changes, you only have to run make/build again and reload the stats menu.
 
 If you have any cool graph idea's then let me know or just pull request and make it yourself.
+
+## License
+
+All files in this repository are licenced under "GPL-3.0-only"  
+Copyright 2023 Luc McGrady and contributors.
