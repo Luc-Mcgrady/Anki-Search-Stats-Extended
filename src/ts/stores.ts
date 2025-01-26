@@ -36,6 +36,9 @@ export let pieSteps = writable(10)
 export let scroll = writable(0)
 export let binSize = writable(1)
 
+// Graphs which are displayed in sections other than the one in which they are processed
+export let target_R_days = writable<number[]>([])
+
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({
     text: [""],

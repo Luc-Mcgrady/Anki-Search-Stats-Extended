@@ -3,16 +3,22 @@
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import { burdenOrLoad, data, graph_mode, include_suspended, zero_inclusive } from "./stores"
+    import {
+        burdenOrLoad,
+        data,
+        graph_mode,
+        include_suspended,
+        zero_inclusive,
+        target_R_days as target_R_days_values,
+    } from "./stores"
     import GraphCategory from "./GraphCategory.svelte"
     import { calculateCardDataPies } from "./CardDataPies"
     import BarScrollable from "./BarScrollable.svelte"
-    import { barDateLabeler, type BarChart } from "./bar"
-    import { EASE_COLOURS, formatRetention, retentionStats } from "./revlogGraphs"
+    import { barDateLabeler } from "./bar"
+    import { EASE_COLOURS, formatRetention } from "./revlogGraphs"
     import { totalCalc } from "./barHelpers"
 
     export let cardData: CardData[] | null
-    let target_R_days_bar: BarChart
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
     $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
@@ -25,40 +31,10 @@
     let repetitions_last = 21
     let repetitions_steps = 7
 
-    let normalize = true
-    $: target_R_days_values = $data
-        ? target_R_days.map((v, i) => [v, ($data.futureDue?.futureDue[i] || 0) - v])
-        : []
-    $: target_R_days_bar = {
-        row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
-        row_labels: ["Pass", "Fail"],
-        reverse_legend: true,
-        data: target_R_days_values.map((values, label) => ({
-            values: normalize ? values.map((a) => a / _.sum(values)) : values,
-            label: label.toString(),
-        })),
-        extraStats: normalize ? (bar) => [formatRetention(bar.values[0])] : totalCalc,
-        columnLabeler: barDateLabeler,
-        column_counts: !normalize,
-        precision: normalize ? 2 : 0,
-    }
+    $: $target_R_days_values = $data ? target_R_days : []
 </script>
 
 <GraphCategory>
-    <GraphContainer>
-        <h1>Future Due Retention</h1>
-        <BarScrollable data={target_R_days_bar} left_aligned average={normalize}></BarScrollable>
-        <label>
-            <input type="checkbox" bind:checked={normalize} />
-            As Ratio
-        </label>
-        <p>
-            As a ratio this graph shows the retention FSRS predicts you will have on that day (Check
-            "target&nbsp;R" in the card browser). As not a ratio it instead shows how many cards
-            FSRS predicts you will get that day. <br />
-            Does not account for overdue-ness.
-        </p>
-    </GraphContainer>
     <GraphContainer>
         <h1>Lapse {$burdenOrLoad}</h1>
         <IntervalGraph
