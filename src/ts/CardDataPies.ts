@@ -38,8 +38,6 @@ export function calculateCardDataPies(
         }
     }
 
-    console.log({ target_R_days })
-
     if (!zero_inclusive) {
         delete lapses[0]
         delete lapses_burden[0]

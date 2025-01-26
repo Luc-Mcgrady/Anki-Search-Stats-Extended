@@ -7,8 +7,9 @@
     import GraphCategory from "./GraphCategory.svelte"
     import { calculateCardDataPies } from "./CardDataPies"
     import BarScrollable from "./BarScrollable.svelte"
-    import type { BarChart } from "./bar"
-    import { EASE_COLOURS } from "./revlogGraphs"
+    import { barDateLabeler, type BarChart } from "./bar"
+    import { EASE_COLOURS, formatRetention, retentionStats } from "./revlogGraphs"
+    import { totalCalc } from "./barHelpers"
 
     export let cardData: CardData[] | null
     let target_R_days_bar: BarChart
@@ -28,17 +29,17 @@
     $: target_R_days_values = $data
         ? target_R_days.map((v, i) => [v, ($data.futureDue?.futureDue[i] || 0) - v])
         : []
-    $: {
-        ;(target_R_days_bar = {
-            row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
-            row_labels: ["Pass", "Fail"],
-            reverse_legend: true,
-            data: target_R_days_values.map((values, label) => ({
-                values: normalize ? values.map((a) => a / _.sum(values)) : values,
-                label: label.toString(),
-            })),
-        }),
-            console.log(target_R_days_bar)
+    $: target_R_days_bar = {
+        row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
+        row_labels: ["Pass", "Fail"],
+        reverse_legend: true,
+        data: target_R_days_values.map((values, label) => ({
+            values: normalize ? values.map((a) => a / _.sum(values)) : values,
+            label: label.toString(),
+        })),
+        extraStats: normalize ? (bar) => [formatRetention(bar.values[0])] : totalCalc,
+        columnLabeler: barDateLabeler,
+        column_counts: false,
     }
 </script>
 
