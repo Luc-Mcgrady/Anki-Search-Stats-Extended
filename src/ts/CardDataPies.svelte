@@ -51,6 +51,12 @@
             <input type="checkbox" bind:checked={normalize} />
             As Ratio
         </label>
+        <p>
+            As a ratio this graph shows the retention FSRS predicts you will get on that day (Check
+            "target R" in the card browser). This graph shows how many cards FSRS predicts you will
+            get that day. <br />
+            Does not account for overdue-ness.
+        </p>
     </GraphContainer>
     <GraphContainer>
         <h1>Lapse {$burdenOrLoad}</h1>
