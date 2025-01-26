@@ -40,6 +40,7 @@
         extraStats: normalize ? (bar) => [formatRetention(bar.values[0])] : totalCalc,
         columnLabeler: barDateLabeler,
         column_counts: !normalize,
+        precision: normalize ? 2 : 0,
     }
 </script>
 

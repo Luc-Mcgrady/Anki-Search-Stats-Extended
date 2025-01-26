@@ -19,6 +19,7 @@ export type BarChart = {
     barWidth?: number
     reverse_legend?: boolean
     column_counts?: boolean
+    precision?: number
 
     extraStats?: (data: BarDatum) => string[]
     columnLabeler?: (thing: string, width?: number) => string
@@ -172,6 +173,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         columnLabeler = barStringLabeler("Index"),
         extraStats = totalCalc,
         column_counts = true,
+        precision = 2,
     } = chart
 
     axis.append("g")
@@ -191,7 +193,9 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .on("mouseover", function (e: MouseEvent, d) {
             const columnString = columnLabeler(d.label, chart.barWidth)
             const columnCounts = column_counts
-                ? d.values.map((v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`)
+                ? d.values.map(
+                      (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(precision))}`
+                  )
                 : []
 
             tooltipShown.set(true)
