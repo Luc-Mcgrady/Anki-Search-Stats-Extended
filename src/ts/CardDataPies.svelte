@@ -39,7 +39,7 @@
         })),
         extraStats: normalize ? (bar) => [formatRetention(bar.values[0])] : totalCalc,
         columnLabeler: barDateLabeler,
-        column_counts: false,
+        column_counts: !normalize,
     }
 </script>
 
@@ -52,9 +52,9 @@
             As Ratio
         </label>
         <p>
-            As a ratio this graph shows the retention FSRS predicts you will get on that day (Check
-            "target R" in the card browser). This graph shows how many cards FSRS predicts you will
-            get that day. <br />
+            As a ratio this graph shows the retention FSRS predicts you will have on that day (Check
+            "target&nbsp;R" in the card browser). As not a ratio it instead shows how many cards
+            FSRS predicts you will get that day. <br />
             Does not account for overdue-ness.
         </p>
     </GraphContainer>
