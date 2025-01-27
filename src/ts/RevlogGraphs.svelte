@@ -14,7 +14,7 @@
         day_ms,
         easeBarChart,
         today,
-        type revlogBuckets,
+        type RevlogBuckets,
     } from "./revlogGraphs"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
@@ -148,7 +148,7 @@
     let normalize_ease = false
     $: limit = -1 - $searchLimit
 
-    let mature_filter: keyof revlogBuckets = "young"
+    let mature_filter: keyof RevlogBuckets = "young"
 
     let fatigue_bin_size = 10
     let interval_scroll = 1
