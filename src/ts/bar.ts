@@ -18,6 +18,8 @@ export type BarChart = {
     tick_spacing?: number
     barWidth?: number
     reverse_legend?: boolean
+    column_counts?: boolean
+    precision?: number
 
     extraStats?: (data: BarDatum) => string[]
     columnLabeler?: (thing: string, width?: number) => string
@@ -167,7 +169,12 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .keys(_.range(0, chart.row_labels.length))
         .value((obj, key) => obj.values[key])(chart.data)
 
-    const { columnLabeler = barStringLabeler("Index"), extraStats = totalCalc } = chart
+    const {
+        columnLabeler = barStringLabeler("Index"),
+        extraStats = totalCalc,
+        column_counts = true,
+        precision = 2,
+    } = chart
 
     axis.append("g")
         .selectAll("g")
@@ -184,17 +191,16 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     hoverBars(axis, x, chart.data)
         .on("mouseover", function (e: MouseEvent, d) {
-            const columnString = [columnLabeler(d.label, chart.barWidth)]
+            const columnString = columnLabeler(d.label, chart.barWidth)
+            const columnCounts = column_counts
+                ? d.values.map(
+                      (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(precision))}`
+                  )
+                : []
 
             tooltipShown.set(true)
             tooltip.set({
-                text: [
-                    ...columnString,
-                    ...d.values.map(
-                        (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(2))}`
-                    ),
-                    ...extraStats(d),
-                ],
+                text: [columnString, ...columnCounts, ...extraStats(d)],
                 x: tooltipX(e),
                 y: e.pageY,
             })

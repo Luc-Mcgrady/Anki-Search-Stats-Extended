@@ -21,6 +21,7 @@
         showRevlogStats,
         tooltipShown,
         graph_mode,
+        target_R_days,
     } from "./stores"
     import CardDataPies from "./CardDataPies.svelte"
     import _ from "lodash"
@@ -30,6 +31,10 @@
     import DayTimings from "./DayTimings.svelte"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
+    import BarScrollable from "./BarScrollable.svelte"
+    import { EASE_COLOURS, formatRetention } from "./revlogGraphs"
+    import { barDateLabeler, type BarDatum } from "./bar"
+    import { totalCalc } from "./barHelpers"
 
     const { width, height } = defaultGraphBounds()
 
@@ -40,6 +45,25 @@
         ($include_suspended
             ? $data?.intervals!.intervals
             : $not_suspended_data?.intervals!.intervals) || {}
+
+    let normalize = true
+    $: target_R_day_values = $target_R_days.map((v, i) => [
+        v,
+        ($data?.futureDue?.futureDue[i] || 0) - v,
+    ])
+    $: target_R_days_bar = {
+        row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
+        row_labels: ["Pass", "Fail"],
+        reverse_legend: true,
+        data: target_R_day_values.map((values, label) => ({
+            values: normalize ? values.map((a) => a / _.sum(values)) : values,
+            label: label.toString(),
+        })),
+        extraStats: normalize ? (bar: BarDatum) => [formatRetention(bar.values[0])] : totalCalc,
+        columnLabeler: barDateLabeler,
+        column_counts: !normalize,
+        precision: normalize ? 2 : 0,
+    }
 </script>
 
 <h1>Search Stats Extended:</h1>
@@ -62,6 +86,28 @@
                 This graph is the same as the Future Due above except it delineates between types of
                 cards. <br />
                 Very useful if you have learning steps greater than one day.
+            </p>
+        </GraphContainer>
+        <GraphContainer>
+            <h1>Future Due Retention</h1>
+            {#if _.sum($target_R_days) > 0}
+                <BarScrollable data={target_R_days_bar} left_aligned average={normalize}
+                ></BarScrollable>
+            {:else}
+                <NoGraph>
+                    No Data
+                    <small>(FSRS only)</small>
+                </NoGraph>
+            {/if}
+            <label>
+                <input type="checkbox" bind:checked={normalize} />
+                As Ratio
+            </label>
+            <p>
+                As a ratio this graph shows the retention FSRS predicts you will have on that day
+                (Check "target&nbsp;R" in the card browser). As not a ratio it instead shows how
+                many cards FSRS predicts you will get that day. <br />
+                Does not account for overdue-ness.
             </p>
         </GraphContainer>
         <GraphContainer>

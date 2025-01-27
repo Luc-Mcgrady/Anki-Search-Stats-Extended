@@ -3,15 +3,26 @@
     import _ from "lodash"
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import { burdenOrLoad, graph_mode, include_suspended, zero_inclusive } from "./stores"
+    import {
+        burdenOrLoad,
+        data,
+        graph_mode,
+        include_suspended,
+        zero_inclusive,
+        target_R_days as target_R_days_values,
+    } from "./stores"
     import GraphCategory from "./GraphCategory.svelte"
     import { calculateCardDataPies } from "./CardDataPies"
+    import BarScrollable from "./BarScrollable.svelte"
+    import { barDateLabeler } from "./bar"
+    import { EASE_COLOURS, formatRetention } from "./revlogGraphs"
+    import { totalCalc } from "./barHelpers"
 
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden } = catchErrors(() =>
-        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
+    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
+        () => calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
 
     let lapse_last = 7
@@ -19,6 +30,8 @@
 
     let repetitions_last = 21
     let repetitions_steps = 7
+
+    $: $target_R_days_values = $data ? target_R_days : []
 </script>
 
 <GraphCategory>
