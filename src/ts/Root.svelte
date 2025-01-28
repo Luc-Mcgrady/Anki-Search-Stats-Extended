@@ -49,7 +49,7 @@
     let normalize = true
     $: target_R_day_values = $target_R_days.map((v, i) => [
         v,
-        ($data?.futureDue?.futureDue[i] || 0) - v,
+        ($data?.futureDue?.futureDue[i] || 0) - ($learn_data?.futureDue?.futureDue[i] || 0) - v,
     ])
     $: target_R_days_bar = {
         row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
