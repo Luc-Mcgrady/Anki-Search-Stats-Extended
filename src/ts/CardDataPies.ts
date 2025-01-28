@@ -26,17 +26,14 @@ export function calculateCardDataPies(
                 repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + burden
 
                 const stability = JSON.parse(card.data).s
-                if (stability && card.ivl != 0) {
+                if (stability && card.ivl > 0 && card.type == 2 && card.queue > 0) {
                     let due =
                         card.due < 100_000
                             ? card.due > 0
                                 ? card.due - days_elapsed
                                 : 0
                             : card.due / day_ms
-                    const target_R = FSRS.prototype.forgetting_curve(
-                        card.ivl > 0 ? card.ivl : -card.ivl / day_ms,
-                        stability
-                    )
+                    const target_R = FSRS.prototype.forgetting_curve(card.ivl, stability)
                     target_R_days[due] = (target_R_days[due] ?? 0) + target_R
                 }
             }
