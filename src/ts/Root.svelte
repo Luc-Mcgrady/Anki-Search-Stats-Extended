@@ -59,7 +59,9 @@
             values: normalize ? values.map((a) => a / _.sum(values)) : values,
             label: label.toString(),
         })),
-        extraStats: normalize ? (bar: BarDatum) => [formatRetention(bar.values[0])] : totalCalc,
+        extraStats: normalize
+            ? (bar: BarDatum) => [bar.values[0] ? formatRetention(bar.values[0]) : "No data"]
+            : totalCalc,
         columnLabeler: barDateLabeler,
         column_counts: !normalize,
         precision: normalize ? 2 : 0,

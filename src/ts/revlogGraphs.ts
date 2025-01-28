@@ -236,7 +236,7 @@ export const EASE_COLOURS = ["#a50026", "#fdbe70", "#b6e076", "#006837"].reverse
 export const EASE_LABELS = ["Again", "Hard", "Good", "Easy"].reverse()
 
 export function retentionStats(data: BarDatum) {
-    return [formatRetention(1 - data.values[3])]
+    return [_.sum(data.values) ? formatRetention(1 - data.values[3]) : "No data"]
 }
 
 export function formatRetention(value: number) {
