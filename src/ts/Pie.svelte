@@ -28,7 +28,7 @@
         <div style:max-height={`${diameter}px`} class="glossary">
             <div
                 class="grid"
-                style:grid-template-columns={percentage ? "auto auto auto auto" : undefined}
+                style:grid-template-columns={percentage ? "auto auto auto 6ch" : undefined}
             >
                 <span></span>
                 <span>{legend_left}:</span>
