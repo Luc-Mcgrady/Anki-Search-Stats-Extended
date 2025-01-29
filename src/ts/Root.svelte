@@ -107,8 +107,9 @@
             </label>
             <p>
                 As a ratio this graph shows the retention FSRS predicts you will have on that day
-                (Check "target&nbsp;R" in the card browser if you have the fsrs helper addon). As not a ratio it instead shows how
-                many cards FSRS predicts you will get that day. <br />
+                (Check "target&nbsp;R" in the card browser if you have the fsrs helper addon). As
+                not a ratio it instead shows how many cards FSRS predicts you will get that day. <br
+                />
                 Does not account for overdue-ness.
             </p>
         </GraphContainer>
