@@ -1,6 +1,8 @@
 import { derived, get, writable } from "svelte/store"
+import type { LossBar } from "./bar"
 import type { SSEconfig, SSEother } from "./config"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
+import type { Buckets } from "./revlogGraphs"
 import { getRevlogs, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
 
@@ -37,6 +39,7 @@ export let scroll = writable(0)
 export let binSize = writable(1)
 
 // Graphs which are displayed in sections other than the one in which they are processed
+export let fatigueLoss = writable<Buckets<LossBar[]> | undefined>(undefined)
 export let target_R_days = writable<number[]>([])
 
 //Tooltip related stores
