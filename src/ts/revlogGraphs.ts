@@ -96,6 +96,8 @@ export function calculateRevlogStats(
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
 
+    let cid_previous_reviews: number[][] = []
+
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
         ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
@@ -153,6 +155,7 @@ export function calculateRevlogStats(
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
+            cid_previous_reviews[revlog.cid] = []
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
             }
@@ -172,9 +175,25 @@ export function calculateRevlogStats(
         if (card) {
             if (revlog.ivl >= 0 || card.ivl < 0) {
                 burden_revlogs.push(revlog)
+
+                cid_previous_reviews[revlog.cid] ??= []
+                cid_previous_reviews[revlog.cid].push(revlog.ivl)
             }
         }
     }
+
+    let review_intervals: number[][] = []
+    console.log({ cid_previous_reviews, zip: [...cid_previous_reviews.values()] })
+    _.zip(...Object.values(cid_previous_reviews)).forEach((e, i) => {
+        review_intervals[i] ??= []
+        console.log({ e })
+        for (const ivl of e) {
+            if (ivl === undefined) {
+                continue
+            }
+            review_intervals[i][ivl] = review_intervals[i][ivl] ? review_intervals[i][ivl] + 1 : 1
+        }
+    })
 
     // "reduceRight" Used here to iterate backwards, never returns true
     burden_revlogs.reduceRight((_p, revlog) => {
@@ -229,6 +248,7 @@ export function calculateRevlogStats(
         day_forgotten,
         remaining_forgotten,
         intervals,
+        review_intervals,
     }
 }
 

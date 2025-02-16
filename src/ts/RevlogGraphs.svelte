@@ -53,6 +53,7 @@
         remaining_forgotten,
         intervals,
         interval_ease,
+        review_intervals,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -142,6 +143,20 @@
         row_colours: ["#70AFD6"],
         row_labels: ["Cards"],
         data: Array.from(time_machine_intervals).map((v, i) => ({
+            values: [v ?? 0],
+            label: i.toString(),
+        })),
+        tick_spacing: 5,
+        columnLabeler: barStringLabeler("Interval of $s"),
+    }
+
+    let review_no: number = 0
+    let review_bar: BarChart
+    $: console.log({ review_intervals })
+    $: review_bar = {
+        row_colours: ["#70AFD6"],
+        row_labels: ["Cards"],
+        data: Array.from(review_intervals[review_no] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
@@ -573,6 +588,26 @@
                 {time_machine_min}
                 <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
                 0
+            </span>
+        </label>
+        <p>Shows your review intervals for a given date</p>
+        {#if truncated}
+            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+        {/if}
+    </GraphContainer>
+</GraphCategory>
+<GraphCategory>
+    <GraphContainer>
+        <h1>Review Interval Time Machine</h1>
+        <BarScrollable data={review_bar} left_aligned />
+        <label class="scroll">
+            <span>
+                {review_no}:
+            </span>
+            <span class="scroll">
+                0
+                <input type="range" min={0} max={review_intervals.length} bind:value={review_no} />
+                {review_intervals.length}
             </span>
         </label>
         <p>Shows your review intervals for a given date</p>
