@@ -413,72 +413,74 @@
             </p>
             <small><Warning always>Bad Graph</Warning></small>
         </GraphContainer>
-    {/if}
-    <GraphContainer>
-        <h1>Rating Fatigue</h1>
-        <BarScrollable
-            data={easeBarChart(
-                fatigue_ease[mature_filter],
-                0,
-                normalize_ease,
-                barStringLabeler("$s Previous reviews")
-            )}
-            average={normalize_ease}
-            bind:binSize={fatigue_bin_size}
-            left_aligned
-            trend={normalize_ease}
-            trend_by={retention_trend}
-            trend_info={{
-                x: "prior review that day",
-                x_s: "prior reviews that day",
-                y: "retention",
-                y_s: "retention",
-                percentage: true,
-            }}
-        />
-        <label>
-            <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
-        </label>
-
-        <MatureFilterSelector bind:group={mature_filter} />
-        <p>
-            Ratings plotted by how many reviews (that match the search) you did total in that day
-            before rating them.
-            <b>This will be affected by the card review/display order.</b>
-        </p>
-    </GraphContainer>
-    {#if $fatigueLoss}
         <GraphContainer>
-            <h1>FSRS Loss by Fatigue</h1>
+            <h1>Rating Fatigue</h1>
             <BarScrollable
+                data={easeBarChart(
+                    fatigue_ease[mature_filter],
+                    0,
+                    normalize_ease,
+                    barStringLabeler("$s Previous reviews")
+                )}
+                average={normalize_ease}
                 bind:binSize={fatigue_bin_size}
-                data={{
-                    row_colours: ["red"],
-                    row_labels: ["RMSE"],
-                    data: $fatigueLoss[mature_filter].map((v, i) => ({
-                        label: i.toString(),
-                        values: v,
-                    })),
-                }}
                 left_aligned
-                average
-                loss
-                trend
+                trend={normalize_ease}
+                trend_by={retention_trend}
                 trend_info={{
                     x: "prior review that day",
                     x_s: "prior reviews that day",
-                    y: "loss",
-                    y_s: "loss",
+                    y: "retention",
+                    y_s: "retention",
+                    percentage: true,
                 }}
-            ></BarScrollable>
-            <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
+            />
+            <label>
+                <input type="checkbox" bind:checked={normalize_ease} />
+                As Ratio
+            </label>
+
+            <MatureFilterSelector bind:group={mature_filter} />
             <p>
-                This graph displays how inaccurate FSRS is by the number of reviews you did prior in
-                that day. <br />
-                Useful if you want to set a review limit.
+                Ratings plotted by how many reviews (that match the search) you did total in that
+                day before rating them.
+                <b>This will be affected by the card review/display order.</b>
             </p>
+            <small><Warning always>Bad Graph</Warning></small>
         </GraphContainer>
+        {#if $fatigueLoss}
+            <GraphContainer>
+                <h1>FSRS Loss by Fatigue</h1>
+                <BarScrollable
+                    bind:binSize={fatigue_bin_size}
+                    data={{
+                        row_colours: ["red"],
+                        row_labels: ["RMSE"],
+                        data: $fatigueLoss[mature_filter].map((v, i) => ({
+                            label: i.toString(),
+                            values: v,
+                        })),
+                    }}
+                    left_aligned
+                    average
+                    loss
+                    trend
+                    trend_info={{
+                        x: "prior review that day",
+                        x_s: "prior reviews that day",
+                        y: "loss",
+                        y_s: "loss",
+                    }}
+                ></BarScrollable>
+                <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
+                <p>
+                    This graph displays how inaccurate FSRS is by the number of reviews you did
+                    prior in that day. <br />
+                    Useful if you want to set a review limit.
+                </p>
+                <small><Warning always>Bad Graph</Warning></small>
+            </GraphContainer>
+        {/if}
     {/if}
     <GraphContainer>
         <h1>Time Ratings</h1>
