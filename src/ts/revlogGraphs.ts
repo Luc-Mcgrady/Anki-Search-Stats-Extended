@@ -182,16 +182,21 @@ export function calculateRevlogStats(
         }
     }
 
-    let review_intervals: number[][] = []
-    console.log({ cid_previous_reviews, zip: [...cid_previous_reviews.values()] })
+    let review_intervals: number[][][] = [] // [actual, padding]
+    let last_real_review: number[] = []
     _.zip(...Object.values(cid_previous_reviews)).forEach((e, i) => {
         review_intervals[i] ??= []
-        console.log({ e })
+        const arr = review_intervals[i] ?? []
         for (const ivl of e) {
             if (ivl === undefined) {
-                continue
+                const pad_index = last_real_review[i]
+                arr[pad_index] ??= [0, 0]
+                arr[pad_index][1] = arr[pad_index][1] ? arr[pad_index][1] + 1 : 1
+            } else {
+                arr[ivl] ??= [0, 0]
+                arr[ivl][0] = arr[ivl][0] ? arr[ivl][0] + 1 : 1
+                last_real_review[i] = ivl
             }
-            review_intervals[i][ivl] = review_intervals[i][ivl] ? review_intervals[i][ivl] + 1 : 1
         }
     })
 

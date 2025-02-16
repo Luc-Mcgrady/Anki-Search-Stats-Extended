@@ -154,10 +154,10 @@
     let review_bar: BarChart
     $: console.log({ review_intervals })
     $: review_bar = {
-        row_colours: ["#70AFD6"],
-        row_labels: ["Cards"],
+        row_colours: ["#70AFD6", "#0c8b91"],
+        row_labels: ["Cards", "Previous"],
         data: Array.from(review_intervals[review_no] ?? []).map((v, i) => ({
-            values: [v ?? 0],
+            values: v,
             label: i.toString(),
         })),
         tick_spacing: 5,
