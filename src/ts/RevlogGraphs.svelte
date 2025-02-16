@@ -151,8 +151,7 @@
 
     let include_reintroduced = true
     $: truncated = $searchLimit !== 0
-    $: introduced_ease =
-        include_reintroduced && truncated ? day_initial_reintroduced_ease : day_initial_ease
+    $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
     $: limit = -1 - $searchLimit
