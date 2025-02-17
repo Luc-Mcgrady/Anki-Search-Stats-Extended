@@ -182,23 +182,24 @@ export function calculateRevlogStats(
         }
     }
 
-    let review_intervals: number[][][] = [] // [actual, padding]
-    let last_real_review: number[] = []
-    _.zip(...Object.values(cid_previous_reviews)).forEach((e, i) => {
-        review_intervals[i] ??= []
-        const arr = review_intervals[i] ?? []
-        for (const ivl of e) {
-            if (ivl === undefined) {
-                const pad_index = last_real_review[i]
-                arr[pad_index] ??= [0, 0]
-                arr[pad_index][1] = arr[pad_index][1] ? arr[pad_index][1] + 1 : 1
-            } else {
-                arr[ivl] ??= [0, 0]
-                arr[ivl][0] = arr[ivl][0] ? arr[ivl][0] + 1 : 1
-                last_real_review[i] = ivl
-            }
+    let card_reviews = Object.values(cid_previous_reviews)
+    let last_review = _.max(card_reviews.map((arr) => arr.length)) ?? 0
+    let review_intervals: [number, number][][] = new Array(last_review).fill(null).map(() => []) // [actual, padding]
+
+    for (const card of card_reviews) {
+        for (const [i, ivl] of card.entries()) {
+            const arr = review_intervals[i]
+            arr[ivl] ??= [0, 0]
+            arr[ivl][0] = arr[ivl][0] ? arr[ivl][0] + 1 : 1
         }
-    })
+        const last_real_review = card.pop() ?? 0
+        for (let i = card.length; i < last_review; i++) {
+            const arr = review_intervals[i]
+            const pad_index = last_real_review
+            arr[pad_index] ??= [0, 0]
+            arr[pad_index][1] = arr[pad_index][1] ? arr[pad_index][1] + 1 : 1
+        }
+    }
 
     // "reduceRight" Used here to iterate backwards, never returns true
     burden_revlogs.reduceRight((_p, revlog) => {
