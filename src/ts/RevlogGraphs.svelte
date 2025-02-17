@@ -152,12 +152,13 @@
 
     let review_no: number = 0
     let review_bar: BarChart
+    let show_settled = false
     $: console.log({ review_intervals })
     $: review_bar = {
-        row_colours: ["#70AFD6", "#0c8b91"],
-        row_labels: ["Cards", "Previous"],
+        row_colours: show_settled ? ["#70AFD6", "#0c8b91"] : ["#70AFD6"],
+        row_labels: show_settled ? ["Active", "Settled"] : ["Cards"],
         data: Array.from(review_intervals[review_no] ?? []).map((v, i) => ({
-            values: v,
+            values: show_settled ? v : [(v ?? [0])[0]],
             label: i.toString(),
         })),
         tick_spacing: 5,
@@ -598,19 +599,32 @@
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Review Interval Time Machine</h1>
+        <h1>Interval By Previous Reviews</h1>
         <BarScrollable data={review_bar} left_aligned />
         <label class="scroll">
-            <span>
-                {review_no}:
+            <span style:width="3ch">
+                {review_no + 1}:
             </span>
             <span class="scroll">
-                0
-                <input type="range" min={0} max={review_intervals.length} bind:value={review_no} />
+                1
+                <input
+                    type="range"
+                    min={0}
+                    max={review_intervals.length - 1}
+                    bind:value={review_no}
+                />
                 {review_intervals.length}
             </span>
         </label>
-        <p>Shows your review intervals for a given date</p>
+        <label>
+            <input type="checkbox" bind:checked={show_settled} />
+            Show Settled
+        </label>
+        <p>Shows the intervals for cards when they had X number of previous reviews</p>
+        <p>
+            <code>Show Settled</code>
+             will also show cards which have less reviews than X
+        </p>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
