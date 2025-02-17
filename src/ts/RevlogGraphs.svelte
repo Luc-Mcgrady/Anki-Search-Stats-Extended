@@ -620,11 +620,20 @@
             <input type="checkbox" bind:checked={show_settled} />
             Show Settled
         </label>
-        <p>Shows the intervals for cards when they had X number of previous reviews</p>
+        <p>
+            Shows the intervals for cards when they had X number of previous reviews (intra-day
+            reviews are not counted)
+        </p>
         <p>
             <code>Show Settled</code>
-             will also show cards which have less reviews than X
+            will also show cards which have less reviews than X
         </p>
+        <span>
+            Cards with {">"}
+            {review_no - 1} reviews: {_.sumBy(review_intervals[review_no] ?? [], (b) =>
+                b ? b[0] : 0
+            )}
+        </span>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
