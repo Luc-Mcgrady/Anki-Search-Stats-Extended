@@ -120,6 +120,11 @@ export function calculateRevlogStats(
             incrementEase(time_ease_seconds.all, second, ease)
         }
 
+        if (revlog.ivl > 0) {
+            cid_previous_reviews[revlog.cid] ??= []
+            cid_previous_reviews[revlog.cid].push(revlog.ivl)
+        }
+
         incrementEase(interval_ease, revlog.lastIvl < 0 ? 0 : revlog.lastIvl, ease)
         if (revlog.lastIvl > 0) {
             incrementEase(day_ease.not_learn, day, ease)
@@ -155,7 +160,7 @@ export function calculateRevlogStats(
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
-            cid_previous_reviews[revlog.cid] = []
+            delete cid_previous_reviews[revlog.cid]
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
             }
@@ -175,13 +180,11 @@ export function calculateRevlogStats(
         if (card) {
             if (revlog.ivl >= 0 || card.ivl < 0) {
                 burden_revlogs.push(revlog)
-
-                cid_previous_reviews[revlog.cid] ??= []
-                cid_previous_reviews[revlog.cid].push(revlog.ivl)
             }
         }
     }
 
+    // Cards by previous reviews
     let card_reviews = Object.values(cid_previous_reviews)
     let last_review = _.max(card_reviews.map((arr) => arr.length)) ?? 0
     let review_intervals: [number, number][][] = new Array(last_review).fill(null).map(() => []) // [actual, padding]
