@@ -12,10 +12,7 @@
 
     let bars: BarDatum[]
     $: {
-        const len = Object.keys(all.futureDue).reduce(
-            (a, b) => (a > parseInt(b) ? a : parseInt(b)),
-            0
-        )
+        const len = Object.keys(all.futureDue).reduce((a, b) => (a > +b ? a : +b), 0)
         let newbars = _.range(0, len)
         bars = newbars.map((i) => ({
             label: i.toString(),
@@ -29,7 +26,7 @@
             const learn_day = (learn.futureDue[day] ?? 0) - relearn_day
             const young_day = all_day - learn_day - relearn_day - mature_day
 
-            bars[parseInt(day)] = {
+            bars[+day] = {
                 label: day,
                 values: [mature_day, young_day, relearn_day, learn_day],
             }

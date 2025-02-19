@@ -213,12 +213,12 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 }
 
 export function barDateLabeler(label: string, width: number = 1) {
-    return tooltipDate(parseInt(label), width) + ":"
+    return tooltipDate(+label, width) + ":"
 }
 
 export function barStringLabeler(text: string) {
     return (label: string, width: number = 1) => {
-        const rightmost = width > 1 ? `-${parseInt(label) + width - 1}` : ""
+        const rightmost = width > 1 ? `-${+label + width - 1}` : ""
         const value = `${label}${rightmost}`
         return `${text.replace("$s", value)}:`
     }

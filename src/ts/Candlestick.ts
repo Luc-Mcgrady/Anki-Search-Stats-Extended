@@ -68,7 +68,7 @@ export function plotCandlestick(
         .on("mouseover", (e, d) => {
             const delta = (d.end - d.begin) * (d.positive ? 1 : -1)
             const final = d.positive ? d.end : d.begin
-            const date = tooltipDate(parseInt(d.label), graph.bar_width ?? 1)
+            const date = tooltipDate(+d.label, graph.bar_width ?? 1)
 
             tooltipShown.set(true)
             tooltip.set({

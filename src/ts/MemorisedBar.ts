@@ -173,7 +173,7 @@ export function getMemorisedDays(
     let accurate_cids: number[] = []
 
     for (const [cid, card] of Object.entries(fsrsCards)) {
-        const num_cid = parseInt(cid)
+        const num_cid = +cid
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
         forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1)

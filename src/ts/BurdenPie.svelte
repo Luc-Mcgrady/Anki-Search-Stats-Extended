@@ -11,8 +11,7 @@
     $: {
         burdens = { ...intervals }
         Object.entries(burdens).forEach(([key, val]) => {
-            const num_key = parseInt(key)
-            burdens[num_key] = val / num_key
+            burdens[+key] = val / +key
         })
     }
 </script>

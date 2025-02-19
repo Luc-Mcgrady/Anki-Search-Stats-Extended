@@ -98,13 +98,14 @@
     $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
     $: time_machine_added = Object.entries(addedCards).reduce(
-        (p, [i, v]) => p + (parseInt(i) <= realScroll ? v : 0),
+        (p, [i, v]) => p + (+i <= realScroll ? v : 0),
         0
     )
 
     let left_bound_at = "Review"
 
     function minIndex(vals: Record<number, any>) {
+        // The lambda "(k) => parseInt(k)" here is required for reasons beyond my comprehension
         return _.min(Object.keys(vals).map((k) => parseInt(k))) ?? 0
     }
 

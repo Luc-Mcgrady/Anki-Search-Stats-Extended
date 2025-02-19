@@ -44,7 +44,7 @@
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
 
         const trend_data = chart.chart.data.map((datum) => ({
-            x: parseInt(datum.label),
+            x: +datum.label,
             y: trend_by(datum.values),
         }))
 

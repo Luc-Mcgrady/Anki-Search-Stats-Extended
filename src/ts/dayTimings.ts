@@ -17,8 +17,7 @@ function countOrTimeSum(countOrTime: GraphsResponse_ReviewCountsAndTimes_Reviews
 export function calcTimePerReview(data: GraphsResponse_ReviewCountsAndTimes) {
     let days: number[] = []
     for (const i in data.count) {
-        days[parseInt(i) + today] =
-            countOrTimeSum(data.time[i]) / (countOrTimeSum(data.count[i]) * 1000)
+        days[+i + today] = countOrTimeSum(data.time[i]) / (countOrTimeSum(data.count[i]) * 1000)
     }
     return days
 }

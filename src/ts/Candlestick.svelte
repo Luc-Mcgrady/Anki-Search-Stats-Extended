@@ -43,7 +43,7 @@
                 let total = chart.chart.start
                 const trend_points = chart.chart.data.map((datum) => {
                     total += datum.delta
-                    return { x: parseInt(datum.label), y: total }
+                    return { x: +datum.label, y: total }
                 })
 
                 trend_data = trendLine(chart, trend_points)

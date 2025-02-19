@@ -16,7 +16,7 @@
         interval_array = []
 
         for (const [i, val] of Object.entries(intervals)) {
-            interval_array[parseInt(i)] = val
+            interval_array[+i] = val
         }
     }
 

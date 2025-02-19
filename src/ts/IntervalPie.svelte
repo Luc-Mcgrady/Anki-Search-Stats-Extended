@@ -67,7 +67,7 @@
             const filler_start = realLast + 1
             const filler_end = last
             const filler_pie_slice = Object.entries(intervals)
-                .filter(([i, _]) => parseInt(i) >= filler_start && parseInt(i) <= filler_end)
+                .filter(([i, _]) => +i >= filler_start && +i <= filler_end)
                 .reduce((n, [_, v]) => n + v, 0)
 
             pie_data.push(
@@ -77,7 +77,7 @@
         const infinite_pie_start = last + 1
 
         const infinite_pie_slice = Object.entries(intervals)
-            .filter(([i, _]) => parseInt(i) >= infinite_pie_start)
+            .filter(([i, _]) => +i >= infinite_pie_start)
             .reduce((n, [_, v]) => n + v, 0)
 
         pie_data.push(PieDatumFactory(infinite_pie_start, "Infinity", infinite_pie_slice, "grey"))
