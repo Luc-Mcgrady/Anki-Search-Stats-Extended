@@ -1,11 +1,10 @@
 <script lang="ts">
-    import { SetDateInfinite, type BarChart, type LossBar } from "./bar"
-    import BarScrollable from "./BarScrollable.svelte"
+    import * as _ from "lodash"
+    import { SetDateInfinite } from "./bar"
+    import GraphContainer from "./GraphContainer.svelte"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
-    import MatureFilterSelector from "./MatureFilterSelector.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
-    import { emptyBuckets, today, type Buckets } from "./revlogGraphs"
     import { catchErrors } from "./search"
     import { binSize, card_data, fatigueLoss, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
@@ -13,7 +12,7 @@
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
-    let fatigueRMSEBuckets: Buckets<LossBar[]> = emptyBuckets(() => [])
+    let bw_matrix: Record<string, (number | undefined)[]> | undefined = undefined
 
     $: if ($revlogs && $card_data && show) {
         let data = catchErrors(() =>
@@ -22,6 +21,7 @@
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
         $fatigueLoss = data.fatigueRMSE
+        bw_matrix = data.bw_matrix
     }
 
     $: truncated = $searchLimit !== 0
@@ -55,9 +55,35 @@
     <NoGraph>Loading</NoGraph>
 {/if}
 
+{#if bw_matrix}
+    <GraphContainer>
+        <div class="grid">
+            <span></span>
+            {#each _.range(0, 11) as difficulty}
+                <span>{difficulty}</span>
+            {/each}
+            {#each Object.entries(bw_matrix).sort(([a, _]) => +a) as [row, values]}
+                <span>{row}:</span>
+                {#each values as bw}
+                    {#if bw}
+                        <span>{bw.toFixed(2)}</span>
+                    {:else}
+                        <span></span>
+                    {/if}
+                {/each}
+            {/each}
+        </div>
+    </GraphContainer>
+{/if}
+
 <style>
     .big {
         width: 100%;
         height: 100%;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(12, auto);
     }
 </style>
