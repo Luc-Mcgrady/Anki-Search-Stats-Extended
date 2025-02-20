@@ -9,6 +9,7 @@
     import { binSize, card_data, fatigueLoss, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
+    import { matrix } from "./matrix"
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
@@ -37,6 +38,11 @@
     }
 
     let trend_data: TrendLine
+    let svg: SVGElement | undefined = undefined
+
+    $: if (svg && bw_matrix) {
+        matrix({ grid: bw_matrix }, svg)
+    }
 </script>
 
 {#if retrievabilityDays}
@@ -57,22 +63,7 @@
 
 {#if bw_matrix}
     <GraphContainer>
-        <div class="grid">
-            <span></span>
-            {#each _.range(0, 11) as difficulty}
-                <span>{difficulty}</span>
-            {/each}
-            {#each Object.entries(bw_matrix).sort(([a, _]) => +a) as [row, values]}
-                <span>{row}:</span>
-                {#each values as bw}
-                    {#if bw}
-                        <span>{bw.toFixed(2)}</span>
-                    {:else}
-                        <span></span>
-                    {/if}
-                {/each}
-            {/each}
-        </div>
+        <svg bind:this={svg}></svg>
     </GraphContainer>
 {/if}
 
