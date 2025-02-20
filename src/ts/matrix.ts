@@ -29,7 +29,16 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
     const data = rows
         .flatMap(([row, cols]) => cols.map((val, col) => ({ row, col, val })))
         .filter((d) => d.val !== undefined)
+
+    const values = data.map((datum) => datum.val)
+
     console.log({ x_groups, rows, data })
+
+    const color = d3
+        .scaleLinear<string>()
+        .domain([_.min(values) ?? 0, 0, _.max(values) ?? 0])
+        .interpolate(d3.interpolateRgb)
+        .range(["red", "white", "blue"])
 
     axis.selectAll("rect")
         .data<{ row: string; col: number; val: number | undefined }>(data)
@@ -39,6 +48,6 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .attr("y", (d) => y(d.row.toString())!)
         .attr("width", x.bandwidth())
         .attr("height", y.bandwidth())
-        .style("fill", (d) => (d.val !== undefined ? "steelblue" : "white"))
+        .style("fill", (d) => (d.val !== undefined ? color(d.val) : "purple"))
         .style("stroke", "black")
 }
