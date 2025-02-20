@@ -222,7 +222,7 @@ export function getMemorisedDays(
     const bw_matrix = Object.fromEntries(
         Object.entries(bw_matrix_count).map(([r_bin, row]) => {
             const new_row = row.map((bin) =>
-                bin.count > 50 ? (bin.predicted - bin.real) / bin.count : undefined
+                bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
             )
             new_row.length = 11
             return [r_bin, new_row]
