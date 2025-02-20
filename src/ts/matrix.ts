@@ -10,26 +10,29 @@ export type Matrix = {
 }
 
 export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElement) {
-    let { width, height } = defaultGraphBounds()
+    let bounds = defaultGraphBounds()
 
     const rows = Object.entries(grid).sort((a, b) => +b[0] - +a[0])
     const x_groups = _.range(0, 11).map((a) => a.toString())
 
+    const box_size = bounds.width / 11
+    bounds.height = rows.length * box_size
     // Build X scales and axis:
-    const x = d3.scaleBand().range([0, width]).domain(x_groups).padding(0.01)
+    const x = d3.scaleBand().range([0, bounds.width]).domain(x_groups).padding(0.01)
     const y = d3
         .scaleBand()
-        .range([height, 0])
+        .range([bounds.height, 0])
         .domain(rows.map((row) => row[0]))
         .padding(0.01)
 
-    const axis = createAxis(svg, 1, x, y)
-    const data = rows.flatMap(([row, cols]) => cols.map((val, col) => ({ row, col, val })))
+    const axis = createAxis(svg, 1, x, y, bounds)
+    const data = rows
+        .flatMap(([row, cols]) => cols.map((val, col) => ({ row, col, val })))
+        .filter((d) => d.val !== undefined)
     console.log({ x_groups, rows, data })
 
     axis.selectAll("rect")
         .data<{ row: string; col: number; val: number | undefined }>(data)
-        .filter(d=>d.val !== undefined)
         .enter()
         .append("rect")
         .attr("x", (d) => x(d.col.toString())!)
