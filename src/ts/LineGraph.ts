@@ -48,14 +48,15 @@ export function renderLineChart(svg: SVGElement, values: number[], label = "Valu
                 .y((d) => y(d.value))
         )
 
+    const bar_width = width / date_values.length + 1
     axis.append("g")
         .selectAll("g")
         .data(date_values.filter((a) => a))
         .join("rect")
         .attr("class", "hover-bar")
         .attr("height", height)
-        .attr("width", date_values.length / width + 1)
-        .attr("x", (d) => x(d.date)!)
+        .attr("width", (_, i) => (i > 0 ? bar_width : bar_width / 2))
+        .attr("x", (d, i) => x(d.date)! - (i > 0 ? bar_width / 2 : 0))
         .attr("y", 0)
         .on("mouseover", (e: MouseEvent, d) => {
             const value_string = d.value > 10 ? d.value.toFixed(0) : d.value.toPrecision(2)
