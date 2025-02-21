@@ -56,4 +56,16 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .attr("height", y.bandwidth() - margin * 2)
         .style("fill", (d) => (d.val !== undefined ? color(d.val) : "purple"))
         .style("stroke", "black")
+
+    axis.selectAll("text")
+        .data<{ row: string; col: number; val: number | undefined }>(data)
+        .enter()
+        .append("text")
+        .attr("x", (d) => x(d.col.toString())! + margin + (x.bandwidth() - margin * 2) / 2)
+        .attr("y", (d) => y(d.row.toString())! + margin + (y.bandwidth() - margin * 2) / 2)
+        .attr("dy", "0.35em") // Vertical alignment
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .style("font-size", "12px")
+        .text((d) => (d.val !== undefined ? `${d.val.toFixed(2)}%` : ""));
 }
