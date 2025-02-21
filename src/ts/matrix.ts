@@ -40,14 +40,18 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .interpolate(d3.interpolateRgb)
         .range(["red", "white", "blue"])
 
+    const margin = 3
+
     axis.selectAll("rect")
         .data<{ row: string; col: number; val: number | undefined }>(data)
         .enter()
         .append("rect")
-        .attr("x", (d) => x(d.col.toString())!)
-        .attr("y", (d) => y(d.row.toString())!)
-        .attr("width", x.bandwidth())
-        .attr("height", y.bandwidth())
+        .attr("xr", margin)
+        .attr("yr", margin)
+        .attr("x", (d) => x(d.col.toString())! + margin)
+        .attr("y", (d) => y(d.row.toString())! + margin)
+        .attr("width", x.bandwidth() - margin * 2)
+        .attr("height", y.bandwidth() - margin * 2)
         .style("fill", (d) => (d.val !== undefined ? color(d.val) : "purple"))
         .style("stroke", "black")
 }
