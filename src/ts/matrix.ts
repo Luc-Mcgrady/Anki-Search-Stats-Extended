@@ -13,6 +13,7 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
     let bounds = defaultGraphBounds()
 
     const rows = Object.entries(grid).sort((a, b) => +b[0] - +a[0])
+    // Hard coded for now
     const x_groups = _.range(0, 11).map((a) => a.toString())
 
     const box_size = bounds.width / 11
@@ -36,7 +37,8 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
 
     const color = d3
         .scaleLinear<string>()
-        .domain([_.min(values) ?? 0, 0, _.max(values) ?? 0])
+        // Hard coded range
+        .domain([-0.2, 0, 0.2])
         .interpolate(d3.interpolateRgb)
         .range(["red", "white", "blue"])
 
