@@ -140,17 +140,21 @@ export function getMemorisedDays(
 
             fatigue_bins.all[today_so_far] = incrementLoss(fatigue_bins.all[today_so_far], p, y)
 
-            const r_bin_power = 1.4
-            const r_bin = _.round(
-                Math.pow(r_bin_power, Math.floor(Math.log(card.stability) / Math.log(r_bin_power))),
-                2
-            )
-            const d_bin = Math.round(card.difficulty)
-            bw_matrix_count[r_bin] ??= []
-            let retention_row = bw_matrix_count[r_bin]
-            retention_row[d_bin] = incrementLoss(retention_row[d_bin], p, y)
-
             if (elapsed >= 1) {
+                if (!new_card && card.stability > 1) {
+                    const r_bin_power = 1.4
+                    const r_bin = _.round(
+                        Math.pow(
+                            r_bin_power,
+                            Math.floor(Math.log(card.stability) / Math.log(r_bin_power))
+                        ),
+                        2
+                    )
+                    const d_bin = Math.round(card.difficulty)
+                    bw_matrix_count[r_bin] ??= []
+                    let retention_row = bw_matrix_count[r_bin]
+                    retention_row[d_bin] = incrementLoss(retention_row[d_bin], p, y)
+                }
                 fatigue_bins.not_learn[today_so_far] = incrementLoss(
                     fatigue_bins.not_learn[today_so_far],
                     p,
@@ -224,7 +228,7 @@ export function getMemorisedDays(
             const new_row = row.map((bin) =>
                 bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
             )
-            new_row.length = 11
+            new_row.length = 10
             return [r_bin, new_row]
         })
     )

@@ -14,9 +14,9 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
 
     const rows = Object.entries(grid).sort((a, b) => +b[0] - +a[0])
     // Hard coded for now
-    const x_groups = _.range(0, 11).map((a) => a.toString())
+    const x_groups = _.range(1, 11).map((a) => a.toString())
 
-    const box_size = bounds.width / 11
+    const box_size = bounds.width / 10
     bounds.height = rows.length * box_size
     // Build X scales and axis:
     const x = d3.scaleBand().range([0, bounds.width]).domain(x_groups).padding(0.01)
@@ -61,11 +61,11 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .data<{ row: string; col: number; val: number | undefined }>(data)
         .enter()
         .append("text")
-        .attr("x", (d) => x(d.col.toString())! + (x.bandwidth()) / 2)
-        .attr("y", (d) => y(d.row.toString())! + (y.bandwidth()) / 2)
+        .attr("x", (d) => x(d.col.toString())! + x.bandwidth() / 2)
+        .attr("y", (d) => y(d.row.toString())! + y.bandwidth() / 2)
         .attr("dy", "0.35em") // Vertical alignment
         .attr("text-anchor", "middle")
         .style("fill", "black")
         .style("font-size", "12px")
-        .text((d) => (d.val !== undefined ? `${(d.val * 100).toFixed(1)}%` : ""));
+        .text((d) => (d.val !== undefined ? `${(d.val * 100).toFixed(1)}%` : ""))
 }
