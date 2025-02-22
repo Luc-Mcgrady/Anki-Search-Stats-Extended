@@ -67,5 +67,5 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .attr("text-anchor", "middle")
         .style("fill", "black")
         .style("font-size", "12px")
-        .text((d) => (d.val !== undefined ? `${d.val.toFixed(2)}%` : ""));
+        .text((d) => (d.val !== undefined ? `${(d.val * 100).toFixed(1)}%` : ""));
 }
