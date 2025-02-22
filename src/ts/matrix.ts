@@ -61,8 +61,8 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .data<{ row: string; col: number; val: number | undefined }>(data)
         .enter()
         .append("text")
-        .attr("x", (d) => x(d.col.toString())! + margin + (x.bandwidth() - margin * 2) / 2)
-        .attr("y", (d) => y(d.row.toString())! + margin + (y.bandwidth() - margin * 2) / 2)
+        .attr("x", (d) => x(d.col.toString())! + (x.bandwidth()) / 2)
+        .attr("y", (d) => y(d.row.toString())! + (y.bandwidth()) / 2)
         .attr("dy", "0.35em") // Vertical alignment
         .attr("text-anchor", "middle")
         .style("fill", "black")
