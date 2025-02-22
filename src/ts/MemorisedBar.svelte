@@ -62,9 +62,12 @@
 {/if}
 
 {#if bw_matrix}
-    <GraphContainer>
-        <svg bind:this={svg}></svg>
-    </GraphContainer>
+    <details>
+        <summary>B-W matrix</summary>
+        <GraphContainer>
+            <svg bind:this={svg}></svg>
+        </GraphContainer>
+    </details>
 {/if}
 
 <style>
