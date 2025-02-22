@@ -44,7 +44,8 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
 
     const margin = 3
 
-    axis.selectAll("rect")
+    axis.append("g")
+        .selectAll("rect")
         .data<{ row: string; col: number; val: number | undefined }>(data)
         .enter()
         .append("rect")
@@ -57,10 +58,10 @@ export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElem
         .style("fill", (d) => (d.val !== undefined ? color(d.val) : "purple"))
         .style("stroke", "black")
 
-    axis.selectAll("text")
+    axis.append("g")
+        .selectAll("text")
         .data<{ row: string; col: number; val: number | undefined }>(data)
-        .enter()
-        .append("text")
+        .join("text")
         .attr("x", (d) => x(d.col.toString())! + x.bandwidth() / 2)
         .attr("y", (d) => y(d.row.toString())! + y.bandwidth() / 2)
         .attr("dy", "0.35em") // Vertical alignment
