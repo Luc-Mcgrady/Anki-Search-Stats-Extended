@@ -7,5 +7,5 @@ export type HeatmapData = {
     y_end: number
     y_bins: number
 
-    raw_data: number[]
+    raw_data: (number | undefined)[]
 }

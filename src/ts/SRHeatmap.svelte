@@ -42,7 +42,7 @@
         }
 
         const total_bins = rBins * sBins
-        const raw_data = new Array(total_bins).fill(0)
+        const raw_data = new Array(total_bins)
 
         let card_state_bounds: CardStateBounds | null = null
         const data_points: CardState[] = []
@@ -107,7 +107,11 @@
 
             const raw_data_idx = clean_r_idx + clean_s_idx * rBins
 
-            raw_data[raw_data_idx] += 1
+            if (raw_data[raw_data_idx] === undefined) {
+                raw_data[raw_data_idx] = 1
+            } else {
+                raw_data[raw_data_idx] += 1
+            }
         }
 
         return {

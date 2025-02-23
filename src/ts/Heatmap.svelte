@@ -50,12 +50,25 @@
         Math.abs(y_scale(data.y_start + row_height) - y_scale(data.y_start))
     )
 
-    const color = $derived(
-        d3.scaleLinear(
-            [Math.min(...data.raw_data), Math.max(...data.raw_data)],
+    const color = $derived.by(() => {
+        const non_null_data = data.raw_data.filter((x) => x !== undefined)
+
+        let min = Math.min(...non_null_data)
+        let max = Math.max(...non_null_data)
+
+        if (min === Infinity) {
+            min = Number.MIN_VALUE
+        }
+
+        if (max === -Infinity) {
+            max = Number.MAX_VALUE
+        }
+
+        return d3.scaleLinear(
+            [Math.min(...non_null_data), Math.max(...non_null_data)],
             ["cornflowerblue", "red"]
         )
-    )
+    })
 
     $effect(() => {
         let xAxisGenerator = d3.axisBottom(x_scale)
@@ -127,14 +140,16 @@
             {#each range(0, data.x_bins) as x_idx (x_idx)}
                 {@const value = data.raw_data[x_idx + y_idx * data.x_bins]}
 
-                <rect
-                    x={x_scale(data.x_start + x_idx * col_width)}
-                    y={y_scale(data.y_start + (y_idx + 1) * row_height)}
-                    width={scaled_col_width}
-                    height={scaled_row_height}
-                    fill={color(value)}
-                    aria-label="value: {value}"
-                />
+                {#if value !== undefined}
+                    <rect
+                        x={x_scale(data.x_start + x_idx * col_width)}
+                        y={y_scale(data.y_start + (y_idx + 1) * row_height)}
+                        width={scaled_col_width}
+                        height={scaled_row_height}
+                        fill={color(value)}
+                        aria-label="value: {value}"
+                    />
+                {/if}
             {/each}
         {/each}
     </g>
