@@ -104,7 +104,6 @@
             <g bind:this={gx} transform="translate(0,{height - marginBottom})" />
 
             {#if xAxisLabel}
-                <!-- TODO: Actually place label sensibly instead of hard-coding -->
                 <text
                     transform="translate({marginLeft +
                         (width - (marginLeft + marginRight)) / 2},{height - 12})"
@@ -121,7 +120,6 @@
             <g bind:this={gy} transform="translate({marginLeft},0)" />
 
             {#if yAxisLabel}
-                <!-- TODO: Actually place label sensibly instead of hard-coding -->
                 <text
                     transform="translate(12, {marginTop +
                         (height - (marginTop + marginBottom)) / 2}) rotate(-90)"
