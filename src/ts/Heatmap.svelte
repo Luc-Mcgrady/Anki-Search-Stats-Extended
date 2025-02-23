@@ -14,6 +14,9 @@
         xAxisLabel?: string
         yAxisLabel?: string
 
+        xAxisTickFormat?: string
+        yAxisTickFormat?: string
+
         data: HeatmapData
     }
 
@@ -28,6 +31,9 @@
 
         xAxisLabel,
         yAxisLabel,
+
+        xAxisTickFormat,
+        yAxisTickFormat,
 
         data,
     }: Props = $props()
@@ -60,9 +66,21 @@
     )
 
     $effect(() => {
-        // TODO: Pass in tickFormat instead of hard-coding
-        d3.select(gx).call(d3.axisBottom(x_scale).tickFormat(d3.format(".0%")))
-        d3.select(gy).call(d3.axisLeft(y_scale))
+        let xAxisGenerator = d3.axisBottom(x_scale)
+        let yAxisGenerator = d3.axisLeft(y_scale)
+
+        if (xAxisTickFormat) {
+            xAxisGenerator = xAxisGenerator.tickFormat(d3.format(xAxisTickFormat))
+        }
+
+        if (yAxisTickFormat) {
+            yAxisGenerator = yAxisGenerator.tickFormat(d3.format(yAxisTickFormat))
+        }
+
+        // @ts-ignore: @types/d3 seems to be wrong
+        d3.select(gx).call(xAxisGenerator)
+        // @ts-ignore: @types/d3 seems to be wrong
+        d3.select(gy).call(yAxisGenerator)
     })
 
     // A helper for creating ranges from `start` (inclusive) to `end` (exclusive)
