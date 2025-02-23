@@ -1,10 +1,11 @@
 <script lang="ts">
+    import { FSRS } from "ts-fsrs"
+
     import { other } from "./stores"
     import type { CardData, CardExtraData } from "./search"
 
     import Heatmap from "./Heatmap.svelte"
     import type { HeatmapData } from "./heatmap"
-    import { calculateR } from "./srHeatmap"
 
     interface Props {
         cardData: CardData[] | null
@@ -63,7 +64,7 @@
             const elapsed_days = $other.days_elapsed - last_review_timestamp
 
             const s = extra_data.s
-            const r = calculateR(elapsed_days, s)
+            const r = FSRS.prototype.forgetting_curve(elapsed_days, s)
 
             if (card_state_bounds === null) {
                 card_state_bounds = {
