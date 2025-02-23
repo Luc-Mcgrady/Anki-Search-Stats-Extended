@@ -3,9 +3,6 @@
     import type { HeatmapData } from "./heatmap"
 
     interface Props {
-        width?: number
-        height?: number
-
         xAxisLabel?: string
         yAxisLabel?: string
 
@@ -16,9 +13,6 @@
     }
 
     const {
-        width = 640,
-        height = 640,
-
         xAxisLabel,
         yAxisLabel,
 
@@ -27,6 +21,9 @@
 
         data,
     }: Props = $props()
+
+    const width = 640
+    const height = 640
 
     const marginTop = 20
     const marginRight = 20
@@ -86,7 +83,7 @@
     }
 </script>
 
-<svg {width} {height}>
+<svg viewBox="0, 0, {width}, {height}" preserveAspectRatio="meet">
     <!-- Axes -->
     <g font-family="sans-serif">
         <!-- X Axis -->
@@ -133,8 +130,8 @@
                 <rect
                     x={x_scale(data.x_start + x_idx * col_width)}
                     y={y_scale(data.y_start + (y_idx + 1) * row_height)}
-                    width="{scaled_col_width}px"
-                    height="{scaled_row_height}px"
+                    width={scaled_col_width}
+                    height={scaled_row_height}
                     fill={color(value)}
                     aria-label="value: {value}"
                 />
