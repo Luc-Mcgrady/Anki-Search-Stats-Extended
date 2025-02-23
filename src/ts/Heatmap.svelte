@@ -11,8 +11,8 @@
         marginLeft?: number
         marginRight?: number
 
-        x_axis_label?: string
-        y_axis_label?: string
+        xAxisLabel?: string
+        yAxisLabel?: string
 
         data: HeatmapData
     }
@@ -26,8 +26,8 @@
         marginBottom = 40,
         marginLeft = 40,
 
-        x_axis_label,
-        y_axis_label,
+        xAxisLabel,
+        yAxisLabel,
 
         data,
     }: Props = $props()
@@ -80,7 +80,7 @@
         <g>
             <g bind:this={gx} transform="translate(0,{height - marginBottom})" />
 
-            {#if x_axis_label}
+            {#if xAxisLabel}
                 <!-- TODO: Actually place label sensibly instead of hard-coding -->
                 <text
                     transform="translate({marginLeft +
@@ -88,7 +88,7 @@
                     text-anchor="middle"
                     fill="currentColor"
                 >
-                    {x_axis_label}
+                    {xAxisLabel}
                 </text>
             {/if}
         </g>
@@ -97,7 +97,7 @@
         <g>
             <g bind:this={gy} transform="translate({marginLeft},0)" />
 
-            {#if y_axis_label}
+            {#if yAxisLabel}
                 <!-- TODO: Actually place label sensibly instead of hard-coding -->
                 <text
                     transform="translate(12, {marginTop +
@@ -105,7 +105,7 @@
                     text-anchor="middle"
                     fill="currentColor"
                 >
-                    {y_axis_label}
+                    {yAxisLabel}
                 </text>
             {/if}
         </g>

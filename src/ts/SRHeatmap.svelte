@@ -124,7 +124,7 @@
 </script>
 
 {#if heatmap_data !== null}
-    <Heatmap x_axis_label="Retrievability" y_axis_label="Stability(days)" data={heatmap_data} />
+    <Heatmap xAxisLabel="Retrievability" yAxisLabel="Stability(days)" data={heatmap_data} />
 {:else}
     <!-- TODO: figure out what Luc does here normally -->
     No data!
