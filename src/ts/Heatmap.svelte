@@ -6,11 +6,6 @@
         width?: number
         height?: number
 
-        marginTop?: number
-        marginBottom?: number
-        marginLeft?: number
-        marginRight?: number
-
         xAxisLabel?: string
         yAxisLabel?: string
 
@@ -24,11 +19,6 @@
         width = 640,
         height = 640,
 
-        marginTop = 20,
-        marginRight = 20,
-        marginBottom = 40,
-        marginLeft = 40,
-
         xAxisLabel,
         yAxisLabel,
 
@@ -37,6 +27,11 @@
 
         data,
     }: Props = $props()
+
+    const marginTop = 20
+    const marginRight = 20
+    const marginBottom = 50
+    const marginLeft = 50
 
     let gx: SVGGElement | undefined = $state(undefined)
     let gy: SVGGElement | undefined = $state(undefined)
