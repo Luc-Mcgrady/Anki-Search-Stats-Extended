@@ -6,6 +6,7 @@
 
     import Heatmap from "./Heatmap.svelte"
     import type { HeatmapData } from "./heatmap"
+    import NoGraph from "./NoGraph.svelte"
 
     interface Props {
         cardData: CardData[] | null
@@ -131,6 +132,5 @@
         data={heatmap_data}
     />
 {:else}
-    <!-- TODO: figure out what Luc does here normally -->
-    No data!
+    <NoGraph />
 {/if}
