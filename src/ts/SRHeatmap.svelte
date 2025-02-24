@@ -99,9 +99,6 @@
             const raw_r_idx = (data_point.r - card_state_bounds.min_r) / r_bin_width
             const raw_s_idx = (data_point.s - card_state_bounds.min_s) / s_bin_width
 
-            console.log(card_state_bounds)
-            console.log(`S: ${data_point.s} R: ${data_point.r} idx: (${raw_r_idx}, ${raw_s_idx})`)
-
             const clean_r_idx = Math.min(rBins - 1, Math.max(0, Math.round(raw_r_idx)))
             const clean_s_idx = Math.min(sBins - 1, Math.max(0, Math.round(raw_s_idx)))
 
