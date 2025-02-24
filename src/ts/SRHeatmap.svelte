@@ -10,17 +10,9 @@
 
     interface Props {
         cardData: CardData[] | null
-
-        rBins?: number
-        sBins?: number
     }
 
-    const {
-        cardData,
-
-        rBins = 20,
-        sBins = 20,
-    }: Props = $props()
+    const { cardData }: Props = $props()
 
     interface CardState {
         r: number
@@ -35,13 +27,16 @@
         max_s: number
     }
 
+    let r_bins: number = $state(20)
+    let s_bins: number = $state(20)
+
     const heatmap_data: HeatmapData | null = $derived.by(() => {
         if (cardData === null) {
             // We have not been given any card data
             return null
         }
 
-        const total_bins = rBins * sBins
+        const total_bins = r_bins * s_bins
         const raw_data = new Array(total_bins)
 
         let card_state_bounds: CardStateBounds | null = null
@@ -91,18 +86,18 @@
             return null
         }
 
-        const r_bin_width = (card_state_bounds.max_r - card_state_bounds.min_r) / rBins
-        const s_bin_width = (card_state_bounds.max_s - card_state_bounds.min_s) / sBins
+        const r_bin_width = (card_state_bounds.max_r - card_state_bounds.min_r) / r_bins
+        const s_bin_width = (card_state_bounds.max_s - card_state_bounds.min_s) / s_bins
 
         // Put counts in bins
         for (const data_point of data_points) {
             const raw_r_idx = (data_point.r - card_state_bounds.min_r) / r_bin_width
             const raw_s_idx = (data_point.s - card_state_bounds.min_s) / s_bin_width
 
-            const clean_r_idx = Math.min(rBins - 1, Math.max(0, Math.round(raw_r_idx)))
-            const clean_s_idx = Math.min(sBins - 1, Math.max(0, Math.round(raw_s_idx)))
+            const clean_r_idx = Math.min(r_bins - 1, Math.max(0, Math.round(raw_r_idx)))
+            const clean_s_idx = Math.min(s_bins - 1, Math.max(0, Math.round(raw_s_idx)))
 
-            const raw_data_idx = clean_r_idx + clean_s_idx * rBins
+            const raw_data_idx = clean_r_idx + clean_s_idx * r_bins
 
             if (raw_data[raw_data_idx] === undefined) {
                 raw_data[raw_data_idx] = 1
@@ -114,11 +109,11 @@
         return {
             x_start: card_state_bounds.min_r,
             x_end: card_state_bounds.max_r,
-            x_bins: rBins,
+            x_bins: r_bins,
 
             y_start: card_state_bounds.min_s,
             y_end: card_state_bounds.max_s,
-            y_bins: sBins,
+            y_bins: s_bins,
 
             raw_data,
         }
