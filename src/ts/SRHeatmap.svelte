@@ -51,6 +51,18 @@
 </script>
 
 {#if heatmap_data !== null}
+    <div class="options">
+        <label>
+            R Bins:
+            <input type="number" min="10" max="100" step="1" bind:value={r_bins} />
+        </label>
+
+        <label>
+            S Bins:
+            <input type="number" min="10" max="100" step="1" bind:value={s_bins} />
+        </label>
+    </div>
+
     <Heatmap
         xAxisLabel="Retrievability"
         xAxisTickFormat=".0%"
@@ -66,3 +78,21 @@
 {:else}
     <NoGraph />
 {/if}
+
+<style lang="scss">
+    .options {
+        display: grid;
+        grid-template-columns: auto 1fr auto 1fr;
+        grid-template-areas: "a a b b";
+        gap: 0.5em;
+        align-items: baseline;
+    }
+
+    label {
+        display: contents;
+    }
+
+    input {
+        min-width: 5em;
+    }
+</style>
