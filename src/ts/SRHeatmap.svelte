@@ -126,13 +126,27 @@
             raw_data,
         }
     })
+
+    const s_tooltip_format = new Intl.NumberFormat(navigator.language, {
+        maximumFractionDigits: 0,
+    })
+
+    const r_tooltip_format = new Intl.NumberFormat(navigator.language, {
+        style: "percent",
+        maximumFractionDigits: 1,
+    })
 </script>
 
 {#if heatmap_data !== null}
     <Heatmap
         xAxisLabel="Retrievability"
         xAxisTickFormat=".0%"
-        yAxisLabel="Stability(days)"
+        yAxisLabel="Stability (days)"
+        xTooltipLabel="R"
+        yTooltipLabel="S"
+        valueTooltipLabel="Cards"
+        xTooltipFormat={r_tooltip_format}
+        yTooltipFormat={s_tooltip_format}
         data={heatmap_data}
     />
 {:else}

@@ -1,6 +1,12 @@
 <script lang="ts">
     import * as d3 from "d3"
-    import type { HeatmapData } from "./heatmap"
+    import { computePosition, flip, shift, offset } from "@floating-ui/dom"
+
+    import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
+
+    const DEFAULT_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
+        maximumFractionDigits: 2,
+    })
 
     interface Props {
         xAxisLabel?: string
@@ -8,6 +14,14 @@
 
         xAxisTickFormat?: string
         yAxisTickFormat?: string
+
+        xTooltipLabel?: string
+        yTooltipLabel?: string
+        valueTooltipLabel?: string
+
+        xTooltipFormat?: Intl.NumberFormat
+        yTooltipFormat?: Intl.NumberFormat
+        valueTooltipFormat?: Intl.NumberFormat
 
         data: HeatmapData
     }
@@ -18,6 +32,14 @@
 
         xAxisTickFormat,
         yAxisTickFormat,
+
+        xTooltipLabel = "x",
+        yTooltipLabel = "y",
+        valueTooltipLabel = "value",
+
+        xTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
+        yTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
+        valueTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
 
         data,
     }: Props = $props()
@@ -30,8 +52,12 @@
     const marginBottom = 50
     const marginLeft = 50
 
-    let gx: SVGGElement | undefined = $state(undefined)
-    let gy: SVGGElement | undefined = $state(undefined)
+    let chart: SVGElement | undefined = $state()
+
+    let gx: SVGGElement | undefined = $state()
+    let gy: SVGGElement | undefined = $state()
+
+    let tooltip: HTMLDivElement | undefined = $state()
 
     const x_scale = $derived(
         d3.scaleLinear([data.x_start, data.x_end], [marginLeft, width - marginRight])
@@ -94,9 +120,45 @@
             yield i
         }
     }
+
+    let hover_data: HeatmapSelectionData | null = $state(null)
+
+    function on_focus(x_idx: number, y_idx: number) {
+        return (e: Event) => {
+            const value = data.raw_data[x_idx + y_idx * data.x_bins]
+
+            if (value != undefined) {
+                hover_data = {
+                    x_idx,
+                    y_idx,
+                    value,
+                }
+
+                computePosition(e.target as Element, tooltip!, {
+                    placement: "bottom-start",
+                    middleware: [
+                        offset(25),
+                        flip({ boundary: chart }),
+                        shift({ boundary: chart, padding: 5 }),
+                    ],
+                }).then(({ x, y }) => {
+                    Object.assign(tooltip!.style, {
+                        left: `${x}px`,
+                        top: `${y}px`,
+                    })
+                })
+            }
+        }
+    }
+
+    function on_blur() {
+        return () => {
+            hover_data = null
+        }
+    }
 </script>
 
-<svg viewBox="0, 0, {width}, {height}" preserveAspectRatio="meet">
+<svg bind:this={chart} viewBox="0, 0, {width}, {height}" preserveAspectRatio="meet">
     <!-- Axes -->
     <g font-family="sans-serif">
         <!-- X Axis -->
@@ -133,22 +195,152 @@
     </g>
 
     <!-- Data Points -->
-    <g stroke="currentColor" stroke-width="1px">
+    <g role="grid" stroke="currentColor" stroke-width="1px">
         {#each range(0, data.y_bins) as y_idx (y_idx)}
-            {#each range(0, data.x_bins) as x_idx (x_idx)}
-                {@const value = data.raw_data[x_idx + y_idx * data.x_bins]}
+            <g role="row">
+                {#each range(0, data.x_bins) as x_idx (x_idx)}
+                    {@const value = data.raw_data[x_idx + y_idx * data.x_bins]}
 
-                {#if value !== undefined}
-                    <rect
-                        x={x_scale(data.x_start + x_idx * col_width)}
-                        y={y_scale(data.y_start + (y_idx + 1) * row_height)}
-                        width={scaled_col_width}
-                        height={scaled_row_height}
-                        fill={color(value)}
-                        aria-label="value: {value}"
-                    />
-                {/if}
-            {/each}
+                    {#if value !== undefined}
+                        <g role="cell" aria-rowindex={y_idx} aria-colindex={x_idx}>
+                            <rect
+                                class="bin"
+                                x={x_scale(data.x_start + x_idx * col_width)}
+                                y={y_scale(data.y_start + (y_idx + 1) * row_height)}
+                                width={scaled_col_width}
+                                height={scaled_row_height}
+                                fill={color(value)}
+                                onfocus={on_focus(x_idx, y_idx)}
+                                onblur={on_blur()}
+                                onmouseenter={on_focus(x_idx, y_idx)}
+                                onmouseleave={on_blur()}
+                                role="button"
+                                tabindex="0"
+                                aria-label="value: {value}"
+                            />
+                        </g>
+                    {/if}
+                {/each}
+            </g>
         {/each}
     </g>
+
+    <!-- Data Highlight -->
+    <g stroke="currentColor" stroke-width="4px">
+        {#if hover_data !== null}
+            <rect
+                class="bin-highlight"
+                x={x_scale(data.x_start + hover_data.x_idx * col_width)}
+                y={y_scale(data.y_start + (hover_data.y_idx + 1) * row_height)}
+                width={scaled_col_width}
+                height={scaled_row_height}
+                fill="none"
+            />
+        {/if}
+    </g>
 </svg>
+
+<div bind:this={tooltip} class={hover_data ? "hm-tooltip" : "tooltip-hidden"} role="tooltip">
+    {#if hover_data !== null}
+        {@const x_from = data.x_start + hover_data.x_idx * col_width}
+        {@const x_to = data.x_start + (hover_data.x_idx + 1) * col_width}
+
+        {@const y_from = data.y_start + hover_data.y_idx * row_height}
+        {@const y_to = data.y_start + (hover_data.y_idx + 1) * row_height}
+
+        <div class="tooltip-x tooltip-label">{xTooltipLabel}:</div>
+        <div class="tooltip-x tooltip-from">{xTooltipFormat.format(x_from)}</div>
+        <div class="tooltip-x tooltip-separator">&ndash;</div>
+        <div class="tooltip-x tooltip-to">{xTooltipFormat.format(x_to)}</div>
+
+        <div class="tooltip-y tooltip-label">{yTooltipLabel}:</div>
+        <div class="tooltip-y tooltip-from">{yTooltipFormat.format(y_from)}</div>
+        <div class="tooltip-y tooltip-separator">&ndash;</div>
+        <div class="tooltip-y tooltip-to">{yTooltipFormat.format(y_to)}</div>
+
+        <div class="tooltip-value tooltip-label">{valueTooltipLabel}:</div>
+        <div class="tooltip-value tooltip-data">
+            {valueTooltipFormat.format(hover_data.value)}
+        </div>
+    {/if}
+</div>
+
+<style lang="scss">
+    .bin {
+        pointer-events: fill;
+    }
+
+    .bin:focus {
+        // Disable outline because we are showing the focussed element in a different way.
+        outline: none;
+    }
+
+    .bin-highlight {
+        pointer-events: none;
+    }
+
+    // We cannot use just `tooltip` because it has global styling outside of svelte
+    .hm-tooltip {
+        width: max-content;
+
+        display: inline-grid;
+        grid-template-columns: max-content 1fr max-content 1fr;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        background: var(--canvas-overlay);
+        color: var(--fg);
+    }
+
+    .tooltip-hidden {
+        display: none;
+    }
+
+    .tooltip-label {
+        grid-column: 1;
+        text-align: right;
+    }
+
+    .tooltip-from {
+        grid-column: 2;
+        text-align: right;
+    }
+
+    .tooltip-separator {
+        grid-column: 3;
+    }
+
+    .tooltip-to {
+        grid-column: 4;
+        text-align: left;
+    }
+
+    .tooltip-data {
+        grid-column: 2 / -1;
+
+        text-align: center;
+    }
+
+    .tooltip-from,
+    .tooltip-to,
+    .tooltip-data {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .tooltip-x {
+        grid-row: 1;
+    }
+
+    .tooltip-y {
+        grid-row: 2;
+    }
+
+    .tooltip-value {
+        grid-row: 3;
+    }
+</style>

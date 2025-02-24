@@ -9,3 +9,10 @@ export type HeatmapData = {
 
     raw_data: (number | undefined)[]
 }
+
+export type HeatmapSelectionData = {
+    x_idx: number
+    y_idx: number
+
+    value: number
+}
