@@ -23,6 +23,8 @@
         yTooltipFormat?: Intl.NumberFormat
         valueTooltipFormat?: Intl.NumberFormat
 
+        onSelect?: (data: HeatmapSelectionData) => void
+
         data: HeatmapData
     }
 
@@ -40,6 +42,8 @@
         xTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
         yTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
         valueTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
+
+        onSelect,
 
         data,
     }: Props = $props()
@@ -128,9 +132,19 @@
             const value = data.raw_data[x_idx + y_idx * data.x_bins]
 
             if (value != undefined) {
+                const x_from = data.x_start + x_idx * col_width
+                const x_to = data.x_start + (x_idx + 1) * col_width
+
+                const y_from = data.y_start + y_idx * row_height
+                const y_to = data.y_start + (y_idx + 1) * row_height
+
                 hover_data = {
                     x_idx,
                     y_idx,
+                    x_from,
+                    x_to,
+                    y_from,
+                    y_to,
                     value,
                 }
 
@@ -154,6 +168,12 @@
     function on_blur() {
         return () => {
             hover_data = null
+        }
+    }
+
+    function on_click() {
+        if (onSelect !== undefined && hover_data !== null) {
+            onSelect(hover_data)
         }
     }
 </script>
@@ -214,6 +234,7 @@
                                 onblur={on_blur()}
                                 onmouseenter={on_focus(x_idx, y_idx)}
                                 onmouseleave={on_blur()}
+                                onclick={on_click}
                                 role="button"
                                 tabindex="0"
                                 aria-label="value: {value}"
@@ -242,21 +263,15 @@
 
 <div bind:this={tooltip} class={hover_data ? "hm-tooltip" : "tooltip-hidden"} role="tooltip">
     {#if hover_data !== null}
-        {@const x_from = data.x_start + hover_data.x_idx * col_width}
-        {@const x_to = data.x_start + (hover_data.x_idx + 1) * col_width}
-
-        {@const y_from = data.y_start + hover_data.y_idx * row_height}
-        {@const y_to = data.y_start + (hover_data.y_idx + 1) * row_height}
-
         <div class="tooltip-x tooltip-label">{xTooltipLabel}:</div>
-        <div class="tooltip-x tooltip-from">{xTooltipFormat.format(x_from)}</div>
+        <div class="tooltip-x tooltip-from">{xTooltipFormat.format(hover_data.x_from)}</div>
         <div class="tooltip-x tooltip-separator">&ndash;</div>
-        <div class="tooltip-x tooltip-to">{xTooltipFormat.format(x_to)}</div>
+        <div class="tooltip-x tooltip-to">{xTooltipFormat.format(hover_data.x_to)}</div>
 
         <div class="tooltip-y tooltip-label">{yTooltipLabel}:</div>
-        <div class="tooltip-y tooltip-from">{yTooltipFormat.format(y_from)}</div>
+        <div class="tooltip-y tooltip-from">{yTooltipFormat.format(hover_data.y_from)}</div>
         <div class="tooltip-y tooltip-separator">&ndash;</div>
-        <div class="tooltip-y tooltip-to">{yTooltipFormat.format(y_to)}</div>
+        <div class="tooltip-y tooltip-to">{yTooltipFormat.format(hover_data.y_to)}</div>
 
         <div class="tooltip-value tooltip-label">{valueTooltipLabel}:</div>
         <div class="tooltip-value tooltip-data">

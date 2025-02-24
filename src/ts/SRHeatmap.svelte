@@ -5,14 +5,20 @@
     import type { CardData, CardExtraData } from "./search"
 
     import Heatmap from "./Heatmap.svelte"
-    import type { HeatmapData } from "./heatmap"
+    import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
     import NoGraph from "./NoGraph.svelte"
 
     interface Props {
         cardData: CardData[] | null
+
+        searchString?: string | null
     }
 
-    const { cardData }: Props = $props()
+    const {
+        cardData,
+
+        searchString,
+    }: Props = $props()
 
     interface CardState {
         r: number
@@ -127,6 +133,19 @@
         style: "percent",
         maximumFractionDigits: 1,
     })
+
+    function open_browser_search(selection: HeatmapSelectionData) {
+        if (searchString !== undefined && searchString !== null) {
+            // @ts-ignore Typescript does not know that Anki has added bridgeCommand
+            window.bridgeCommand(
+                `browserSearch:(${searchString})` +
+                    ` prop:r>=${selection.x_from}` +
+                    ` prop:r<=${selection.x_to}` +
+                    ` prop:s>=${selection.y_from}` +
+                    ` prop:s<=${selection.y_to}`
+            )
+        }
+    }
 </script>
 
 {#if heatmap_data !== null}
@@ -139,6 +158,7 @@
         valueTooltipLabel="Cards"
         xTooltipFormat={r_tooltip_format}
         yTooltipFormat={s_tooltip_format}
+        onSelect={open_browser_search}
         data={heatmap_data}
     />
 {:else}

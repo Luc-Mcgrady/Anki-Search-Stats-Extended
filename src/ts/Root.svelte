@@ -156,7 +156,7 @@
         </GraphContainer>
         <GraphContainer>
             <h1>SxR Heatmap</h1>
-            <SRHeatmap cardData={$card_data} />
+            <SRHeatmap cardData={$card_data} searchString={$searchString} />
         </GraphContainer>
     </GraphCategory>
     <GraphCategory>
