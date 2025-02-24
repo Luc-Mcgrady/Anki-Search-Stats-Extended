@@ -84,8 +84,8 @@ export function calculate_sr_heatmap_data(
         const raw_r_idx = (data_point.r - card_state_bounds.min_r) / r_bin_width
         const raw_s_idx = (data_point.s - card_state_bounds.min_s) / s_bin_width
 
-        const clean_r_idx = Math.min(r_bins - 1, Math.max(0, Math.round(raw_r_idx)))
-        const clean_s_idx = Math.min(s_bins - 1, Math.max(0, Math.round(raw_s_idx)))
+        const clean_r_idx = Math.min(r_bins - 1, Math.max(0, Math.floor(raw_r_idx)))
+        const clean_s_idx = Math.min(s_bins - 1, Math.max(0, Math.floor(raw_s_idx)))
 
         const raw_data_idx = clean_r_idx + clean_s_idx * r_bins
 
