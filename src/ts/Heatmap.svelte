@@ -163,6 +163,7 @@
 
     function on_blur() {
         $tooltipShown = false
+        hover_data = null
     }
 
     function on_click() {
