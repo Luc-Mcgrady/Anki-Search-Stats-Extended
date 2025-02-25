@@ -5,12 +5,24 @@
     import { tooltip, tooltipShown } from "./stores"
     import { tooltipX } from "./tooltip"
 
+    const DEFAULT_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
+        maximumFractionDigits: 2,
+    })
+
     interface Props {
         xAxisLabel?: string
         yAxisLabel?: string
 
         xAxisTickFormat?: string
         yAxisTickFormat?: string
+
+        xTooltipLabel?: string
+        yTooltipLabel?: string
+        valueTooltipLabel?: string
+
+        xTooltipFormat?: Intl.NumberFormat
+        yTooltipFormat?: Intl.NumberFormat
+        valueTooltipFormat?: Intl.NumberFormat
 
         onSelect?: (data: HeatmapSelectionData) => void
 
@@ -23,6 +35,14 @@
 
         xAxisTickFormat,
         yAxisTickFormat,
+
+        xTooltipLabel,
+        yTooltipLabel,
+        valueTooltipLabel,
+
+        xTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
+        yTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
+        valueTooltipFormat = DEFAULT_TOOLTIP_FORMAT,
 
         onSelect,
 
@@ -131,9 +151,9 @@
                     x: tooltipX(e),
                     y: e.pageY + row_height,
                     text: [
-                        `R: ${x_from.toFixed(2)}-${x_to.toFixed(2)}`,
-                        `S: ${y_from.toFixed(2)}-${y_to.toFixed(2)}`,
-                        `Cards: ${value}`,
+                        `${yTooltipLabel}: ${yTooltipFormat.format(y_from)}-${yTooltipFormat.format(y_to)}`,
+                        `${xTooltipLabel}: ${xTooltipFormat.format(x_from)}-${xTooltipFormat.format(x_to)}`,
+                        `${valueTooltipLabel}: ${valueTooltipFormat.format(value)}`,
                     ],
                 }
                 $tooltipShown = true
