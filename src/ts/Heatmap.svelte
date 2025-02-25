@@ -111,10 +111,10 @@
             yAxisGenerator = yAxisGenerator.tickFormat(d3.format(yAxisTickFormat))
         }
 
-        // @ts-ignore: @types/d3 seems to be wrong
-        d3.select(gx).call(xAxisGenerator)
-        // @ts-ignore: @types/d3 seems to be wrong
-        d3.select(gy).call(yAxisGenerator)
+        if (gx && gy) {
+            d3.select(gx).call(xAxisGenerator).attr("opacity", 0.5)
+            d3.select(gy).call(yAxisGenerator).attr("opacity", 0.5)
+        }
     })
 
     // A helper for creating ranges from `start` (inclusive) to `end` (exclusive)
