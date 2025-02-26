@@ -6,7 +6,11 @@
     import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
     import NoGraph from "./NoGraph.svelte"
 
-    import { calculate_sr_heatmap_data } from "./srHeatmap"
+    import {
+        calculate_sr_heatmap_data,
+        type CardSRDataset,
+        create_card_sr_dataset,
+    } from "./srHeatmap"
     import { ConstrainedIntState } from "./utils.svelte"
 
     const MIN_BINS = 1
@@ -28,8 +32,12 @@
     let r_bins = new ConstrainedIntState(MIN_BINS, MAX_BINS, DEFAULT_BINS)
     let s_bins = new ConstrainedIntState(MIN_BINS, MAX_BINS, DEFAULT_BINS)
 
+    const sr_dataset: CardSRDataset | null = $derived(
+        create_card_sr_dataset(cardData, $other.days_elapsed)
+    )
+
     const heatmap_data: HeatmapData | null = $derived(
-        calculate_sr_heatmap_data(cardData, r_bins.value, s_bins.value, $other.days_elapsed)
+        calculate_sr_heatmap_data(sr_dataset, r_bins.value, s_bins.value)
     )
 
     const s_tooltip_format = new Intl.NumberFormat(navigator.language, {

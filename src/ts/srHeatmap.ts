@@ -1,38 +1,35 @@
 import { FSRS } from "ts-fsrs"
+import { CardType } from "../../anki/ts/lib/tslib/cards"
 import type { HeatmapData } from "./heatmap"
 import type { CardData, CardExtraData } from "./search"
 
-interface CardState {
+export interface CardSRData {
     r: number
     s: number
 }
 
-interface CardStateBounds {
+export interface CardSRDataset {
     min_r: number
     max_r: number
 
     min_s: number
     max_s: number
+
+    card_sr_data: CardSRData[]
 }
 
-export function calculate_sr_heatmap_data(
+export function create_card_sr_dataset(
     card_data: CardData[] | null,
-    r_bins: number,
-    s_bins: number,
     collection_today_timestamp: number
-): HeatmapData | null {
+): CardSRDataset | null {
     if (card_data === null) {
         // We have not been given any card data
         return null
     }
 
-    const total_bins = r_bins * s_bins
-    const raw_data = new Array(total_bins)
-
-    let card_state_bounds: CardStateBounds | null = null
-    const data_points: CardState[] = []
+    let dataset: CardSRDataset | null = null
     for (const card_data_entry of card_data) {
-        if (card_data_entry.type !== 2) {
+        if (card_data_entry.type !== CardType.Review) {
             // We don't care about new / [re]learning cards
             continue
         }
@@ -52,37 +49,54 @@ export function calculate_sr_heatmap_data(
         const s = extra_data.s
         const r = FSRS.prototype.forgetting_curve(elapsed_days, s)
 
-        if (card_state_bounds === null) {
-            card_state_bounds = {
+        const card_sr_data = {
+            s,
+            r,
+        }
+
+        if (dataset === null) {
+            dataset = {
                 min_r: r,
                 max_r: r,
 
                 min_s: s,
                 max_s: s,
+
+                card_sr_data: [card_sr_data],
             }
         } else {
-            card_state_bounds.min_r = Math.min(card_state_bounds.min_r, r)
-            card_state_bounds.max_r = Math.max(card_state_bounds.max_r, r)
+            dataset.min_r = Math.min(dataset.min_r, r)
+            dataset.max_r = Math.max(dataset.max_r, r)
 
-            card_state_bounds.min_s = Math.min(card_state_bounds.min_s, s)
-            card_state_bounds.max_s = Math.max(card_state_bounds.max_s, s)
+            dataset.min_s = Math.min(dataset.min_s, s)
+            dataset.max_s = Math.max(dataset.max_s, s)
+
+            dataset.card_sr_data.push(card_sr_data)
         }
-
-        data_points.push({ r, s })
     }
 
-    if (card_state_bounds === null) {
-        // We have no valid cards
+    return dataset
+}
+
+export function calculate_sr_heatmap_data(
+    dataset: CardSRDataset | null,
+    r_bins: number,
+    s_bins: number
+): HeatmapData | null {
+    if (dataset === null) {
         return null
     }
 
-    const r_bin_width = (card_state_bounds.max_r - card_state_bounds.min_r) / r_bins
-    const s_bin_width = (card_state_bounds.max_s - card_state_bounds.min_s) / s_bins
+    const total_bins = r_bins * s_bins
+    const raw_data = new Array(total_bins)
+
+    const r_bin_width = (dataset.max_r - dataset.min_r) / r_bins
+    const s_bin_width = (dataset.max_s - dataset.min_s) / s_bins
 
     // Put counts in bins
-    for (const data_point of data_points) {
-        const raw_r_idx = (data_point.r - card_state_bounds.min_r) / r_bin_width
-        const raw_s_idx = (data_point.s - card_state_bounds.min_s) / s_bin_width
+    for (const card of dataset.card_sr_data) {
+        const raw_r_idx = (card.r - dataset.min_r) / r_bin_width
+        const raw_s_idx = (card.s - dataset.min_s) / s_bin_width
 
         const clean_r_idx = Math.min(r_bins - 1, Math.max(0, Math.floor(raw_r_idx)))
         const clean_s_idx = Math.min(s_bins - 1, Math.max(0, Math.floor(raw_s_idx)))
@@ -97,12 +111,12 @@ export function calculate_sr_heatmap_data(
     }
 
     return {
-        x_start: card_state_bounds.min_r,
-        x_end: card_state_bounds.max_r,
+        x_start: dataset.min_r,
+        x_end: dataset.max_r,
         x_bins: r_bins,
 
-        y_start: card_state_bounds.min_s,
-        y_end: card_state_bounds.max_s,
+        y_start: dataset.min_s,
+        y_end: dataset.max_s,
         y_bins: s_bins,
 
         raw_data,
