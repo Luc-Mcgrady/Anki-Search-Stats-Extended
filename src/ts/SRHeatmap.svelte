@@ -17,6 +17,15 @@
     const MAX_BINS = 100
     const DEFAULT_BINS = 20
 
+    const S_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
+        maximumFractionDigits: 0,
+    })
+
+    const R_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
+        style: "percent",
+        maximumFractionDigits: 1,
+    })
+
     interface Props {
         cardData: CardData[] | null
 
@@ -39,15 +48,6 @@
     const heatmap_data: HeatmapData | null = $derived(
         calculate_sr_heatmap_data(sr_dataset, r_bins.value, s_bins.value)
     )
-
-    const s_tooltip_format = new Intl.NumberFormat(navigator.language, {
-        maximumFractionDigits: 0,
-    })
-
-    const r_tooltip_format = new Intl.NumberFormat(navigator.language, {
-        style: "percent",
-        maximumFractionDigits: 1,
-    })
 
     function open_browser_search(selection: HeatmapSelectionData) {
         if (searchString !== undefined && searchString !== null) {
@@ -83,8 +83,8 @@
         xTooltipLabel="R"
         yTooltipLabel="S"
         valueTooltipLabel="Cards"
-        xTooltipFormat={r_tooltip_format}
-        yTooltipFormat={s_tooltip_format}
+        xTooltipFormat={R_TOOLTIP_FORMAT}
+        yTooltipFormat={S_TOOLTIP_FORMAT}
         onSelect={open_browser_search}
         data={heatmap_data}
     />
