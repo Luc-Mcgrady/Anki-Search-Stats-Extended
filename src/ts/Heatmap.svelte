@@ -58,8 +58,6 @@
     const marginBottom = 50
     const marginLeft = 50
 
-    let chart: SVGElement | undefined = $state()
-
     let gx: SVGGElement | undefined = $state()
     let gy: SVGGElement | undefined = $state()
 
@@ -176,7 +174,7 @@
     }
 </script>
 
-<svg bind:this={chart} viewBox="0, 0, {width}, {height}" preserveAspectRatio="meet">
+<svg viewBox="0, 0, {width}, {height}" preserveAspectRatio="meet">
     <!-- Axes -->
     <g font-family="sans-serif">
         <!-- X Axis -->
