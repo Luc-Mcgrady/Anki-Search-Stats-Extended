@@ -6,7 +6,7 @@
     import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
     import NoGraph from "./NoGraph.svelte"
 
-    import { calculate_sr_heatmap_data } from "./sr-heatmap"
+    import { calculate_sr_heatmap_data } from "./srHeatmap"
     import { ConstrainedIntState } from "./utils.svelte"
 
     const MIN_BINS = 1
