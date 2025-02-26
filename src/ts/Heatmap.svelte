@@ -3,7 +3,6 @@
 
     import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
     import { tooltip, tooltipShown } from "./stores"
-    import { tooltipX } from "./tooltip"
 
     const DEFAULT_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
         maximumFractionDigits: 2,
@@ -129,7 +128,7 @@
     let hover_data: HeatmapSelectionData | null = $state(null)
 
     function on_focus(x_idx: number, y_idx: number) {
-        return (e: MouseEvent) => {
+        return (e: MouseEvent | FocusEvent) => {
             const value = data.raw_data[x_idx + y_idx * data.x_bins]
 
             if (value != undefined) {
@@ -149,9 +148,11 @@
                     value,
                 }
 
+                const target_rect = (e.target as unknown as Element).getBoundingClientRect()
+
                 $tooltip = {
-                    x: tooltipX(e),
-                    y: e.pageY + row_height,
+                    x: window.scrollX + target_rect.x,
+                    y: window.scrollY + target_rect.y + target_rect.height + row_height,
                     text: [
                         `${yTooltipLabel}: ${yTooltipFormat.format(y_from)}-${yTooltipFormat.format(y_to)}`,
                         `${xTooltipLabel}: ${xTooltipFormat.format(x_from)}-${xTooltipFormat.format(x_to)}`,
@@ -232,6 +233,7 @@
                                 width={scaled_col_width}
                                 height={scaled_row_height}
                                 fill={color(value)}
+                                onfocus={on_focus(x_idx, y_idx)}
                                 onblur={on_blur}
                                 onmouseenter={on_focus(x_idx, y_idx)}
                                 onmouseleave={on_blur}
