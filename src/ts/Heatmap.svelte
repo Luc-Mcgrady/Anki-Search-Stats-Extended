@@ -9,6 +9,8 @@
         maximumFractionDigits: 2,
     })
 
+    const AXIS_OPACITY = 0.5
+
     interface Props {
         xAxisLabel?: string
         yAxisLabel?: string
@@ -112,8 +114,8 @@
         }
 
         if (gx && gy) {
-            d3.select(gx).call(xAxisGenerator).attr("opacity", 0.5)
-            d3.select(gy).call(yAxisGenerator).attr("opacity", 0.5)
+            d3.select(gx).call(xAxisGenerator)
+            d3.select(gy).call(yAxisGenerator)
         }
     })
 
@@ -178,7 +180,11 @@
     <g font-family="sans-serif">
         <!-- X Axis -->
         <g>
-            <g bind:this={gx} transform="translate(0,{height - marginBottom})" />
+            <g
+                bind:this={gx}
+                transform="translate(0,{height - marginBottom})"
+                opacity={AXIS_OPACITY}
+            />
 
             {#if xAxisLabel}
                 <text
@@ -194,7 +200,7 @@
 
         <!-- Y Axis -->
         <g>
-            <g bind:this={gy} transform="translate({marginLeft},0)" />
+            <g bind:this={gy} transform="translate({marginLeft},0)" opacity={AXIS_OPACITY} />
 
             {#if yAxisLabel}
                 <text
