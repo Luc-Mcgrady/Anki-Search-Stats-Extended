@@ -144,7 +144,7 @@
 
                 $tooltip = {
                     x: window.scrollX + target_rect.x,
-                    y: window.scrollY + target_rect.y + target_rect.height + row_height,
+                    y: window.scrollY + target_rect.y + target_rect.height + 16,
                     text: [
                         `${yTooltipLabel}: ${yTooltipFormat.format(y_from)}-${yTooltipFormat.format(y_to)}`,
                         `${xTooltipLabel}: ${xTooltipFormat.format(x_from)}-${xTooltipFormat.format(x_to)}`,
