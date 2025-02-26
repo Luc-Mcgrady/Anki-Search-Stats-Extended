@@ -1,9 +1,21 @@
+/**
+ * Represents an integer state that is constrained to a specified range.
+ *
+ * Attempts to set the state to an invalid value will clamp to the nearest valid value.
+ */
 export class ConstrainedIntState {
     readonly #min: number = 0
     readonly #max: number = 0
 
     #value: number = $state(0)
 
+    /**
+     * Creates a new instance of the ConstrainedIntState class.
+     *
+     * @param min - The minimum value for the state, inclusive. Must be less than max.
+     * @param max - The maximum value for the state, inclusive. Must be greater than min.
+     * @param defaultValue - The initial value for the state. Will be clamped between min and max.
+     */
     constructor(min: number, max: number, defaultValue: number) {
         if (min > max) {
             throw new Error("min must be less than max")
