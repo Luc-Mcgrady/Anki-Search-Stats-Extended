@@ -7,6 +7,11 @@
     import NoGraph from "./NoGraph.svelte"
 
     import { calculate_sr_heatmap_data } from "./sr-heatmap"
+    import { ConstrainedIntState } from "./utils.svelte"
+
+    const MIN_BINS = 1
+    const MAX_BINS = 100
+    const DEFAULT_BINS = 20
 
     interface Props {
         cardData: CardData[] | null
@@ -20,11 +25,11 @@
         searchString,
     }: Props = $props()
 
-    let r_bins: number = $state(20)
-    let s_bins: number = $state(20)
+    let r_bins = new ConstrainedIntState(MIN_BINS, MAX_BINS, DEFAULT_BINS)
+    let s_bins = new ConstrainedIntState(MIN_BINS, MAX_BINS, DEFAULT_BINS)
 
     const heatmap_data: HeatmapData | null = $derived(
-        calculate_sr_heatmap_data(cardData, r_bins, s_bins, $other.days_elapsed)
+        calculate_sr_heatmap_data(cardData, r_bins.value, s_bins.value, $other.days_elapsed)
     )
 
     const s_tooltip_format = new Intl.NumberFormat(navigator.language, {
@@ -54,12 +59,12 @@
     <div class="options">
         <label>
             R Bins:
-            <input type="number" min="10" max="100" step="1" bind:value={r_bins} />
+            <input type="number" min={MIN_BINS} max={MAX_BINS} step="1" bind:value={r_bins.value} />
         </label>
 
         <label>
             S Bins:
-            <input type="number" min="10" max="100" step="1" bind:value={s_bins} />
+            <input type="number" min={MIN_BINS} max={MAX_BINS} step="1" bind:value={s_bins.value} />
         </label>
     </div>
 
