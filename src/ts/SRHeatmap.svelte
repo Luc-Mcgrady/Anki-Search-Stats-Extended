@@ -13,18 +13,16 @@
     } from "./srHeatmap"
     import { ConstrainedIntState } from "./utils.svelte"
 
-    const MIN_BINS = 1
-    const MAX_BINS = 100
-    const DEFAULT_BINS = 20
-
-    const S_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
+    const S_FORMAT = new Intl.NumberFormat(navigator.language, {
         maximumFractionDigits: 0,
     })
 
-    const R_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
+    const R_FORMAT = new Intl.NumberFormat(navigator.language, {
         style: "percent",
         maximumFractionDigits: 1,
     })
+
+    const R_BIN_WIDTHS = [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1]
 
     interface Props {
         cardData: CardData[] | null
@@ -38,15 +36,22 @@
         searchString,
     }: Props = $props()
 
-    let r_bins = new ConstrainedIntState(MIN_BINS, MAX_BINS, DEFAULT_BINS)
-    let s_bins = new ConstrainedIntState(MIN_BINS, MAX_BINS, DEFAULT_BINS)
+    let r_bin_width = $state(0.05)
+    let s_bin_width = new ConstrainedIntState(1, 3650, 7)
 
     const sr_dataset: CardSRDataset | null = $derived(
         create_card_sr_dataset(cardData, $other.days_elapsed)
     )
 
+    $effect(() => {
+        // When the dataset changes reset the s_bin_width to something sensible
+        if (sr_dataset !== null) {
+            s_bin_width.value = (sr_dataset.max_s - sr_dataset.min_r) / 20
+        }
+    })
+
     const heatmap_data: HeatmapData | null = $derived(
-        calculate_sr_heatmap_data(sr_dataset, r_bins.value, s_bins.value)
+        calculate_sr_heatmap_data(sr_dataset, r_bin_width, s_bin_width.value)
     )
 
     function open_browser_search(selection: HeatmapSelectionData) {
@@ -67,12 +72,16 @@
     <div class="options">
         <label>
             R Bins:
-            <input type="number" min={MIN_BINS} max={MAX_BINS} step="1" bind:value={r_bins.value} />
+            <select bind:value={r_bin_width}>
+                {#each R_BIN_WIDTHS as bin_width}
+                    <option value={bin_width}>{R_FORMAT.format(bin_width)}</option>
+                {/each}
+            </select>
         </label>
 
         <label>
             S Bins:
-            <input type="number" min={MIN_BINS} max={MAX_BINS} step="1" bind:value={s_bins.value} />
+            <input type="number" min={1} max={3650} step="1" bind:value={s_bin_width.value} />
         </label>
     </div>
 
@@ -83,8 +92,8 @@
         xTooltipLabel="R"
         yTooltipLabel="S"
         valueTooltipLabel="Cards"
-        xTooltipFormat={R_TOOLTIP_FORMAT}
-        yTooltipFormat={S_TOOLTIP_FORMAT}
+        xTooltipFormat={R_FORMAT}
+        yTooltipFormat={S_FORMAT}
         onSelect={open_browser_search}
         data={heatmap_data}
     />

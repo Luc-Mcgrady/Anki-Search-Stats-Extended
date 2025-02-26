@@ -80,23 +80,31 @@ export function create_card_sr_dataset(
 
 export function calculate_sr_heatmap_data(
     dataset: CardSRDataset | null,
-    r_bins: number,
-    s_bins: number
+    r_bin_width: number,
+    s_bin_width: number
 ): HeatmapData | null {
     if (dataset === null) {
         return null
     }
 
+    const nice_min_r = Math.floor(dataset.min_r / r_bin_width) * r_bin_width
+    const nice_max_r = Math.ceil(dataset.max_r / r_bin_width) * r_bin_width
+
+    const nice_min_s = Math.floor(dataset.min_s / s_bin_width) * s_bin_width
+    const nice_max_s = Math.ceil(dataset.max_s / s_bin_width) * s_bin_width
+
+    const r_bins = Math.round((nice_max_r - nice_min_r) / r_bin_width)
+    const s_bins = Math.round((nice_max_s - nice_min_s) / s_bin_width)
+
+    console.log(`r_bins: ${r_bins} - s_bins: ${s_bins}`)
+
     const total_bins = r_bins * s_bins
     const raw_data = new Array(total_bins)
 
-    const r_bin_width = (dataset.max_r - dataset.min_r) / r_bins
-    const s_bin_width = (dataset.max_s - dataset.min_s) / s_bins
-
     // Put counts in bins
     for (const card of dataset.card_sr_data) {
-        const raw_r_idx = (card.r - dataset.min_r) / r_bin_width
-        const raw_s_idx = (card.s - dataset.min_s) / s_bin_width
+        const raw_r_idx = (card.r - nice_min_r) / r_bin_width
+        const raw_s_idx = (card.s - nice_min_s) / s_bin_width
 
         const clean_r_idx = Math.min(r_bins - 1, Math.max(0, Math.floor(raw_r_idx)))
         const clean_s_idx = Math.min(s_bins - 1, Math.max(0, Math.floor(raw_s_idx)))
@@ -111,12 +119,12 @@ export function calculate_sr_heatmap_data(
     }
 
     return {
-        x_start: dataset.min_r,
-        x_end: dataset.max_r,
+        x_start: nice_min_r,
+        x_end: nice_max_r,
         x_bins: r_bins,
 
-        y_start: dataset.min_s,
-        y_end: dataset.max_s,
+        y_start: nice_min_s,
+        y_end: nice_max_s,
         y_bins: s_bins,
 
         raw_data,
