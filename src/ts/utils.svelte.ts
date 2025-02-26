@@ -23,3 +23,18 @@ export class ConstrainedIntState {
         this.#value = Math.max(this.#min, Math.min(this.#max, Math.floor(value)))
     }
 }
+
+/**
+ * A generator that yields all the integer values from `start` (inclusive) to `end` (exclusive).
+ *
+ * Useful for emulating a `for` loop with a svelte `{#each}` block.
+ *
+ * @param start - The starting integer value (inclusive).
+ * @param end - The ending integer value (exclusive).
+ * @yields - Each integer in the specified range from `start` to `end - 1`.
+ */
+export function* range(start: number, end: number): Generator<number> {
+    for (let i = start; i < end; i++) {
+        yield i
+    }
+}

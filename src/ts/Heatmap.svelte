@@ -3,6 +3,7 @@
 
     import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
     import { tooltip, tooltipShown } from "./stores"
+    import { range } from "./utils.svelte"
 
     const DEFAULT_TOOLTIP_FORMAT = new Intl.NumberFormat(navigator.language, {
         maximumFractionDigits: 2,
@@ -115,13 +116,6 @@
             d3.select(gy).call(yAxisGenerator)
         }
     })
-
-    // A helper for creating ranges from `start` (inclusive) to `end` (exclusive)
-    function* range(start: number, end: number): Generator<number> {
-        for (let i = start; i < end; i++) {
-            yield i
-        }
-    }
 
     let hover_data: HeatmapSelectionData | null = $state(null)
 
