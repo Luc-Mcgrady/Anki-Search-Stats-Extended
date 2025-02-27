@@ -1,7 +1,12 @@
 <script lang="ts">
     import * as d3 from "d3"
 
-    import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
+    import {
+        create_scale,
+        type HeatmapData,
+        type HeatmapDimension,
+        type HeatmapSelectionData,
+    } from "./heatmap"
     import { tooltip, tooltipShown } from "./stores"
     import { range } from "./utils.svelte"
 
@@ -62,22 +67,8 @@
     let gx: SVGGElement | undefined = $state()
     let gy: SVGGElement | undefined = $state()
 
-    const x_scale = $derived(
-        d3.scaleLinear([data.x_start, data.x_end], [marginLeft, width - marginRight])
-    )
-    const y_scale = $derived(
-        d3.scaleLinear([data.y_start, data.y_end], [height - marginBottom, marginTop])
-    )
-
-    const col_width = $derived((data.x_end - data.x_start) / data.x_bins)
-    const row_height = $derived((data.y_end - data.y_start) / data.y_bins)
-
-    const scaled_col_width = $derived(
-        Math.abs(x_scale(data.x_start + col_width) - x_scale(data.x_start))
-    )
-    const scaled_row_height = $derived(
-        Math.abs(y_scale(data.y_start + row_height) - y_scale(data.y_start))
-    )
+    const x_scale = $derived(create_scale(data.x_dim, [marginLeft, width - marginRight]))
+    const y_scale = $derived(create_scale(data.y_dim, [height - marginBottom, marginTop]))
 
     const color = $derived.by(() => {
         const non_null_data = data.raw_data.filter((x) => x !== undefined)
@@ -117,18 +108,83 @@
         }
     })
 
+    /**
+     * Gets the value at which the bin with index `idx` in the dimension `dim` starts.
+     *
+     * @param dim
+     * @param idx
+     */
+    function get_dim_pos(dim: HeatmapDimension, idx: number) {
+        // The normalised position in the dimension
+        // i.e. from 0-1 where 0 = min value and 1 = max value
+        const normal_pos = idx / dim.bin_count
+
+        if (dim.is_logarithmic) {
+            const log_start = Math.log10(dim.start_value)
+            const log_end = Math.log10(dim.end_value)
+
+            const scale_factor = log_end - log_start
+            const relative_pos = normal_pos * scale_factor
+
+            const absolute_pos = log_start + relative_pos
+
+            return Math.pow(10, absolute_pos)
+        } else {
+            const scale_factor = dim.end_value - dim.start_value
+            const relative_pos = normal_pos * scale_factor
+
+            return dim.start_value + relative_pos
+        }
+    }
+
+    /**
+     * Get the x (left) position of cells representing bins with the x index `x_idx` in SVG units
+     *
+     * @param x_idx the x index of the bin
+     */
+    function cell_x_pos(x_idx: number): number {
+        return x_scale(get_dim_pos(data.x_dim, x_idx))
+    }
+
+    /**
+     * Get the y (top) position of cells representing bins with the y index `y_idx` in SVG units
+     *
+     * @param y_idx the y index of the bin
+     */
+    function cell_y_pos(y_idx: number): number {
+        return y_scale(get_dim_pos(data.y_dim, y_idx + 1))
+    }
+
+    /**
+     * Get the width of cells representing bins with the x index `x_idx` in SVG units
+     *
+     * @param x_idx the x index of the bin
+     */
+    function cell_width(x_idx: number): number {
+        return cell_x_pos(x_idx + 1) - cell_x_pos(x_idx)
+    }
+
+    /**
+     * Get the height of cells representing bins with the y index `y_idx` in SVG units
+     *
+     * @param y_idx the y index of the bin
+     */
+    function cell_height(y_idx: number): number {
+        return cell_y_pos(y_idx) - cell_y_pos(y_idx + 1)
+    }
+
     let hover_data: HeatmapSelectionData | null = $state(null)
 
     function on_focus(x_idx: number, y_idx: number) {
         return (e: MouseEvent | FocusEvent) => {
-            const value = data.raw_data[x_idx + y_idx * data.x_bins]
+            const value = data.raw_data[x_idx + y_idx * data.x_dim.bin_count]
 
             if (value != undefined) {
-                const x_from = data.x_start + x_idx * col_width
-                const x_to = data.x_start + (x_idx + 1) * col_width
+                const x_from = get_dim_pos(data.x_dim, x_idx)
+                const x_to = get_dim_pos(data.x_dim, x_idx + 1)
 
-                const y_from = data.y_start + y_idx * row_height
-                const y_to = data.y_start + (y_idx + 1) * row_height
+                const y_from = get_dim_pos(data.y_dim, y_idx)
+                const y_to = get_dim_pos(data.y_dim, y_idx + 1)
 
                 hover_data = {
                     x_idx,
@@ -211,20 +267,20 @@
 
     <!-- Data Points -->
     <g role="grid" stroke="currentColor" stroke-width="1px">
-        {#each range(0, data.y_bins) as y_idx (y_idx)}
+        {#each range(0, data.y_dim.bin_count) as y_idx (y_idx)}
             <g role="row">
-                {#each range(0, data.x_bins) as x_idx (x_idx)}
-                    {@const value = data.raw_data[x_idx + y_idx * data.x_bins]}
+                {#each range(0, data.x_dim.bin_count) as x_idx (x_idx)}
+                    {@const value = data.raw_data[x_idx + y_idx * data.x_dim.bin_count]}
 
                     {#if value !== undefined}
                         <g role="cell" aria-rowindex={y_idx} aria-colindex={x_idx}>
                             <!-- svelte-ignore a11y_click_events_have_key_events -->
                             <rect
                                 class="bin"
-                                x={x_scale(data.x_start + x_idx * col_width)}
-                                y={y_scale(data.y_start + (y_idx + 1) * row_height)}
-                                width={scaled_col_width}
-                                height={scaled_row_height}
+                                x={cell_x_pos(x_idx)}
+                                y={cell_y_pos(y_idx)}
+                                width={cell_width(x_idx)}
+                                height={cell_height(y_idx)}
                                 fill={color(value)}
                                 onfocus={on_focus(x_idx, y_idx)}
                                 onblur={on_blur}
@@ -247,10 +303,10 @@
         {#if hover_data !== null}
             <rect
                 class="bin-highlight"
-                x={x_scale(data.x_start + hover_data.x_idx * col_width)}
-                y={y_scale(data.y_start + (hover_data.y_idx + 1) * row_height)}
-                width={scaled_col_width}
-                height={scaled_row_height}
+                x={cell_x_pos(hover_data.x_idx)}
+                y={cell_y_pos(hover_data.y_idx)}
+                width={cell_width(hover_data.x_idx)}
+                height={cell_height(hover_data.y_idx)}
                 fill="none"
             />
         {/if}

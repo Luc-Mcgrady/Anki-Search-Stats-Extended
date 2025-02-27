@@ -1,6 +1,6 @@
 import { FSRS } from "ts-fsrs"
 import { CardType } from "../../anki/ts/lib/tslib/cards"
-import type { HeatmapData } from "./heatmap"
+import type { HeatmapData, HeatmapDimension } from "./heatmap"
 import type { CardData, CardExtraData } from "./search"
 
 export interface CardSRData {
@@ -78,38 +78,71 @@ export function create_card_sr_dataset(
     return dataset
 }
 
+function create_dimension(
+    min: number,
+    max: number,
+    bin_width: number,
+    is_logarithmic: boolean
+): HeatmapDimension {
+    let raw_min = min
+    let raw_max = max
+
+    if (is_logarithmic) {
+        raw_min = Math.log10(min)
+        raw_max = Math.log10(max)
+    }
+
+    let nice_min = Math.floor(raw_min / bin_width) * bin_width
+    let nice_max = Math.ceil(raw_max / bin_width) * bin_width
+
+    const bin_count = Math.round((nice_max - nice_min) / bin_width)
+
+    if (is_logarithmic) {
+        nice_min = Math.pow(10, nice_min)
+        nice_max = Math.pow(10, nice_max)
+    }
+
+    return {
+        start_value: nice_min,
+        end_value: nice_max,
+
+        bin_count,
+
+        is_logarithmic,
+    }
+}
+
 export function calculate_sr_heatmap_data(
     dataset: CardSRDataset | null,
     r_bin_width: number,
-    s_bin_width: number
+    s_bin_width: number,
+    s_is_logarithmic: boolean
 ): HeatmapData | null {
     if (dataset === null) {
         return null
     }
 
-    const nice_min_r = Math.floor(dataset.min_r / r_bin_width) * r_bin_width
-    const nice_max_r = Math.ceil(dataset.max_r / r_bin_width) * r_bin_width
+    const r_dim = create_dimension(dataset.min_r, dataset.max_r, r_bin_width, false)
+    const s_dim = create_dimension(dataset.min_s, dataset.max_s, s_bin_width, s_is_logarithmic)
 
-    const nice_min_s = Math.floor(dataset.min_s / s_bin_width) * s_bin_width
-    const nice_max_s = Math.ceil(dataset.max_s / s_bin_width) * s_bin_width
-
-    const r_bins = Math.round((nice_max_r - nice_min_r) / r_bin_width)
-    const s_bins = Math.round((nice_max_s - nice_min_s) / s_bin_width)
-
-    console.log(`r_bins: ${r_bins} - s_bins: ${s_bins}`)
-
-    const total_bins = r_bins * s_bins
+    const total_bins = r_dim.bin_count * s_dim.bin_count
     const raw_data = new Array(total_bins)
 
     // Put counts in bins
     for (const card of dataset.card_sr_data) {
-        const raw_r_idx = (card.r - nice_min_r) / r_bin_width
-        const raw_s_idx = (card.s - nice_min_s) / s_bin_width
+        const raw_r_idx = (card.r - r_dim.start_value) / r_bin_width
 
-        const clean_r_idx = Math.min(r_bins - 1, Math.max(0, Math.floor(raw_r_idx)))
-        const clean_s_idx = Math.min(s_bins - 1, Math.max(0, Math.floor(raw_s_idx)))
+        let raw_s_idx
+        if (s_is_logarithmic) {
+            raw_s_idx = (Math.log10(card.s) - Math.log10(s_dim.start_value)) / s_bin_width
+        } else {
+            raw_s_idx = (card.s - s_dim.start_value) / s_bin_width
+        }
 
-        const raw_data_idx = clean_r_idx + clean_s_idx * r_bins
+        const clean_r_idx = Math.min(r_dim.bin_count - 1, Math.max(0, Math.floor(raw_r_idx)))
+        const clean_s_idx = Math.min(s_dim.bin_count - 1, Math.max(0, Math.floor(raw_s_idx)))
+
+        const raw_data_idx = clean_r_idx + clean_s_idx * r_dim.bin_count
 
         if (raw_data[raw_data_idx] === undefined) {
             raw_data[raw_data_idx] = 1
@@ -119,13 +152,8 @@ export function calculate_sr_heatmap_data(
     }
 
     return {
-        x_start: nice_min_r,
-        x_end: nice_max_r,
-        x_bins: r_bins,
-
-        y_start: nice_min_s,
-        y_end: nice_max_s,
-        y_bins: s_bins,
+        x_dim: r_dim,
+        y_dim: s_dim,
 
         raw_data,
     }

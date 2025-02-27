@@ -1,11 +1,17 @@
-export type HeatmapData = {
-    x_start: number
-    x_end: number
-    x_bins: number
+import * as d3 from "d3"
 
-    y_start: number
-    y_end: number
-    y_bins: number
+export type HeatmapDimension = {
+    start_value: number
+    end_value: number
+
+    bin_count: number
+
+    is_logarithmic: boolean
+}
+
+export type HeatmapData = {
+    x_dim: HeatmapDimension
+    y_dim: HeatmapDimension
 
     raw_data: (number | undefined)[]
 }
@@ -21,4 +27,20 @@ export type HeatmapSelectionData = {
     y_to: number
 
     value: number
+}
+
+export function create_scale(
+    dim: HeatmapDimension,
+    range: [number, number]
+): d3.ScaleLinear<number, number> | d3.ScaleLogarithmic<number, number> {
+    if (dim.is_logarithmic) {
+        if (dim.start_value !== 0) {
+            return d3.scaleLog([dim.start_value, dim.end_value], range)
+        } else {
+            // We are not allowed to use exactly 0 in a log domain so fudge things a little
+            return d3.scaleLog([1, dim.end_value], range)
+        }
+    } else {
+        return d3.scaleLinear([dim.start_value, dim.end_value], range)
+    }
 }
