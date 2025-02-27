@@ -16,7 +16,15 @@
 
     const AXIS_OPACITY = 0.5
 
+    const MARGIN_TOP = 20
+    const MARGIN_RIGHT = 20
+    const MARGIN_BOTTOM = 50
+    const MARGIN_LEFT = 50
+
     interface Props {
+        canvasWidth?: number
+        canvasHeight?: number
+
         xAxisLabel?: string
         yAxisLabel?: string
 
@@ -37,6 +45,9 @@
     }
 
     const {
+        canvasWidth = 640,
+        canvasHeight = 640,
+
         xAxisLabel,
         yAxisLabel,
 
@@ -56,19 +67,11 @@
         data,
     }: Props = $props()
 
-    const width = 640
-    const height = 640
-
-    const marginTop = 20
-    const marginRight = 20
-    const marginBottom = 50
-    const marginLeft = 50
-
     let gx: SVGGElement | undefined = $state()
     let gy: SVGGElement | undefined = $state()
 
-    const x_scale = $derived(create_scale(data.x_dim, [marginLeft, width - marginRight]))
-    const y_scale = $derived(create_scale(data.y_dim, [height - marginBottom, marginTop]))
+    const x_scale = $derived(create_scale(data.x_dim, [MARGIN_LEFT, canvasWidth - MARGIN_RIGHT]))
+    const y_scale = $derived(create_scale(data.y_dim, [canvasHeight - MARGIN_BOTTOM, MARGIN_TOP]))
 
     const color = $derived.by(() => {
         const non_null_data = data.raw_data.filter((x) => x !== undefined)
@@ -225,21 +228,21 @@
     }
 </script>
 
-<svg viewBox="0, 0, {width}, {height}" preserveAspectRatio="meet">
+<svg viewBox="0, 0, {canvasWidth}, {canvasHeight}" preserveAspectRatio="meet">
     <!-- Axes -->
     <g font-family="sans-serif">
         <!-- X Axis -->
         <g>
             <g
                 bind:this={gx}
-                transform="translate(0,{height - marginBottom})"
+                transform="translate(0,{canvasHeight - MARGIN_BOTTOM})"
                 opacity={AXIS_OPACITY}
             />
 
             {#if xAxisLabel}
                 <text
-                    transform="translate({marginLeft +
-                        (width - (marginLeft + marginRight)) / 2},{height - 12})"
+                    transform="translate({MARGIN_LEFT +
+                        (canvasWidth - (MARGIN_LEFT + MARGIN_RIGHT)) / 2},{canvasHeight - 12})"
                     text-anchor="middle"
                     fill="currentColor"
                 >
@@ -250,12 +253,12 @@
 
         <!-- Y Axis -->
         <g>
-            <g bind:this={gy} transform="translate({marginLeft},0)" opacity={AXIS_OPACITY} />
+            <g bind:this={gy} transform="translate({MARGIN_LEFT},0)" opacity={AXIS_OPACITY} />
 
             {#if yAxisLabel}
                 <text
-                    transform="translate(12, {marginTop +
-                        (height - (marginTop + marginBottom)) / 2}) rotate(-90)"
+                    transform="translate(12, {MARGIN_TOP +
+                        (canvasHeight - (MARGIN_TOP + MARGIN_BOTTOM)) / 2}) rotate(-90)"
                     text-anchor="middle"
                     fill="currentColor"
                 >

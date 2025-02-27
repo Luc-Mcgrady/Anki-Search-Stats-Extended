@@ -26,8 +26,22 @@
         maximumFractionDigits: 2,
     })
 
+    interface ChartSizeOption {
+        name: string
+        width: number
+        height: number
+    }
+
+    const CHART_SIZE: ChartSizeOption[] = [
+        { name: "Compact", width: 640, height: 320 },
+        { name: "Square", width: 640, height: 640 },
+    ]
+
     const R_BIN_WIDTHS = [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1]
+    const DEFAULT_R_BIN_WIDTH = 0.05
+
     const S_BIN_WIDTHS_LOG = [0.02, 0.05, 0.1, 0.2, 0.5, 1, 2]
+    const DEFAULT_S_BIN_WIDTH_LOG = 0.1
 
     interface Props {
         cardData: CardData[] | null
@@ -41,11 +55,13 @@
         searchString,
     }: Props = $props()
 
+    let chart_size = $state(CHART_SIZE[0])
+
     let s_is_logarithmic: boolean = $state(false)
 
-    let r_bin_width = $state(0.05)
+    let r_bin_width = $state(DEFAULT_R_BIN_WIDTH)
     let s_bin_width_linear = new ConstrainedIntState(1, 3650, 7)
-    let s_bin_width_log = $state(0.1)
+    let s_bin_width_log = $state(DEFAULT_S_BIN_WIDTH_LOG)
 
     const sr_dataset: CardSRDataset | null = $derived(
         create_card_sr_dataset(cardData, $other.days_elapsed)
@@ -83,6 +99,18 @@
 
 {#if heatmap_data !== null}
     <div class="options">
+        <label id="label_chart_size" for="input_chart_size">Size:</label>
+        <select id="input_chart_size" bind:value={chart_size}>
+            {#each CHART_SIZE as size}
+                <option value={size}>{size.name}</option>
+            {/each}
+        </select>
+
+        <label id="label_logarithmic_s" for="input_logarithmic_s" class="option-label">
+            Log S:
+        </label>
+        <input id="input_logarithmic_s" type="checkbox" bind:checked={s_is_logarithmic} />
+
         <label id="label_r_bin_width" for="input_r_bin_width" class="option-label">R Bins:</label>
         <select id="input_r_bin_width" bind:value={r_bin_width}>
             {#each R_BIN_WIDTHS as bin_width}
@@ -107,14 +135,11 @@
                 bind:value={s_bin_width_linear.value}
             />
         {/if}
-
-        <label id="label_logarithmic_s" for="input_logarithmic_s" class="option-label">
-            Log S:
-        </label>
-        <input id="input_logarithmic_s" type="checkbox" bind:checked={s_is_logarithmic} />
     </div>
 
     <Heatmap
+        canvasWidth={chart_size.width}
+        canvasHeight={chart_size.height}
         xAxisLabel="Retrievability"
         xAxisTickFormat=".0%"
         yAxisLabel="Stability (days)"
@@ -142,36 +167,46 @@
         justify-self: right;
     }
 
-    #label_r_bin_width {
+    #label_chart_size {
         grid-column: 1;
         grid-row: 1;
     }
 
-    #input_r_bin_width {
+    #input_chart_size {
         grid-column: 2;
-        grid-row: 1;
-    }
-
-    #label_s_bin_width {
-        grid-column: 3;
-        grid-row: 1;
-    }
-
-    #input_s_bin_width {
-        grid-column: 4;
         grid-row: 1;
     }
 
     #label_logarithmic_s {
         grid-column: 3;
-        grid-row: 2;
+        grid-row: 1;
     }
 
     #input_logarithmic_s {
         grid-column: 4;
-        grid-row: 2;
+        grid-row: 1;
 
         justify-self: left;
+    }
+
+    #label_r_bin_width {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    #input_r_bin_width {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    #label_s_bin_width {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    #input_s_bin_width {
+        grid-column: 4;
+        grid-row: 2;
     }
 
     input[type="number"] {
