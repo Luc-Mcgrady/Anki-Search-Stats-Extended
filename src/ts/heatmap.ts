@@ -34,12 +34,8 @@ export function create_scale(
     range: [number, number]
 ): d3.ScaleLinear<number, number> | d3.ScaleLogarithmic<number, number> {
     if (dim.is_logarithmic) {
-        if (dim.start_value !== 0) {
-            return d3.scaleLog([dim.start_value, dim.end_value], range)
-        } else {
-            // We are not allowed to use exactly 0 in a log domain so fudge things a little
-            return d3.scaleLog([1, dim.end_value], range)
-        }
+        // We are not allowed to use exactly 0 in a log domain so fudge things a little
+        return d3.scaleLog([d3.min([dim.start_value, 1])!, dim.end_value], range)
     } else {
         return d3.scaleLinear([dim.start_value, dim.end_value], range)
     }
