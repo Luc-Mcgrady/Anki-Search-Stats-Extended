@@ -70,8 +70,9 @@
     let gx: SVGGElement | undefined = $state()
     let gy: SVGGElement | undefined = $state()
 
+    const trueHeight = $derived(canvasHeight + MARGIN_TOP + MARGIN_BOTTOM)
     const x_scale = $derived(create_scale(data.x_dim, [MARGIN_LEFT, canvasWidth - MARGIN_RIGHT]))
-    const y_scale = $derived(create_scale(data.y_dim, [canvasHeight - MARGIN_BOTTOM, MARGIN_TOP]))
+    const y_scale = $derived(create_scale(data.y_dim, [trueHeight - MARGIN_BOTTOM, MARGIN_TOP]))
 
     const color = $derived.by(() => {
         const non_null_data = data.raw_data.filter((x) => x !== undefined)
@@ -230,21 +231,21 @@
     }
 </script>
 
-<svg viewBox="0, 0, {canvasWidth}, {canvasHeight}" preserveAspectRatio="meet">
+<svg viewBox="0, 0, {canvasWidth}, {trueHeight}" preserveAspectRatio="meet">
     <!-- Axes -->
     <g font-family="sans-serif">
         <!-- X Axis -->
         <g>
             <g
                 bind:this={gx}
-                transform="translate(0,{canvasHeight - MARGIN_BOTTOM})"
+                transform="translate(0,{trueHeight - MARGIN_BOTTOM})"
                 opacity={AXIS_OPACITY}
             />
 
             {#if xAxisLabel}
                 <text
                     transform="translate({MARGIN_LEFT +
-                        (canvasWidth - (MARGIN_LEFT + MARGIN_RIGHT)) / 2},{canvasHeight - 12})"
+                        (canvasWidth - (MARGIN_LEFT + MARGIN_RIGHT)) / 2},{trueHeight - 12})"
                     text-anchor="middle"
                     fill="currentColor"
                 >
@@ -260,7 +261,7 @@
             {#if yAxisLabel}
                 <text
                     transform="translate(12, {MARGIN_TOP +
-                        (canvasHeight - (MARGIN_TOP + MARGIN_BOTTOM)) / 2}) rotate(-90)"
+                        (trueHeight - (MARGIN_TOP + MARGIN_BOTTOM)) / 2}) rotate(-90)"
                     text-anchor="middle"
                     fill="currentColor"
                 >
