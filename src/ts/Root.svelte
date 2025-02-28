@@ -35,6 +35,7 @@
     import { EASE_COLOURS, formatRetention } from "./revlogGraphs"
     import { barDateLabeler, type BarDatum } from "./bar"
     import { totalCalc } from "./barHelpers"
+    import SRHeatmap from "./SRHeatmap.svelte"
 
     const { width, height } = defaultGraphBounds()
 
@@ -151,6 +152,14 @@
             <p>
                 Please note that this graph respects the <code>last 12 months / all history</code>
                 option beneath the search bar.
+            </p>
+        </GraphContainer>
+        <GraphContainer>
+            <h1>SxR Heatmap</h1>
+            <SRHeatmap cardData={$card_data} searchString={$searchString} />
+            <p>
+                This graph shows the number of cards which have the given stability and
+                retrievability. The redder the cell, the more cards are in that "bin".
             </p>
         </GraphContainer>
     </GraphCategory>
