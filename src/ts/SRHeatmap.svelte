@@ -99,42 +99,49 @@
 
 {#if heatmap_data !== null}
     <div class="options">
-        <label id="label_chart_size" for="input_chart_size">Size:</label>
-        <select id="input_chart_size" bind:value={chart_size}>
-            {#each CHART_SIZE as size}
-                <option value={size}>{size.name}</option>
-            {/each}
-        </select>
-
-        <label id="label_logarithmic_s" for="input_logarithmic_s" class="option-label">
-            Log S:
-        </label>
-        <input id="input_logarithmic_s" type="checkbox" bind:checked={s_is_logarithmic} />
-
-        <label id="label_r_bin_width" for="input_r_bin_width" class="option-label">R Bins:</label>
-        <select id="input_r_bin_width" bind:value={r_bin_width}>
-            {#each R_BIN_WIDTHS as bin_width}
-                <option value={bin_width}>{R_FORMAT.format(bin_width)}</option>
-            {/each}
-        </select>
-
-        <label id="label_s_bin_width" for="input_s_bin_width" class="option-label">S Bins:</label>
-        {#if s_is_logarithmic}
-            <select id="input_s_bin_width" bind:value={s_bin_width_log}>
-                {#each S_BIN_WIDTHS_LOG as bin_width}
-                    <option value={bin_width}>{S_BIN_LOG_FORMAT.format(bin_width)}</option>
+        <label>
+            Size:
+            <select bind:value={chart_size}>
+                {#each CHART_SIZE as size}
+                    <option value={size}>{size.name}</option>
                 {/each}
             </select>
-        {:else}
-            <input
-                id="input_s_bin_width"
-                type="number"
-                min={1}
-                max={3650}
-                step="1"
-                bind:value={s_bin_width_linear.value}
-            />
-        {/if}
+        </label>
+
+        <label>
+            Log S:
+            <div>
+                <input type="checkbox" bind:checked={s_is_logarithmic} />
+            </div>
+        </label>
+
+        <label>
+            R Bins:
+            <select bind:value={r_bin_width}>
+                {#each R_BIN_WIDTHS as bin_width}
+                    <option value={bin_width}>{R_FORMAT.format(bin_width)}</option>
+                {/each}
+            </select>
+        </label>
+
+        <label>
+            S Bins:
+            {#if s_is_logarithmic}
+                <select bind:value={s_bin_width_log}>
+                    {#each S_BIN_WIDTHS_LOG as bin_width}
+                        <option value={bin_width}>{S_BIN_LOG_FORMAT.format(bin_width)}</option>
+                    {/each}
+                </select>
+            {:else}
+                <input
+                    type="number"
+                    min={1}
+                    max={3650}
+                    step="1"
+                    bind:value={s_bin_width_linear.value}
+                />
+            {/if}
+        </label>
     </div>
 
     <Heatmap
@@ -161,55 +168,18 @@
         grid-template-columns: auto 1fr auto 1fr;
         gap: 0.5em;
         align-items: baseline;
+        height: 4em;
     }
 
-    .option-label {
-        justify-self: right;
-    }
-
-    #label_chart_size {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    #input_chart_size {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    #label_logarithmic_s {
-        grid-column: 3;
-        grid-row: 1;
-    }
-
-    #input_logarithmic_s {
-        grid-column: 4;
-        grid-row: 1;
-
-        justify-self: left;
-    }
-
-    #label_r_bin_width {
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    #input_r_bin_width {
-        grid-column: 2;
-        grid-row: 2;
-    }
-
-    #label_s_bin_width {
-        grid-column: 3;
-        grid-row: 2;
-    }
-
-    #input_s_bin_width {
-        grid-column: 4;
-        grid-row: 2;
+    .options label {
+        display: contents;
     }
 
     input[type="number"] {
         min-width: 5em;
+    }
+
+    input[type="checkbox"] {
+        justify-self: left;
     }
 </style>
