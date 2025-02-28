@@ -157,6 +157,10 @@
         <GraphContainer>
             <h1>SxR Heatmap</h1>
             <SRHeatmap cardData={$card_data} searchString={$searchString} />
+            <p>
+                This graph shows the number of cards which have the given stability and
+                retrievability. The redder the cell, the more cards are in that "bin".
+            </p>
         </GraphContainer>
     </GraphCategory>
     <GraphCategory>
