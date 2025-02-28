@@ -12,6 +12,7 @@
         create_card_sr_dataset,
     } from "./srHeatmap"
     import { ConstrainedIntState } from "./utils.svelte"
+    import { defaultGraphBounds } from "./graph"
 
     const R_FORMAT = new Intl.NumberFormat(navigator.language, {
         style: "percent",
@@ -25,17 +26,6 @@
     const S_BIN_LOG_FORMAT = new Intl.NumberFormat(navigator.language, {
         maximumFractionDigits: 2,
     })
-
-    interface ChartSizeOption {
-        name: string
-        width: number
-        height: number
-    }
-
-    const CHART_SIZE: ChartSizeOption[] = [
-        { name: "Compact", width: 640, height: 320 },
-        { name: "Square", width: 640, height: 640 },
-    ]
 
     const R_BIN_WIDTHS = [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1]
     const DEFAULT_R_BIN_WIDTH = 0.05
@@ -55,7 +45,9 @@
         searchString,
     }: Props = $props()
 
-    let chart_size = $state(CHART_SIZE[0])
+    let enlarged = $state(false)
+    const { width, height: default_height } = defaultGraphBounds()
+    let height = $derived(enlarged ? default_height * 2 : default_height)
 
     let s_is_logarithmic: boolean = $state(false)
 
@@ -100,12 +92,10 @@
 {#if heatmap_data !== null}
     <div class="options">
         <label>
-            Size:
-            <select bind:value={chart_size}>
-                {#each CHART_SIZE as size}
-                    <option value={size}>{size.name}</option>
-                {/each}
-            </select>
+            Enlarged:
+            <div>
+                <input type="checkbox" bind:checked={enlarged} />
+            </div>
         </label>
 
         <label>
@@ -145,8 +135,8 @@
     </div>
 
     <Heatmap
-        canvasWidth={chart_size.width}
-        canvasHeight={chart_size.height}
+        canvasWidth={width}
+        canvasHeight={height}
         xAxisLabel="Retrievability"
         xAxisTickFormat=".0%"
         yAxisLabel="Stability (days)"
