@@ -5,11 +5,9 @@ import { defaultGraphBounds } from "./graph"
 
 export type Matrix = {
     grid: Record<number, (number | undefined)[]>
-    column_totals?: Record<number, number>
-    row_totals?: number[]
 }
 
-export function matrix({ grid, column_totals, row_totals }: Matrix, svg: SVGElement) {
+export function matrix({ grid }: Matrix, svg: SVGElement) {
     let bounds = defaultGraphBounds()
 
     const rows = Object.entries(grid).sort((a, b) => +b[0] - +a[0])

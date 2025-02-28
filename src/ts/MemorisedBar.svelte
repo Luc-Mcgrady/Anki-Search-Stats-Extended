@@ -75,9 +75,4 @@
         width: 100%;
         height: 100%;
     }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(12, auto);
-    }
 </style>
