@@ -111,6 +111,8 @@
         }
     })
 
+    const CELL_MARGIN = 0.5
+
     /**
      * Gets the value at which the bin with index `idx` in the dimension `dim` starts.
      *
@@ -146,7 +148,7 @@
      * @param x_idx the x index of the bin
      */
     function cell_x_pos(x_idx: number): number {
-        return x_scale(get_dim_pos(data.x_dim, x_idx))
+        return x_scale(get_dim_pos(data.x_dim, x_idx)) - CELL_MARGIN
     }
 
     /**
@@ -155,7 +157,7 @@
      * @param y_idx the y index of the bin
      */
     function cell_y_pos(y_idx: number): number {
-        return y_scale(get_dim_pos(data.y_dim, y_idx + 1))
+        return y_scale(get_dim_pos(data.y_dim, y_idx + 1)) - CELL_MARGIN
     }
 
     /**
@@ -164,7 +166,7 @@
      * @param x_idx the x index of the bin
      */
     function cell_width(x_idx: number): number {
-        return cell_x_pos(x_idx + 1) - cell_x_pos(x_idx)
+        return cell_x_pos(x_idx + 1) - cell_x_pos(x_idx) - CELL_MARGIN
     }
 
     /**
@@ -173,7 +175,7 @@
      * @param y_idx the y index of the bin
      */
     function cell_height(y_idx: number): number {
-        return cell_y_pos(y_idx) - cell_y_pos(y_idx + 1)
+        return cell_y_pos(y_idx) - cell_y_pos(y_idx + 1) - CELL_MARGIN
     }
 
     let hover_data: HeatmapSelectionData | null = $state(null)
