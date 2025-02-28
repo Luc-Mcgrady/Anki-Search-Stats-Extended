@@ -99,14 +99,14 @@
         </label>
 
         <label>
-            Log S:
+            Logarithmic S:
             <div>
                 <input type="checkbox" bind:checked={s_is_logarithmic} />
             </div>
         </label>
 
         <label>
-            R Bins:
+            R Bin Size:
             <select bind:value={r_bin_width}>
                 {#each R_BIN_WIDTHS as bin_width}
                     <option value={bin_width}>{R_FORMAT.format(bin_width)}</option>
@@ -115,7 +115,7 @@
         </label>
 
         <label>
-            S Bins:
+            S Bin Size:
             {#if s_is_logarithmic}
                 <select bind:value={s_bin_width_log}>
                     {#each S_BIN_WIDTHS_LOG as bin_width}
