@@ -269,7 +269,7 @@
     </g>
 
     <!-- Data Points -->
-    <g role="grid" stroke="currentColor" stroke-width="1px">
+    <g role="grid" stroke="transparent" stroke-width="1px">
         {#each range(0, data.y_dim.bin_count) as y_idx (y_idx)}
             <g role="row">
                 {#each range(0, data.x_dim.bin_count) as x_idx (x_idx)}
