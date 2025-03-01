@@ -29,10 +29,6 @@ export function matrix({ grid }: Matrix, svg: SVGElement) {
         .flatMap(([row, cols]) => cols.map((val, col) => ({ row, col, val })))
         .filter((d) => d.val !== undefined)
 
-    const values = data.map((datum) => datum.val)
-
-    console.log({ x_groups, rows, data })
-
     const color = d3
         .scaleLinear<string>()
         // Hard coded range
