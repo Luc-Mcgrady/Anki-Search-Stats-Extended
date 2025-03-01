@@ -2,12 +2,15 @@ import * as d3 from "d3"
 import * as _ from "lodash"
 import { createAxis } from "./bar"
 import { defaultGraphBounds } from "./graph"
+import { tooltip, tooltipShown } from "./stores"
+import { tooltipX } from "./tooltip"
 
 export type Matrix = {
     grid: Record<number, (number | undefined)[]>
+    hoverTooltip: (x: number, y: number) => string[]
 }
 
-export function matrix({ grid }: Matrix, svg: SVGElement) {
+export function matrix({ grid, hoverTooltip }: Matrix, svg: SVGElement) {
     let bounds = defaultGraphBounds()
 
     const rows = Object.entries(grid).sort((a, b) => +b[0] - +a[0])
@@ -25,6 +28,7 @@ export function matrix({ grid }: Matrix, svg: SVGElement) {
         .padding(0.01)
 
     const axis = createAxis(svg, 1, x, y, bounds)
+
     const data = rows
         .flatMap(([row, cols]) => cols.map((val, col) => ({ row, col, val })))
         .filter((d) => d.val !== undefined)
@@ -51,6 +55,15 @@ export function matrix({ grid }: Matrix, svg: SVGElement) {
         .attr("height", y.bandwidth() - margin * 2)
         .style("fill", (d) => (d.val !== undefined ? color(d.val) : "purple"))
         .style("stroke", "black")
+        .on("mouseover", (e: MouseEvent, d) => {
+            tooltip.set({
+                x: tooltipX(e),
+                y: e.pageY,
+                text: hoverTooltip(+d.row, d.col),
+            })
+            tooltipShown.set(true)
+        })
+        .on("mouseleave", () => tooltipShown.set(false))
 
     axis.append("g")
         .selectAll("text")

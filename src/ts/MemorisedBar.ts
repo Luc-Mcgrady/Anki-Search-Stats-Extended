@@ -14,7 +14,7 @@ import type { DeckConfig } from "./config"
 import { type Buckets, dayFromMs, emptyBuckets, IDify, rollover_ms, today } from "./revlogGraphs"
 import type { CardData, Revlog } from "./search"
 
-interface LossBin {
+export interface LossBin {
     real: number
     predicted: number
     count: number
@@ -223,18 +223,5 @@ export function getMemorisedDays(
         )
     )
 
-    const bw_matrix = Object.fromEntries(
-        Object.entries(bw_matrix_count).map(([r_bin, row]) => {
-            const new_row = row.map((bin) =>
-                bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
-            )
-            new_row.length = 10
-            return [r_bin, new_row]
-        })
-    )
-
-    console.table(bw_matrix_count)
-    console.table(bw_matrix)
-
-    return { retrievabilityDays, fatigueRMSE, bw_matrix }
+    return { retrievabilityDays, fatigueRMSE, bw_matrix: bw_matrix_count }
 }

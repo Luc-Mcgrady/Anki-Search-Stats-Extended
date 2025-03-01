@@ -3,7 +3,7 @@
     import { SetDateInfinite } from "./bar"
     import GraphContainer from "./GraphContainer.svelte"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
-    import { getMemorisedDays } from "./MemorisedBar"
+    import { getMemorisedDays, type LossBin } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { catchErrors } from "./search"
     import { binSize, card_data, fatigueLoss, revlogs, searchLimit } from "./stores"
@@ -14,6 +14,7 @@
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
     let bw_matrix: Record<string, (number | undefined)[]> | undefined = undefined
+    let bw_matrix_counts: Record<string, LossBin[]> | undefined = undefined
 
     $: if ($revlogs && $card_data && show) {
         let data = catchErrors(() =>
@@ -22,7 +23,17 @@
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
         $fatigueLoss = data.fatigueRMSE
-        bw_matrix = data.bw_matrix
+        bw_matrix_counts = data.bw_matrix
+
+        bw_matrix = Object.fromEntries(
+            Object.entries(bw_matrix_counts).map(([r_bin, row]) => {
+                const new_row = row.map((bin) =>
+                    bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
+                )
+                new_row.length = 10
+                return [r_bin, new_row]
+            })
+        )
     }
 
     $: truncated = $searchLimit !== 0
@@ -40,8 +51,20 @@
     let trend_data: TrendLine
     let svg: SVGElement | undefined = undefined
 
+    function hoverTooltip(x: number, y: number) {
+        const data = bw_matrix_counts![x][y]
+        const value = ((100 * (data.predicted - data.real)) / data.count).toFixed(1)
+        console.log(data)
+        return [
+            `Predicted: ${data.predicted.toFixed(2)}`,
+            `Actual: ${data.real.toFixed(0)}`,
+            `Total: ${data.count.toFixed(0)}`,
+            `(${data.predicted.toFixed(2)}-${data.real.toFixed(0)})/${data.count.toFixed(0)}=${value}%`,
+        ]
+    }
+
     $: if (svg && bw_matrix) {
-        matrix({ grid: bw_matrix }, svg)
+        matrix({ grid: bw_matrix, hoverTooltip }, svg)
     }
 </script>
 
