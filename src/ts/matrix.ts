@@ -29,7 +29,12 @@ export function matrix({ grid, hoverTooltip }: Matrix, svg: SVGElement) {
 
     const axis = createAxis(svg, 1, x, y, bounds)
 
-    const data = rows
+    interface Datum {
+        row: string
+        col: number
+        val: number | undefined
+    }
+    const data: Datum[] = rows
         .flatMap(([row, cols]) => cols.map((val, col) => ({ row, col, val })))
         .filter((d) => d.val !== undefined)
 
@@ -42,9 +47,18 @@ export function matrix({ grid, hoverTooltip }: Matrix, svg: SVGElement) {
 
     const margin = 3
 
+    function onHover(e: MouseEvent, d: Datum) {
+        tooltip.set({
+            x: tooltipX(e),
+            y: e.pageY,
+            text: hoverTooltip(+d.row, d.col),
+        })
+        tooltipShown.set(true)
+    }
+
     axis.append("g")
         .selectAll("rect")
-        .data<{ row: string; col: number; val: number | undefined }>(data)
+        .data<Datum>(data)
         .enter()
         .append("rect")
         .attr("xr", margin)
@@ -55,14 +69,7 @@ export function matrix({ grid, hoverTooltip }: Matrix, svg: SVGElement) {
         .attr("height", y.bandwidth() - margin * 2)
         .style("fill", (d) => (d.val !== undefined ? color(d.val) : "purple"))
         .style("stroke", "black")
-        .on("mouseover", (e: MouseEvent, d) => {
-            tooltip.set({
-                x: tooltipX(e),
-                y: e.pageY,
-                text: hoverTooltip(+d.row, d.col),
-            })
-            tooltipShown.set(true)
-        })
+        .on("mouseover", onHover)
         .on("mouseleave", () => tooltipShown.set(false))
 
     axis.append("g")
@@ -76,4 +83,6 @@ export function matrix({ grid, hoverTooltip }: Matrix, svg: SVGElement) {
         .style("fill", "black")
         .style("font-size", "12px")
         .text((d) => (d.val !== undefined ? `${(d.val * 100).toFixed(1)}%` : ""))
+        .on("mouseover", onHover)
+    // Trusting that the mouse will not leave the box quick enough to not trigger the rect "mouse leave"
 }
