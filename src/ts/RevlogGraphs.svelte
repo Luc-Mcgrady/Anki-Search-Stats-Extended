@@ -11,6 +11,7 @@
         pieSteps,
         scroll,
         searchLimit,
+        stability_days,
     } from "./stores"
     import _ from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
@@ -143,6 +144,18 @@
         row_colours: ["#70AFD6"],
         row_labels: ["Cards"],
         data: Array.from(time_machine_intervals).map((v, i) => ({
+            values: [v ?? 0],
+            label: i.toString(),
+        })),
+        tick_spacing: 5,
+        columnLabeler: barStringLabeler("Interval of $s"),
+    }
+
+    let stability_time_machine_bar: BarChart
+    $: stability_time_machine_bar = {
+        row_colours: ["#70AFD6"],
+        row_labels: ["Cards"],
+        data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
@@ -581,6 +594,26 @@
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
     </GraphContainer>
+    {#if $stability_days}
+        <GraphContainer>
+            <h1>Stability Time Machine</h1>
+            <BarScrollable data={stability_time_machine_bar} left_aligned />
+            <label class="scroll">
+                <span>
+                    {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
+                </span>
+                <span class="scroll">
+                    {time_machine_min}
+                    <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+                    0
+                </span>
+            </label>
+            <p>Shows your card stabilities for a given date</p>
+            {#if truncated}
+                <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            {/if}
+        </GraphContainer>
+    {/if}
 </GraphCategory>
 
 <style>

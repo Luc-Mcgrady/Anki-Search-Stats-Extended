@@ -41,6 +41,7 @@ export let binSize = writable(1)
 // Graphs which are displayed in sections other than the one in which they are processed
 export let fatigueLoss = writable<Buckets<LossBar[]> | undefined>(undefined)
 export let target_R_days = writable<number[]>([])
+export let stability_days = writable<number[][]>([])
 
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({
