@@ -352,20 +352,13 @@
         <BarScrollable
             bind:binSize={fatigue_bin_size}
             data={{
-                    row_colours: ["#13e0eb", "#0c8b91"],
-                    row_labels: ["Date"],
-                    data:
-                }}
-            left_aligned
-            average
-            loss
-            trend
-            trend_info={{
-                    x: "prior review that day",
-                    x_s: "prior reviews that day",
-                    y: "loss",
-                    y_s: "loss",
-                }}
+                row_colours: ["#13e0eb", "#0c8b91"],
+                row_labels: ["Date"],
+                data: Array.from(time_machine_intervals).map((v, i) => ({
+                    values: [v ?? 0],
+                    label: i.toString(),
+                })),
+            }}
         />
         <p>
             This graph represent how stability, which is Desired Retention independent, evolved,
