@@ -365,13 +365,17 @@
             bind:binSize={fatigue_bin_size}
             data={{
                 row_colours: ["#13e0eb", "#0c8b91"],
-                row_labels: ["Date"],
+                row_labels: ["Stability"],
                 data: $stability_days.map((day) => {
-                    const avg = day.reduce((sum, val) => sum + (val ?? 0), 0) / day.length
+                    const total = day.reduce((sum, count, index) => sum + count * index, 0)
+                    const count = day.reduce((sum, count) => sum + count, 0)
+                    const avg = count ? total / count : 0
                     return { values: [avg], label: day.toString() }
                 }),
                 tick_spacing: 5,
             }}
+            average
+            trend
         />
         <p>
             This graph represent how stability, which is Desired Retention independent, evolved,
