@@ -7,6 +7,7 @@
         burdenOrLoad,
         config,
         fatigueLoss,
+        stabilityOverTime,
         pieLast,
         pieSteps,
         scroll,
@@ -33,6 +34,8 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import DueBar from "./DueBar.svelte"
+    import NoGraph from "./NoGraph.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -342,6 +345,31 @@
             In FSRS, each card has a percentage chance of being recalled known as retrievability. This
             is a sum of those percentages over time.
             <br />
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Card Stability over Time</h1>
+        <BarScrollable
+            bind:binSize={fatigue_bin_size}
+            data={{
+                    row_colours: ["#13e0eb", "#0c8b91"],
+                    row_labels: ["Date"],
+                    data:
+                }}
+            left_aligned
+            average
+            loss
+            trend
+            trend_info={{
+                    x: "prior review that day",
+                    x_s: "prior reviews that day",
+                    y: "loss",
+                    y_s: "loss",
+                }}
+        />
+        <p>
+            This graph represent how stability, which is Desired Retention independent, evolved,
+            which is a good way to see if it increased
         </p>
     </GraphContainer>
 </GraphCategory>

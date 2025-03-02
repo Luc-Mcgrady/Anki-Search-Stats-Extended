@@ -12,7 +12,7 @@ stats.min.js: ${wildcard src/ts/*.ts} ${wildcard src/ts/*.svelte} esbuild.mjs sr
 	npm run build
 
 src/ts/proto/: node_modules
-	mkdir src/ts/proto -p
+	mkdir -p src/ts/proto
 
 	npx protoc \
 		-I anki/proto \
@@ -20,7 +20,7 @@ src/ts/proto/: node_modules
 		--es_opt target=ts \
 		anki/proto/anki/*.proto \
 
-	find src/ts/proto -type f -name "*.ts" -exec sed -i 's/\.js//g' {} +
+	find src/ts/proto -type f -name "*.ts" -exec sed -i '' 's/\.js//g' {} +
 
 node_modules:
 	npm i

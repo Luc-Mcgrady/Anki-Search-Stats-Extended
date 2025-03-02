@@ -223,5 +223,5 @@ export function getMemorisedDays(
         )
     )
 
-    return { retrievabilityDays, fatigueRMSE, bw_matrix: bw_matrix_count }
+    return { retrievabilityDays, last_stability, fatigueRMSE, bw_matrix: bw_matrix_count }
 }

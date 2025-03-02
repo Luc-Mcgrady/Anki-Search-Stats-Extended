@@ -6,7 +6,14 @@
     import { getMemorisedDays, type LossBin } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { catchErrors } from "./search"
-    import { binSize, card_data, fatigueLoss, revlogs, searchLimit } from "./stores"
+    import {
+        binSize,
+        card_data,
+        fatigueLoss,
+        stabilityOverTime,
+        revlogs,
+        searchLimit,
+    } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
@@ -23,6 +30,7 @@
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
         $fatigueLoss = data.fatigueRMSE
+        $stabilityOverTime = data.last_stability
         bw_matrix_counts = data.bw_matrix
 
         bw_matrix = Object.fromEntries(
