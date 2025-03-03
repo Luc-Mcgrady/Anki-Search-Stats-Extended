@@ -384,7 +384,8 @@
             }}
         />
         <p>
-            This graph represents how your average stability, which is Desired Retention independent, has evolved over time.
+            This graph represents how your average stability, which is Desired Retention
+            independent, has evolved over time.
         </p>
     </GraphContainer>
 </GraphCategory>
