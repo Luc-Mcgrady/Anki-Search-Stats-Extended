@@ -381,7 +381,6 @@
                 x_s: "days",
                 y: "stability",
                 y_s: "stability",
-                percentage: true,
             }}
         />
         <p>
