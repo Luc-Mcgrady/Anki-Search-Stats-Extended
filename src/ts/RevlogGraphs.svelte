@@ -362,20 +362,28 @@
     <GraphContainer>
         <h1>Card Stability over Time</h1>
         <BarScrollable
-            bind:binSize={fatigue_bin_size}
+            bind:binSize={interval_bin_size}
             data={{
-                row_colours: ["#13e0eb", "#0c8b91"],
+                row_colours: ["#13e0eb"],
                 row_labels: ["Stability"],
-                data: $stability_days.map((day) => {
+                data: $stability_days.map((day, i) => {
                     const total = day.reduce((sum, count, index) => sum + count * index, 0)
                     const count = day.reduce((sum, count) => sum + count, 0)
                     const avg = count ? total / count : 0
-                    return { values: [avg], label: day.toString() }
+                    console.log("index :" + i)
+                    return { values: [avg], label: barLabel(i) }
                 }),
-                tick_spacing: 5,
+                columnLabeler: barDateLabeler,
             }}
             average
             trend
+            trend_info={{
+                x: "day",
+                x_s: "days",
+                y: "stability",
+                y_s: "stability",
+                percentage: true,
+            }}
         />
         <p>
             This graph represent how stability, which is Desired Retention independent, evolved,
