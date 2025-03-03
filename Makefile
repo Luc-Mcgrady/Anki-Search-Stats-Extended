@@ -20,7 +20,7 @@ src/ts/proto/: node_modules
 		--es_opt target=ts \
 		anki/proto/anki/*.proto \
 
-	find src/ts/proto -type f -name "*.ts" -exec sed -i '' 's/\.js//g' {} +
+	-find src/ts/proto -type f -name "*.ts" -exec sed -i 's/\.js//g' {} +
 
 node_modules:
 	npm i
