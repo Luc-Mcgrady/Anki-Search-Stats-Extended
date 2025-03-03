@@ -370,7 +370,6 @@
                     const total = day.reduce((sum, count, index) => sum + count * index, 0)
                     const count = day.reduce((sum, count) => sum + count, 0)
                     const avg = count ? total / count : 0
-                    console.log("index :" + i)
                     return { values: [avg], label: barLabel(i) }
                 }),
                 columnLabeler: barDateLabeler,
