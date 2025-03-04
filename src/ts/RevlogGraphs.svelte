@@ -393,6 +393,9 @@
         <p>
             This graph represents how your average stability, which is Desired Retention
             independent, has evolved over time.
+
+            The average gives a better sense of daily increase, while the median gives a
+            more representative value.
         </p>
         <label>
             <input type="checkbox" bind:checked={use_median} />
