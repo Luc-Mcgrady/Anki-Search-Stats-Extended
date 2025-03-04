@@ -34,6 +34,8 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import DueBar from "./DueBar.svelte"
+    import NoGraph from "./NoGraph.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -168,6 +170,7 @@
     $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
+    let use_median = false
     $: limit = -1 - $searchLimit
 
     let mature_filter: keyof RevlogBuckets = "not_learn"
@@ -356,6 +359,46 @@
             is a sum of those percentages over time.
             <br />
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Card Stability over Time</h1>
+        <BarScrollable
+            bind:binSize={interval_bin_size}
+            data={{
+                row_colours: ["#13e0eb"],
+                row_labels: ["Stability"],
+                data: $stability_days.map((day, i) => {
+                    if (!use_median) {
+                        const total = day.reduce((sum, count, index) => sum + count * index, 0)
+                        const count = day.reduce((sum, count) => sum + count, 0)
+                        const avg = count ? total / count : 0
+                        return { values: [avg], label: barLabel(i) }
+                    } else {
+                        const sorted = day.map((count, index) => Array(count).fill(index)).flat()
+                        const median = sorted[Math.floor(sorted.length / 2)]
+                        return { values: [median], label: barLabel(i) }
+                    }
+                }),
+                columnLabeler: barDateLabeler,
+            }}
+            average
+            trend
+            trend_info={{
+                x: "day",
+                x_s: "days",
+                y: "stability",
+                y_s: "stability",
+            }}
+        />
+        <p>
+            This graph represents how your average stability, which is Desired Retention
+            independent, has evolved over time. The average gives a better sense of daily increase,
+            while the median gives a more representative value.
+        </p>
+        <label>
+            <input type="checkbox" bind:checked={use_median} />
+            Use median
+        </label>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>

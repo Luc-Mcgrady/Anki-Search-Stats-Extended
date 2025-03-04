@@ -63,7 +63,7 @@ export function getMemorisedDays(
             const retrievability = fsrs.forgetting_curve(day - from, s)
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
             stability_days[day] ??= []
-            const stability_bin = Math.floor(s)
+            const stability_bin = Math.round(s)
             stability_days[day][stability_bin] = (stability_days[day][stability_bin] || 0) + 1
         }
     }
