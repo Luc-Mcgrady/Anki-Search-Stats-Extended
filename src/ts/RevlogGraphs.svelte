@@ -407,7 +407,10 @@
         <p>
             This graph represents how your average stability, which is Desired Retention
             independent, has evolved over time. The average gives a better sense of daily increase,
-            while the median gives a more representative value.
+            while the median gives a more representative value. Note that the ratio Young/Mature is
+            based on the volume of those (if 9 Young for 1 Mature, 90% of the bar will be colored as
+            Young). Also, the Yonug definition is using here the stability, which is Desired
+            Retention invariant.
         </p>
         <label>
             <input type="checkbox" bind:checked={use_median} />
