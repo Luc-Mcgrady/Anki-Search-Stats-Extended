@@ -368,25 +368,17 @@
                 row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
                 row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
                 data: $stability_days.map((day, i) => {
+                    const count = day.reduce((sum, count) => sum + count, 0)
+                    const count_young = day
+                        .filter((_, index) => index < 21)
+                        .reduce((sum, count) => sum + count, 0)
+                    const count_mature = day
+                        .filter((_, index) => index >= 21)
+                        .reduce((sum, count) => sum + count, 0)
+                    const weight_young = count_young / count
+                    const weight_mature = count_mature / count
                     if (!use_median) {
                         const total = day.reduce((sum, count, index) => sum + count * index, 0)
-                        const total_young = day
-                            .filter((_, index) => index < 21)
-                            .reduce((sum, count, index) => sum + count * index, 0)
-                        const total_mature = day
-                            .filter((_, index) => index >= 21)
-                            .reduce((sum, count, index) => sum + count * index, 0)
-                        const count = day.reduce((sum, count) => sum + count, 0)
-                        const count_young = day
-                            .filter((_, index) => index < 21)
-                            .reduce((sum, count) => sum + count, 0)
-                        const count_mature = day
-                            .filter((_, index) => index >= 21)
-                            .reduce((sum, count) => sum + count, 0)
-                        const avg_young = count_young ? total_young / count_young : 0
-                        const avg_mature = count_mature ? total_mature / count_mature : 0
-                        const weight_young = avg_young / (avg_young + avg_mature)
-                        const weight_mature = avg_mature / (avg_young + avg_mature)
                         const avg = count ? total / count : 0
                         return {
                             values: [avg * weight_young, avg * weight_mature],
@@ -395,7 +387,10 @@
                     } else {
                         const sorted = day.map((count, index) => Array(count).fill(index)).flat()
                         const median = sorted[Math.floor(sorted.length / 2)]
-                        return { values: [median / 2, median / 2], label: barLabel(i) }
+                        return {
+                            values: [median * weight_young, median * weight_mature],
+                            label: barLabel(i),
+                        }
                     }
                 }),
                 columnLabeler: barDateLabeler,
