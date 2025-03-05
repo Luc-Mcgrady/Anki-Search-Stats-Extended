@@ -372,9 +372,7 @@
                     const count_young = day
                         .filter((_, index) => index < 21)
                         .reduce((sum, count) => sum + count, 0)
-                    const count_mature = day
-                        .filter((_, index) => index >= 21)
-                        .reduce((sum, count) => sum + count, 0)
+                    const count_mature = count - count_young
                     const weight_young = count_young / count
                     const weight_mature = count_mature / count
                     if (!use_median) {
