@@ -411,7 +411,7 @@
 
             <br />
             Note that the ratio Young/Mature is based on the volume of those (if 9 Young for 1 Mature,
-            90% of the bar will be colored as Young). Also, the Yonug definition is using here the stability,
+            90% of the bar will be colored as Young). Also, the Young definition is using here the stability,
             which is Desired Retention invariant.
         </p>
         <label>
