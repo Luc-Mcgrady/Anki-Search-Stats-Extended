@@ -6,6 +6,7 @@
         binSize,
         burdenOrLoad,
         config,
+        difficulty_days,
         fatigueLoss,
         pieLast,
         pieSteps,
@@ -34,6 +35,7 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import Bar from "./Bar.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -158,6 +160,18 @@
         data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
+        })),
+        tick_spacing: 5,
+        columnLabeler: barStringLabeler("Interval of $s"),
+    }
+
+    let difficulty_time_machine_bar: BarChart
+    $: difficulty_time_machine_bar = {
+        row_colours: ["#70AFD6"],
+        row_labels: ["Cards"],
+        data: Array.from($difficulty_days[today + realScroll] ?? []).map((v, i) => ({
+            values: [v ?? 0],
+            label: (i + 1).toString(),
         })),
         tick_spacing: 5,
         columnLabeler: barStringLabeler("Interval of $s"),
@@ -609,6 +623,26 @@
                 </span>
             </label>
             <p>Shows your card stabilities for a given date</p>
+            {#if truncated}
+                <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            {/if}
+        </GraphContainer>
+    {/if}
+    {#if $difficulty_days}
+        <GraphContainer>
+            <h1>Difficulty Time Machine</h1>
+            <Bar data={difficulty_time_machine_bar} />
+            <label class="scroll">
+                <span>
+                    {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
+                </span>
+                <span class="scroll">
+                    {time_machine_min}
+                    <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+                    0
+                </span>
+            </label>
+            <p>Shows your card difficulties for a given date</p>
             {#if truncated}
                 <Warning>May be inaccurate while "all history" is not selected.</Warning>
             {/if}
