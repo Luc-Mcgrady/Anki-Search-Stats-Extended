@@ -5,6 +5,7 @@ export type SSEconfig = Partial<{
     barWidth: number
     barHeight: number
     piePercentages: boolean
+    graphMode: "Bar" | "Pie"
     warnings: boolean
     trends: boolean
     badGraphs: boolean
