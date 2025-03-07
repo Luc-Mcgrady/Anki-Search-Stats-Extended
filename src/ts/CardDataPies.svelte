@@ -188,16 +188,16 @@
             }}
         ></IntervalGraph>
         <p>
-            This graph shows the average number of repetitions per lapse for cards which have the
-            given number of lapses. It gives you an idea of in average, how many times a card is
-            reviewed before a new lapse start.
+            This graph shows the average number of repetitions per lapse for cards that have the
+            given number of lapses. It gives you an idea of, on average, how many times a card is
+            reviewed before a new lapse starts.
             <br />
-            You can select the "Divide Average Repetition by Lapse" to see if it matches your Desired
-            Retention, and how it evolves with the number of lapses
+            You can select "Divide Average Repetition by Lapse" to see if it matches your Desired
+            Retention and how it evolves with the number of lapses
         </p>
         <label>
             <input type="checkbox" bind:checked={divide_avg_repetitions_by_lapse} />
-            Divide Avg Repetition by Lapse
+            Divide Average Repetitions by Lapse
         </label>
     </GraphContainer>
 </GraphCategory>
