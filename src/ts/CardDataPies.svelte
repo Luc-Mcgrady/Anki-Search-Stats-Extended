@@ -171,7 +171,7 @@
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Avg Repetitions per Lapse</h1>
+        <h1>Average Repetitions per Lapse</h1>
         <IntervalGraph
             intervals={divide_avg_repetitions_by_lapse
                 ? avg_repetitions_per_lapses.map((e, i) => e / (i + 1))
