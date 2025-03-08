@@ -192,8 +192,8 @@
             given number of lapses. It gives you an idea of, on average, how many times a card is
             reviewed before a new lapse starts.
             <br />
-            You can select "Divide Average Repetition by Lapse" to see if it matches your Desired
-            Retention and how it evolves with the number of lapses
+            You can select "Divide Average Repetition by Lapse" to see if it matches your Desired Retention
+            and how it evolves with the number of lapses
         </p>
         <label>
             <input type="checkbox" bind:checked={divide_avg_repetitions_by_lapse} />
