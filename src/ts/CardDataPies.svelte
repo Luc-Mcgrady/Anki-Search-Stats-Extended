@@ -21,8 +21,15 @@
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
-        () => calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
+    $: ({
+        lapses,
+        repetitions,
+        avg_repetitions_per_lapses,
+        lapses_burden,
+        repetitions_burden,
+        target_R_days,
+    } = catchErrors(() =>
+        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
 
     let lapse_last = 7
@@ -30,6 +37,8 @@
 
     let repetitions_last = 21
     let repetitions_steps = 7
+
+    let divide_avg_repetitions_by_lapse = false
 
     $: $target_R_days_values = $data ? target_R_days : []
 </script>
@@ -160,5 +169,35 @@
             This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a
             repetitions per card of 3, the repetition total for 3 would be 6.
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Average Repetitions per Lapse</h1>
+        <IntervalGraph
+            intervals={divide_avg_repetitions_by_lapse
+                ? avg_repetitions_per_lapses.map((e, i) => e / (i + 1))
+                : avg_repetitions_per_lapses}
+            bind:steps={lapse_steps}
+            bind:last={lapse_last}
+            pieInfo={{
+                totalDescriptor: "Avg Repetitions / Lapse",
+                countDescriptor: "Max Lapse Value shown",
+                legend_left: "Lapses",
+                legend_right: "Average Repetitions",
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        ></IntervalGraph>
+        <p>
+            This graph shows the average number of repetitions per lapse for cards that have the
+            given number of lapses. It gives you an idea of, on average, how many times a card is
+            reviewed before a new lapse starts.
+            <br />
+            You can select "Divide Average Repetition by Lapse" to see if it matches your Desired Retention
+            and how it evolves with the number of lapses
+        </p>
+        <label>
+            <input type="checkbox" bind:checked={divide_avg_repetitions_by_lapse} />
+            Divide Average Repetitions by Lapse
+        </label>
     </GraphContainer>
 </GraphCategory>

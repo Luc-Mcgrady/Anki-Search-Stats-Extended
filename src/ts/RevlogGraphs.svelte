@@ -34,6 +34,8 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import DueBar from "./DueBar.svelte"
+    import NoGraph from "./NoGraph.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -168,6 +170,7 @@
     $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
+    let use_median = false
     $: limit = -1 - $searchLimit
 
     let mature_filter: keyof RevlogBuckets = "not_learn"
@@ -356,6 +359,65 @@
             is a sum of those percentages over time.
             <br />
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Card Stability over Time</h1>
+        <BarScrollable
+            bind:binSize={interval_bin_size}
+            data={{
+                row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
+                data: $stability_days.map((day, i) => {
+                    const count = day.reduce((sum, count) => sum + count, 0)
+                    const count_young = day
+                        .filter((_, index) => index < 21)
+                        .reduce((sum, count) => sum + count, 0)
+                    const count_mature = day
+                        .filter((_, index) => index >= 21)
+                        .reduce((sum, count) => sum + count, 0)
+                    const weight_young = count_young / count
+                    const weight_mature = count_mature / count
+                    if (!use_median) {
+                        const total = day.reduce((sum, count, index) => sum + count * index, 0)
+                        const avg = count ? total / count : 0
+                        return {
+                            values: [avg * weight_young, avg * weight_mature],
+                            label: barLabel(i),
+                        }
+                    } else {
+                        const sorted = day.map((count, index) => Array(count).fill(index)).flat()
+                        const median = sorted[Math.floor(sorted.length / 2)]
+                        return {
+                            values: [median * weight_young, median * weight_mature],
+                            label: barLabel(i),
+                        }
+                    }
+                }),
+                columnLabeler: barDateLabeler,
+            }}
+            average
+            trend
+            trend_info={{
+                x: "day",
+                x_s: "days",
+                y: "stability",
+                y_s: "stability",
+            }}
+        />
+        <p>
+            This graph represents how your average stability, which is Desired Retention
+            independent, has evolved over time. The average gives a better sense of daily increase,
+            while the median gives a more representative value.
+
+            <br />
+            Note that the ratio Young/Mature is based on the volume of those (if 9 Young for 1 Mature,
+            90% of the bar will be colored as Young). Also, the Young definition is using here the stability,
+            which is Desired Retention invariant.
+        </p>
+        <label>
+            <input type="checkbox" bind:checked={use_median} />
+            Use median
+        </label>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>

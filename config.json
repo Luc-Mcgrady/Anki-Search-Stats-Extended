@@ -5,6 +5,7 @@
     "barWidth": 600,
     "barHeight": 250,
     "piePercentages": false,
+    "graphMode": "Pie",
     "warnings": true,
     "trends": true,
     "badGraphs": false
