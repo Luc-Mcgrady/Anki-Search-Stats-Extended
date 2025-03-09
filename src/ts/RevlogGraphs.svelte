@@ -69,6 +69,13 @@
         return (i - today).toString()
     }
 
+    enum Average {
+        MEDIAN,
+        MEAN,
+    }
+
+    let average_type = Average.MEAN
+
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
         row_labels: ["Introduced", "Re-introduced"],
@@ -170,7 +177,6 @@
     $: introduced_ease = include_reintroduced ? day_initial_reintroduced_ease : day_initial_ease
 
     let normalize_ease = false
-    let use_median = false
     $: limit = -1 - $searchLimit
 
     let mature_filter: keyof RevlogBuckets = "not_learn"
@@ -368,7 +374,7 @@
                 row_colours: ["#13e0eb"],
                 row_labels: ["Stability"],
                 data: $stability_days.map((day, i) => {
-                    if (!use_median) {
+                    if (average_type == Average.MEAN) {
                         const total = day.reduce((sum, count, index) => sum + count * index, 0)
                         const count = day.reduce((sum, count) => sum + count, 0)
                         const avg = count ? total / count : 0
@@ -395,10 +401,16 @@
             independent, has evolved over time. The average gives a better sense of daily increase,
             while the median gives a more representative value.
         </p>
-        <label>
-            <input type="checkbox" bind:checked={use_median} />
-            Use median
-        </label>
+        <div>
+            <label>
+                <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
+                Median
+            </label>
+            <label>
+                <input type="radio" value={Average.MEAN} bind:group={average_type} />
+                Mean
+            </label>
+        </div>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
