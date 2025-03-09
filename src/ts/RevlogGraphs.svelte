@@ -376,7 +376,7 @@
                 data: $stability_days.map((day, i) => {
                     if (average_type == Average.MEAN) {
                         const total = day.reduce((sum, count, index) => sum + count * index, 0)
-                        const count = day.reduce((sum, count) => sum + count, 0)
+                        const count = _.sum(day)
                         const avg = count ? total / count : 0
                         return { values: [avg], label: barLabel(i) }
                     } else {
