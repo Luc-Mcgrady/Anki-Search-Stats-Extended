@@ -375,9 +375,7 @@
                 row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
                 data: $stability_days.map((day, i) => {
                     const count = _.sum(day)
-                    const count_young = day
-                        .filter((_, index) => index < 21)
-                        .reduce((sum, count) => sum + count, 0)
+                    const count_young = _.sum(day.slice(0, 21))
                     const count_mature = count - count_young
                     const weight_young = count_young / count
                     const weight_mature = count_mature / count
