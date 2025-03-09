@@ -371,18 +371,30 @@
         <BarScrollable
             bind:binSize={interval_bin_size}
             data={{
-                row_colours: ["#13e0eb"],
-                row_labels: ["Stability"],
+                row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
                 data: $stability_days.map((day, i) => {
+                    const count = _.sum(day)
+                    const count_young = day
+                        .filter((_, index) => index < 21)
+                        .reduce((sum, count) => sum + count, 0)
+                    const count_mature = count - count_young
+                    const weight_young = count_young / count
+                    const weight_mature = count_mature / count
                     if (average_type == Average.MEAN) {
                         const total = day.reduce((sum, count, index) => sum + count * index, 0)
-                        const count = _.sum(day)
                         const avg = count ? total / count : 0
-                        return { values: [avg], label: barLabel(i) }
+                        return {
+                            values: [avg * weight_young, avg * weight_mature],
+                            label: barLabel(i),
+                        }
                     } else {
                         const sorted = day.map((count, index) => Array(count).fill(index)).flat()
                         const median = sorted[Math.floor(sorted.length / 2)]
-                        return { values: [median], label: barLabel(i) }
+                        return {
+                            values: [median * weight_young, median * weight_mature],
+                            label: barLabel(i),
+                        }
                     }
                 }),
                 columnLabeler: barDateLabeler,
@@ -400,6 +412,11 @@
             This graph represents how your average stability, which is Desired Retention
             independent, has evolved over time. The average gives a better sense of daily increase,
             while the median gives a more representative value.
+
+            <br />
+            Note that the ratio Young/Mature is based on the volume of those (if 9 Young for 1 Mature,
+            90% of the bar will be colored as Young). Also, the Young definition is using here the stability,
+            which is Desired Retention invariant.
         </p>
         <div>
             <label>
