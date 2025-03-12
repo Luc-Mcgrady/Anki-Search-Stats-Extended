@@ -11,9 +11,10 @@
         pieSteps,
         scroll,
         searchLimit,
+        stability_bins_days,
         stability_days,
     } from "./stores"
-    import _ from "lodash"
+    import _, { size } from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
@@ -34,6 +35,8 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import DueBar from "./DueBar.svelte"
+    import NoGraph from "./NoGraph.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -66,6 +69,13 @@
     function barLabel(i: number) {
         return (i - today).toString()
     }
+
+    enum Average {
+        MEDIAN,
+        MEAN,
+    }
+
+    let average_type = Average.MEAN
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
@@ -155,7 +165,7 @@
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
         row_labels: ["Cards"],
-        data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
+        data: Array.from($stability_bins_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
@@ -356,6 +366,67 @@
             is a sum of those percentages over time.
             <br />
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Card Stability over Time</h1>
+        <BarScrollable
+            bind:binSize={interval_bin_size}
+            data={{
+                row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
+                data: $stability_days.map((day, i) => {
+                    const sum_stability = _.sum(day)
+                    const count = size(day)
+                    const count_young = day.filter((stability) => stability <= 21).length
+                    const count_mature = count - count_young
+                    const weight_young = count_young / count
+                    const weight_mature = count_mature / count
+                    if (average_type == Average.MEAN) {
+                        const avg = count ? sum_stability / count : 0
+                        return {
+                            values: [avg * weight_young, avg * weight_mature],
+                            label: barLabel(i),
+                        }
+                    } else {
+                        const sorted = day.sort((a, b) => a - b)
+                        const median = sorted[Math.floor(sorted.length / 2)]
+                        return {
+                            values: [median * weight_young, median * weight_mature],
+                            label: barLabel(i),
+                        }
+                    }
+                }),
+                columnLabeler: barDateLabeler,
+            }}
+            average
+            trend
+            trend_info={{
+                x: "day",
+                x_s: "days",
+                y: "stability",
+                y_s: "stability",
+            }}
+        />
+        <p>
+            This graph represents how your average stability, which is Desired Retention
+            independent, has evolved over time. The average gives a better sense of daily increase,
+            while the median gives a more representative value.
+
+            <br />
+            Note that the ratio Young/Mature is based on the volume of those (if 9 Young for 1 Mature,
+            90% of the bar will be colored as Young). Also, the Young definition is using here the stability,
+            which is Desired Retention invariant.
+        </p>
+        <div>
+            <label>
+                <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
+                Median
+            </label>
+            <label>
+                <input type="radio" value={Average.MEAN} bind:group={average_type} />
+                Mean
+            </label>
+        </div>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
