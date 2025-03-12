@@ -11,9 +11,10 @@
         pieSteps,
         scroll,
         searchLimit,
+        stability_bins_days,
         stability_days,
     } from "./stores"
-    import _ from "lodash"
+    import _, { size } from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
@@ -164,7 +165,7 @@
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
         row_labels: ["Cards"],
-        data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
+        data: Array.from($stability_bins_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
@@ -374,20 +375,20 @@
                 row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
                 row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
                 data: $stability_days.map((day, i) => {
-                    const count = _.sum(day)
-                    const count_young = _.sum(day.slice(0, 21))
+                    const sum_stability = _.sum(day)
+                    const count = size(day)
+                    const count_young = day.filter((stability) => stability <= 21).length
                     const count_mature = count - count_young
                     const weight_young = count_young / count
                     const weight_mature = count_mature / count
                     if (average_type == Average.MEAN) {
-                        const total = day.reduce((sum, count, index) => sum + count * index, 0)
-                        const avg = count ? total / count : 0
+                        const avg = count ? sum_stability / count : 0
                         return {
                             values: [avg * weight_young, avg * weight_mature],
                             label: barLabel(i),
                         }
                     } else {
-                        const sorted = day.map((count, index) => Array(count).fill(index)).flat()
+                        const sorted = day.sort((a, b) => a - b)
                         const median = sorted[Math.floor(sorted.length / 2)]
                         return {
                             values: [median * weight_young, median * weight_mature],

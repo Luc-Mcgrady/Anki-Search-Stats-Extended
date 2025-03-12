@@ -56,15 +56,19 @@ export function getMemorisedDays(
         return configs[config_mapping[card.did]]
     }
 
+    let stability_bins_days: number[][] = []
     let stability_days: number[][] = []
 
     function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number) {
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
+            stability_bins_days[day] ??= []
             stability_days[day] ??= []
             const stability_bin = Math.round(s)
-            stability_days[day][stability_bin] = (stability_days[day][stability_bin] || 0) + 1
+            stability_bins_days[day][stability_bin] =
+                (stability_bins_days[day][stability_bin] || 0) + 1
+            stability_days[day].push(s)
         }
     }
 
@@ -228,7 +232,13 @@ export function getMemorisedDays(
         )
     )
 
-    console.table(stability_days)
+    console.table(stability_bins_days)
 
-    return { retrievabilityDays, fatigueRMSE, bw_matrix: bw_matrix_count, stability_days }
+    return {
+        retrievabilityDays,
+        fatigueRMSE,
+        bw_matrix: bw_matrix_count,
+        stability_bins_days,
+        stability_days,
+    }
 }
