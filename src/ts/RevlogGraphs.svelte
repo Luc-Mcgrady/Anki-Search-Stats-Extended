@@ -194,7 +194,7 @@
         row_colours: ["red"],
         row_labels: ["cards"],
         data: leech_bins.map((bin) => ({
-            label: `${bin.x1?.toString()}%`,
+            label: `${((bin.x1 ?? 0) * 100)?.toString()}%`,
             values: [bin.length],
             onClick: () => {
                 // @ts-ignore Typescript does not know that Anki has added bridgeCommand
