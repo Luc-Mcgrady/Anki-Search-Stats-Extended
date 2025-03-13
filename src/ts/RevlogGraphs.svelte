@@ -182,14 +182,22 @@
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
 
-    $: leech_bins = d3.bin().domain([0, 1]).thresholds(20)(Object.values($leech_detector))
+    $: leech_bins = d3
+        .bin<[string, number], number>()
+        .domain([0, 1])
+        .thresholds(20)
+        .value((a) => a[1])(Object.entries($leech_detector))
     let leech_detection_bar: BarChart
     $: leech_detection_bar = {
         row_colours: ["red"],
         row_labels: ["cards"],
-        data: leech_bins.map((bin) => ({
+        data: leech_bins.map((bin, i) => ({
             label: bin.x0?.toString() ?? "",
             values: [bin.length],
+            onClick: () => {
+                // @ts-ignore Typescript does not know that Anki has added bridgeCommand
+                window.bridgeCommand(`browserSearch:cid:${bin.map((e) => e[0]).join(",")}`)
+            },
         })),
     }
 </script>
