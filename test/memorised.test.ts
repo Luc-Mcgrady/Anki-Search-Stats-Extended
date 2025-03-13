@@ -10,7 +10,7 @@ const weights = [
 ]
 const weights2 = [
     1, 100, 100, 100, 7.1949, 0.5345, 1.4604, 0.0046, 1.54575, 0.1192, 1.01925,
-    1.9395, 0.11, 0.29605, 2.2698, 0.2315, 2.9898, 0.51655, 0.6621, // Defaults
+    1.9395, 0.11, 0.29605, 2.2698, 0.2315, 2.9898 // Defaults
 ]
 
 const mappings = {1: 1, 2: 2}
@@ -99,9 +99,10 @@ test("Stability On Forget", ()=>{
 })
 
 test("Leech Detection", () =>{
-    const card = new RevlogBuilder
-
+    const card = new RevlogBuilder()
+    
     const revlogs = [
+        card.review(-100, 3),
         card.review(100, 3),
         card.review(100, 1)
     ] as Revlog[]

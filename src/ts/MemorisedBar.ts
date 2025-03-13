@@ -151,15 +151,15 @@ export function getMemorisedDays(
             fatigue_bins.all[today_so_far] = incrementLoss(fatigue_bins.all[today_so_far], p, y)
 
             if (elapsed >= 1) {
-                const leech_probabilities = probabilities[revlog.cid]
-                for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
-                    // debugger
-                    leech_probabilities[j] =
-                        (leech_probabilities[j] ?? 0) * (1 - p) +
-                        (j > 0 ? leech_probabilities[j - 1] * p : 0)
-                }
-
                 if (!new_card && card.stability > 1) {
+                    const leech_probabilities = probabilities[revlog.cid]
+                    for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
+                        // debugger
+                        leech_probabilities[j] =
+                            (leech_probabilities[j] ?? 0) * (1 - p) +
+                            (j > 0 ? leech_probabilities[j - 1] * p : 0)
+                    }
+
                     const r_bin_power = 1.4
                     const r_bin = _.round(
                         Math.pow(
