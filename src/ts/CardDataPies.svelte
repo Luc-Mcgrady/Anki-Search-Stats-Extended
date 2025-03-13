@@ -14,16 +14,27 @@
     import GraphCategory from "./GraphCategory.svelte"
     import { calculateCardDataPies } from "./CardDataPies"
     import BarScrollable from "./BarScrollable.svelte"
-    import { barDateLabeler } from "./bar"
+    import { barDateLabeler, type BarChart } from "./bar"
     import { EASE_COLOURS, formatRetention } from "./revlogGraphs"
     import { totalCalc } from "./barHelpers"
+    import Bar from "./Bar.svelte"
 
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
+    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days, lapse_ratios } = catchErrors(
         () => calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
+
+    let lapse_ratio_bar: BarChart
+    $: lapse_ratio_bar = {
+        row_colours: ["#bd3f09"],
+        row_labels: ["Cards"],
+        data: Object.entries(lapse_ratios).map(([key, val])=>({
+            values: [val.length],
+            label: key
+        }))
+    }
 
     let lapse_last = 7
     let lapse_steps = 7
@@ -100,6 +111,14 @@
         <p>
             This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have
             3 lapses per card, the lapse total for 3 would be 6.
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Lapse Ratios</h1>
+        <Bar data={lapse_ratio_bar}/>
+        <p>
+            The number of lapses a card has divided by its number of repetitions.
+            Includes inter-day repetitions.
         </p>
     </GraphContainer>
 </GraphCategory>
