@@ -118,7 +118,7 @@
         <Bar data={lapse_ratio_bar}/>
         <p>
             The number of lapses a card has divided by its number of repetitions.
-            Includes inter-day repetitions.
+            Includes intra-day repetitions.
         </p>
     </GraphContainer>
 </GraphCategory>
