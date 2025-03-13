@@ -7,6 +7,7 @@
         burdenOrLoad,
         config,
         fatigueLoss,
+        leech_detector,
         pieLast,
         pieSteps,
         scroll,
@@ -34,6 +35,8 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import * as d3 from "d3"
+    import Bar from "./Bar.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -178,6 +181,17 @@
 
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
+
+    $: leech_bins = d3.bin().domain([0, 1]).thresholds(20)(Object.values($leech_detector))
+    let leech_detection_bar: BarChart
+    $: leech_detection_bar = {
+        row_colours: ["red"],
+        row_labels: ["cards"],
+        data: leech_bins.map((bin) => ({
+            label: bin.x0?.toString() ?? "",
+            values: [bin.length],
+        })),
+    }
 </script>
 
 <GraphCategory>
@@ -356,6 +370,10 @@
             is a sum of those percentages over time.
             <br />
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Leech detection</h1>
+        <Bar data={leech_detection_bar}></Bar>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
