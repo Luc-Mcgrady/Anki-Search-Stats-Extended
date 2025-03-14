@@ -98,6 +98,7 @@
     $: time_machine_intervals = intervals[today + realScroll] ?? []
     $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
+    $: time_machine_suspended = time_machine_intervals[-1] ?? 0
     $: time_machine_added = Object.entries(addedCards).reduce(
         (p, [i, v]) => p + (+i <= realScroll ? v : 0),
         0
@@ -133,8 +134,17 @@
             colour: YOUNG_COLOUR,
         },
         {
+            label: "Suspended",
+            value: time_machine_suspended,
+            colour: "yellow",
+        },
+        {
             label: "New",
-            value: time_machine_added - time_machine_young - time_machine_mature,
+            value:
+                time_machine_added -
+                time_machine_young -
+                time_machine_mature -
+                time_machine_suspended,
             colour: "#6baed6",
         },
     ]
@@ -572,6 +582,7 @@
         </div>
         <span>Total: {time_machine_added}</span>
         <p>Shows your card type counts for a given date</p>
+        <p>New suspended cards count as new, not suspended</p>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
         {/if}
