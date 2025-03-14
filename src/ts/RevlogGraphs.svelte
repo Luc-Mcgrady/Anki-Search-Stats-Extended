@@ -600,6 +600,7 @@
                 0
             </span>
         </label>
+        <span>Total cards: {time_machine_mature + time_machine_young}</span>
         <p>Shows your review intervals for a given date</p>
         {#if truncated}
             <Warning>May be inaccurate while "all history" is not selected.</Warning>
