@@ -12,6 +12,7 @@ export function calculateCardDataPies(
     let lapses_burden: number[] = []
     let repetitions_burden: number[] = []
     let target_R_days: number[] = []
+    let lapse_ratios: Record<string, number[]> = {}
     const days_elapsed = SSEother.days_elapsed
 
     for (const card of cardData ?? []) {
@@ -24,6 +25,10 @@ export function calculateCardDataPies(
 
                 lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + burden
                 repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + burden
+
+                const lapse_ratio = (card.lapses / card.reps).toPrecision(1)
+                lapse_ratios[lapse_ratio] ??= []
+                lapse_ratios[lapse_ratio].push(card.id)
 
                 const stability = JSON.parse(card.data).s
                 if (stability && card.ivl > 0 && card.type == 2 && card.queue > 0) {
@@ -45,5 +50,5 @@ export function calculateCardDataPies(
         delete lapses_burden[0]
     }
 
-    return { lapses, repetitions, lapses_burden, repetitions_burden, target_R_days }
+    return { lapses, repetitions, lapses_burden, repetitions_burden, target_R_days, lapse_ratios }
 }
