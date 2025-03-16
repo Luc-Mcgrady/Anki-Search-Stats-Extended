@@ -37,6 +37,7 @@
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
     import DueBar from "./DueBar.svelte"
     import NoGraph from "./NoGraph.svelte"
+    import * as d3 from "d3"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -388,8 +389,7 @@
                             label: barLabel(i),
                         }
                     } else {
-                        const sorted = day.sort((a, b) => a - b)
-                        const median = sorted[Math.floor(sorted.length / 2)]
+                        const median = d3.quantile(Object.values(day), 0.5) ?? 0
                         return {
                             values: [median * weight_young, median * weight_mature],
                             label: barLabel(i),

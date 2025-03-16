@@ -1,3 +1,4 @@
+import * as d3 from "d3"
 import _ from "lodash"
 import {
     type Card,
@@ -90,6 +91,8 @@ export function getMemorisedDays(
     let last_date = new Date()
 
     let bw_matrix_count: Record<number, LossBin[]> = {}
+    let medians: number[] = []
+    let last_day = dayFromMs(revlogs[0].id)
 
     for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
@@ -103,6 +106,12 @@ export function getMemorisedDays(
         const fsrs = getFsrs(config)
         //console.log({fsrs})
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
+
+        for (let day = last_day; day < dayFromMs(revlog.id); day++) {
+            medians[day] = d3.quantile(Object.values(last_stability), 0.5) ?? 0
+            console.log(day + ":" + medians[day])
+        }
+        last_day = dayFromMs(revlog.id)
 
         if (revlog.ivl == 0 && !new_card) {
             card = fsrs.forget(card, now).card
@@ -232,13 +241,12 @@ export function getMemorisedDays(
         )
     )
 
-    console.table(stability_bins_days)
-
     return {
         retrievabilityDays,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
         stability_bins_days,
         stability_days,
+        medians,
     }
 }
