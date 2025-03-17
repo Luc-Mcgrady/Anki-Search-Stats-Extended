@@ -59,7 +59,7 @@
     <br />
     <p>
         <!-- Doing it with fixed indexes this way is kinda risky but it works-->
-        Today's Retention = {data[0].value} /
+        {i18n("todays-retention")} = {data[0].value} /
         {data[0].value + data[1].value} =
         {((100 * data[0].value) / (data[0].value + data[1].value)).toFixed(2)}%
     </p>
@@ -75,7 +75,7 @@
         <label>
             <span>
                 <input type="checkbox" bind:checked={do_learning} />
-                Learning =
+                {i18n("learning")}
             </span>
             <span>
                 <code>{learning_search}</code>

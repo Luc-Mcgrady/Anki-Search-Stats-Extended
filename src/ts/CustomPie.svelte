@@ -1,6 +1,6 @@
 <script lang="ts">
     import Pie from "./Pie.svelte"
-    import { burdenOrLoad, custom_pie_mode, searchString } from "./stores"
+    import { custom_pie_mode, searchString } from "./stores"
     import _ from "lodash"
     import NoGraph from "./NoGraph.svelte"
     import { derived, writable, type Writable } from "svelte/store"

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { i18n } from "./i18n"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import { burdenOrLoad } from "./stores"
 
     export let intervals: Record<number, number> | null
 

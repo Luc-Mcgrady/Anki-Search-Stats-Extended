@@ -4,7 +4,6 @@
     import { catchErrors, type CardData, type Revlog } from "./search"
     import {
         binSize,
-        burdenOrLoad,
         config,
         fatigueLoss,
         pieLast,
@@ -70,7 +69,7 @@
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
-        row_labels: ["Introduced", "Re-introduced"],
+        row_labels: [i18n("introduced"), i18n("re-introduced")],
         data: Array.from(introduced_day_count)
             .map((v, i) => {
                 const introduced = v ?? 0
@@ -87,7 +86,7 @@
 
     $: forgotten_bar = {
         row_colours: ["#330900"],
-        row_labels: ["Forgotten"],
+        row_labels: [i18n("forgotten")],
         data: Array.from(day_forgotten).map((v, i) => ({
             values: [v ?? 0],
             label: barLabel(i),
@@ -190,11 +189,11 @@
             bind:steps={$pieSteps}
             include_suspended_option={false}
             pieInfo={{
-                countDescriptor: "Most Seconds",
+                countDescriptor: i18n("most-seconds"),
                 spectrumFrom: "#fcba03",
                 spectrumTo: "#543e00",
                 fillerColour: "blue",
-                legend_left: "Time (s)",
+                legend_left: i18n("time-in-seconds"),
             }}
         ></IntervalGraph>
         <p>{i18n("time-distribution-help")}</p>
@@ -210,13 +209,13 @@
             bind:steps={$pieSteps}
             include_suspended_option={false}
             pieInfo={{
-                countDescriptor: "Most Seconds",
+                countDescriptor: i18n("most-seconds"),
                 spectrumFrom: "#fcba03",
                 spectrumTo: "#543e00",
                 fillerColour: "blue",
-                legend_left: "Per card (s)",
-                legend_right: "Total (s)",
-                totalDescriptor: "Seconds",
+                legend_left: i18n("seconds-per-card"),
+                legend_right: i18n("total-seconds"),
+                totalDescriptor: i18n("seconds"),
             }}
         ></IntervalGraph>
         <p>
@@ -252,7 +251,11 @@
             bind:offset={$scroll}
             {limit}
         />
-        <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
+        <span>
+            {i18n("forgotten-cards-not-yet-reintroduced", {
+                number: remaining_forgotten.toLocaleString(),
+            })}
+        </span>
 
         <p>{i18n("forgotten-help")}</p>
         {#if truncated}
@@ -287,7 +290,7 @@
         <h1>{i18n("load-trend")}</h1>
         <LineOrCandlestick
             data={burden}
-            label={$burdenOrLoad}
+            label={i18n("Load")}
             bind:trend_data={burden_trend}
             up_colour={CANDLESTICK_RED}
             down_colour={CANDLESTICK_GREEN}
@@ -479,11 +482,15 @@
 <GraphCategory>
     <GraphContainer>
         <h1>{i18n("card-count-time-machine")}</h1>
-        <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage
+        <Pie
+            data={time_machine_pie}
+            legend_left={i18n("card-type")}
+            legend_right={i18n("amount")}
+            percentage
         ></Pie>
         <label>
             <span>
-                {-realScroll} days ago:
+                {i18n("x-days-ago", { days: -realScroll })}
             </span>
             <span class="scroll">
                 {time_machine_min}
@@ -492,14 +499,15 @@
             </span>
         </label>
         <div>
-            Start at <br />
+            {i18n("starts-at")}
+            <br />
             <label>
                 <input type="radio" bind:group={left_bound_at} value="Added" />
-                First added
+                {i18n("first-added")}
             </label>
             <label>
                 <input type="radio" bind:group={left_bound_at} value="Review" />
-                First review
+                {i18n("first-review")}
             </label>
             <label>
                 <input
@@ -512,7 +520,7 @@
                         }
                     }}
                 />
-                Custom
+                {i18n("custom")}
             </label>
             {#if left_bound_at == "Custom"}
                 <input type="number" bind:value={custom_leftmost} />

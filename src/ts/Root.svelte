@@ -53,7 +53,7 @@
     ])
     $: target_R_days_bar = {
         row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
-        row_labels: ["Pass", "Fail"],
+        row_labels: [i18n("pass"), i18n("fail")],
         reverse_legend: true,
         data: target_R_day_values.map((values, label) => ({
             values: normalize ? values.map((a) => a / _.sum(values)) : values,

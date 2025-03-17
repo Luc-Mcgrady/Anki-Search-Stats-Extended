@@ -56,6 +56,8 @@ loading = Loading...
 total = Total
 trend = Trend
 
+percent-correct = {$percentage}% Correct
+
 future-due-types = Future Due Types
 future-due-types-help = 
     This graph is the same as the Future Due above except it delineates between types of cards.
@@ -119,9 +121,25 @@ review-speed-trend-help =
     Please note that this graph respects the "last 12 months / all history"
     option beneath the search bar.
 
+seconds-per-review = Time Spent Per Review (s)
+average-second-per-day = {$value} {$value ->
+        [one] second
+        *[many] seconds
+    } on average per {$n ->
+        [one] day
+        *[many] {$n} days
+    }
+
 sxr-heatmap = SxR Heatmap
 sxr-heatmap-help =
     This graph shows the number of cards which have the given stability and retrievability. The redder the cell, the more cards are in that "bin".
+
+enlarged = Enlarged
+logarithmic-s = Logarithmic s
+r-bin-size = R Bin Size
+s-bin-size = S Bin Size
+retrievability-short = R
+stability-short = S
 
 card-count = Card Count
 
@@ -178,6 +196,11 @@ generic-truncated-warning =
 time-distribution = Time Distribution
 time-distribution-help =
     How many cards have taken the given amount of time to answer over every review
+most-seconds = Most Seconds
+time-in-seconds = Time (s)
+seconds = Seconds
+total-seconds = Total (s)
+seconds-per-card = Per card (s)
 
 suspended-cards-warning = 
     In order to exclude suspended cards from this or the following graphs, you will need to manually add "-is:suspended" to your search. Please consider that this may cause inconsistencies if you leave it off for the above graphs.
@@ -187,6 +210,7 @@ time-totals-help =
     The quantity of time that has been spent on cards which have taken the given amount of time to answer over every review
 
 introduced = Introduced
+re-introduced = Re-Introduced
 introduced-help =
     A card is introduced when it is shown to you for the first time. A card is re-introduced when it is shown to you for the first time after being forgotten.
 introduced-truncated-warning = 
@@ -195,6 +219,7 @@ introduced-truncated-warning =
 forgotten = Forgotten
 forgotten-help = You "forget" a card when you manually mark it as new.
 forgotten-truncated-warning = Does not work for cards introduced before the cutoff date.
+forgotten-cards-not-yet-reintroduced = Forgotten cards not yet re-introduced: {$number}
 
 introductory-rating = Introductory Rating
 introductory-rating-help = 
@@ -204,6 +229,9 @@ load-trend = Load Trend
 load-trend-help =
     This shows the change in load over time. 
     For the trend candlestick bar, A green bar shows a decrease in load for that period of time (improvement) while a red bar shows an increase.
+
+x-change = Change: {$val}
+x-total = Total: {$val}
 
 ratings = Ratings
 ratings-help = 
@@ -221,6 +249,9 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+# Between Minus Within? If I'm honest I have no idea what this stands for.
+b-w-matrix = B-W Matrix
+
 predicted = Predicted
 actual = Actual
 
@@ -237,11 +268,20 @@ time-ratings-help =
 card-count-time-machine = Card Count Time Machine
 card-count-time-machine-help = Shows your card type counts for a given date
 
+starts-at = Starts at
+first-added = First Added
+first-review = First Review
+custom = Custom
+
+card-type = Card Type
+
 review-interval-time-machine = Review Interval Time Machine
 review-interval-time-machine-help = Shows your review intervals for a given date
 
 stability-time-machine = Stability Time Machine
 stability-time-machine-help = Shows your card stabilities for a given date
+
+x-days-ago = {$days} days ago:
 
 burden-per-day = {$value} burden per {$n ->
         [one] day

@@ -29,7 +29,7 @@
 
 {#if trend_value}
     <br />
-    Trend =
+    {i18n("trend")} =
     <div>
         {#if n > 1}
             {i18n_bundle.formatPattern(pattern, { n: 1, value: display(trend_day_value) })}

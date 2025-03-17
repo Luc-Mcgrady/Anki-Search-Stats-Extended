@@ -248,7 +248,7 @@ export function retentionStats(data: BarDatum) {
 }
 
 export function formatRetention(value: number) {
-    return `${(100 * value).toFixed(2)}% Correct`
+    return i18n("percent-correct", { percentage: (100 * value).toFixed(2) })
 }
 
 export function easeBarChart(

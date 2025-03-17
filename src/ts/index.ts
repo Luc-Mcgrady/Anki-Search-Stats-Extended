@@ -2,7 +2,7 @@ import { mount } from "svelte"
 import Root from "./Root.svelte"
 import type { SSEconfig, SSEother } from "./config"
 import { patchFetch } from "./root"
-import { burdenOrLoad, config, other } from "./stores"
+import { config, other } from "./stores"
 
 declare global {
     let css: string
@@ -12,7 +12,6 @@ declare global {
 
 patchFetch()
 
-burdenOrLoad.set(SSEconfig.burdenNotLoad ? "Burden" : "Load")
 config.set(SSEconfig)
 other.set(SSEother)
 

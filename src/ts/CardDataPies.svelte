@@ -4,7 +4,6 @@
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
     import {
-        burdenOrLoad,
         data,
         graph_mode,
         include_suspended,
@@ -105,7 +104,7 @@
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
-                totalDescriptor: $burdenOrLoad,
+                totalDescriptor: i18n("load"),
                 countDescriptor: i18n("highest-repetition-count"),
                 legend_left: i18n("repetition-count"),
                 legend_right: i18n("card-load"),
