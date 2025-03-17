@@ -1,6 +1,7 @@
 import _ from "lodash"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
+import { i18n } from "./i18n"
 import type { CardData, Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
@@ -239,14 +240,14 @@ export function calculateRevlogStats(
 }
 
 export const EASE_COLOURS = ["#a50026", "#fdbe70", "#b6e076", "#006837"].reverse()
-export const EASE_LABELS = ["Again", "Hard", "Good", "Easy"].reverse()
+export const EASE_LABELS = [i18n("again"), i18n("hard"), i18n("good"), i18n("easy")].reverse()
 
 export function retentionStats(data: BarDatum) {
     return [_.sum(data.values) ? formatRetention(1 - data.values[3]) : "No data"]
 }
 
 export function formatRetention(value: number) {
-    return `${(100 * value).toFixed(2)}% Correct`
+    return i18n("percent-correct", { percentage: (100 * value).toFixed(2) })
 }
 
 export function easeBarChart(

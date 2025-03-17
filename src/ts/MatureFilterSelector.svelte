@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { i18n } from "./i18n"
     import type { Buckets } from "./revlogGraphs"
 
     export let group: keyof Buckets<unknown>
@@ -7,22 +8,22 @@
 <div>
     <label>
         <input type="radio" bind:group value="learn" />
-        Learn
+        {i18n("learn")}
     </label>
     <label>
         <input type="radio" bind:group value="young" />
-        Young
+        {i18n("young")}
     </label>
     <label>
         <input type="radio" bind:group value="mature" />
-        Mature
+        {i18n("mature")}
     </label>
     <label>
         <input type="radio" bind:group value="not_learn" />
-        Young+Mature
+        {i18n("young-and-mature")}
     </label>
     <label>
         <input type="radio" bind:group value="all" />
-        All
+        {i18n("all")}
     </label>
 </div>

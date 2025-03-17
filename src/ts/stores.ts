@@ -27,7 +27,6 @@ export let custom_pie_mode = writable("Count")
 export let graph_mode = writable<"Bar" | "Pie">("Pie")
 
 // Config related stats
-export let burdenOrLoad = writable("Load")
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)

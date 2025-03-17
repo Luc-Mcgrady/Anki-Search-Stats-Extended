@@ -4,7 +4,6 @@
     import { catchErrors, type CardData, type Revlog } from "./search"
     import {
         binSize,
-        burdenOrLoad,
         config,
         fatigueLoss,
         pieLast,
@@ -34,6 +33,7 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import { i18n, i18n_bundle, i18n_pattern } from "./i18n"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -69,7 +69,7 @@
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
-        row_labels: ["Introduced", "Re-introduced"],
+        row_labels: [i18n("introduced"), i18n("re-introduced")],
         data: Array.from(introduced_day_count)
             .map((v, i) => {
                 const introduced = v ?? 0
@@ -86,7 +86,7 @@
 
     $: forgotten_bar = {
         row_colours: ["#330900"],
-        row_labels: ["Forgotten"],
+        row_labels: [i18n("forgotten")],
         data: Array.from(day_forgotten).map((v, i) => ({
             values: [v ?? 0],
             label: barLabel(i),
@@ -124,22 +124,22 @@
     let time_machine_pie: PieDatum[]
     $: time_machine_pie = [
         {
-            label: "Mature",
+            label: i18n("mature-count"),
             value: time_machine_mature,
             colour: MATURE_COLOUR,
         },
         {
-            label: "Young",
+            label: i18n("young-count"),
             value: time_machine_young,
             colour: YOUNG_COLOUR,
         },
         {
-            label: "Suspended",
+            label: i18n("suspended"),
             value: time_machine_suspended,
             colour: "yellow",
         },
         {
-            label: "New",
+            label: i18n("new"),
             value:
                 time_machine_added -
                 time_machine_young -
@@ -152,25 +152,25 @@
     let time_machine_bar: BarChart
     $: time_machine_bar = {
         row_colours: ["#70AFD6"],
-        row_labels: ["Cards"],
+        row_labels: [i18n("cards")],
         data: Array.from(time_machine_intervals).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler("Interval of $s"),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
     let stability_time_machine_bar: BarChart
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
-        row_labels: ["Cards"],
+        row_labels: [i18n("cards")],
         data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler("Interval of $s"),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
     let include_reintroduced = true
@@ -192,53 +192,50 @@
 
 <GraphCategory>
     <GraphContainer>
-        <h1>Time Distribution</h1>
+        <h1>{i18n("time-distribution")}</h1>
         <IntervalGraph
             intervals={revlog_times}
             bind:last={$pieLast}
             bind:steps={$pieSteps}
             include_suspended_option={false}
             pieInfo={{
-                countDescriptor: "Most Seconds",
+                countDescriptor: i18n("most-seconds"),
                 spectrumFrom: "#fcba03",
                 spectrumTo: "#543e00",
                 fillerColour: "blue",
-                legend_left: "Time (s)",
+                legend_left: i18n("time-in-seconds"),
             }}
         ></IntervalGraph>
-        <p>How many cards have taken the given amount of time to answer over every review</p>
+        <p>{i18n("time-distribution-help")}</p>
         <p>
-            In order to exclude suspended cards from this or the following graphs, you will need to
-            manually add "-is:suspended" to your search. Please consider that this may cause
-            inconsistencies if you leave it off for the above graphs.
+            {i18n("suspended-cards-warning")}
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Time Totals</h1>
+        <h1>{i18n("time-totals")}</h1>
         <IntervalGraph
             intervals={revlog_times.map((i, a) => i * a)}
             bind:last={$pieLast}
             bind:steps={$pieSteps}
             include_suspended_option={false}
             pieInfo={{
-                countDescriptor: "Most Seconds",
+                countDescriptor: i18n("most-seconds"),
                 spectrumFrom: "#fcba03",
                 spectrumTo: "#543e00",
                 fillerColour: "blue",
-                legend_left: "Per card (s)",
-                legend_right: "Total (s)",
-                totalDescriptor: "Seconds",
+                legend_left: i18n("seconds-per-card"),
+                legend_right: i18n("total-seconds"),
+                totalDescriptor: i18n("seconds"),
             }}
         ></IntervalGraph>
         <p>
-            The quantity of time that has been spent on cards which have taken the given amount of
-            time to answer over every review
+            {i18n("time-totals-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Introduced</h1>
+        <h1>{i18n("introduced")}</h1>
         <BarScrollable
             data={introduced_bar}
             {bins}
@@ -247,17 +244,16 @@
             {limit}
         />
         <p>
-            A card is introduced when it is shown to you for the first time. A card is re-introduced
-            when it is shown to you for the first time after being forgotten.
+            {i18n("introduced-help")}
         </p>
         {#if truncated}
             <Warning>
-                Re-introduced does not work for cards introduced before the cutoff date.
+                {i18n("introduced-truncated-warning ")}
             </Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Forgotten</h1>
+        <h1>{i18n("forgotten")}</h1>
         <BarScrollable
             data={forgotten_bar}
             {bins}
@@ -265,15 +261,19 @@
             bind:offset={$scroll}
             {limit}
         />
-        <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
+        <span>
+            {i18n("forgotten-cards-not-yet-reintroduced", {
+                number: remaining_forgotten.toLocaleString(),
+            })}
+        </span>
 
-        <p>You "forget" a card when you manually mark it as new.</p>
+        <p>{i18n("forgotten-help")}</p>
         {#if truncated}
-            <Warning>Does not work for cards introduced before the cutoff date.</Warning>
+            <Warning>{i18n("forgotten-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Introductory Rating</h1>
+        <h1>{i18n("introductory-rating")}</h1>
         <BarScrollable
             data={easeBarChart(introduced_ease, today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
@@ -281,46 +281,44 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
+            trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
         />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
-            Include re-introduced
+            {i18n("include-re-introduced")}
         </label>
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
-        <p>The first review you gave a newly introduced card. Important for FSRS.</p>
+        <p>{i18n("introductory-rating-help")}</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>{$burdenOrLoad} Trend</h1>
+        <h1>{i18n("load-trend")}</h1>
         <LineOrCandlestick
             data={burden}
-            label={$burdenOrLoad}
+            label={i18n("Load")}
             bind:trend_data={burden_trend}
             up_colour={CANDLESTICK_RED}
             down_colour={CANDLESTICK_GREEN}
         />
         <p>
-            This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
-            in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
-            an increase.
+            {i18n("load-trend-help")}
         </p>
         <TrendValue
             trend={burden_trend}
             n={$binSize}
-            info={{ x: "day", y: "burden", y_s: "burden" }}
+            info={{ pattern: i18n_pattern("burden-per-day") }}
         />
         {#if truncated}
-            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Ratings</h1>
+        <h1>{i18n("ratings")}</h1>
         <BarScrollable
             data={easeBarChart(day_ease[mature_filter], today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
@@ -328,55 +326,38 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
+            trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            The rating of every review you did that day, learning or otherwise. The ratio displays
-            it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
-            to get your retention for that day (shown as "
-            <code>% Correct</code>
-            " in the tooltip).
+            {i18n("ratings-help")}
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Memorised</h1>
+        <h1>{i18n("memorised")}</h1>
         <MemorisedBar />
         {#if truncated}
-            <Warning>It is heavily advised you use "All history" for this graph</Warning>
-            <Warning>
-                This graph re-simulates your review history, leaving the beginning out can greatly
-                affect the results.
-            </Warning>
+            <Warning>{i18n("memorised-truncated-warning")}</Warning>
         {/if}
         <p>
-            An FSRS estimate of how many cards you knew at that given time. This depends on FSRS's
-            current parameters and will use the defaults if none are found (Even if you are using
-            SM-2). <br />
-            This graph will not work properly with an incomplete review history and will not respect
-            "ignore reviews before".
-            <br />
-            <br />
-            In FSRS, each card has a percentage chance of being recalled known as retrievability. This
-            is a sum of those percentages over time.
-            <br />
+            {i18n("memorised-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Interval Ratings</h1>
+        <h1>{i18n("interval-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 interval_ease,
                 1,
                 normalize_ease,
-                barStringLabeler("Interval of $s")
+                barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!)
             )}
             bind:binSize={interval_bin_size}
             bind:offset={interval_scroll}
@@ -385,28 +366,25 @@
             trend={normalize_ease}
             trend_by={retention_trend}
             trend_info={{
-                x: "day greater interval",
-                x_s: "days greater interval",
-                y: "retention",
-                y_s: "retention",
+                pattern: i18n_pattern("retention-per-day-greater-interval"),
                 percentage: true,
             }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
-        <p>Ratings plotted by the interval they had before you rated them.</p>
+        <p>{i18n("interval-ratings-help")}</p>
     </GraphContainer>
     {#if $config?.badGraphs}
         <GraphContainer>
-            <h1>Naive Sibling Similarity</h1>
+            <h1>{i18n("naive-sibling-similarity")}</h1>
             <BarScrollable
                 data={easeBarChart(
                     sibling_time_ease,
                     1,
                     normalize_ease,
-                    barStringLabeler("$s Days since sibling review")
+                    barStringLabeler(i18n_bundle.getMessage("days-since-sibling-review")?.value!)
                 )}
                 bind:binSize={interval_bin_size}
                 bind:offset={interval_scroll}
@@ -415,35 +393,27 @@
                 trend={normalize_ease}
                 trend_by={retention_trend}
                 trend_info={{
-                    x: "day since last sibling review",
-                    x_s: "days since last sibling review",
-                    y: "retention",
-                    y_s: "retention",
+                    pattern: i18n_pattern("retention-per-day-since-last-sibling-review"),
                     percentage: true,
                 }}
             />
             <label>
                 <input type="checkbox" bind:checked={normalize_ease} />
-                As Ratio
+                {i18n("as-ratio")}
             </label>
             <p>
-                The rating you gave cards plotted by the number of days since you reviewed <b>
-                    a sibling
-                </b>
-                of that card (card originating from the same note). Reviews from the same card or cards
-                where either card are not mature are not counted. Please consider the "interval ratings"
-                graph as you interpret this one.
+                {i18n("naive-sibling-similarity-help")}
             </p>
-            <small><Warning always>Bad Graph</Warning></small>
+            <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
         <GraphContainer>
-            <h1>Rating Fatigue</h1>
+            <h1>{i18n("rating-fatigue")}</h1>
             <BarScrollable
                 data={easeBarChart(
                     fatigue_ease[mature_filter],
                     0,
                     normalize_ease,
-                    barStringLabeler("$s Previous reviews")
+                    barStringLabeler(i18n_bundle.getMessage("x-previous-reviews")?.value!)
                 )}
                 average={normalize_ease}
                 bind:binSize={fatigue_bin_size}
@@ -451,29 +421,24 @@
                 trend={normalize_ease}
                 trend_by={retention_trend}
                 trend_info={{
-                    x: "prior review that day",
-                    x_s: "prior reviews that day",
-                    y: "retention",
-                    y_s: "retention",
+                    pattern: i18n_pattern("retention-per-prior-review-that-day"),
                     percentage: true,
                 }}
             />
             <label>
                 <input type="checkbox" bind:checked={normalize_ease} />
-                As Ratio
+                {i18n("as-ratio")}
             </label>
 
             <MatureFilterSelector bind:group={mature_filter} />
             <p>
-                Ratings plotted by how many reviews (that match the search) you did total in that
-                day before rating them.
-                <b>This will be affected by the card review/display order.</b>
+                {i18n("rating-fatigue-help")}
             </p>
-            <small><Warning always>Bad Graph</Warning></small>
+            <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
         {#if $fatigueLoss}
             <GraphContainer>
-                <h1>FSRS Loss by Fatigue</h1>
+                <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
                 <BarScrollable
                     bind:binSize={fatigue_bin_size}
                     data={{
@@ -488,64 +453,54 @@
                     average
                     loss
                     trend
-                    trend_info={{
-                        x: "prior review that day",
-                        x_s: "prior reviews that day",
-                        y: "loss",
-                        y_s: "loss",
-                    }}
+                    trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
                 ></BarScrollable>
                 <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
                 <p>
-                    This graph displays how inaccurate FSRS is by the number of reviews you did
-                    prior in that day. <br />
-                    Useful if you want to set a review limit.
+                    {i18n("fsrs-loss-by-fatigue-help")}
                 </p>
-                <small><Warning always>Bad Graph</Warning></small>
+                <small><Warning always>{i18n("bad-graph")}</Warning></small>
             </GraphContainer>
         {/if}
     {/if}
     <GraphContainer>
-        <h1>Time Ratings</h1>
+        <h1>{i18n("time-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 time_ease_seconds[mature_filter],
                 0,
                 normalize_ease,
-                barStringLabeler("$s Seconds")
+                barStringLabeler(i18n_bundle.getMessage("x-seconds")?.value!)
             )}
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_info={{
-                x: "second spent thinking",
-                x_s: "seconds spent thinking",
-                y: "retention",
-                y_s: "retention",
-                percentage: true,
-            }}
+            trend_info={{ pattern: i18n_pattern("retention-per-second-spent"), percentage: true }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
 
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            Ratings plotted by how long you spent looking at a card before rating it. Respects the
-            deck presets "Maximum answer seconds" of the moment the answer was reviewed.
+            {i18n("time-ratings-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Card Count Time Machine</h1>
-        <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage
+        <h1>{i18n("card-count-time-machine")}</h1>
+        <Pie
+            data={time_machine_pie}
+            legend_left={i18n("card-type")}
+            legend_right={i18n("amount")}
+            percentage
         ></Pie>
         <label>
             <span>
-                {-realScroll} days ago:
+                {i18n("x-days-ago", { days: -realScroll })}
             </span>
             <span class="scroll">
                 {time_machine_min}
@@ -554,14 +509,15 @@
             </span>
         </label>
         <div>
-            Start at <br />
+            {i18n("starts-at")}
+            <br />
             <label>
                 <input type="radio" bind:group={left_bound_at} value="Added" />
-                First added
+                {i18n("first-added")}
             </label>
             <label>
                 <input type="radio" bind:group={left_bound_at} value="Review" />
-                First review
+                {i18n("first-review")}
             </label>
             <label>
                 <input
@@ -574,21 +530,20 @@
                         }
                     }}
                 />
-                Custom
+                {i18n("custom")}
             </label>
             {#if left_bound_at == "Custom"}
                 <input type="number" bind:value={custom_leftmost} />
             {/if}
         </div>
-        <span>Total: {time_machine_added}</span>
-        <p>Shows your card type counts for a given date</p>
-        <p>New suspended cards count as new, not suspended</p>
+        <span>{i18n("x-total-cards", { val: time_machine_added })}</span>
+        <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
-            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Review Interval Time Machine</h1>
+        <h1>{i18n("review-interval-time-machine")}</h1>
         <BarScrollable data={time_machine_bar} left_aligned />
         <label class="scroll">
             <span>
@@ -600,15 +555,15 @@
                 0
             </span>
         </label>
-        <span>Total cards: {time_machine_mature + time_machine_young}</span>
-        <p>Shows your review intervals for a given date</p>
+        <span>{i18n("x-total-cards", { val: time_machine_mature + time_machine_young })}</span>
+        <p>{i18n("review-interval-time-machine-help")}</p>
         {#if truncated}
-            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     {#if $stability_days}
         <GraphContainer>
-            <h1>Stability Time Machine</h1>
+            <h1>{i18n("stability-time-machine")}</h1>
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <label class="scroll">
                 <span>
@@ -620,9 +575,9 @@
                     0
                 </span>
             </label>
-            <p>Shows your card stabilities for a given date</p>
+            <p>{i18n("stability-time-machine-help")}</p>
             {#if truncated}
-                <Warning>May be inaccurate while "all history" is not selected.</Warning>
+                <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
         </GraphContainer>
     {/if}

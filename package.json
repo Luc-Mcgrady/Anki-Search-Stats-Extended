@@ -12,6 +12,7 @@
   "author": "",
   "license": "GPL-3.0-only",
   "dependencies": {
+    "@fluent/bundle": "^0.18.0",
     "cancelable-promise": "^4.3.1",
     "d3": "^7.8.5",
     "lodash": "^4.17.21",
