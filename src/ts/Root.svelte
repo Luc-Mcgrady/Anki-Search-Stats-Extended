@@ -183,7 +183,9 @@
                             <h1>{i18n("review-graphs-warning-title")}</h1>
                             {i18n("review-graphs-warning")}
                         </Warning>
-                        <button on:click={() => ($showRevlogStats = true)}>{i18n("review-graphs-prepare-graphs")}</button>
+                        <button on:click={() => ($showRevlogStats = true)}>
+                            {i18n("review-graphs-prepare-graphs")}
+                        </button>
                         <span>
                             {i18n("review-graphs-config-hint")}
                         </span>

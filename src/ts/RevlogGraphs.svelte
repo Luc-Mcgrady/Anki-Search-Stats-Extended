@@ -34,6 +34,7 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
+    import { i18n } from "./i18n"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -142,7 +143,7 @@
     let time_machine_bar: BarChart
     $: time_machine_bar = {
         row_colours: ["#70AFD6"],
-        row_labels: ["Cards"],
+        row_labels: [i18n("cards")],
         data: Array.from(time_machine_intervals).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
@@ -154,7 +155,7 @@
     let stability_time_machine_bar: BarChart
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
-        row_labels: ["Cards"],
+        row_labels: [i18n("cards")],
         data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),

@@ -10,6 +10,7 @@
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
+    import { i18n } from "./i18n"
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
@@ -70,7 +71,7 @@
 </script>
 
 {#if retrievabilityDays}
-    <LineOrCandlestick data={retrievabilityDays} label="Cards" bind:trend_data />
+    <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
 {:else if !show}
     <NoGraph faded={false}>

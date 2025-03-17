@@ -1,10 +1,19 @@
-load = Load
+# Should include "Search Stats Extended" in english as well
+title-search-stats-extended = Search Stats Extended:
 
+# Graph data
+load = Load
+cards = Cards
+card-load = Card Load
+intervals = Intervals
+last-day = Last Day
+
+total-cards = Total Cards
+
+# Graphs
 no-data = NO DATA
 fsrs-only = (FSRS only)
 
-# Should include "Search Stats Extended" in english as well
-title-search-stats-extended = Search Stats Extended:
 future-due-types = Future Due Types
 future-due-types-help = 
     This graph is the same as the Future Due above except it delineates between types of cards.
