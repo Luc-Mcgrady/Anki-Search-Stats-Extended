@@ -34,7 +34,7 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
-    import { i18n } from "./i18n"
+    import { i18n, i18n_bundle } from "./i18n"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -149,7 +149,7 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler("Interval of $s"),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
     let stability_time_machine_bar: BarChart
@@ -161,7 +161,7 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler("Interval of $s"),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
     let include_reintroduced = true
@@ -344,7 +344,7 @@
                 interval_ease,
                 1,
                 normalize_ease,
-                barStringLabeler("Interval of $s")
+                barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!)
             )}
             bind:binSize={interval_bin_size}
             bind:offset={interval_scroll}
@@ -374,7 +374,7 @@
                     sibling_time_ease,
                     1,
                     normalize_ease,
-                    barStringLabeler("$s Days since sibling review")
+                    barStringLabeler(i18n_bundle.getMessage("days-since-sibling-review")?.value!)
                 )}
                 bind:binSize={interval_bin_size}
                 bind:offset={interval_scroll}
@@ -406,7 +406,7 @@
                     fatigue_ease[mature_filter],
                     0,
                     normalize_ease,
-                    barStringLabeler("$s Previous reviews")
+                    barStringLabeler(i18n_bundle.getMessage("x-previous-reviews")?.value!)
                 )}
                 average={normalize_ease}
                 bind:binSize={fatigue_bin_size}
@@ -471,7 +471,7 @@
                 time_ease_seconds[mature_filter],
                 0,
                 normalize_ease,
-                barStringLabeler("$s Seconds")
+                barStringLabeler(i18n_bundle.getMessage("x-seconds")?.value!)
             )}
             average={normalize_ease}
             left_aligned

@@ -1,10 +1,10 @@
 <script lang="ts">
     import _ from "lodash"
-    import { barStringLabeler, type BarChart } from "./bar"
+    import { barStringLabeler, rangeBarStringLabeler, type BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import type { IntervalPieInfo } from "./IntervalPie"
     import { YOUNG_COLOUR } from "./graph"
-    import { i18n } from "./i18n"
+    import { i18n, i18n_bundle } from "./i18n"
 
     export let intervals: Record<number, number>
     export let pieInfo: IntervalPieInfo = {}
@@ -29,7 +29,10 @@
             values: [val ?? 0],
             label: i.toString(),
         })),
-        columnLabeler: barStringLabeler(`${pieInfo.legend_left ?? "Interval"} of $s`),
+        columnLabeler: rangeBarStringLabeler(
+            i18n_bundle.getMessage("x-in-range")?.value!,
+            pieInfo.legend_left ?? i18n("interval")
+        ),
         tick_spacing: 5,
     }
 </script>

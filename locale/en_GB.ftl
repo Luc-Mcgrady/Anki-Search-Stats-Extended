@@ -97,6 +97,13 @@ new-search = New Search
 reset = Reset
 colour = Colour
 
+interval-of = Interval of {$value}
+x-seconds = {$value} Seconds
+# e.g 
+# x = Interval
+# range = 10-20
+x-in-range = {$x} of {$range}
+
 review-speed-trend = Review Speed Trend
 review-speed-trend-help =
     The average amount of time it took you to answer each card on a given day.
@@ -244,3 +251,6 @@ fsrs-loss-by-fatigue = FSRS Loss by Fatigue
 fsrs-loss-by-fatigue-help =
     This graph displays how inaccurate FSRS is by the number of reviews you did prior in that day.
     Useful if you want to set a review limit.
+
+days-since-sibling-review = {$value} Days since sibling review
+x-previous-reviews = {$value} Previous reviews
