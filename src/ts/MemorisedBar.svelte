@@ -10,7 +10,7 @@
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
-    import { i18n } from "./i18n"
+    import { i18n, i18n_pattern } from "./i18n"
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
@@ -39,14 +39,14 @@
     }
 
     $: truncated = $searchLimit !== 0
-    $: label = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
+    $: pattern =
+        (trend_data?.slope || 0) > 0
+            ? i18n_pattern("remembered-per-day")
+            : i18n_pattern("forgotten-per-day")
 
     let trend_info: TrendInfo
     $: trend_info = {
-        y: label,
-        y_s: label,
-        x: "day",
-        x_s: "days",
+        pattern,
         absolute: true,
     }
 

@@ -34,7 +34,7 @@
     import { CANDLESTICK_GREEN, CANDLESTICK_RED, DeltaIfy } from "./Candlestick"
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
-    import { i18n, i18n_bundle } from "./i18n"
+    import { i18n, i18n_bundle, i18n_pattern } from "./i18n"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -268,7 +268,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
+            trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
         />
         <label>
@@ -298,7 +298,7 @@
         <TrendValue
             trend={burden_trend}
             n={$binSize}
-            info={{ x: "day", y: "burden", y_s: "burden" }}
+            info={{ pattern: i18n_pattern("burden-per-day") }}
         />
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -313,7 +313,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_info={{ y: "retention", y_s: "retention", x: "day", percentage: true }}
+            trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
         />
         <label>
@@ -353,10 +353,7 @@
             trend={normalize_ease}
             trend_by={retention_trend}
             trend_info={{
-                x: "day greater interval",
-                x_s: "days greater interval",
-                y: "retention",
-                y_s: "retention",
+                pattern: i18n_pattern("retention-per-day-greater-interval"),
                 percentage: true,
             }}
         />
@@ -383,10 +380,7 @@
                 trend={normalize_ease}
                 trend_by={retention_trend}
                 trend_info={{
-                    x: "day since last sibling review",
-                    x_s: "days since last sibling review",
-                    y: "retention",
-                    y_s: "retention",
+                    pattern: i18n_pattern("retention-per-day-since-last-sibling-review"),
                     percentage: true,
                 }}
             />
@@ -414,10 +408,7 @@
                 trend={normalize_ease}
                 trend_by={retention_trend}
                 trend_info={{
-                    x: "prior review that day",
-                    x_s: "prior reviews that day",
-                    y: "retention",
-                    y_s: "retention",
+                    pattern: i18n_pattern("retention-per-prior-review-that-day"),
                     percentage: true,
                 }}
             />
@@ -449,12 +440,7 @@
                     average
                     loss
                     trend
-                    trend_info={{
-                        x: "prior review that day",
-                        x_s: "prior reviews that day",
-                        y: "loss",
-                        y_s: "loss",
-                    }}
+                    trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
                 ></BarScrollable>
                 <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
                 <p>
@@ -477,13 +463,7 @@
             left_aligned
             trend={normalize_ease}
             trend_by={retention_trend}
-            trend_info={{
-                x: "second spent thinking",
-                x_s: "seconds spent thinking",
-                y: "retention",
-                y_s: "retention",
-                percentage: true,
-            }}
+            trend_info={{ pattern: i18n_pattern("retention-per-second-spent"), percentage: true }}
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />

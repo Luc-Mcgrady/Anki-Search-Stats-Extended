@@ -243,6 +243,36 @@ review-interval-time-machine-help = Shows your review intervals for a given date
 stability-time-machine = Stability Time Machine
 stability-time-machine-help = Shows your card stabilities for a given date
 
+burden-per-day = {$value} burden per {$n ->
+        [one] day
+        *[many] {$n} days
+    }
+retention-per-day = {$value} retention per {$n ->
+        [one] day
+        *[many] {$n} days
+    }
+retention-per-day-greater-interval = {$value} retention per {$n ->
+        [one] day
+        *[many] {$n} days
+    } greater interval
+retention-per-second-spent = {$value} retention per {$n ->
+        [one] second
+        *[many] {$n} seconds
+    } spent thinking
+remembered-per-day = {$value} {$value ->
+        [one] card
+        *[many] cards
+    } remembered per {$n ->
+        [one] day
+        *[many] {$n} days
+    }
+forgotten-per-day = {$value} {$value ->
+        [one] card
+        *[many] cards
+    } forgotten per {$n ->
+        [one] day
+        *[many] {$n} days
+    }
 # Graphs that are hidden by default, translate if you want to
 
 bad-graph = Bad Graph
@@ -262,3 +292,18 @@ fsrs-loss-by-fatigue-help =
 
 days-since-sibling-review = {$value} Days since sibling review
 x-previous-reviews = {$value} Previous reviews
+
+retention-per-day-since-last-sibling-review = {$value} retention per {$n ->
+        [one] day
+        *[many] {$n} days
+    } since last sibling review
+
+retention-per-prior-review-that-day = {$value} retention per {$n ->
+        [one] prior review
+        *[many] {$n} prior reviews
+    }
+
+loss-per-prior-review-that-day = {$value} loss per {$n ->
+        [one] prior review
+        *[many] {$n} prior reviews
+    }

@@ -11,3 +11,7 @@ export function i18n(message: string, args?: Record<string, FluentVariable>) {
     // return message
     return i18n_bundle.formatPattern(i18n_bundle.getMessage(message)?.value || message, args)
 }
+
+export function i18n_pattern(pattern: string) {
+    return i18n_bundle.getMessage(pattern)?.value || pattern
+}
