@@ -11,5 +11,5 @@ console.log(bundle)
 console.log(SSEother)
 
 export function i18n(message: string, args?: Record<string, FluentVariable>) {
-    return bundle.formatPattern(bundle.getMessage(message)?.value || "Error", args)
+    return bundle.formatPattern(bundle.getMessage(message)?.value || message, args)
 }
