@@ -13,6 +13,7 @@ intervals = Intervals
 last-day = Last Day
 
 total-cards = Total Cards
+x-total-cards = Total Cards: {$val}
 total-load = Total Load
 
 mature-count = {mature}
@@ -266,7 +267,10 @@ time-ratings-help =
     Ratings plotted by how long you spent looking at a card before rating it. Respects the deck presets "Maximum answer seconds" of the moment the answer was reviewed.
 
 card-count-time-machine = Card Count Time Machine
-card-count-time-machine-help = Shows your card type counts for a given date
+card-count-time-machine-help = 
+    Shows your card type counts for a given date.
+    
+    New suspended cards count as new, not suspended.
 
 starts-at = Starts at
 first-added = First Added

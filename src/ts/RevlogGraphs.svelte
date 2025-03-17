@@ -98,6 +98,7 @@
     $: time_machine_intervals = intervals[today + realScroll] ?? []
     $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
+    $: time_machine_suspended = time_machine_intervals[-1] ?? 0
     $: time_machine_added = Object.entries(addedCards).reduce(
         (p, [i, v]) => p + (+i <= realScroll ? v : 0),
         0
@@ -133,8 +134,17 @@
             colour: YOUNG_COLOUR,
         },
         {
-            label: i18n("new-count"),
-            value: time_machine_added - time_machine_young - time_machine_mature,
+            label: i18n("suspended"),
+            value: time_machine_suspended,
+            colour: "yellow",
+        },
+        {
+            label: i18n("new"),
+            value:
+                time_machine_added -
+                time_machine_young -
+                time_machine_mature -
+                time_machine_suspended,
             colour: "#6baed6",
         },
     ]
@@ -526,7 +536,7 @@
                 <input type="number" bind:value={custom_leftmost} />
             {/if}
         </div>
-        <span>{i18n("card-count")}: {time_machine_added}</span>
+        <span>{i18n("x-total-cards", { val: time_machine_added })}</span>
         <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -545,6 +555,7 @@
                 0
             </span>
         </label>
+        <span>{i18n("")}{time_machine_mature + time_machine_young}</span>
         <p>{i18n("review-interval-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
