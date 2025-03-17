@@ -23,9 +23,9 @@ def new_refresh(self: NewDeckStats):
     with open(addon_dir / "stats.min.css") as f:
         innerCss = f.read()
 
-    lang = mw.pm.meta["defaultLang"]
-
     config = mw.addonManager.getConfig(__name__)
+    lang = mw.pm.meta["defaultLang"] if config["forceLang"] is None else config["forceLang"]
+
     other = {
         "rollover": mw.col.get_preferences().scheduling.rollover,
         "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs,
