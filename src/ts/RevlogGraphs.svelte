@@ -421,7 +421,7 @@
             <p>
                 {i18n("rating-fatigue-help")}
             </p>
-            <small><Warning always>Bad Graph</Warning></small>
+            <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
         {#if $fatigueLoss}
             <GraphContainer>
