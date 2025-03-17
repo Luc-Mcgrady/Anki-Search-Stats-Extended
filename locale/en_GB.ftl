@@ -99,10 +99,11 @@ custom-pie-help =
     for each search
 
 search = Search
+colour = Colour
 search-string = Search String
+css-colour = Css Colour
 new-search = New Search
 reset = Reset
-colour = Colour
 
 interval-of = Interval of {$value}
 x-seconds = {$value} Seconds

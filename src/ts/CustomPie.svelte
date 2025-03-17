@@ -58,7 +58,11 @@
 </div>
 
 {#if _.sumBy($pie_data_values, (d) => d.value)}
-    <Pie data={$pie_data_values} legend_left={i18n("search")} legend_right={$custom_pie_mode}></Pie>
+    <Pie
+        data={$pie_data_values}
+        legend_left={i18n("search")}
+        legend_right={i18n($custom_pie_mode.toLowerCase())}
+    ></Pie>
 {:else}
     <NoGraph></NoGraph>
 {/if}
