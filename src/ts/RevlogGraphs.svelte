@@ -457,7 +457,7 @@
                 ></BarScrollable>
                 <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
                 <p>
-                    {i18n("fsrs-loss-by-fatigue-graph")}
+                    {i18n("fsrs-loss-by-fatigue-help")}
                 </p>
                 <small><Warning always>{i18n("bad-graph")}</Warning></small>
             </GraphContainer>
@@ -555,7 +555,7 @@
                 0
             </span>
         </label>
-        <span>{i18n("")}{time_machine_mature + time_machine_young}</span>
+        <span>{i18n("x-total-cards", { val: time_machine_mature + time_machine_young })}</span>
         <p>{i18n("review-interval-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>

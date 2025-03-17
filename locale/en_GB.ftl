@@ -67,7 +67,11 @@ future-due-types-help =
 future-due-retention = Future Due Retention
 future-due-retention-help = 
     As a ratio this graph shows the retention FSRS predicts you will have on that day (Check "target{"\u00A0"}R" in the card browser if you have the fsrs helper addon). As not a ratio it instead shows how many cards FSRS predicts you will get that day.
+    
     Does not account for overdue-ness.
+
+pass = Pass
+fail = Fail
 
 intra-day-due = Intra Day Due
 intra-day-due-help =                 
