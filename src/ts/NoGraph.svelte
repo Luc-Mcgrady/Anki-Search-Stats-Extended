@@ -1,9 +1,11 @@
 <script lang="ts">
+    import { i18n } from "./i18n"
+
     export let faded = true
 </script>
 
 <div style:opacity={faded ? 0.5 : 1}>
-    <slot>NO DATA</slot>
+    <slot>{i18n("no-data")}</slot>
 </div>
 
 <style>
