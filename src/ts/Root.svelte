@@ -70,7 +70,7 @@
     }
 </script>
 
-<h1>Search Stats Extended: <!-- Do not translate --></h1>
+<h1>Search Stats Extended {i18n("search-stats-extended-i18n")}:</h1>
 
 <h1>{i18n("hello")}</h1>
 <h1>{i18n("english")}</h1>

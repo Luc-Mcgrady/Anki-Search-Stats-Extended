@@ -3,8 +3,12 @@ import { FluentBundle, FluentResource, type FluentVariable } from "@fluent/bundl
 let en = `
 hello = Hello world
 english = Yet to be translated
+search-stats-extended-i18n = 
 `
-let zh = "hello = 你好世界"
+let zh = `
+hello = 你好世界
+search-stats-extended-i18n = （扩展搜索统计信息）
+`
 
 const locale = new FluentResource(zh)
 const fallback = new FluentResource(en)
