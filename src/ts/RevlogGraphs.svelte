@@ -365,7 +365,7 @@
     </GraphContainer>
     {#if $config?.badGraphs}
         <GraphContainer>
-            <h1>{i18n("naive-sibling-stability")}</h1>
+            <h1>{i18n("naive-sibling-similarity")}</h1>
             <BarScrollable
                 data={easeBarChart(
                     sibling_time_ease,
@@ -389,7 +389,7 @@
                 {i18n("as-ratio")}
             </label>
             <p>
-                {i18n("naive-sibling-stability-help")}
+                {i18n("naive-sibling-similarity-help")}
             </p>
             <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
