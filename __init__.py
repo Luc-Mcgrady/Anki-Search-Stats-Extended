@@ -10,11 +10,12 @@ addon_dir = Path(os.path.dirname(__file__))
 
 fallback_lang = "en_GB"
 def getLocale(lang: str):
-    #try:
+    try:
         with open(addon_dir / "locale" / f"{lang}.ftl") as f:
             return f.read()
-    #except FileNotFoundError:
-    #    return ""
+    except FileNotFoundError:
+        print(f"Search Stats Extended: Locale {lang} not found")
+        return ""
 
 def new_refresh(self: NewDeckStats):
     with open(addon_dir / "stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
