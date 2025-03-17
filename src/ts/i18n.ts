@@ -7,7 +7,7 @@ search-stats-extended-i18n =
 `
 let zh = `
 hello = 你好世界
-search-stats-extended-i18n = （扩展搜索统计信息）
+search-stats-extended = （扩展搜索统计信息）
 `
 
 const locale = new FluentResource(zh)
