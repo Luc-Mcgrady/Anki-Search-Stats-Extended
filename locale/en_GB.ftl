@@ -10,6 +10,22 @@ last-day = Last Day
 
 total-cards = Total Cards
 
+mature = Mature
+young = Young
+learning = Learning
+relearning = Relearning
+# Not in use yet, but will be
+suspended = Suspended 
+
+learn = Learn
+young-and-mature = Young+Mature
+all = All
+
+again = Again
+hard = Hard
+good = Good
+easy = Easy
+
 # Graphs
 no-data = NO DATA
 fsrs-only = (FSRS only)
