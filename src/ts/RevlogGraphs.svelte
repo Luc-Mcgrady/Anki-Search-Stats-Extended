@@ -76,7 +76,7 @@
         MEAN,
     }
 
-    let average_type = Average.MEAN
+    let average_type = Average.MEDIAN
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
