@@ -85,6 +85,13 @@ todays-retention-help =
     Retention is used to compare how many cards you got right and wrong on first
     looking.
 
+amount = Amount
+state = State
+
+passed = Passed
+flunked = Flunked
+learning = Learning
+
 custom-pie = Custom pie
 custom-pie-help = 
     This pie will show you the sum of the requested value for cards which match 
