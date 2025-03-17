@@ -53,6 +53,9 @@ as-ratio = As Ratio
 
 loading = Loading...
 
+total = Total
+trend = Trend
+
 future-due-types = Future Due Types
 future-due-types-help = 
     This graph is the same as the Future Due above except it delineates between types of cards.
@@ -202,6 +205,9 @@ memorised-truncated-warning =
         
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
+
+predicted = Predicted
+actual = Actual
 
 show-question = Show?
 increase-date-range = Increase date range

@@ -58,9 +58,9 @@
         const value = ((100 * (data.predicted - data.real)) / data.count).toFixed(1)
         console.log(data)
         return [
-            `Predicted: ${data.predicted.toFixed(2)}`,
-            `Actual: ${data.real.toFixed(0)}`,
-            `Total: ${data.count.toFixed(0)}`,
+            `${i18n("predicted")}: ${data.predicted.toFixed(2)}`,
+            `${i18n("actual")}: ${data.real.toFixed(0)}`,
+            `${i18n("total")}: ${data.count.toFixed(0)}`,
             `(${data.predicted.toFixed(2)}-${data.real.toFixed(0)})/${data.count.toFixed(0)}=${value}%`,
         ]
     }

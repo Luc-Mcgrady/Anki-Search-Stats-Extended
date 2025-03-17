@@ -538,7 +538,7 @@
                 <input type="number" bind:value={custom_leftmost} />
             {/if}
         </div>
-        <span>Total: {time_machine_added}</span>
+        <span>{i18n("card-count")}: {time_machine_added}</span>
         <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
