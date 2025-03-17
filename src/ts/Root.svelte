@@ -36,6 +36,7 @@
     import { barDateLabeler, type BarDatum } from "./bar"
     import { totalCalc } from "./barHelpers"
     import SRHeatmap from "./SRHeatmap.svelte"
+    import { i18n } from "./i18n"
 
     const { width, height } = defaultGraphBounds()
 
@@ -69,7 +70,10 @@
     }
 </script>
 
-<h1>Search Stats Extended:</h1>
+<h1>Search Stats Extended: <!-- Do not translate --></h1>
+
+<h1>{i18n("hello")}</h1>
+<h1>{i18n("english")}</h1>
 
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>
     <GraphCategory>

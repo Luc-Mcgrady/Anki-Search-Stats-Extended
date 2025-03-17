@@ -19,7 +19,8 @@ def new_refresh(self: NewDeckStats):
         "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs,
         "deck_configs": {conf["id"]: conf for conf in mw.col.decks.all_config()},
         "deck_config_ids": {deck["id"]: deck.get("conf", None) for deck in mw.col.decks.all()},
-        "days_elapsed": mw.col.sched.today
+        "days_elapsed": mw.col.sched.today,
+        "locale": mw.pm.lang
     }
     setVars = (
         f"const css = `{innerCss}`;" 
