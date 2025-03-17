@@ -67,6 +67,15 @@ intra-day-due = Intra Day Due
 intra-day-due-help =                 
     This graph shows you which hours todays cards are/were due in.
     Useful if you use FSRS-5 with automatic learning steps or have long intra-day learning intervals.
+next-card-at = Next card is in{ $hours ->
+        [0] {""}
+        [one] { $hours } hour
+        *[many] { $hours } hours
+    } { $minutes ->
+        [0] {""}
+        [one] { $minutes } minute
+        *[many] { $minutes } minutes
+    } at {$time}
 
 todays-retention = Todays Retention
 todays-retention-help = 

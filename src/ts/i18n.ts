@@ -3,7 +3,7 @@ import { FluentBundle, FluentResource, type FluentVariable } from "@fluent/bundl
 const locale = new FluentResource(SSEother.lang_ftl)
 const fallback = new FluentResource(SSEother.fallback_ftl)
 
-export const i18n_bundle = new FluentBundle(SSEother.lang)
+export const i18n_bundle = new FluentBundle(SSEother.lang.replace("_", "-"))
 i18n_bundle.addResource(locale)
 i18n_bundle.addResource(fallback, { allowOverrides: false })
 
