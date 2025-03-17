@@ -3,15 +3,26 @@ from anki.hooks import wrap
 
 from aqt.stats import NewDeckStats
 import os.path
+from pathlib import Path
 from aqt import mw
 
-addon_dir = os.path.dirname(__file__)
+addon_dir = Path(os.path.dirname(__file__))
+
+fallback_lang = "en_GB"
+def getLocale(lang: str):
+    #try:
+        with open(addon_dir / "locale" / f"{lang}.ftl") as f:
+            return f.read()
+    #except FileNotFoundError:
+    #    return ""
 
 def new_refresh(self: NewDeckStats):
-    with open(f"{addon_dir}/stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
+    with open(addon_dir / "stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
         innerJs = f.read()
-    with open(f"{addon_dir}/stats.min.css") as f:
+    with open(addon_dir / "stats.min.css") as f:
         innerCss = f.read()
+
+    lang = mw.pm.meta["defaultLang"]
 
     config = mw.addonManager.getConfig(__name__)
     other = {
@@ -20,7 +31,9 @@ def new_refresh(self: NewDeckStats):
         "deck_configs": {conf["id"]: conf for conf in mw.col.decks.all_config()},
         "deck_config_ids": {deck["id"]: deck.get("conf", None) for deck in mw.col.decks.all()},
         "days_elapsed": mw.col.sched.today,
-        "locale": mw.pm.lang
+        "lang": lang,
+        "lang_ftl": getLocale(lang),
+        "fallback_ftl": getLocale(fallback_lang)
     }
     setVars = (
         f"const css = `{innerCss}`;" 

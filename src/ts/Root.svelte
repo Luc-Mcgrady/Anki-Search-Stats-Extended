@@ -70,10 +70,9 @@
     }
 </script>
 
-<h1>Search Stats Extended {i18n("search-stats-extended")}:</h1>
+<h1>{i18n("title-search-stats-extended")}</h1>
 
 <h1>{i18n("hello")}</h1>
-<h1>{i18n("english")}</h1>
 
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>
     <GraphCategory>

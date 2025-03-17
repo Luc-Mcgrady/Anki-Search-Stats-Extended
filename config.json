@@ -7,5 +7,6 @@
     "piePercentages": false,
     "warnings": true,
     "trends": true,
-    "badGraphs": false
+    "badGraphs": false,
+    "forceLang": null
 }
