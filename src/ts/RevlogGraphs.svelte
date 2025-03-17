@@ -183,7 +183,7 @@
 
 <GraphCategory>
     <GraphContainer>
-        <h1>Time Distribution</h1>
+        <h1>{i18n("time-distribution")}</h1>
         <IntervalGraph
             intervals={revlog_times}
             bind:last={$pieLast}
@@ -197,15 +197,13 @@
                 legend_left: "Time (s)",
             }}
         ></IntervalGraph>
-        <p>How many cards have taken the given amount of time to answer over every review</p>
+        <p>{i18n("time-distribution-help")}</p>
         <p>
-            In order to exclude suspended cards from this or the following graphs, you will need to
-            manually add "-is:suspended" to your search. Please consider that this may cause
-            inconsistencies if you leave it off for the above graphs.
+            {i18n("suspended-cards-warning")}
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Time Totals</h1>
+        <h1>{i18n("time-totals")}</h1>
         <IntervalGraph
             intervals={revlog_times.map((i, a) => i * a)}
             bind:last={$pieLast}
@@ -222,14 +220,13 @@
             }}
         ></IntervalGraph>
         <p>
-            The quantity of time that has been spent on cards which have taken the given amount of
-            time to answer over every review
+            {i18n("time-totals-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Introduced</h1>
+        <h1>{i18n("introduced")}</h1>
         <BarScrollable
             data={introduced_bar}
             {bins}
@@ -238,17 +235,16 @@
             {limit}
         />
         <p>
-            A card is introduced when it is shown to you for the first time. A card is re-introduced
-            when it is shown to you for the first time after being forgotten.
+            {i18n("introduced-help")}
         </p>
         {#if truncated}
             <Warning>
-                Re-introduced does not work for cards introduced before the cutoff date.
+                {i18n("introduced-truncated-warning ")}
             </Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Forgotten</h1>
+        <h1>{i18n("forgotten")}</h1>
         <BarScrollable
             data={forgotten_bar}
             {bins}
@@ -258,13 +254,13 @@
         />
         <span>Forgotten cards not yet re-introduced: {remaining_forgotten.toLocaleString()}</span>
 
-        <p>You "forget" a card when you manually mark it as new.</p>
+        <p>{i18n("forgotten-help")}</p>
         {#if truncated}
-            <Warning>Does not work for cards introduced before the cutoff date.</Warning>
+            <Warning>{i18n("forgotten-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Introductory Rating</h1>
+        <h1>{i18n("introductory-rating")}</h1>
         <BarScrollable
             data={easeBarChart(introduced_ease, today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
@@ -283,12 +279,12 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
-        <p>The first review you gave a newly introduced card. Important for FSRS.</p>
+        <p>{i18n("introductory-rating-help")}</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>{$burdenOrLoad} Trend</h1>
+        <h1>{i18n("load-trend")}</h1>
         <LineOrCandlestick
             data={burden}
             label={$burdenOrLoad}
@@ -297,9 +293,7 @@
             down_colour={CANDLESTICK_GREEN}
         />
         <p>
-            This shows the change in {$burdenOrLoad.toLowerCase()} over time. A green bar shows a decrease
-            in {$burdenOrLoad.toLowerCase()} for that period of time (improvement) while a red bar shows
-            an increase.
+            {i18n("load-trend-help")}
         </p>
         <TrendValue
             trend={burden_trend}
@@ -307,11 +301,11 @@
             info={{ x: "day", y: "burden", y_s: "burden" }}
         />
         {#if truncated}
-            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Ratings</h1>
+        <h1>{i18n("ratings")}</h1>
         <BarScrollable
             data={easeBarChart(day_ease[mature_filter], today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
@@ -328,40 +322,23 @@
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            The rating of every review you did that day, learning or otherwise. The ratio displays
-            it as a percent of all cards reviewed that day. calculate <code>(1-again)%</code>
-            to get your retention for that day (shown as "
-            <code>% Correct</code>
-            " in the tooltip).
+            {i18n("ratings-help")}
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Memorised</h1>
+        <h1>{i18n("memorised")}</h1>
         <MemorisedBar />
         {#if truncated}
-            <Warning>It is heavily advised you use "All history" for this graph</Warning>
-            <Warning>
-                This graph re-simulates your review history, leaving the beginning out can greatly
-                affect the results.
-            </Warning>
+            <Warning>{i18n("memorised-truncated-warning")}</Warning>
         {/if}
         <p>
-            An FSRS estimate of how many cards you knew at that given time. This depends on FSRS's
-            current parameters and will use the defaults if none are found (Even if you are using
-            SM-2). <br />
-            This graph will not work properly with an incomplete review history and will not respect
-            "ignore reviews before".
-            <br />
-            <br />
-            In FSRS, each card has a percentage chance of being recalled known as retrievability. This
-            is a sum of those percentages over time.
-            <br />
+            {i18n("memorised-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Interval Ratings</h1>
+        <h1>{i18n("interval-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 interval_ease,
@@ -387,11 +364,11 @@
             <input type="checkbox" bind:checked={normalize_ease} />
             As Ratio
         </label>
-        <p>Ratings plotted by the interval they had before you rated them.</p>
+        <p>{i18n("interval-ratings-help")}</p>
     </GraphContainer>
     {#if $config?.badGraphs}
         <GraphContainer>
-            <h1>Naive Sibling Similarity</h1>
+            <h1>{i18n("naive-sibling-stability")}</h1>
             <BarScrollable
                 data={easeBarChart(
                     sibling_time_ease,
@@ -418,17 +395,12 @@
                 As Ratio
             </label>
             <p>
-                The rating you gave cards plotted by the number of days since you reviewed <b>
-                    a sibling
-                </b>
-                of that card (card originating from the same note). Reviews from the same card or cards
-                where either card are not mature are not counted. Please consider the "interval ratings"
-                graph as you interpret this one.
+                {i18n("naive-sibling-stability-help")}
             </p>
-            <small><Warning always>Bad Graph</Warning></small>
+            <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
         <GraphContainer>
-            <h1>Rating Fatigue</h1>
+            <h1>{i18n("rating-fatigue")}</h1>
             <BarScrollable
                 data={easeBarChart(
                     fatigue_ease[mature_filter],
@@ -456,15 +428,13 @@
 
             <MatureFilterSelector bind:group={mature_filter} />
             <p>
-                Ratings plotted by how many reviews (that match the search) you did total in that
-                day before rating them.
-                <b>This will be affected by the card review/display order.</b>
+                {i18n("rating-fatigue-help")}
             </p>
             <small><Warning always>Bad Graph</Warning></small>
         </GraphContainer>
         {#if $fatigueLoss}
             <GraphContainer>
-                <h1>FSRS Loss by Fatigue</h1>
+                <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
                 <BarScrollable
                     bind:binSize={fatigue_bin_size}
                     data={{
@@ -488,16 +458,14 @@
                 ></BarScrollable>
                 <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
                 <p>
-                    This graph displays how inaccurate FSRS is by the number of reviews you did
-                    prior in that day. <br />
-                    Useful if you want to set a review limit.
+                    {i18n("fsrs-loss-by-fatigue-graph")}
                 </p>
-                <small><Warning always>Bad Graph</Warning></small>
+                <small><Warning always>{i18n("bad-graph")}</Warning></small>
             </GraphContainer>
         {/if}
     {/if}
     <GraphContainer>
-        <h1>Time Ratings</h1>
+        <h1>{i18n("time-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 time_ease_seconds[mature_filter],
@@ -524,14 +492,13 @@
 
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            Ratings plotted by how long you spent looking at a card before rating it. Respects the
-            deck presets "Maximum answer seconds" of the moment the answer was reviewed.
+            {i18n("time-ratings-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
-        <h1>Card Count Time Machine</h1>
+        <h1>{i18n("card-count-time-machine")}</h1>
         <Pie data={time_machine_pie} legend_left={"Card Type"} legend_right={"Amount"} percentage
         ></Pie>
         <label>
@@ -572,13 +539,13 @@
             {/if}
         </div>
         <span>Total: {time_machine_added}</span>
-        <p>Shows your card type counts for a given date</p>
+        <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
-            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Review Interval Time Machine</h1>
+        <h1>{i18n("review-interval-time-machine")}</h1>
         <BarScrollable data={time_machine_bar} left_aligned />
         <label class="scroll">
             <span>
@@ -590,14 +557,14 @@
                 0
             </span>
         </label>
-        <p>Shows your review intervals for a given date</p>
+        <p>{i18n("review-interval-time-machine-help")}</p>
         {#if truncated}
-            <Warning>May be inaccurate while "all history" is not selected.</Warning>
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
     {#if $stability_days}
         <GraphContainer>
-            <h1>Stability Time Machine</h1>
+            <h1>{i18n("stability-time-machine")}</h1>
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <label class="scroll">
                 <span>
@@ -609,9 +576,9 @@
                     0
                 </span>
             </label>
-            <p>Shows your card stabilities for a given date</p>
+            <p>{i18n("stability-time-machine-help")}</p>
             {#if truncated}
-                <Warning>May be inaccurate while "all history" is not selected.</Warning>
+                <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
         </GraphContainer>
     {/if}

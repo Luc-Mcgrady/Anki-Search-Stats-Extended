@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { i18n } from "./i18n"
     import IntervalGraph from "./IntervalGraph.svelte"
     import { burdenOrLoad } from "./stores"
 
@@ -21,8 +22,8 @@
     bind:steps
     intervals={burdens}
     pieInfo={{
-        totalDescriptor: $burdenOrLoad,
-        legend_left: "Intervals",
-        legend_right: $burdenOrLoad,
+        totalDescriptor: i18n("total-load"),
+        legend_left: i18n("intervals"),
+        legend_right: i18n("load"),
     }}
 ></IntervalGraph>
