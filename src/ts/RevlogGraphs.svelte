@@ -124,17 +124,17 @@
     let time_machine_pie: PieDatum[]
     $: time_machine_pie = [
         {
-            label: "Mature",
+            label: i18n("mature-count"),
             value: time_machine_mature,
             colour: MATURE_COLOUR,
         },
         {
-            label: "Young",
+            label: i18n("young-count"),
             value: time_machine_young,
             colour: YOUNG_COLOUR,
         },
         {
-            label: "New",
+            label: i18n("new-count"),
             value: time_machine_added - time_machine_young - time_machine_mature,
             colour: "#6baed6",
         },

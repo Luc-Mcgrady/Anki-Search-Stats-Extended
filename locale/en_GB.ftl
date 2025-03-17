@@ -15,14 +15,17 @@ last-day = Last Day
 total-cards = Total Cards
 total-load = Total Load
 
-mature = Mature
-young = Young
-learning = Learning
-relearning = Relearning
+mature-count = {mature}
+young-count = {young}
+learning-count = Learning
+relearning-count = Relearning
+new-count = New
 # Suspended not in use yet, but will be
 suspended = Suspended 
 
 learn = Learn
+mature = Mature
+young = Young
 young-and-mature = Young+Mature
 all = All
 

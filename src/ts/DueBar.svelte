@@ -40,7 +40,12 @@
 <Bar
     data={{
         row_colours: [MATURE_COLOUR, YOUNG_COLOUR, "#fb6a4a", "#fd8d3c"],
-        row_labels: [i18n("mature"), i18n("young"), i18n("relearning"), i18n("learning")],
+        row_labels: [
+            i18n("mature-count"),
+            i18n("young-count"),
+            i18n("relearning-count"),
+            i18n("learning-count"),
+        ],
         data: bars,
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
