@@ -273,11 +273,11 @@
         />
         <label>
             <input type="checkbox" bind:checked={include_reintroduced} />
-            Include re-introduced
+            {i18n("include-re-introduced")}
         </label>
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
         <p>{i18n("introductory-rating-help")}</p>
     </GraphContainer>
@@ -318,7 +318,7 @@
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
@@ -362,7 +362,7 @@
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
         <p>{i18n("interval-ratings-help")}</p>
     </GraphContainer>
@@ -392,7 +392,7 @@
             />
             <label>
                 <input type="checkbox" bind:checked={normalize_ease} />
-                As Ratio
+                {i18n("as-ratio")}
             </label>
             <p>
                 {i18n("naive-sibling-stability-help")}
@@ -423,7 +423,7 @@
             />
             <label>
                 <input type="checkbox" bind:checked={normalize_ease} />
-                As Ratio
+                {i18n("as-ratio")}
             </label>
 
             <MatureFilterSelector bind:group={mature_filter} />
@@ -487,7 +487,7 @@
         />
         <label>
             <input type="checkbox" bind:checked={normalize_ease} />
-            As Ratio
+            {i18n("as-ratio")}
         </label>
 
         <MatureFilterSelector bind:group={mature_filter} />

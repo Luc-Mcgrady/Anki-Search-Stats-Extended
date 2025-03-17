@@ -35,6 +35,21 @@ easy = Easy
 no-data = NO DATA
 fsrs-only = (FSRS only)
 
+pie = Pie
+bar = Bar
+
+infinity = Infinity
+steps = Steps
+
+zero-inclusive = Zero Inclusive
+include-suspended = Include Suspended
+include-re-introduced = Include re-introduced
+bar-width = Bar Width
+scroll = Scroll
+as-ratio = As Ratio
+
+loading = Loading...
+
 future-due-types = Future Due Types
 future-due-types-help = 
     This graph is the same as the Future Due above except it delineates between types of cards.
@@ -166,6 +181,9 @@ memorised-truncated-warning =
         
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
+
+show-question = Show?
+increase-date-range = Increase date range
 
 interval-ratings = Interval Ratings
 interval-ratings-help = Ratings plotted by the interval they had before you rated them.

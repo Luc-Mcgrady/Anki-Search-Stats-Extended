@@ -6,6 +6,7 @@
     import { searchJoin } from "./root"
     import { other, searchString } from "./stores"
     import NoGraph from "./NoGraph.svelte"
+    import { i18n } from "./i18n"
 
     let next_card_time: Date | null = null
     let next_card_time_until: string = ""
@@ -100,7 +101,7 @@
 </script>
 
 {#await fetch}
-    <NoGraph>Loading...</NoGraph>
+    <NoGraph>{i18n("loading")}</NoGraph>
 {:then data}
     {#if data.reduce((p, n) => p + _.sum(n.values), 0) > 0}
         <!--If there is data-->

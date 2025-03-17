@@ -76,14 +76,14 @@
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}
-            <button class="big" on:click={() => (show = true)}>Show?</button>
+            <button class="big" on:click={() => (show = true)}>{i18n("show-question")}</button>
         {:else}
-            <button class="big" on:click={SetDateInfinite}>Increase date range</button>
-            <button on:click={() => (show = true)}>Show?</button>
+            <button class="big" on:click={SetDateInfinite}>{i18n("increase-date-range")}</button>
+            <button on:click={() => (show = true)}>{i18n("show-question")}</button>
         {/if}
     </NoGraph>
 {:else}
-    <NoGraph>Loading</NoGraph>
+    <NoGraph>{i18n("loading")}</NoGraph>
 {/if}
 
 {#if bw_matrix}

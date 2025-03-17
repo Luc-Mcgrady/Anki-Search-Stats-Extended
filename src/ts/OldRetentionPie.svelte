@@ -6,6 +6,7 @@
     import { searchJoin } from "./root"
     import { search as doSearch } from "./search"
     import { searchString } from "./stores"
+    import { i18n } from "./i18n"
 
     $: passed_search = searchJoin($searchString, "rated:1 -rated:1:1 is:review")
     $: flunked_search = searchJoin($searchString, "rated:1 rated:1:1 is:review")
@@ -52,7 +53,7 @@
 </script>
 
 {#await data_fetcher}
-    <NoGraph>Loading...</NoGraph>
+    <NoGraph>{i18n("loading")}</NoGraph>
 {:then data}
     <Pie legend_left="State" legend_right="Amount" {data}></Pie>
     <br />

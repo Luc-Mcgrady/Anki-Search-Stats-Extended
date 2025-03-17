@@ -81,7 +81,9 @@
             .filter(([i, _]) => +i >= infinite_pie_start)
             .reduce((n, [_, v]) => n + v, 0)
 
-        pie_data.push(PieDatumFactory(infinite_pie_start, "Infinity", infinite_pie_slice, "grey"))
+        pie_data.push(
+            PieDatumFactory(infinite_pie_start, i18n("infinity"), infinite_pie_slice, "grey")
+        )
     }
 
     $: pie_values = Object.values(pie_data).map((d) => d.value)
@@ -93,7 +95,7 @@
         <input type="number" bind:value={last} />
     </label>
     <label>
-        Steps
+        {i18n("steps")}
         <input type="number" bind:value={steps} />
     </label>
 </div>
