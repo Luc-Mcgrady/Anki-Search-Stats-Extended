@@ -1,6 +1,6 @@
 eng_GB.ftl is the default locale, you should use it while translating.
 
-## Whats my locale code?
+## What is my locale code?
 
 1. Press "Ctrl-shift colon (:)" in anki
 2. Type `mw.pm.meta["defaultLang"]`
