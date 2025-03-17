@@ -43,10 +43,10 @@
             bind:steps={lapse_steps}
             bind:last={lapse_last}
             pieInfo={{
-                totalDescriptor: $burdenOrLoad,
-                countDescriptor: "Highest Lapse count",
-                legend_left: "Lapse count",
-                legend_right: `Card ${$burdenOrLoad}`,
+                totalDescriptor: i18n("load"),
+                countDescriptor: i18n("highest-lapse-count"),
+                legend_left: i18n("lapse-count"),
+                legend_right: i18n("card-load"),
                 spectrumFrom: "#bd3f09",
                 spectrumTo: "#612207",
             }}
@@ -63,9 +63,9 @@
             bind:steps={lapse_steps}
             bind:last={lapse_last}
             pieInfo={{
-                countDescriptor: "Highest Lapse Count",
-                legend_left: "Lapse count",
-                legend_right: "Card count",
+                countDescriptor: i18n("highest-lapse-count"),
+                legend_left: i18n("lapse-count"),
+                legend_right: i18n("card-count"),
                 spectrumFrom: "#bd3f09",
                 spectrumTo: "#612207",
             }}
@@ -82,9 +82,9 @@
             bind:steps={lapse_steps}
             bind:last={lapse_last}
             pieInfo={{
-                totalDescriptor: "Lapses",
-                countDescriptor: "Most Lapses",
-                legend_left: "Lapse count",
+                totalDescriptor: i18n("lapses"),
+                countDescriptor: i18n("highest-lapse-count"),
+                legend_left: i18n("lapse-count"),
                 legend_right: i18n("lapse-total"),
                 spectrumFrom: "#bd3f09",
                 spectrumTo: "#612207",
@@ -106,9 +106,9 @@
             bind:last={repetitions_last}
             pieInfo={{
                 totalDescriptor: $burdenOrLoad,
-                countDescriptor: "Most Repetitions",
-                legend_left: "Repetition count",
-                legend_right: `Card ${$burdenOrLoad}`,
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-load"),
                 spectrumFrom: "#5ca7f7",
                 spectrumTo: "#0b4f99",
             }}
@@ -124,9 +124,9 @@
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
-                countDescriptor: "Most Repetitions",
-                legend_left: "Repetition count",
-                legend_right: "Card count",
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-count"),
                 spectrumFrom: "#5ca7f7",
                 spectrumTo: "#0b4f99",
             }}
@@ -140,9 +140,9 @@
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
-                totalDescriptor: "Repetitions",
-                countDescriptor: "Most Repetitions",
-                legend_left: "Repetitions count",
+                totalDescriptor: i18n("total-repetitions"),
+                countDescriptor: i18n("most-repetitions"),
+                legend_left: i18n("repetition-count"),
                 legend_right: i18n("repetition-total"),
                 spectrumFrom: "#5ca7f7",
                 spectrumTo: "#0b4f99",

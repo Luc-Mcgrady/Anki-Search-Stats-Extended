@@ -93,6 +93,8 @@ sxr-heatmap = SxR Heatmap
 sxr-heatmap-help =
     This graph shows the number of cards which have the given stability and retrievability. The redder the cell, the more cards are in that "bin".
 
+card-count = Card Count
+
 interval-distribution = Interval Distribution
 interval-distribution-help =
     Here you can more easily visualise the spread of your Intervals. This displays the same data as regular anki's "Review Intervals" graph.
@@ -100,6 +102,9 @@ interval-distribution-help =
 interval-load = Interval Load
 interval-load-help =
     Load is 1/interval for each card and is used to estimate how many cards you see in a day. As an example if a card has an interval of 1 it has a load of 1 because you see it every day. If a card has an interval of 2 it has a load of 0.5 et cetera.
+
+highest-lapse-count = Highest Lapse Count
+lapse-count = Lapse Count 
 
 lapse-load = Lapse Load
 lapse-load-help = 
@@ -112,6 +117,10 @@ lapse-distribution-help =
 lapse-total = Lapse Total
 lapse-total-help = 
     This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3 lapses per card, the lapse total for 3 would be 6.
+
+highest-repetition-count = Most Repetitions
+repetition-count = Repetitions
+total-repetitions = Total Repetitions
 
 repetition-load = Repetition Load
 repetition-load-help = 
