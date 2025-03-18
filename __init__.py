@@ -18,10 +18,10 @@ def getLocale(lang: str):
         return ""
 
 def new_refresh(self: NewDeckStats):
-    with open(addon_dir / "stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
-        innerJs = f.read()
-    with open(addon_dir / "stats.min.css") as f:
-        innerCss = f.read()
+    with open(addon_dir / "stats.min.js", "b") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
+        innerJs = f.read().decode('utf8')
+    with open(addon_dir / "stats.min.css", "b") as f:
+        innerCss = f.read().decode('utf8')
 
     config = mw.addonManager.getConfig(__name__)
     lang = mw.pm.meta["defaultLang"] if config["forceLang"] is None else config["forceLang"]
