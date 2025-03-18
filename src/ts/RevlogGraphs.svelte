@@ -37,6 +37,7 @@
     import { i18n, i18n_bundle, i18n_pattern } from "./i18n"
     import Bar from "./Bar.svelte"
     import * as d3 from "d3"
+    import NoGraph from "./NoGraph.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -173,7 +174,7 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("stability-of")?.value!),
     }
 
     let granularity = 20
@@ -587,9 +588,9 @@
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
-    {#if $stability_days}
-        <GraphContainer>
-            <h1>{i18n("stability-time-machine")}</h1>
+    <GraphContainer>
+        <h1>{i18n("stability-time-machine")}</h1>
+        {#if $stability_days.length}
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <label class="scroll">
                 <span>
@@ -605,11 +606,13 @@
             {#if truncated}
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
-        </GraphContainer>
-    {/if}
-    {#if $difficulty_days}
-        <GraphContainer>
-            <h1>{i18n("difficulty-time-machine")}</h1>
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("difficulty-time-machine")}</h1>
+        {#if $difficulty_days.length}
             <label>
                 {i18n("zoom")}
                 <input type="range" bind:value={granularity} min={1} max={100} />
@@ -629,8 +632,10 @@
             {#if truncated}
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
-        </GraphContainer>
-    {/if}
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
+    </GraphContainer>
 </GraphCategory>
 
 <style>

@@ -113,6 +113,8 @@ new-search = New Search
 reset = Reset
 
 interval-of = Interval of {$value}
+difficulty-of = Difficulty of {$value}
+stability-of = Stability of {$value}
 x-seconds = {$value} Seconds
 # e.g 
 # x = Interval
@@ -285,6 +287,8 @@ card-type = Card Type
 
 review-interval-time-machine = Review Interval Time Machine
 review-interval-time-machine-help = Shows your review intervals for a given date
+
+memorised-dependant = Run "Memorised" first
 
 stability-time-machine = Stability Time Machine
 stability-time-machine-help = Shows your card stabilities for a given date
