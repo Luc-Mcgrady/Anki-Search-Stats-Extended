@@ -1,12 +1,10 @@
+import type { Pattern } from "@fluent/bundle/esm/ast"
 import _ from "lodash"
 import createTrend from "trendline"
 import type { ExtraRenderInput } from "./bar"
 
 export type TrendInfo = Partial<{
-    x: string
-    x_s: string
-    y: string
-    y_s: string
+    pattern: Pattern
     percentage: boolean
     absolute: boolean
 }>

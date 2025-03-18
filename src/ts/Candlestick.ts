@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { createAxis, defaultX, defaultY, hoverBars, type ExtraRenderInput } from "./bar"
+import { i18n } from "./i18n"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
@@ -72,7 +73,11 @@ export function plotCandlestick(
 
             tooltipShown.set(true)
             tooltip.set({
-                text: [`${date}:`, `Change: ${delta.toFixed(2)}`, `Final: ${final.toFixed(2)}`],
+                text: [
+                    `${date}:`,
+                    i18n("x-change", { val: delta.toFixed(2) }),
+                    i18n("x-total", { val: final.toFixed(2) }),
+                ],
                 x: tooltipX(e),
                 y: e.pageY,
             })

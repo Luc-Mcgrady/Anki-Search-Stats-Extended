@@ -3,23 +3,38 @@ from anki.hooks import wrap
 
 from aqt.stats import NewDeckStats
 import os.path
+from pathlib import Path
 from aqt import mw
 
-addon_dir = os.path.dirname(__file__)
+addon_dir = Path(os.path.dirname(__file__))
+
+fallback_lang = "en_GB"
+def getLocale(lang: str):
+    try:
+        with open(addon_dir / "locale" / f"{lang}.ftl") as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"Search Stats Extended: Locale {lang} not found")
+        return ""
 
 def new_refresh(self: NewDeckStats):
-    with open(f"{addon_dir}/stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
+    with open(addon_dir / "stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
         innerJs = f.read()
-    with open(f"{addon_dir}/stats.min.css") as f:
+    with open(addon_dir / "stats.min.css") as f:
         innerCss = f.read()
 
     config = mw.addonManager.getConfig(__name__)
+    lang = mw.pm.meta["defaultLang"] if config["forceLang"] is None else config["forceLang"]
+
     other = {
         "rollover": mw.col.get_preferences().scheduling.rollover,
         "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs,
         "deck_configs": {conf["id"]: conf for conf in mw.col.decks.all_config()},
         "deck_config_ids": {deck["id"]: deck.get("conf", None) for deck in mw.col.decks.all()},
-        "days_elapsed": mw.col.sched.today
+        "days_elapsed": mw.col.sched.today,
+        "lang": lang,
+        "lang_ftl": getLocale(lang),
+        "fallback_ftl": getLocale(fallback_lang)
     }
     setVars = (
         f"const css = `{innerCss}`;" 
