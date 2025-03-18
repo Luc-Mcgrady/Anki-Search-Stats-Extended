@@ -384,12 +384,12 @@
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>Card Stability over Time</h1>
+        <h1>{i18n("average-stability-over-time")}</h1>
         <BarScrollable
             bind:binSize={interval_bin_size}
             data={{
                 row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
-                row_labels: ["Young Contribution (Ratio)", "Mature Contribution (Ratio)"],
+                row_labels: [i18n("young"), i18n("mature")],
                 data: $stability_days.map((day, i) => {
                     const sum_stability = _.sum(day)
                     const count = size(day)
@@ -419,23 +419,16 @@
             trend_info={{ pattern: i18n_pattern("stability-per-day") }}
         />
         <p>
-            This graph represents how your average stability, which is desired retention
-            independent, has evolved over time. The mean gives a better sense of daily increases,
-            while the median gives a value that is representative of the real average.
-
-            <br />
-            Note that the young/mature values are based on the amount of the respective cards in the deck (if there are 9 young cards and 1 mature card,
-            90% of the bar will marked as young). A cards maturity is calculated here using the stability, not the interval,
-            which makes it also desired retention independent.
+            {i18n("average-stability-over-time-help")}
         </p>
         <div>
             <label>
                 <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
-                Median
+                {i18n("median")}
             </label>
             <label>
                 <input type="radio" value={Average.MEAN} bind:group={average_type} />
-                Mean
+                {i18n("mean")}
             </label>
         </div>
     </GraphContainer>
