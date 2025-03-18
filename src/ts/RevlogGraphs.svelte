@@ -385,52 +385,56 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("average-stability-over-time")}</h1>
-        <BarScrollable
-            bind:binSize={interval_bin_size}
-            data={{
-                row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
-                row_labels: [i18n("young"), i18n("mature")],
-                data: $stability_days.map((day, i) => {
-                    const sum_stability = _.sum(day)
-                    const count = size(day)
-                    const count_young = day.filter((stability) => stability <= 21).length
-                    const count_mature = count - count_young
-                    const weight_young = count_young / count
-                    const weight_mature = count_mature / count
-                    if (average_type == Average.MEAN) {
-                        const avg = count ? sum_stability / count : 0
-                        return {
-                            values: [avg * weight_young, avg * weight_mature],
-                            label: barLabel(i),
+        {#if $stability_days.length}
+            <BarScrollable
+                bind:binSize={interval_bin_size}
+                data={{
+                    row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                    row_labels: [i18n("young"), i18n("mature")],
+                    data: $stability_days.map((day, i) => {
+                        const sum_stability = _.sum(day)
+                        const count = size(day)
+                        const count_young = day.filter((stability) => stability <= 21).length
+                        const count_mature = count - count_young
+                        const weight_young = count_young / count
+                        const weight_mature = count_mature / count
+                        if (average_type == Average.MEAN) {
+                            const avg = count ? sum_stability / count : 0
+                            return {
+                                values: [avg * weight_young, avg * weight_mature],
+                                label: barLabel(i),
+                            }
+                        } else {
+                            const sorted = day.sort((a, b) => a - b)
+                            const median = sorted[Math.floor(sorted.length / 2)]
+                            return {
+                                values: [median * weight_young, median * weight_mature],
+                                label: barLabel(i),
+                            }
                         }
-                    } else {
-                        const sorted = day.sort((a, b) => a - b)
-                        const median = sorted[Math.floor(sorted.length / 2)]
-                        return {
-                            values: [median * weight_young, median * weight_mature],
-                            label: barLabel(i),
-                        }
-                    }
-                }),
-                columnLabeler: barDateLabeler,
-            }}
-            average
-            trend
-            trend_info={{ pattern: i18n_pattern("stability-per-day") }}
-        />
-        <p>
-            {i18n("average-stability-over-time-help")}
-        </p>
-        <div>
-            <label>
-                <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
-                {i18n("median")}
-            </label>
-            <label>
-                <input type="radio" value={Average.MEAN} bind:group={average_type} />
-                {i18n("mean")}
-            </label>
-        </div>
+                    }),
+                    columnLabeler: barDateLabeler,
+                }}
+                average
+                trend
+                trend_info={{ pattern: i18n_pattern("stability-per-day") }}
+            />
+            <p>
+                {i18n("average-stability-over-time-help")}
+            </p>
+            <div>
+                <label>
+                    <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
+                    {i18n("median")}
+                </label>
+                <label>
+                    <input type="radio" value={Average.MEAN} bind:group={average_type} />
+                    {i18n("mean")}
+                </label>
+            </div>
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
