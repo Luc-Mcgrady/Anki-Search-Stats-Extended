@@ -77,7 +77,7 @@
         MEAN,
     }
 
-    let average_type = Average.MEAN
+    let average_type = Average.MEDIAN
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
@@ -405,8 +405,7 @@
                                 label: barLabel(i),
                             }
                         } else {
-                            const sorted = day.sort((a, b) => a - b)
-                            const median = sorted[Math.floor(sorted.length / 2)]
+                            const median = d3.quantile(Object.values(day), 0.5) ?? 0
                             return {
                                 values: [median * weight_young, median * weight_mature],
                                 label: barLabel(i),
