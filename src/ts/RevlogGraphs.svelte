@@ -36,6 +36,7 @@
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "./i18n"
     import Bar from "./Bar.svelte"
+    import * as d3 from "d3"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -175,16 +176,27 @@
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
+    let granularity = 20
+    $: difficulty_binner = d3
+        .bin<[number, number], number>()
+        .thresholds(granularity)
+        .domain([0, 100])
+        .value((a) => a[0])
     let difficulty_time_machine_bar: BarChart
+
+    $: difficulty_bins = difficulty_binner([
+        ...($difficulty_days[today + realScroll] ?? []).entries(),
+    ])
     $: difficulty_time_machine_bar = {
-        row_colours: ["#70AFD6"],
-        row_labels: ["Cards"],
-        data: Array.from($difficulty_days[today + realScroll] ?? []).map((v, i) => ({
-            values: [v ?? 0],
-            label: (i + 1).toString(),
+        row_colours: ["red"],
+        row_labels: [i18n("card-count")],
+        data: Array.from(difficulty_bins).map((v, i) => ({
+            values: [_.sumBy(v, (v) => v[1])],
+            label: `${v?.[0]?.[0] / 10}`,
         })),
-        tick_spacing: 5,
-        columnLabeler: barStringLabeler("Interval of $s"),
+        tick_spacing: difficulty_bins.length / 5,
+        barWidth: 10 / difficulty_bins.length + 1,
+        columnLabeler: barStringLabeler(i18n_pattern("difficulty-of")),
     }
 
     let include_reintroduced = true
@@ -598,6 +610,10 @@
     {#if $difficulty_days}
         <GraphContainer>
             <h1>{i18n("difficulty-time-machine")}</h1>
+            <label>
+                {i18n("zoom")}
+                <input type="range" bind:value={granularity} min={1} max={100} />
+            </label>
             <Bar data={difficulty_time_machine_bar} />
             <label class="scroll">
                 <span>

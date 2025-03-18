@@ -68,8 +68,8 @@ export function getMemorisedDays(
                 const stability_bin = Math.floor(s)
                 stability_days[day] ??= []
                 stability_days[day][stability_bin] = (stability_days[day][stability_bin] || 0) + 1
-                const difficulty_bin = Math.round(card.difficulty) - 1
-                difficulty_days[day] ??= Array(10).fill(0)
+                const difficulty_bin = Math.round(card.difficulty * 10) - 1
+                difficulty_days[day] ??= Array(100).fill(0)
                 difficulty_days[day][difficulty_bin] += 1
             }
         }

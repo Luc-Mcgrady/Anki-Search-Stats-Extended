@@ -219,7 +219,7 @@ export function barDateLabeler(label: string, width: number = 1) {
 
 export function barStringLabeler(pattern: Pattern) {
     return (label: string, width: number = 1) => {
-        const rightmost = width > 1 ? `-${+label + width - 1}` : ""
+        const rightmost = width > 1 ? `-${(+label + width - 1).toPrecision(2)}` : ""
         const value = `${label}${rightmost}`
         return i18n_bundle.formatPattern(pattern, { value })
     }
