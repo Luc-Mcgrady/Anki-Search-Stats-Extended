@@ -5,6 +5,7 @@
     import {
         binSize,
         config,
+        difficulty_days,
         fatigueLoss,
         pieLast,
         pieSteps,
@@ -34,6 +35,9 @@
     import type { TrendLine } from "./trend"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "./i18n"
+    import Bar from "./Bar.svelte"
+    import * as d3 from "d3"
+    import NoGraph from "./NoGraph.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -170,7 +174,30 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("stability-of")?.value!),
+    }
+
+    let granularity = 20
+    $: difficulty_binner = d3
+        .bin<[number, number], number>()
+        .thresholds(granularity)
+        .domain([0, 100])
+        .value((a) => a[0])
+    let difficulty_time_machine_bar: BarChart
+
+    $: difficulty_bins = difficulty_binner([
+        ...($difficulty_days[today + realScroll] ?? []).entries(),
+    ])
+    $: difficulty_time_machine_bar = {
+        row_colours: ["red"],
+        row_labels: [i18n("card-count")],
+        data: Array.from(difficulty_bins).map((v, i) => ({
+            values: [_.sumBy(v, (v) => v[1])],
+            label: `${v?.[0]?.[0] / 10}`,
+        })),
+        tick_spacing: difficulty_bins.length / 5,
+        barWidth: 10 / difficulty_bins.length + 1,
+        columnLabeler: barStringLabeler(i18n_pattern("difficulty-of")),
     }
 
     let include_reintroduced = true
@@ -561,9 +588,9 @@
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
-    {#if $stability_days}
-        <GraphContainer>
-            <h1>{i18n("stability-time-machine")}</h1>
+    <GraphContainer>
+        <h1>{i18n("stability-time-machine")}</h1>
+        {#if $stability_days.length}
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <label class="scroll">
                 <span>
@@ -579,8 +606,36 @@
             {#if truncated}
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
-        </GraphContainer>
-    {/if}
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("difficulty-time-machine")}</h1>
+        {#if $difficulty_days.length}
+            <label class="scroll">
+                {i18n("zoom")}
+                <input type="range" bind:value={granularity} min={1} max={100} />
+            </label>
+            <Bar data={difficulty_time_machine_bar} />
+            <label class="scroll">
+                <span>
+                    {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
+                </span>
+                <span class="scroll">
+                    {time_machine_min}
+                    <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+                    0
+                </span>
+            </label>
+            <p>{i18n("difficulty-time-machine-help")}</p>
+            {#if truncated}
+                <Warning>{i18n("generic-truncated-warning")}</Warning>
+            {/if}
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
+    </GraphContainer>
 </GraphCategory>
 
 <style>

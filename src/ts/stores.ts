@@ -41,6 +41,7 @@ export let binSize = writable(1)
 export let fatigueLoss = writable<Buckets<LossBar[]> | undefined>(undefined)
 export let target_R_days = writable<number[]>([])
 export let stability_days = writable<number[][]>([])
+export let difficulty_days = writable<number[][]>([])
 
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({
