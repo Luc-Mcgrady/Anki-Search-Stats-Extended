@@ -18,9 +18,9 @@ def getLocale(lang: str):
         return ""
 
 def new_refresh(self: NewDeckStats):
-    with open(addon_dir / "stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
+    with open(addon_dir / "stats.min.js", "r", encoding="utf-8") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
         innerJs = f.read()
-    with open(addon_dir / "stats.min.css") as f:
+    with open(addon_dir / "stats.min.css", "r", encoding="utf-8") as f:
         innerCss = f.read()
 
     config = mw.addonManager.getConfig(__name__)
