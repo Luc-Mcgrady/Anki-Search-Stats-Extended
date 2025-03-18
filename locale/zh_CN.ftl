@@ -2,26 +2,26 @@
 title-search-stats-extended = Search Stats Extended-扩展搜索统计信息:
 
 # Graph data
-load = 负荷
+# Load as in card load
+load = 工作量
 count = （次）数
 lapses = 遗忘次数
 repetitions = 复习次数
 
 cards = 卡片
-card-load = 卡片负荷
+card-load = 卡片工作量
 intervals = 间隔
 last-day = 最大天数
 
 total-cards = 总卡片数
 x-total-cards = 总卡片数: {$val}
-total-load = 总负荷
+total-load = 总工作量
 
 mature-count = {mature}
 young-count = {young}
 learning-count = 学习中
 relearning-count = 重学中
 new-count = 新卡片
-# Suspended not in use yet, but will be
 suspended = 已暂停 
 
 learn = 学习
@@ -37,7 +37,7 @@ easy = 简单
 
 # Graphs
 no-data = 无数据
-fsrs-only = (仅FSRS)
+fsrs-only = (FSRS限定)
 
 pie = 饼图
 bar = 柱状图
@@ -151,16 +151,16 @@ interval-distribution = 间隔分布
 interval-distribution-help =
     更直观地显示间隔分布情况。与Anki原生“复习间隔”图表数据一致
 
-interval-load = 间隔负荷
+interval-load = 间隔工作量
 interval-load-help =
-    负荷=1/间隔，用于估算每日复习量。例如：间隔1天负荷1，间隔2天负荷0.5
+    工作量=1/间隔，用于估算每日复习量。例如：间隔1天工作量1，间隔2天工作量0.5
 
 highest-lapse-count = 最高遗忘次数
 lapse-count = 遗忘次数 
 
-lapse-load = 遗忘负荷
+lapse-load = 遗忘工作量
 lapse-load-help = 
-    显示指定遗忘次数卡片的负荷总和。如果您想根据卡片遗忘次数来暂停卡片，配合左侧计数图可找到最佳暂停阈值
+    显示指定遗忘次数卡片的工作量总和。如果您想根据卡片遗忘次数来暂停卡片，配合左侧计数图可找到最佳暂停阈值
 
 lapse-distribution = 遗忘分布
 lapse-distribution-help = 
@@ -174,9 +174,9 @@ highest-repetition-count = 最大复习次数
 repetition-count = 复习次数
 total-repetitions = 总复习次数
 
-repetition-load = 复习负荷
+repetition-load = 复习工作量
 repetition-load-help = 
-    显示指定复习次数卡片的负荷总和
+    显示指定复习次数卡片的工作量总和
 
 repetition-distribution = 复习分布
 repetition-distribution-help = 
@@ -229,9 +229,9 @@ introductory-rating = 初始评分
 introductory-rating-help = 
     新卡片的首次复习（对FSRS算法重要）
 
-load-trend = 负荷趋势
+load-trend = 工作量趋势
 load-trend-help =
-    绿色K线表示负荷下降(改善)，红色K线表示负荷上升
+    绿色K线表示工作量下降(改善)，红色K线表示工作量上升
 
 x-change = 变化: {$val}
 x-total = 总计: {$val}
@@ -286,8 +286,8 @@ stability-time-machine-help = 显示指定日期的卡片稳定期分布
 x-days-ago = {$days}天前:
 
 burden-per-day = 每{$n ->
-        [one] 天负担
-        *[many] {$n}天负担
+        [one] 天工作量
+        *[many] {$n}天工作量
     } {$value}
 retention-per-day = 每{$n ->
         [one] 天保留率
