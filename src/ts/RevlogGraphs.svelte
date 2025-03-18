@@ -139,7 +139,7 @@
             colour: "yellow",
         },
         {
-            label: i18n("new"),
+            label: i18n("new-count"),
             value:
                 time_machine_added -
                 time_machine_young -
@@ -300,7 +300,7 @@
         <h1>{i18n("load-trend")}</h1>
         <LineOrCandlestick
             data={burden}
-            label={i18n("Load")}
+            label={i18n("load")}
             bind:trend_data={burden_trend}
             up_colour={CANDLESTICK_RED}
             down_colour={CANDLESTICK_GREEN}
