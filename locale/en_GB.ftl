@@ -269,7 +269,7 @@ average-stability-over-time = Stability Over Time
 average-stability-over-time-help =
     This graph represents how your average stability, which is desired retention
     independent, has evolved over time. The mean gives a better sense of daily increases,
-    while the median gives a value that is representative of the real average.
+    while the median gives a value that is better representative of the real average.
 
     Note that the young/mature values are based on the amount of the respective cards in the deck (if there are 9 young cards and 1 mature card,
     90% of the bar will marked as young). A cards maturity is calculated here using the stability, not the interval,
