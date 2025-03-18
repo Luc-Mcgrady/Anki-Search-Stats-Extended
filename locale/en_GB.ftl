@@ -289,6 +289,9 @@ review-interval-time-machine-help = Shows your review intervals for a given date
 stability-time-machine = Stability Time Machine
 stability-time-machine-help = Shows your card stabilities for a given date
 
+difficulty-time-machine = Difficulty Time Machine
+difficulty-time-machine-help = Shows your card difficulties for a given date
+
 x-days-ago = {$days} days ago:
 
 burden-per-day = {$value} burden per {$n ->

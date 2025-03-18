@@ -597,7 +597,7 @@
     {/if}
     {#if $difficulty_days}
         <GraphContainer>
-            <h1>Difficulty Time Machine</h1>
+            <h1>{i18n("difficulty-time-machine")}</h1>
             <Bar data={difficulty_time_machine_bar} />
             <label class="scroll">
                 <span>
@@ -609,9 +609,9 @@
                     0
                 </span>
             </label>
-            <p>Shows your card difficulties for a given date</p>
+            <p>{i18n("difficulty-time-machine-help")}</p>
             {#if truncated}
-                <Warning>May be inaccurate while "all history" is not selected.</Warning>
+                <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
         </GraphContainer>
     {/if}
