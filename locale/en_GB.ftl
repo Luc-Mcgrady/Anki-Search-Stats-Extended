@@ -2,6 +2,7 @@
 title-search-stats-extended = Search Stats Extended:
 
 # Graph data
+# Load as in card load
 load = Load
 count = Count
 lapses = Lapses
@@ -21,7 +22,6 @@ young-count = {young}
 learning-count = Learning
 relearning-count = Relearning
 new-count = New
-# Suspended not in use yet, but will be
 suspended = Suspended 
 
 learn = Learn
