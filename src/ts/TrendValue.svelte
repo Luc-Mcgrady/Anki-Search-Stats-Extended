@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { i18n, i18n_bundle } from "./i18n"
     import type { TrendLine, TrendInfo } from "./trend"
 
     export let trend: TrendLine
@@ -6,14 +7,7 @@
 
     export let info: TrendInfo = {}
 
-    $: ({
-        x = "x",
-        x_s = x + "s",
-        y = "y",
-        y_s = y + "s",
-        percentage = false,
-        absolute = false,
-    } = info)
+    $: ({ pattern = "", percentage = false, absolute = false } = info)
 
     let trend_value: number
     $: if (trend) {
@@ -35,30 +29,12 @@
 
 {#if trend_value}
     <br />
-    Trend =
+    {i18n("trend")} =
     <div>
-        <div>
-            {display(trend_day_value)}
-            {#if trend_day_value == 1}
-                {y}
-            {:else}
-                {y_s}
-            {/if}
-            per {x}
-        </div>
         {#if n > 1}
-            <div>
-                {display(trend_value)}
-                {#if trend_value == 1}
-                    {y}
-                {:else}
-                    {y_s}
-                {/if}
-                per {n}
-                {x_s}
-            </div>
-        {:else}
+            {i18n_bundle.formatPattern(pattern, { n: 1, value: display(trend_day_value) })}
             <br />
         {/if}
+        {i18n_bundle.formatPattern(pattern, { n, value: display(trend_value) })}
     </div>
 {/if}

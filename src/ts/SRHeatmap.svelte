@@ -13,6 +13,7 @@
     } from "./srHeatmap"
     import { ConstrainedIntState } from "./utils.svelte"
     import { defaultGraphBounds } from "./graph"
+    import { i18n } from "./i18n"
 
     const R_FORMAT = new Intl.NumberFormat(navigator.language, {
         style: "percent",
@@ -92,21 +93,21 @@
 {#if heatmap_data !== null}
     <div class="options">
         <label>
-            Enlarged:
+            {i18n("enlarged")}
             <div>
                 <input type="checkbox" bind:checked={enlarged} />
             </div>
         </label>
 
         <label>
-            Logarithmic S:
+            {i18n("logarithmic-s")}
             <div>
                 <input type="checkbox" bind:checked={s_is_logarithmic} />
             </div>
         </label>
 
         <label>
-            R Bin Size:
+            {i18n("r-bin-size")}:
             <select bind:value={r_bin_width}>
                 {#each R_BIN_WIDTHS as bin_width}
                     <option value={bin_width}>{R_FORMAT.format(bin_width)}</option>
@@ -115,7 +116,7 @@
         </label>
 
         <label>
-            S Bin Size:
+            {i18n("s-bin-size")}:
             {#if s_is_logarithmic}
                 <select bind:value={s_bin_width_log}>
                     {#each S_BIN_WIDTHS_LOG as bin_width}
@@ -137,12 +138,12 @@
     <Heatmap
         canvasWidth={width}
         canvasHeight={height}
-        xAxisLabel="Retrievability"
+        xAxisLabel={i18n("retrievability")}
         xAxisTickFormat=".0%"
-        yAxisLabel="Stability (days)"
-        xTooltipLabel="R"
-        yTooltipLabel="S"
-        valueTooltipLabel="Cards"
+        yAxisLabel={i18n("stability")}
+        xTooltipLabel={i18n("retrievability-short")}
+        yTooltipLabel={i18n("stability-short")}
+        valueTooltipLabel={i18n("cards")}
         xTooltipFormat={R_FORMAT}
         yTooltipFormat={S_FORMAT}
         onSelect={open_browser_search}

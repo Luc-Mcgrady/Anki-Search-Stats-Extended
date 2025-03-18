@@ -1,0 +1,14 @@
+{
+	"Insert i18n Boilerplate": {
+	  "prefix": "i18n",
+	  "body": ["i18n(\"$0\")"],
+	  "description": "Inserts i18n(\"<cursor here>\")"
+	},
+	
+	"Insert i18n Svelte Boilerplate": {
+		"prefix": "ii18n",
+		"body": ["{i18n(\"$0\")}"],
+		"description": "Inserts {i18n(\"<cursor here>\")}"
+	}
+}
+	
