@@ -613,7 +613,7 @@
     <GraphContainer>
         <h1>{i18n("difficulty-time-machine")}</h1>
         {#if $difficulty_days.length}
-            <label>
+            <label class="scroll">
                 {i18n("zoom")}
                 <input type="range" bind:value={granularity} min={1} max={100} />
             </label>

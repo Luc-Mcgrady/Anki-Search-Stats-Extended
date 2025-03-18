@@ -298,7 +298,8 @@ x-days-ago = {$days} days ago:
 difficulty-time-machine = Difficulty Time Machine
 difficulty-time-machine-help = Shows your card difficulties for a given date
 
-bin-count = Bins
+# As in "zoom in" or "zoom out"
+zoom = Zoom
 
 burden-per-day = {$value} burden per {$n ->
         [one] day
