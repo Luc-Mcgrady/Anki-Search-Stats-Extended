@@ -74,4 +74,7 @@ export interface SSEother {
     deck_configs: Record<number, DeckConfig>
     deck_config_ids: Record<number, number>
     days_elapsed: number
+    lang: string
+    lang_ftl: string
+    fallback_ftl: string
 }

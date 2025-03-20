@@ -11,13 +11,15 @@
         card_data,
         fatigueLoss,
         leech_detector,
-        revlogs,
+        difficulty_days,
         searchLimit,
         stability_days,
+        revlogs,
     } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
+    import { i18n, i18n_pattern } from "./i18n"
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
@@ -32,6 +34,7 @@
         retrievabilityDays = Array.from(data.retrievabilityDays)
         $fatigueLoss = data.fatigueRMSE
         $stability_days = data.stability_days
+        $difficulty_days = data.difficulty_days
         bw_matrix_counts = data.bw_matrix
         $leech_detector = data.leech_probabilities
 
@@ -47,14 +50,14 @@
     }
 
     $: truncated = $searchLimit !== 0
-    $: label = (trend_data?.slope || 0) > 0 ? "memorised" : "forgotten"
+    $: pattern =
+        (trend_data?.slope || 0) > 0
+            ? i18n_pattern("remembered-per-day")
+            : i18n_pattern("forgotten-per-day")
 
     let trend_info: TrendInfo
     $: trend_info = {
-        y: label,
-        y_s: label,
-        x: "day",
-        x_s: "days",
+        pattern,
         absolute: true,
     }
 
@@ -66,9 +69,9 @@
         const value = ((100 * (data.predicted - data.real)) / data.count).toFixed(1)
         console.log(data)
         return [
-            `Predicted: ${data.predicted.toFixed(2)}`,
-            `Actual: ${data.real.toFixed(0)}`,
-            `Total: ${data.count.toFixed(0)}`,
+            `${i18n("predicted")}: ${data.predicted.toFixed(2)}`,
+            `${i18n("actual")}: ${data.real.toFixed(0)}`,
+            `${i18n("total")}: ${data.count.toFixed(0)}`,
             `(${data.predicted.toFixed(2)}-${data.real.toFixed(0)})/${data.count.toFixed(0)}=${value}%`,
         ]
     }
@@ -79,19 +82,19 @@
 </script>
 
 {#if retrievabilityDays}
-    <LineOrCandlestick data={retrievabilityDays} label="Cards" bind:trend_data />
+    <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
 {:else if !show}
     <NoGraph faded={false}>
         {#if !truncated}
-            <button class="big" on:click={() => (show = true)}>Show?</button>
+            <button class="big" on:click={() => (show = true)}>{i18n("show-question")}</button>
         {:else}
-            <button class="big" on:click={SetDateInfinite}>Increase date range</button>
-            <button on:click={() => (show = true)}>Show?</button>
+            <button class="big" on:click={SetDateInfinite}>{i18n("increase-date-range")}</button>
+            <button on:click={() => (show = true)}>{i18n("show-question")}</button>
         {/if}
     </NoGraph>
 {:else}
-    <NoGraph>Loading</NoGraph>
+    <NoGraph>{i18n("loading")}</NoGraph>
 {/if}
 
 {#if bw_matrix}

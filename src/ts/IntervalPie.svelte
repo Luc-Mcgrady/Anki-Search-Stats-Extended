@@ -5,6 +5,7 @@
     import type { PieDatum } from "./pie"
     import { PieDatumFactory } from "./pie"
     import type { IntervalPieInfo } from "./IntervalPie"
+    import { i18n } from "./i18n"
 
     export let intervals: Record<number, number>
     export let steps = 7
@@ -13,10 +14,10 @@
     export let pieInfo: IntervalPieInfo = {}
 
     $: ({
-        legend_left = "Intervals",
-        legend_right = "Cards",
-        countDescriptor = "Last Day",
-        totalDescriptor = "Cards",
+        legend_left = i18n("intervals"),
+        legend_right = i18n("cards"),
+        countDescriptor = i18n("last-day"),
+        totalDescriptor = i18n("cards"),
         spectrumFrom = "#74C476",
         spectrumTo = "#014720",
         fillerColour = "gold",
@@ -80,7 +81,9 @@
             .filter(([i, _]) => +i >= infinite_pie_start)
             .reduce((n, [_, v]) => n + v, 0)
 
-        pie_data.push(PieDatumFactory(infinite_pie_start, "Infinity", infinite_pie_slice, "grey"))
+        pie_data.push(
+            PieDatumFactory(infinite_pie_start, i18n("infinity"), infinite_pie_slice, "grey")
+        )
     }
 
     $: pie_values = Object.values(pie_data).map((d) => d.value)
@@ -92,7 +95,7 @@
         <input type="number" bind:value={last} />
     </label>
     <label>
-        Steps
+        {i18n("steps")}
         <input type="number" bind:value={steps} />
     </label>
 </div>
@@ -101,9 +104,9 @@
 <Pie data={pie_data} {legend_left} {legend_right}></Pie>
 
 <div class="totals">
-    <span>Total {totalDescriptor ?? "Cards"} {"<="} {last}:</span>
+    <span>{totalDescriptor ?? i18n("total-cards")} {"<="} {last}:</span>
     <span>{_.round(_.sum(pie_values.slice(0, -1)), 2).toLocaleString()}</span>
-    <span>Total {totalDescriptor}:</span>
+    <span>{totalDescriptor}:</span>
     <span>{_.round(_.sum(pie_values), 2).toLocaleString()}</span>
 </div>
 

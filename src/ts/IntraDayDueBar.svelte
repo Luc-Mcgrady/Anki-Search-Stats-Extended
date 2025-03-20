@@ -6,6 +6,7 @@
     import { searchJoin } from "./root"
     import { other, searchString } from "./stores"
     import NoGraph from "./NoGraph.svelte"
+    import { i18n } from "./i18n"
 
     let next_card_time: Date | null = null
     let next_card_time_until: string = ""
@@ -53,11 +54,11 @@
             const hours = Math.floor(time_until / 60)
             const minutes = Math.ceil(time_until % 60)
 
-            next_card_time_until = ""
-            next_card_time_until += hours ? `${hours.toFixed(0)} hour${hours != 1 ? "s" : ""} ` : ""
-            next_card_time_until += minutes
-                ? `${minutes.toFixed(0)} minute${minutes != 1 ? "s" : ""} `
-                : ""
+            next_card_time_until = i18n("next-card-at", {
+                hours,
+                minutes,
+                time: next_card_time.toLocaleTimeString(),
+            })
         } else {
             next_card_time = null
         }
@@ -100,21 +101,19 @@
 </script>
 
 {#await fetch}
-    <NoGraph>Loading...</NoGraph>
+    <NoGraph>{i18n("loading")}</NoGraph>
 {:then data}
     {#if data.reduce((p, n) => p + _.sum(n.values), 0) > 0}
         <!--If there is data-->
         {#if next_card_time}
             <!--If there is a future card-->
             <h4>
-                Next card is in <b>{next_card_time_until}</b>
-                at
-                <b>{next_card_time.toLocaleTimeString()}</b>
+                {next_card_time_until}
             </h4>
         {/if}
         <Bar
             data={{
-                row_labels: ["Relearning", "Learning"],
+                row_labels: [i18n("relearning-count"), i18n("learning-count")],
                 row_colours: ["#fb6a4a", "#fd8d3c"],
                 data,
                 columnLabeler: (label) => `${label.padStart(2, "0")}:00`,

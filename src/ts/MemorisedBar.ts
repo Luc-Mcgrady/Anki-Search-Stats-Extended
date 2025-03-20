@@ -57,14 +57,21 @@ export function getMemorisedDays(
     }
 
     let stability_days: number[][] = []
+    let difficulty_days: number[][] = []
 
-    function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number) {
+    function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number, card: Card) {
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
-            stability_days[day] ??= []
-            const stability_bin = Math.floor(s)
-            stability_days[day][stability_bin] = (stability_days[day][stability_bin] || 0) + 1
+            // If the cards not been forgotten
+            if (card.stability) {
+                const stability_bin = Math.floor(s)
+                stability_days[day] ??= []
+                stability_days[day][stability_bin] = (stability_days[day][stability_bin] || 0) + 1
+                const difficulty_bin = Math.round(card.difficulty * 10) - 1
+                difficulty_days[day] ??= Array(100).fill(0)
+                difficulty_days[day][difficulty_bin] += 1
+            }
         }
     }
 
@@ -119,7 +126,7 @@ export function getMemorisedDays(
         if (last_stability[revlog.cid]) {
             const previous = dayFromMs(card.last_review!.getTime())
             const stability = last_stability[revlog.cid]
-            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id))
+            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), card)
         }
 
         //console.log(grade)
@@ -210,7 +217,7 @@ export function getMemorisedDays(
         const num_cid = +cid
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
-        forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1)
+        forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, card)
         if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
             const expected = last_stability[num_cid]
             const actual = JSON.parse(cards_by_id[num_cid].data).s
@@ -245,13 +252,12 @@ export function getMemorisedDays(
 
     const leech_probabilities = _.mapValues(probabilities, _.sum)
 
-    console.log(leech_probabilities)
-
     return {
         retrievabilityDays,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
         stability_days,
         leech_probabilities,
+        difficulty_days,
     }
 }

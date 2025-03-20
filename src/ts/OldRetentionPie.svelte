@@ -6,6 +6,7 @@
     import { searchJoin } from "./root"
     import { search as doSearch } from "./search"
     import { searchString } from "./stores"
+    import { i18n } from "./i18n"
 
     $: passed_search = searchJoin($searchString, "rated:1 -rated:1:1 is:review")
     $: flunked_search = searchJoin($searchString, "rated:1 rated:1:1 is:review")
@@ -28,7 +29,7 @@
         const learning_data = include_learning
             ? [
                   {
-                      label: "Learning",
+                      label: i18n("learning"),
                       value: learning.length,
                       colour: "#fd8d3c",
                   },
@@ -37,12 +38,12 @@
 
         return [
             {
-                label: "Passed",
+                label: i18n("passed"),
                 value: passed.length,
                 colour: "#74c476",
             },
             {
-                label: "Flunked",
+                label: i18n("flunked"),
                 value: flunked.length,
                 colour: "#fb6a4a",
             },
@@ -52,29 +53,29 @@
 </script>
 
 {#await data_fetcher}
-    <NoGraph>Loading...</NoGraph>
+    <NoGraph>{i18n("loading")}</NoGraph>
 {:then data}
-    <Pie legend_left="State" legend_right="Amount" {data}></Pie>
+    <Pie legend_left="State" legend_right={i18n("amount")} {data}></Pie>
     <br />
     <p>
         <!-- Doing it with fixed indexes this way is kinda risky but it works-->
-        Today's Retention = {data[0].value} /
+        {i18n("todays-retention")} = {data[0].value} /
         {data[0].value + data[1].value} =
         {((100 * data[0].value) / (data[0].value + data[1].value)).toFixed(2)}%
     </p>
     <small>
-        <span>Passed =</span>
+        <span>{i18n("passed")} =</span>
         <span>
             <code>{passed_search}</code>
         </span>
-        <span>Flunked =</span>
+        <span>{i18n("flunked")} =</span>
         <span>
             <code>{flunked_search}</code>
         </span>
         <label>
             <span>
                 <input type="checkbox" bind:checked={do_learning} />
-                Learning =
+                {i18n("learning")}
             </span>
             <span>
                 <code>{learning_search}</code>

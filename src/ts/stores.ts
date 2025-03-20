@@ -27,7 +27,6 @@ export let custom_pie_mode = writable("Count")
 export let graph_mode = writable<"Bar" | "Pie">("Pie")
 
 // Config related stats
-export let burdenOrLoad = writable("Load")
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)
@@ -43,6 +42,7 @@ export let fatigueLoss = writable<Buckets<LossBar[]> | undefined>(undefined)
 export let target_R_days = writable<number[]>([])
 export let stability_days = writable<number[][]>([])
 export let leech_detector = writable<Record<string, number>>({})
+export let difficulty_days = writable<number[][]>([])
 
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({

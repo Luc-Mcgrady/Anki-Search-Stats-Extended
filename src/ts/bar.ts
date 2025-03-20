@@ -1,8 +1,10 @@
+import type { Pattern } from "@fluent/bundle/esm/ast"
 import * as d3 from "d3"
 import _ from "lodash"
 import { totalCalc } from "./barHelpers"
 import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
+import { i18n_bundle } from "./i18n"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
@@ -172,7 +174,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .value((obj, key) => obj.values[key])(chart.data)
 
     const {
-        columnLabeler = barStringLabeler("Index"),
+        columnLabeler = barStringLabeler("Index: {$value}"),
         extraStats = totalCalc,
         column_counts = true,
         precision = 2,
@@ -222,11 +224,19 @@ export function barDateLabeler(label: string, width: number = 1) {
     return tooltipDate(+label, width) + ":"
 }
 
-export function barStringLabeler(text: string) {
+export function barStringLabeler(pattern: Pattern) {
+    return (label: string, width: number = 1) => {
+        const rightmost = width > 1 ? `-${(+label + width - 1).toPrecision(2)}` : ""
+        const value = `${label}${rightmost}`
+        return i18n_bundle.formatPattern(pattern, { value })
+    }
+}
+
+export function rangeBarStringLabeler(pattern: Pattern, x: string) {
     return (label: string, width: number = 1) => {
         const rightmost = width > 1 ? `-${+label + width - 1}` : ""
         const value = `${label}${rightmost}`
-        return `${text.replace("$s", value)}:`
+        return i18n_bundle.formatPattern(pattern, { range: value, x })
     }
 }
 

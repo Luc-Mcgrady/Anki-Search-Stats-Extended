@@ -7,6 +7,7 @@
     } from "./Candlestick"
     import Candlestick from "./Candlestick.svelte"
     import GraphTypeSelector from "./GraphTypeSelector.svelte"
+    import { i18n } from "./i18n"
     import LineGraph from "./LineGraph.svelte"
     import { binSize, scroll, searchLimit } from "./stores"
     import type { TrendLine } from "./trend"
@@ -40,11 +41,11 @@
 <GraphTypeSelector>
     <label>
         <input type="radio" value="total" bind:group={type} />
-        Total
+        {i18n("total")}
     </label>
     <label>
         <input type="radio" value="trend" bind:group={type} />
-        Trend
+        {i18n("trend")}
     </label>
 </GraphTypeSelector>
 
