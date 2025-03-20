@@ -11,7 +11,7 @@ addon_dir = Path(os.path.dirname(__file__))
 fallback_lang = "en_GB"
 def getLocale(lang: str):
     try:
-        with open(addon_dir / "locale" / f"{lang}.ftl") as f:
+        with open(addon_dir / "locale" / f"{lang}.ftl", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         print(f"Search Stats Extended: Locale {lang} not found")

@@ -19,6 +19,7 @@
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
     import { i18n, i18n_pattern } from "./i18n"
+    import GraphTypeSelector from "./GraphTypeSelector.svelte"
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
@@ -90,7 +91,7 @@
 </script>
 
 {#if retrievabilityDays && stable_retrievability_days}
-    <div>
+    <GraphTypeSelector>
         <label>
             <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
             {i18n("Retrievability")}
@@ -101,13 +102,13 @@
                 value={MemorisedType.STABLE_RETRIEVABILITY}
                 bind:group={memorised_type}
             />
-            {i18n("Retrievability and (Sqrt) Stability)")}
+            {i18n("retrievability-times-sqrt-stability")}
         </label>
-    </div>
+    </GraphTypeSelector>
     {#if memorised_type === MemorisedType.STABLE_RETRIEVABILITY}
         <LineOrCandlestick
             data={stable_retrievability_days}
-            label={i18n("cards R√(S)")}
+            label={i18n("cards-times-sqrt-r")}
             bind:trend_data
         />
     {:else}

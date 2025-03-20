@@ -256,6 +256,9 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+retrievability-times-sqrt-stability = Retrieval Times Sqrt(Stability)
+cards-times-sqrt-r = cards R√(S)
+
 # Between Minus Within? If I'm honest I have no idea what this stands for.
 b-w-matrix = B-W Matrix
 
