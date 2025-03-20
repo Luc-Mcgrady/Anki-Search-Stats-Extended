@@ -177,7 +177,7 @@
             label: i.toString(),
         })),
         tick_spacing: 5,
-        columnLabeler: barStringLabeler(i18n_bundle.getMessage("stability-of")?.value!),
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("hour-x")?.value!),
     }
 
     let stability_time_machine_bar: BarChart
