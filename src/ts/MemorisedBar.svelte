@@ -9,11 +9,12 @@
     import {
         binSize,
         card_data,
-        difficulty_days,
         fatigueLoss,
-        revlogs,
+        leech_detector,
+        difficulty_days,
         searchLimit,
         stability_days,
+        revlogs,
     } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
@@ -35,6 +36,7 @@
         $stability_days = data.stability_days
         $difficulty_days = data.difficulty_days
         bw_matrix_counts = data.bw_matrix
+        $leech_detector = data.leech_probabilities
 
         bw_matrix = Object.fromEntries(
             Object.entries(bw_matrix_counts).map(([r_bin, row]) => {

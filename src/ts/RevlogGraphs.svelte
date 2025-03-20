@@ -7,6 +7,7 @@
         config,
         difficulty_days,
         fatigueLoss,
+        leech_detector,
         pieLast,
         pieSteps,
         scroll,
@@ -215,6 +216,29 @@
 
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
+
+    let granularity_power = 1
+    $: granularity = 20 * Math.pow(2, granularity_power - 1)
+    $: leech_bins = d3
+        .bin<[string, number], number>()
+        .domain([0, 1])
+        .thresholds(granularity)
+        .value((a) => a[1])(Object.entries($leech_detector))
+    let leech_detection_bar: BarChart
+    $: leech_detection_bar = {
+        row_colours: ["red"],
+        row_labels: ["cards"],
+        data: leech_bins.map((bin) => ({
+            label: `${((bin.x1 ?? 0) * 100)?.toString()}%`,
+            values: [bin.length],
+            onClick: () => {
+                // @ts-ignore Typescript does not know that Anki has added bridgeCommand
+                window.bridgeCommand(`browserSearch:cid:${bin.map((e) => e[0]).join(",")}`)
+            },
+        })),
+        tick_spacing: Math.floor(granularity / 5),
+        columnLabeler: barStringLabeler("$s"),
+    }
 </script>
 
 <GraphCategory>
@@ -374,6 +398,14 @@
         <p>
             {i18n("memorised-help")}
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Leech detection</h1>
+        <label>
+            Granularity
+            <input type="number" min={1} bind:value={granularity_power} />
+        </label>
+        <Bar data={leech_detection_bar}></Bar>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>

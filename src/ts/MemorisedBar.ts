@@ -93,6 +93,10 @@ export function getMemorisedDays(
     let last_date = new Date()
 
     let bw_matrix_count: Record<number, LossBin[]> = {}
+    let probabilities = _.mapValues(
+        _.groupBy(revlogs, (r) => r.cid),
+        (_) => [1]
+    )
 
     for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
@@ -148,11 +152,22 @@ export function getMemorisedDays(
 
             const p = fsrs.forgetting_curve(elapsed, card.stability)
             const y = grade > 1 ? 1 : 0
+
             let card_type: LossBin[]
 
             fatigue_bins.all[today_so_far] = incrementLoss(fatigue_bins.all[today_so_far], p, y)
 
             if (elapsed >= 1) {
+                if (!new_card) {
+                    const leech_probabilities = probabilities[revlog.cid]
+                    for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
+                        // debugger
+                        leech_probabilities[j] =
+                            (leech_probabilities[j] ?? 0) * (1 - p) +
+                            (j > 0 ? leech_probabilities[j - 1] * p : 0)
+                    }
+                }
+
                 if (!new_card && card.stability > 1) {
                     const r_bin_power = 1.4
                     const r_bin = _.round(
@@ -235,13 +250,14 @@ export function getMemorisedDays(
         )
     )
 
-    console.table(stability_days)
+    const leech_probabilities = _.mapValues(probabilities, _.sum)
 
     return {
         retrievabilityDays,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
         stability_days,
+        leech_probabilities,
         difficulty_days,
     }
 }
