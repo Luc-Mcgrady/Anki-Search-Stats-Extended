@@ -166,13 +166,21 @@
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
-    $: console.log({ day_review_hours, today: day_review_hours[today + realScroll] })
+    $: console.log({
+        day_review_hours,
+        today: day_review_hours[today + realScroll],
+        hours_time_machine,
+    })
 
+    let range = 7
+    $: todays_hours = _.zip(
+        ...day_review_hours.slice(today + realScroll - range, today + realScroll)
+    ).map(_.sum)
     let hours_time_machine: BarChart
     $: hours_time_machine = {
         row_colours: ["#70AFD6"],
         row_labels: [i18n("cards")],
-        data: Array.from(day_review_hours[today + realScroll] ?? []).map((v, i) => ({
+        data: Array.from(todays_hours ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
@@ -653,6 +661,10 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("daily-hourly-breakdown")}</h1>
+        <label>
+            {i18n("days")}
+            <input type="number" bind:value={range} />
+        </label>
         <Bar data={hours_time_machine}></Bar>
         <span class="scroll">
             {time_machine_min}
