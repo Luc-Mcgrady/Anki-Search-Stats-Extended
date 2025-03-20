@@ -217,6 +217,10 @@ export function barDateLabeler(label: string, width: number = 1) {
     return tooltipDate(+label, width) + ":"
 }
 
+export function barHourLabeler(hour: string) {
+    return `${hour.padStart(2, "0")}:00`
+}
+
 export function barStringLabeler(pattern: Pattern) {
     return (label: string, width: number = 1) => {
         const rightmost = width > 1 ? `-${(+label + width - 1).toPrecision(2)}` : ""

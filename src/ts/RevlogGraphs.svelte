@@ -18,7 +18,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
+    import { barDateLabeler, barHourLabeler, barStringLabeler, type BarChart } from "./bar"
     import {
         calculateRevlogStats,
         day_ms,
@@ -184,10 +184,10 @@
             values: [v ?? 0],
             label: i.toString(),
         })),
-        tick_spacing: 5,
-        columnLabeler: barStringLabeler(i18n_bundle.getMessage("hour-x")?.value!),
+        tick_spacing: 6,
+        columnLabeler: barHourLabeler,
     }
-
+    
     let stability_time_machine_bar: BarChart
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
