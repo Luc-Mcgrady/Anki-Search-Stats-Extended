@@ -58,6 +58,7 @@
         remaining_forgotten,
         intervals,
         interval_ease,
+        day_review_hours,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -163,6 +164,20 @@
         })),
         tick_spacing: 5,
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
+    }
+
+    $: console.log({ day_review_hours, today: day_review_hours[today + realScroll] })
+
+    let hours_time_machine: BarChart
+    $: hours_time_machine = {
+        row_colours: ["#70AFD6"],
+        row_labels: [i18n("cards")],
+        data: Array.from(day_review_hours[today + realScroll] ?? []).map((v, i) => ({
+            values: [v ?? 0],
+            label: i.toString(),
+        })),
+        tick_spacing: 5,
+        columnLabeler: barStringLabeler(i18n_bundle.getMessage("stability-of")?.value!),
     }
 
     let stability_time_machine_bar: BarChart
@@ -635,6 +650,16 @@
         {:else}
             <NoGraph>{i18n("memorised-dependant")}</NoGraph>
         {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("daily-hourly-breakdown")}</h1>
+        <Bar data={hours_time_machine}></Bar>
+        <span class="scroll">
+            {time_machine_min}
+            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+            0
+        </span>
+        <p>{i18n("daily-hourly-breakdown-help")}</p>
     </GraphContainer>
 </GraphCategory>
 
