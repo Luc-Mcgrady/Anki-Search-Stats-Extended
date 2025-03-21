@@ -303,7 +303,6 @@ zoom = Zoom
 
 daily-hourly-breakdown = Daily Hourly Breakdown
 daily-hourly-breakdown-help = Shows when you did reviews hour by hour on a given day.
-hour-x = Hour {$value}:
 
 burden-per-day = {$value} burden per {$n ->
         [one] day
