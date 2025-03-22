@@ -384,31 +384,22 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("average-stability-over-time")}</h1>
-        {#if $memorised_stats?.stability_days.length}
+        {#if $memorised_stats}
             <BarScrollable
                 bind:binSize={interval_bin_size}
                 data={{
                     row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
                     row_labels: [i18n("young"), i18n("mature")],
-                    data: $memorised_stats.stability_days.map((day, i) => {
-                        const sum_stability = _.sum(day)
-                        const count = size(day)
-                        const count_young = day.filter((stability) => stability <= 21).length
-                        const count_mature = count - count_young
-                        const weight_young = count_young / count
-                        const weight_mature = count_mature / count
-                        if (average_type == Average.MEAN) {
-                            const avg = count ? sum_stability / count : 0
-                            return {
-                                values: [avg * weight_young, avg * weight_mature],
-                                label: barLabel(i),
-                            }
-                        } else {
-                            const median = d3.quantile(Object.values(day), 0.5) ?? 0
-                            return {
-                                values: [median * weight_young, median * weight_mature],
-                                label: barLabel(i),
-                            }
+                    data: (average_type == Average.MEAN
+                        ? $memorised_stats.day_means
+                        : $memorised_stats.day_medians
+                    ).map((day, i) => {
+                        const young_ratio =
+                            _.sum($memorised_stats.stability_bins_days[i].slice(0, 21)) /
+                            _.sum($memorised_stats.stability_bins_days[i])
+                        return {
+                            values: [day * young_ratio, day * (1 - young_ratio)], //* young_ratio, day * (1 - young_ratio)],
+                            label: barLabel(i),
                         }
                     }),
                     columnLabeler: barDateLabeler,
@@ -649,7 +640,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("stability-time-machine")}</h1>
-        {#if $memorised_stats?.stability_days.length}
+        {#if $memorised_stats}
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <label class="scroll">
                 <span>
@@ -671,7 +662,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("difficulty-time-machine")}</h1>
-        {#if $memorised_stats?.difficulty_days.length}
+        {#if $memorised_stats}
             <label class="scroll">
                 {i18n("zoom")}
                 <input type="range" bind:value={granularity} min={1} max={100} />

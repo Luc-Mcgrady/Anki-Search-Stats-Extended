@@ -57,9 +57,8 @@ export function getMemorisedDays(
         return configs[config_mapping[card.did]]
     }
 
-    let stability_bins_days: number[][] = []
-    let stability_days: number[][] = []
-    let difficulty_days: number[][] = []
+    let stability_day_bins: number[][] = []
+    let difficulty_day_bins: number[][] = []
 
     function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number, card: Card) {
         for (const day of _.range(from, to)) {
@@ -68,14 +67,12 @@ export function getMemorisedDays(
             // If the cards not been forgotten
             if (card.stability) {
                 const stability_bin = Math.round(s)
-                stability_bins_days[day] ??= []
-                stability_days[day] ??= []
-                stability_days[day].push(s)
-                stability_bins_days[day][stability_bin] =
-                    (stability_bins_days[day][stability_bin] || 0) + 1
+                stability_day_bins[day] ??= []
+                stability_day_bins[day][stability_bin] =
+                    (stability_day_bins[day][stability_bin] || 0) + 1
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
-                difficulty_days[day] ??= Array(100).fill(0)
-                difficulty_days[day][difficulty_bin] += 1
+                difficulty_day_bins[day] ??= Array(100).fill(0)
+                difficulty_day_bins[day][difficulty_bin] += 1
             }
         }
     }
@@ -98,7 +95,8 @@ export function getMemorisedDays(
     let last_date = new Date()
 
     let bw_matrix_count: Record<number, LossBin[]> = {}
-    let medians: number[] = []
+    let day_medians: number[] = []
+    let day_means: number[] = []
     let last_day = dayFromMs(revlogs[0].id)
 
     for (const revlog of revlogs) {
@@ -115,8 +113,10 @@ export function getMemorisedDays(
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
 
         for (let day = last_day; day < dayFromMs(revlog.id); day++) {
-            medians[day] = d3.quantile(Object.values(last_stability), 0.5) ?? 0
-            console.log(day + ":" + medians[day])
+            const stabilities = Object.values(last_stability)
+            day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
+            day_means[day] = d3.mean(stabilities) ?? 0
+            console.log(day + ":" + day_medians[day])
         }
         last_day = dayFromMs(revlog.id)
 
@@ -252,9 +252,9 @@ export function getMemorisedDays(
         retrievabilityDays,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
-        stability_bins_days,
-        stability_days,
-        medians,
-        difficulty_days,
+        stability_bins_days: stability_day_bins,
+        day_medians,
+        day_means,
+        difficulty_days: difficulty_day_bins,
     }
 }

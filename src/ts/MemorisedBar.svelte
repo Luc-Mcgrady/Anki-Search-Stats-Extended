@@ -6,13 +6,7 @@
     import { getMemorisedDays, type LossBin } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { catchErrors } from "./search"
-    import {
-        binSize,
-        card_data,
-        memorised_stats,
-        revlogs,
-        searchLimit,
-    } from "./stores"
+    import { binSize, card_data, memorised_stats, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
