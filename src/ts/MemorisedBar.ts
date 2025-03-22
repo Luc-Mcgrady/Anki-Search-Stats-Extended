@@ -48,6 +48,8 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let stable_retrievability_days: number[] = []
+
     function card_config(cid: number) {
         const card = cards_by_id[cid]
         if (!card) {
@@ -71,6 +73,9 @@ export function getMemorisedDays(
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_days[day] ??= Array(100).fill(0)
                 difficulty_days[day][difficulty_bin] += 1
+                stable_retrievability_days[day] =
+                    (stable_retrievability_days[day] || 0) +
+                    retrievability * Math.sqrt(card.stability)
             }
         }
     }
@@ -239,6 +244,7 @@ export function getMemorisedDays(
 
     return {
         retrievabilityDays,
+        stable_retrievability_days,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
         stability_days,

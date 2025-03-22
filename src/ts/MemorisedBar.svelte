@@ -19,11 +19,20 @@
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
     import { i18n, i18n_pattern } from "./i18n"
+    import GraphTypeSelector from "./GraphTypeSelector.svelte"
 
     let show = false
     let retrievabilityDays: number[] | undefined = undefined
+    let stable_retrievability_days: number[] | undefined = undefined
     let bw_matrix: Record<string, (number | undefined)[]> | undefined = undefined
     let bw_matrix_counts: Record<string, LossBin[]> | undefined = undefined
+
+    enum MemorisedType {
+        RETRIEVABILITY,
+        STABLE_RETRIEVABILITY,
+    }
+
+    let memorised_type: MemorisedType = MemorisedType.RETRIEVABILITY
 
     $: if ($revlogs && $card_data && show) {
         let data = catchErrors(() =>
@@ -31,6 +40,8 @@
         )
 
         retrievabilityDays = Array.from(data.retrievabilityDays)
+        stable_retrievability_days = Array.from(data.stable_retrievability_days)
+
         $fatigueLoss = data.fatigueRMSE
         $stability_days = data.stability_days
         $difficulty_days = data.difficulty_days
@@ -79,8 +90,30 @@
     }
 </script>
 
-{#if retrievabilityDays}
-    <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
+{#if retrievabilityDays && stable_retrievability_days}
+    <GraphTypeSelector>
+        <label>
+            <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
+            {i18n("Retrievability")}
+        </label>
+        <label>
+            <input
+                type="radio"
+                value={MemorisedType.STABLE_RETRIEVABILITY}
+                bind:group={memorised_type}
+            />
+            {i18n("retrievability-times-sqrt-stability")}
+        </label>
+    </GraphTypeSelector>
+    {#if memorised_type === MemorisedType.STABLE_RETRIEVABILITY}
+        <LineOrCandlestick
+            data={stable_retrievability_days}
+            label={i18n("cards-times-sqrt-r")}
+            bind:trend_data
+        />
+    {:else}
+        <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
+    {/if}
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
 {:else if !show}
     <NoGraph faded={false}>
