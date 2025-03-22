@@ -174,7 +174,7 @@
 
     let range = 7
     $: todays_hours = _.zip(
-        ...day_review_hours.slice(today + realScroll - range, today + realScroll)
+        ...day_review_hours.slice(today + realScroll - range + 1, today + realScroll + 1)
     ).map(_.sum)
     let hours_time_machine: BarChart
     $: hours_time_machine = {
@@ -187,7 +187,7 @@
         tick_spacing: 6,
         columnLabeler: barHourLabeler,
     }
-    
+
     let stability_time_machine_bar: BarChart
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
