@@ -664,7 +664,7 @@
         <div class="options">
             <label>
                 {i18n("days")}
-                <input type="number" bind:value={range} />
+                <input type="number" bind:value={range} min={1} max={1 - (time_machine_min ?? 0)} />
             </label>
             <input
                 type="button"
