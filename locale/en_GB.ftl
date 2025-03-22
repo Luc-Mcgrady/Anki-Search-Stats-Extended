@@ -301,6 +301,12 @@ difficulty-time-machine-help = Shows your card difficulties for a given date
 # As in "zoom in" or "zoom out"
 zoom = Zoom
 
+daily-hourly-breakdown = Daily Hourly Breakdown
+daily-hourly-breakdown-help = Shows when you did reviews hour by hour on days in the range X days before the specified date.
+
+days = Days
+today = Today
+
 burden-per-day = {$value} burden per {$n ->
         [one] day
         *[many] {$n} days

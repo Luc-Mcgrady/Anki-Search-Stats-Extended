@@ -18,7 +18,7 @@
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
-    import { barDateLabeler, barStringLabeler, type BarChart } from "./bar"
+    import { barDateLabeler, barHourLabeler, barStringLabeler, type BarChart } from "./bar"
     import {
         calculateRevlogStats,
         day_ms,
@@ -58,6 +58,7 @@
         remaining_forgotten,
         intervals,
         interval_ease,
+        day_review_hours,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -163,6 +164,28 @@
         })),
         tick_spacing: 5,
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
+    }
+
+    $: console.log({
+        day_review_hours,
+        today: day_review_hours[today + realScroll],
+        hours_time_machine,
+    })
+
+    let range = 7
+    $: todays_hours = _.zip(
+        ...day_review_hours.slice(today + realScroll - range + 1, today + realScroll + 1)
+    ).map(_.sum)
+    let hours_time_machine: BarChart
+    $: hours_time_machine = {
+        row_colours: ["#70AFD6"],
+        row_labels: [i18n("cards")],
+        data: Array.from(todays_hours ?? []).map((v, i) => ({
+            values: [v ?? 0],
+            label: i.toString(),
+        })),
+        tick_spacing: 6,
+        columnLabeler: barHourLabeler,
     }
 
     let stability_time_machine_bar: BarChart
@@ -636,9 +659,33 @@
             <NoGraph>{i18n("memorised-dependant")}</NoGraph>
         {/if}
     </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("daily-hourly-breakdown")}</h1>
+        <div class="options">
+            <label>
+                {i18n("days")}
+                <input type="number" bind:value={range} min={1} max={1 - (time_machine_min ?? 0)} />
+            </label>
+            <input
+                type="button"
+                value={i18n("today")}
+                on:click={() => {
+                    $scroll = 0
+                    range = 1
+                }}
+            />
+        </div>
+        <Bar data={hours_time_machine}></Bar>
+        <span class="scroll">
+            {time_machine_min}
+            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
+            0
+        </span>
+        <p>{i18n("daily-hourly-breakdown-help")}</p>
+    </GraphContainer>
 </GraphCategory>
 
-<style>
+<style lang="scss">
     label.scroll {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -650,5 +697,16 @@
         display: grid;
         grid-template-columns: auto 1fr auto;
         gap: 0.5em 1em;
+    }
+
+    div.options {
+        display: flex;
+        justify-content: center;
+        gap: 0.5em;
+        align-items: baseline;
+
+        label {
+            display: contents;
+        }
     }
 </style>
