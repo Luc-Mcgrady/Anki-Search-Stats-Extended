@@ -661,10 +661,20 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("daily-hourly-breakdown")}</h1>
-        <label>
-            {i18n("days")}
-            <input type="number" bind:value={range} />
-        </label>
+        <div class="options">
+            <label>
+                {i18n("days")}
+                <input type="number" bind:value={range} />
+            </label>
+            <input
+                type="button"
+                value={i18n("today")}
+                on:click={() => {
+                    $scroll = 0
+                    range = 1
+                }}
+            />
+        </div>
         <Bar data={hours_time_machine}></Bar>
         <span class="scroll">
             {time_machine_min}
@@ -675,7 +685,7 @@
     </GraphContainer>
 </GraphCategory>
 
-<style>
+<style lang="scss">
     label.scroll {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -687,5 +697,16 @@
         display: grid;
         grid-template-columns: auto 1fr auto;
         gap: 0.5em 1em;
+    }
+
+    div.options {
+        display: flex;
+        justify-content: center;
+        gap: 0.5em;
+        align-items: baseline;
+
+        label {
+            display: contents;
+        }
     }
 </style>
