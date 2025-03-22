@@ -11,9 +11,10 @@
         pieSteps,
         scroll,
         searchLimit,
+        stability_bins_days,
         stability_days,
     } from "./stores"
-    import _ from "lodash"
+    import _, { size } from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
@@ -71,6 +72,13 @@
     function barLabel(i: number) {
         return (i - today).toString()
     }
+
+    enum Average {
+        MEDIAN,
+        MEAN,
+    }
+
+    let average_type = Average.MEDIAN
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
@@ -192,7 +200,7 @@
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
         row_labels: [i18n("cards")],
-        data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
+        data: Array.from($stability_bins_days[today + realScroll] ?? []).map((v, i) => ({
             values: [v ?? 0],
             label: i.toString(),
         })),
@@ -397,6 +405,58 @@
         <p>
             {i18n("memorised-help")}
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("average-stability-over-time")}</h1>
+        {#if $stability_days.length}
+            <BarScrollable
+                bind:binSize={interval_bin_size}
+                data={{
+                    row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                    row_labels: [i18n("young"), i18n("mature")],
+                    data: $stability_days.map((day, i) => {
+                        const sum_stability = _.sum(day)
+                        const count = size(day)
+                        const count_young = day.filter((stability) => stability <= 21).length
+                        const count_mature = count - count_young
+                        const weight_young = count_young / count
+                        const weight_mature = count_mature / count
+                        if (average_type == Average.MEAN) {
+                            const avg = count ? sum_stability / count : 0
+                            return {
+                                values: [avg * weight_young, avg * weight_mature],
+                                label: barLabel(i),
+                            }
+                        } else {
+                            const median = d3.quantile(Object.values(day), 0.5) ?? 0
+                            return {
+                                values: [median * weight_young, median * weight_mature],
+                                label: barLabel(i),
+                            }
+                        }
+                    }),
+                    columnLabeler: barDateLabeler,
+                }}
+                average
+                trend
+                trend_info={{ pattern: i18n_pattern("stability-per-day") }}
+            />
+            <p>
+                {i18n("average-stability-over-time-help")}
+            </p>
+            <div>
+                <label>
+                    <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
+                    {i18n("median")}
+                </label>
+                <label>
+                    <input type="radio" value={Average.MEAN} bind:group={average_type} />
+                    {i18n("mean")}
+                </label>
+            </div>
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>

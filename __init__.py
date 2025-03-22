@@ -11,16 +11,16 @@ addon_dir = Path(os.path.dirname(__file__))
 fallback_lang = "en_GB"
 def getLocale(lang: str):
     try:
-        with open(addon_dir / "locale" / f"{lang}.ftl") as f:
+        with open(addon_dir / "locale" / f"{lang}.ftl", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         print(f"Search Stats Extended: Locale {lang} not found")
         return ""
 
 def new_refresh(self: NewDeckStats):
-    with open(addon_dir / "stats.min.js") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
+    with open(addon_dir / "stats.min.js", encoding="utf-8") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
         innerJs = f.read()
-    with open(addon_dir / "stats.min.css") as f:
+    with open(addon_dir / "stats.min.css", encoding="utf-8") as f:
         innerCss = f.read()
 
     config = mw.addonManager.getConfig(__name__)
