@@ -267,7 +267,10 @@ export function getMemorisedDays(
         )
     )
 
-    const leech_probabilities = _.mapValues(probabilities, _.sum)
+    const min_reviews = 5
+    const leech_probabilities = _.mapValues(probabilities, (p) =>
+        p.length > min_reviews ? _.sum(p) : 1
+    )
 
     return {
         retrievabilityDays,
