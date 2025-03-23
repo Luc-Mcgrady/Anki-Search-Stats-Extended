@@ -172,12 +172,6 @@
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
-    $: console.log({
-        day_review_hours,
-        today: day_review_hours[today + realScroll],
-        hours_time_machine,
-    })
-
     let range = 7
     $: todays_hours = _.zip(
         ...day_review_hours.slice(today + realScroll - range + 1, today + realScroll + 1)

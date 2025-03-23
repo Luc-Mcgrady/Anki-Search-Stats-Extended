@@ -43,7 +43,6 @@
     function hoverTooltip(x: number, y: number) {
         const data = bw_matrix_counts![x][y]
         const value = ((100 * (data.predicted - data.real)) / data.count).toFixed(1)
-        console.log(data)
         return [
             `${i18n("predicted")}: ${data.predicted.toFixed(2)}`,
             `${i18n("actual")}: ${data.real.toFixed(0)}`,

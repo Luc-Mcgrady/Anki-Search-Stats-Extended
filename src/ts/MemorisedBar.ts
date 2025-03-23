@@ -25,7 +25,8 @@ export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
     configs: typeof SSEother.deck_configs,
-    config_mapping: typeof SSEother.deck_config_ids
+    config_mapping: typeof SSEother.deck_config_ids,
+    leech_elapsed_threshold = 10
 ) {
     console.log(`ts-fsrs ${FSRSVersion}`)
 
@@ -173,7 +174,7 @@ export function getMemorisedDays(
             fatigue_bins.all[today_so_far] = incrementLoss(fatigue_bins.all[today_so_far], p, y)
 
             if (elapsed >= 1) {
-                if (elapsed >= 10) {
+                if (elapsed >= leech_elapsed_threshold) {
                     if (!new_card) {
                         const leech_probabilities = probabilities[revlog.cid]
                         for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
