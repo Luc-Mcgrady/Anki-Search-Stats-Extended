@@ -266,7 +266,7 @@
             },
         })),
         tick_spacing: Math.floor(granularity / 5),
-        columnLabeler: barStringLabeler("$s"),
+        columnLabeler: (v) => v,
     }
 </script>
 
