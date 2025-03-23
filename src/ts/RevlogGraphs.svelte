@@ -5,15 +5,13 @@
     import {
         binSize,
         config,
-        difficulty_days,
-        fatigueLoss,
+        memorised_stats,
         pieLast,
         pieSteps,
         scroll,
         searchLimit,
-        stability_days,
     } from "./stores"
-    import _ from "lodash"
+    import _, { size } from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
@@ -71,6 +69,13 @@
     function barLabel(i: number) {
         return (i - today).toString()
     }
+
+    enum Average {
+        MEDIAN,
+        MEAN,
+    }
+
+    let average_type = Average.MEDIAN
 
     $: introduced_bar = {
         row_colours: ["#13e0eb", "#0c8b91"],
@@ -192,10 +197,12 @@
     $: stability_time_machine_bar = {
         row_colours: ["#70AFD6"],
         row_labels: [i18n("cards")],
-        data: Array.from($stability_days[today + realScroll] ?? []).map((v, i) => ({
-            values: [v ?? 0],
-            label: i.toString(),
-        })),
+        data: Array.from($memorised_stats?.stability_bins_days[today + realScroll] ?? []).map(
+            (v, i) => ({
+                values: [v ?? 0],
+                label: i.toString(),
+            })
+        ),
         tick_spacing: 5,
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("stability-of")?.value!),
     }
@@ -209,7 +216,7 @@
     let difficulty_time_machine_bar: BarChart
 
     $: difficulty_bins = difficulty_binner([
-        ...($difficulty_days[today + realScroll] ?? []).entries(),
+        ...($memorised_stats?.difficulty_days[today + realScroll] ?? []).entries(),
     ])
     $: difficulty_time_machine_bar = {
         row_colours: ["red"],
@@ -398,6 +405,49 @@
             {i18n("memorised-help")}
         </p>
     </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("average-stability-over-time")}</h1>
+        {#if $memorised_stats}
+            <BarScrollable
+                bind:binSize={interval_bin_size}
+                data={{
+                    row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                    row_labels: [i18n("young"), i18n("mature")],
+                    data: (average_type == Average.MEAN
+                        ? $memorised_stats.day_means
+                        : $memorised_stats.day_medians
+                    ).map((day, i) => {
+                        const young_ratio =
+                            _.sum($memorised_stats.stability_bins_days[i].slice(0, 21)) /
+                            _.sum($memorised_stats.stability_bins_days[i])
+                        return {
+                            values: [day * young_ratio, day * (1 - young_ratio)], //* young_ratio, day * (1 - young_ratio)],
+                            label: barLabel(i),
+                        }
+                    }),
+                    columnLabeler: barDateLabeler,
+                }}
+                average
+                trend
+                trend_info={{ pattern: i18n_pattern("stability-per-day") }}
+            />
+            <p>
+                {i18n("average-stability-over-time-help")}
+            </p>
+            <div>
+                <label>
+                    <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
+                    {i18n("median")}
+                </label>
+                <label>
+                    <input type="radio" value={Average.MEAN} bind:group={average_type} />
+                    {i18n("mean")}
+                </label>
+            </div>
+        {:else}
+            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+        {/if}
+    </GraphContainer>
 </GraphCategory>
 <GraphCategory>
     <GraphContainer>
@@ -486,7 +536,7 @@
             </p>
             <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
-        {#if $fatigueLoss}
+        {#if $memorised_stats}
             <GraphContainer>
                 <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
                 <BarScrollable
@@ -494,7 +544,7 @@
                     data={{
                         row_colours: ["red"],
                         row_labels: ["RMSE"],
-                        data: $fatigueLoss[mature_filter].map((v, i) => ({
+                        data: $memorised_stats.fatigueRMSE[mature_filter].map((v, i) => ({
                             label: i.toString(),
                             values: v,
                         })),
@@ -613,7 +663,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("stability-time-machine")}</h1>
-        {#if $stability_days.length}
+        {#if $memorised_stats}
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <label class="scroll">
                 <span>
@@ -635,7 +685,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("difficulty-time-machine")}</h1>
-        {#if $difficulty_days.length}
+        {#if $memorised_stats}
             <label class="scroll">
                 {i18n("zoom")}
                 <input type="range" bind:value={granularity} min={1} max={100} />
