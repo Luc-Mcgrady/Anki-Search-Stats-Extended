@@ -248,18 +248,19 @@
     let burden_trend: TrendLine
 
     let granularity_power = 1
+    const domain: [number, number] = [0.05, 1]
     $: granularity = 20 * Math.pow(2, granularity_power - 1)
     $: leech_bins = d3
         .bin<[string, number], number>()
-        .domain([0, 1])
+        .domain(domain)
         .thresholds(granularity)
-        .value((a) => a[1])(Object.entries($memorised_stats?.leech_probabilities ?? []))
+        .value((a) => 1 - a[1])(Object.entries($memorised_stats?.leech_probabilities ?? []))
     let leech_detection_bar: BarChart
     $: leech_detection_bar = {
         row_colours: ["red"],
         row_labels: ["cards"],
         data: leech_bins.map((bin) => ({
-            label: `${((bin.x1 ?? 0) * 100)?.toString()}%`,
+            label: `${((bin.x1 ?? 0) * 100)?.toPrecision(3)}%`,
             values: [bin.length],
             onClick: () => {
                 // @ts-ignore Typescript does not know that Anki has added bridgeCommand
@@ -267,7 +268,8 @@
             },
         })),
         tick_spacing: Math.floor(granularity / 5),
-        columnLabeler: (v) => v,
+        barWidth: ((domain[1] - domain[0]) * 100) / leech_bins.length,
+        columnLabeler: (v, w) => `${(parseFloat(v) - w!).toPrecision(3)}%-${v}`,
     }
 </script>
 
@@ -476,7 +478,7 @@
         <h1>Leech detection</h1>
         <label>
             Granularity
-            <input type="number" min={1} bind:value={granularity_power} />
+            <input type="range" min={1} max={6} bind:value={granularity_power} />
         </label>
         <Bar data={leech_detection_bar}></Bar>
     </GraphContainer>
