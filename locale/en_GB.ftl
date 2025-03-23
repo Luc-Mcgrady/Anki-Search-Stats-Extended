@@ -301,8 +301,6 @@ card-type = Card Type
 review-interval-time-machine = Review Interval Time Machine
 review-interval-time-machine-help = Shows your review intervals for a given date
 
-memorised-dependant = Press show on "Memorised" first
-
 stability-time-machine = Stability Time Machine
 stability-time-machine-help = Shows your card stabilities for a given date
 

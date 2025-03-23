@@ -1,41 +1,31 @@
 <script lang="ts">
     import * as _ from "lodash"
-    import { SetDateInfinite } from "./bar"
     import GraphContainer from "./GraphContainer.svelte"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
-    import { getMemorisedDays, type LossBin } from "./MemorisedBar"
-    import NoGraph from "./NoGraph.svelte"
-    import { catchErrors } from "./search"
-    import { binSize, card_data, memorised_stats, revlogs, searchLimit } from "./stores"
+    import { binSize, memorised_stats } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
     import { i18n, i18n_pattern } from "./i18n"
+    import MemorisedCalculator from "./MemorisedCalculator.svelte"
+    import type { LossBin } from "./MemorisedBar"
 
-    let show = false
     let retrievabilityDays: number[] | undefined = undefined
     let bw_matrix: Record<string, (number | undefined)[]> | undefined = undefined
     let bw_matrix_counts: Record<string, LossBin[]> | undefined = undefined
 
-    $: if ($revlogs && $card_data && show) {
-        $memorised_stats = catchErrors(() =>
-            getMemorisedDays($revlogs, $card_data, SSEother.deck_configs, SSEother.deck_config_ids)
-        )
+    $: retrievabilityDays = Array.from($memorised_stats?.retrievabilityDays || [])
 
-        retrievabilityDays = Array.from($memorised_stats.retrievabilityDays)
+    $: bw_matrix = Object.fromEntries(
+        Object.entries($memorised_stats?.bw_matrix || {}).map(([r_bin, row]) => {
+            const new_row = row.map((bin) =>
+                bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
+            )
+            new_row.length = 10
+            return [r_bin, new_row]
+        })
+    )
 
-        bw_matrix = Object.fromEntries(
-            Object.entries($memorised_stats.bw_matrix).map(([r_bin, row]) => {
-                const new_row = row.map((bin) =>
-                    bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
-                )
-                new_row.length = 10
-                return [r_bin, new_row]
-            })
-        )
-    }
-
-    $: truncated = $searchLimit !== 0
     $: pattern =
         (trend_data?.slope || 0) > 0
             ? i18n_pattern("remembered-per-day")
@@ -67,20 +57,11 @@
     }
 </script>
 
-{#if retrievabilityDays}
+{#if $memorised_stats}
     <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
-{:else if !show}
-    <NoGraph faded={false}>
-        {#if !truncated}
-            <button class="big" on:click={() => (show = true)}>{i18n("show-question")}</button>
-        {:else}
-            <button class="big" on:click={SetDateInfinite}>{i18n("increase-date-range")}</button>
-            <button on:click={() => (show = true)}>{i18n("show-question")}</button>
-        {/if}
-    </NoGraph>
 {:else}
-    <NoGraph>{i18n("loading")}</NoGraph>
+    <MemorisedCalculator />
 {/if}
 
 {#if bw_matrix}
@@ -91,10 +72,3 @@
         </GraphContainer>
     </details>
 {/if}
-
-<style>
-    .big {
-        width: 100%;
-        height: 100%;
-    }
-</style>

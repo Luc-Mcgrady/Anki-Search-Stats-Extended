@@ -36,6 +36,7 @@
     import Bar from "./Bar.svelte"
     import * as d3 from "d3"
     import NoGraph from "./NoGraph.svelte"
+    import MemorisedCalculator from "./MemorisedCalculator.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -468,7 +469,7 @@
                 </label>
             </div>
         {:else}
-            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+            <MemorisedCalculator />
         {/if}
     </GraphContainer>
     <GraphContainer>
@@ -711,7 +712,7 @@
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
         {:else}
-            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+            <MemorisedCalculator />
         {/if}
     </GraphContainer>
     <GraphContainer>
@@ -737,7 +738,7 @@
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
         {:else}
-            <NoGraph>{i18n("memorised-dependant")}</NoGraph>
+            <MemorisedCalculator />
         {/if}
     </GraphContainer>
     <GraphContainer>
