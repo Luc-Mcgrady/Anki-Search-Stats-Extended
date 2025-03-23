@@ -483,6 +483,9 @@
         <Bar data={leech_detection_bar}></Bar>
         <p>
             {i18n("leech-detector-help")}
+            <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
+                Forum discussion link
+            </a>
         </p>
     </GraphContainer>
 </GraphCategory>
