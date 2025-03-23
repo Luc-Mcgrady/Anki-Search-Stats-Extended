@@ -258,7 +258,7 @@
     let leech_detection_bar: BarChart
     $: leech_detection_bar = {
         row_colours: ["red"],
-        row_labels: ["cards"],
+        row_labels: [i18n("cards")],
         data: leech_bins.map((bin) => ({
             label: `${((bin.x1 ?? 0) * 100)?.toPrecision(3)}%`,
             values: [bin.length],
