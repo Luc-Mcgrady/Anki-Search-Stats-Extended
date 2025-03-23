@@ -172,12 +172,6 @@
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
-    $: console.log({
-        day_review_hours,
-        today: day_review_hours[today + realScroll],
-        hours_time_machine,
-    })
-
     let range = 7
     $: todays_hours = _.zip(
         ...day_review_hours.slice(today + realScroll - range + 1, today + realScroll + 1)
@@ -246,6 +240,31 @@
 
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
+
+    let granularity_power = 1
+    const domain: [number, number] = [0.05, 1]
+    $: granularity = 20 * Math.pow(2, granularity_power - 1)
+    $: leech_bins = d3
+        .bin<[string, number], number>()
+        .domain(domain)
+        .thresholds(granularity)
+        .value((a) => 1 - a[1])(Object.entries($memorised_stats?.leech_probabilities ?? []))
+    let leech_detection_bar: BarChart
+    $: leech_detection_bar = {
+        row_colours: ["red"],
+        row_labels: [i18n("cards")],
+        data: leech_bins.map((bin) => ({
+            label: `${((bin.x1 ?? 0) * 100)?.toPrecision(3)}%`,
+            values: [bin.length],
+            onClick: () => {
+                // @ts-ignore Typescript does not know that Anki has added bridgeCommand
+                window.bridgeCommand(`browserSearch:cid:${bin.map((e) => e[0]).join(",")}`)
+            },
+        })),
+        tick_spacing: Math.floor(granularity / 5),
+        barWidth: ((domain[1] - domain[0]) * 100) / leech_bins.length,
+        columnLabeler: (v, w) => `${(parseFloat(v) - w!).toPrecision(3)}%-${v}`,
+    }
 </script>
 
 <GraphCategory>
@@ -445,6 +464,24 @@
                     {i18n("mean")}
                 </label>
             </div>
+        {:else}
+            <MemorisedCalculator />
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("leech-detector")}</h1>
+        {#if $memorised_stats}
+            <label>
+                {i18n("zoom")}
+                <input type="range" min={1} max={6} bind:value={granularity_power} />
+            </label>
+            <Bar data={leech_detection_bar}></Bar>
+            <p>
+                {i18n("leech-detector-help")}
+                <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
+                    Forum discussion link
+                </a>
+            </p>
         {:else}
             <MemorisedCalculator />
         {/if}

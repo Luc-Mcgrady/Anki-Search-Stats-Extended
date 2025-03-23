@@ -352,8 +352,15 @@ forgotten-per-day = {$value} {$value ->
         [one] day
         *[many] {$n} days
     }
-# Graphs that are hidden by default, translate if you want to
 
+# This tables description and help will most likely change or become a bad graph
+leech-detector = Lapse Odds (Experimental)
+leech-detector-help = 
+    A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention. 
+    The higher the value, the less likely the cards are to have that number of leeches.
+    The formula for calculating this may change in the future.
+
+# Graphs that are hidden by default, translate if you want to
 bad-graph = Bad Graph
 
 naive-sibling-similarity = Naive Sibling Similarity
