@@ -148,7 +148,7 @@
             }}
         />
         <p>
-            {i18n("repetition-total-count")}
+            {i18n("repetition-total-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
