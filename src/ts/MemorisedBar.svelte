@@ -6,16 +6,7 @@
     import { getMemorisedDays, type LossBin } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { catchErrors } from "./search"
-    import {
-        binSize,
-        card_data,
-        fatigueLoss,
-        leech_detector,
-        difficulty_days,
-        searchLimit,
-        stability_days,
-        revlogs,
-    } from "./stores"
+    import { binSize, card_data, memorised_stats, revlogs, searchLimit } from "./stores"
     import type { TrendInfo, TrendLine } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
@@ -27,19 +18,14 @@
     let bw_matrix_counts: Record<string, LossBin[]> | undefined = undefined
 
     $: if ($revlogs && $card_data && show) {
-        let data = catchErrors(() =>
+        $memorised_stats = catchErrors(() =>
             getMemorisedDays($revlogs, $card_data, SSEother.deck_configs, SSEother.deck_config_ids)
         )
 
-        retrievabilityDays = Array.from(data.retrievabilityDays)
-        $fatigueLoss = data.fatigueRMSE
-        $stability_days = data.stability_days
-        $difficulty_days = data.difficulty_days
-        bw_matrix_counts = data.bw_matrix
-        $leech_detector = data.leech_probabilities
+        retrievabilityDays = Array.from($memorised_stats.retrievabilityDays)
 
         bw_matrix = Object.fromEntries(
-            Object.entries(bw_matrix_counts).map(([r_bin, row]) => {
+            Object.entries($memorised_stats.bw_matrix).map(([r_bin, row]) => {
                 const new_row = row.map((bin) =>
                     bin.count > 50 ? (bin.real - bin.predicted) / bin.count : undefined
                 )

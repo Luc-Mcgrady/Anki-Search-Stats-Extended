@@ -1,7 +1,7 @@
 <script lang="ts">
     import _ from "lodash"
     import Bar from "./Bar.svelte"
-    import type { BarChart, BarDatum, ExtraRenderInput } from "./bar"
+    import { barHourLabeler, type BarChart, type BarDatum, type ExtraRenderInput } from "./bar"
     import { getCardData, search, type CardData } from "./search"
     import { searchJoin } from "./root"
     import { other, searchString } from "./stores"
@@ -116,7 +116,7 @@
                 row_labels: [i18n("relearning-count"), i18n("learning-count")],
                 row_colours: ["#fb6a4a", "#fd8d3c"],
                 data,
-                columnLabeler: (label) => `${label.padStart(2, "0")}:00`,
+                columnLabeler: barHourLabeler,
             }}
             {extraRender}
         />
