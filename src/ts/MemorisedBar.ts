@@ -124,9 +124,11 @@ export function getMemorisedDays(
         }
         last_day = dayFromMs(revlog.id)
 
+        // on forget
         if (revlog.ivl == 0 && !new_card) {
             card = fsrs.forget(card, now).card
             fsrsCards[revlog.cid] = card
+            probabilities[revlog.cid] = [1]
         }
         // set due date or reschedule
         if (grade == 0) {
@@ -171,13 +173,15 @@ export function getMemorisedDays(
             fatigue_bins.all[today_so_far] = incrementLoss(fatigue_bins.all[today_so_far], p, y)
 
             if (elapsed >= 1) {
-                if (!new_card) {
-                    const leech_probabilities = probabilities[revlog.cid]
-                    for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
-                        // debugger
-                        leech_probabilities[j] =
-                            (leech_probabilities[j] ?? 0) * (1 - p) +
-                            (j > 0 ? leech_probabilities[j - 1] * p : 0)
+                if (elapsed >= 10) {
+                    if (!new_card) {
+                        const leech_probabilities = probabilities[revlog.cid]
+                        for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
+                            // debugger
+                            leech_probabilities[j] =
+                                (leech_probabilities[j] ?? 0) * (1 - p) +
+                                (j > 0 ? leech_probabilities[j - 1] * p : 0)
+                        }
                     }
                 }
 
