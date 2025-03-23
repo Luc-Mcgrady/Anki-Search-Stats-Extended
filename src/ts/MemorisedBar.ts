@@ -26,7 +26,8 @@ export function getMemorisedDays(
     cards: CardData[],
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids,
-    leech_elapsed_threshold = 10
+    leech_elapsed_threshold = 10,
+    leech_min_reviews = 5
 ) {
     console.log(`ts-fsrs ${FSRSVersion}`)
 
@@ -268,9 +269,8 @@ export function getMemorisedDays(
         )
     )
 
-    const min_reviews = 5
     const leech_probabilities = _.mapValues(probabilities, (p) =>
-        p.length > min_reviews ? _.sum(p) : 1
+        p.length > leech_min_reviews ? _.sum(p) : 1
     )
 
     return {
