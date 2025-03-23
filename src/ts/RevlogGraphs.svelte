@@ -476,17 +476,21 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("leech-detector")}</h1>
-        <label>
-            {i18n("zoom")}
-            <input type="range" min={1} max={6} bind:value={granularity_power} />
-        </label>
-        <Bar data={leech_detection_bar}></Bar>
-        <p>
-            {i18n("leech-detector-help")}
-            <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
-                Forum discussion link
-            </a>
-        </p>
+        {#if $memorised_stats}
+            <label>
+                {i18n("zoom")}
+                <input type="range" min={1} max={6} bind:value={granularity_power} />
+            </label>
+            <Bar data={leech_detection_bar}></Bar>
+            <p>
+                {i18n("leech-detector-help")}
+                <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
+                    Forum discussion link
+                </a>
+            </p>
+        {:else}
+            <MemorisedCalculator />
+        {/if}
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
