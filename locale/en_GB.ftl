@@ -352,6 +352,9 @@ forgotten-per-day = {$value} {$value ->
         [one] day
         *[many] {$n} days
     }
+
+leech-detector = Leech Detector (Experimental)
+leech-detector-help = A clickable graph! The degree to which a cards number of lapses deviates from what was expected.
 # Graphs that are hidden by default, translate if you want to
 
 bad-graph = Bad Graph

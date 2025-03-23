@@ -475,12 +475,15 @@
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>Leech detection</h1>
+        <h1>{i18n("leech-detector")}</h1>
         <label>
-            Granularity
+            {i18n("zoom")}
             <input type="range" min={1} max={6} bind:value={granularity_power} />
         </label>
         <Bar data={leech_detection_bar}></Bar>
+        <p>
+            {i18n("leech-detector-help")}
+        </p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory>
