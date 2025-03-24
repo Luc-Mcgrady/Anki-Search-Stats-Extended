@@ -7,14 +7,24 @@
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
     import { i18n, i18n_pattern } from "./i18n"
+    import GraphTypeSelector from "./GraphTypeSelector.svelte"
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
     import type { LossBin } from "./MemorisedBar"
 
     let retrievabilityDays: number[] | undefined = undefined
+    let stable_retrievability_days: number[] | undefined = undefined
     let bw_matrix: Record<string, (number | undefined)[]> | undefined = undefined
     let bw_matrix_counts: Record<string, LossBin[]> | undefined = undefined
 
+    enum MemorisedType {
+        RETRIEVABILITY,
+        STABLE_RETRIEVABILITY,
+    }
+
+    let memorised_type: MemorisedType = MemorisedType.RETRIEVABILITY
+
     $: retrievabilityDays = Array.from($memorised_stats?.retrievabilityDays || [])
+    $: stable_retrievability_days = Array.from($memorised_stats?.stable_retrievability_days || [])
 
     $: bw_matrix = Object.fromEntries(
         Object.entries($memorised_stats?.bw_matrix || {}).map(([r_bin, row]) => {
@@ -57,7 +67,29 @@
 </script>
 
 {#if $memorised_stats}
-    <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
+    <GraphTypeSelector>
+        <label>
+            <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
+            {i18n("Retrievability")}
+        </label>
+        <label>
+            <input
+                type="radio"
+                value={MemorisedType.STABLE_RETRIEVABILITY}
+                bind:group={memorised_type}
+            />
+            {i18n("retrievability-times-sqrt-stability")}
+        </label>
+    </GraphTypeSelector>
+    {#if memorised_type === MemorisedType.STABLE_RETRIEVABILITY}
+        <LineOrCandlestick
+            data={stable_retrievability_days}
+            label={i18n("cards-times-sqrt-r")}
+            bind:trend_data
+        />
+    {:else}
+        <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
+    {/if}
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
 {:else}
     <MemorisedCalculator />
