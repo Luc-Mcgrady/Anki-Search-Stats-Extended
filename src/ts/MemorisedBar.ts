@@ -75,9 +75,12 @@ export function getMemorisedDays(
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
+                function stability_weight(s: number): number {
+                    return 1 - Math.exp(-((8 / 365) * s))
+                }
                 stable_retrievability_days[day] =
                     (stable_retrievability_days[day] || 0) +
-                    retrievability * Math.sqrt(card.stability)
+                    retrievability * stability_weight(card.stability)
             }
         }
     }
