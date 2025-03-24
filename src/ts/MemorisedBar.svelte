@@ -78,13 +78,13 @@
                 value={MemorisedType.STABLE_RETRIEVABILITY}
                 bind:group={memorised_type}
             />
-            {i18n("retrievability-times-sqrt-stability")}
+            {i18n("retrievability-and-stability")}
         </label>
     </GraphTypeSelector>
     {#if memorised_type === MemorisedType.STABLE_RETRIEVABILITY}
         <LineOrCandlestick
             data={stable_retrievability_days}
-            label={i18n("cards-times-sqrt-r")}
+            label={i18n("cards-and-stability")}
             bind:trend_data
         />
     {:else}
