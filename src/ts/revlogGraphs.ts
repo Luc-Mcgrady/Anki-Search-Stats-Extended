@@ -8,6 +8,8 @@ const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
 export const day_ms = 1000 * 60 * 60 * 24
 
+const timezone_offset_mins = new Date().getTimezoneOffset()
+const timezone_offset_ms = timezone_offset_mins * 60 * 1000
 export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover_ms) / day_ms)
 }
@@ -106,7 +108,7 @@ export function calculateRevlogStats(
 
     for (const revlog of revlogData) {
         const day = dayFromMs(revlog.id)
-        const hour = Math.floor((revlog.id % day_ms) / (60 * 60 * 1000))
+        const hour = Math.floor(((revlog.id - timezone_offset_ms) % day_ms) / (60 * 60 * 1000))
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
         const card = id_card_data[revlog.cid]
