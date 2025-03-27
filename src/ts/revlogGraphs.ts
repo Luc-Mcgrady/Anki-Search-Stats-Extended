@@ -114,7 +114,7 @@ export function calculateRevlogStats(
         const card = id_card_data[revlog.cid]
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
-        
+
         // Check for reschedules
         if (revlog.time != 0) {
             day_review_hours[day] ??= Array(24).fill(0)
