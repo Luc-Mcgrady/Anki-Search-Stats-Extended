@@ -114,16 +114,11 @@ export function calculateRevlogStats(
         const card = id_card_data[revlog.cid]
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
-
-        // console.log({ day, hour })
-
-        day_review_hours[day] ??= Array(24).fill(0)
-        day_review_hours[day][hour] = day_review_hours[day][hour] + 1
-
-        // console.log({ day_review_hours })
-
+        
         // Check for reschedules
         if (revlog.time != 0) {
+            day_review_hours[day] ??= Array(24).fill(0)
+            day_review_hours[day][hour] = day_review_hours[day][hour] + 1
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
             incrementEase(day_ease.all, day, ease)
