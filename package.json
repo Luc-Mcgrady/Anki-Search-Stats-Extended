@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node esbuild.mjs",
-    "format": "prettier --config .prettierrc src --write --cache --end-of-line crlf",
+    "format": "prettier --config .prettierrc src --write --cache --end-of-line auto",
     "test": "jest"
   },
   "author": "",
