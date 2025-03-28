@@ -65,7 +65,7 @@
 
 {#if bw_matrix}
     <details>
-        <summary>B-W matrix</summary>
+        <summary>{i18n("b-w-matrix")}</summary>
         <GraphContainer>
             <svg bind:this={svg}></svg>
         </GraphContainer>

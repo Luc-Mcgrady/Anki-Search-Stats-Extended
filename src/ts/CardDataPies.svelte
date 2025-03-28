@@ -140,7 +140,7 @@
             bind:last={repetitions_last}
             pieInfo={{
                 totalDescriptor: i18n("total-repetitions"),
-                countDescriptor: i18n("most-repetitions"),
+                countDescriptor: i18n("highest-repetition-count"),
                 legend_left: i18n("repetition-count"),
                 legend_right: i18n("repetition-total"),
                 spectrumFrom: "#5ca7f7",
