@@ -8,6 +8,8 @@ const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
 export const day_ms = 1000 * 60 * 60 * 24
 
+const timezone_offset_mins = new Date().getTimezoneOffset()
+const timezone_offset_ms = timezone_offset_mins * 60 * 1000
 export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover_ms) / day_ms)
 }
@@ -106,22 +108,17 @@ export function calculateRevlogStats(
 
     for (const revlog of revlogData) {
         const day = dayFromMs(revlog.id)
-        const hour = Math.floor((revlog.id % day_ms) / (60 * 60 * 1000))
+        const hour = Math.floor(((revlog.id - timezone_offset_ms) % day_ms) / (60 * 60 * 1000))
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
         const card = id_card_data[revlog.cid]
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
 
-        // console.log({ day, hour })
-
-        day_review_hours[day] ??= Array(24).fill(0)
-        day_review_hours[day][hour] = day_review_hours[day][hour] + 1
-
-        // console.log({ day_review_hours })
-
         // Check for reschedules
         if (revlog.time != 0) {
+            day_review_hours[day] ??= Array(24).fill(0)
+            day_review_hours[day][hour] = day_review_hours[day][hour] + 1
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
             incrementEase(day_ease.all, day, ease)
