@@ -58,6 +58,7 @@
         intervals,
         interval_ease,
         day_review_hours,
+        day_filtered_review_hours,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -173,9 +174,14 @@
     }
 
     let range = 7
-    $: todays_hours = _.zip(
-        ...day_review_hours.slice(today + realScroll - range + 1, today + realScroll + 1)
-    ).map(_.sum)
+    let filtered = false
+
+    $: hours_begin = today + realScroll - range + 1
+    $: hours_end = today + realScroll + 1
+    $: day_range = filtered
+        ? day_filtered_review_hours.slice(hours_begin, hours_end)
+        : day_review_hours.slice(hours_begin, hours_end)
+    $: todays_hours = _.zip(...day_range).map(_.sum)
     let hours_time_machine: BarChart
     $: hours_time_machine = {
         row_colours: ["#70AFD6"],
@@ -764,6 +770,10 @@
             />
         </div>
         <Bar data={hours_time_machine}></Bar>
+        <label>
+            <input type="checkbox" bind:checked={filtered} />
+            {i18n("include-filtered")}
+        </label>
         <span class="scroll">
             {time_machine_min}
             <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />

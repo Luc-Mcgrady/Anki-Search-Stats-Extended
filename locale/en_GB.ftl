@@ -48,6 +48,7 @@ steps = Steps
 zero-inclusive = Zero Inclusive
 include-suspended = Include Suspended
 include-re-introduced = Include re-introduced
+include-filtered = Include Filtered
 bar-width = Bar Width
 scroll = Scroll
 as-ratio = As Ratio
@@ -313,7 +314,9 @@ difficulty-time-machine-help = Shows your card difficulties for a given date
 zoom = Zoom
 
 daily-hourly-breakdown = Daily Hourly Breakdown
-daily-hourly-breakdown-help = Shows when you did reviews hour by hour on days in the range X days before the specified date.
+daily-hourly-breakdown-help = 
+    Shows when you did reviews hour by hour on days in the range X days before the specified date.
+    The in-built Anki graph does not include filtered reviews.
 
 days = Days
 today = Today

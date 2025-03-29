@@ -84,6 +84,7 @@ export function calculateRevlogStats(
     let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
     let interval_ease = emptyArray(initialEase())
     let day_review_hours = emptyArray(Array(24).fill(0))
+    let day_filtered_review_hours = emptyArray(Array(24).fill(0))
 
     let day_ease = emptyRevlogBuckets()
     let fatigue_ease = emptyRevlogBuckets()
@@ -117,8 +118,13 @@ export function calculateRevlogStats(
 
         // Check for reschedules
         if (revlog.time != 0) {
-            day_review_hours[day] ??= Array(24).fill(0)
-            day_review_hours[day][hour] = day_review_hours[day][hour] + 1
+            if (revlog.type < 3) {
+                day_review_hours[day] ??= Array(24).fill(0)
+                day_review_hours[day][hour] = day_review_hours[day][hour] + 1
+            }
+            day_filtered_review_hours[day] ??= Array(24).fill(0)
+            day_filtered_review_hours[day][hour] = day_filtered_review_hours[day][hour] + 1
+
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
             incrementEase(day_ease.all, day, ease)
@@ -243,6 +249,7 @@ export function calculateRevlogStats(
         remaining_forgotten,
         intervals,
         day_review_hours,
+        day_filtered_review_hours,
     }
 }
 
