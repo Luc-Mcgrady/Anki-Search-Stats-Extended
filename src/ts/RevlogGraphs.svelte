@@ -37,6 +37,7 @@
     import * as d3 from "d3"
     import NoGraph from "./NoGraph.svelte"
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
+    import TimeMachineScroll from "./TimeMachineScroll.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -642,16 +643,7 @@
             legend_right={i18n("amount")}
             percentage
         ></Pie>
-        <label>
-            <span>
-                {i18n("x-days-ago", { days: -realScroll })}
-            </span>
-            <span class="scroll">
-                {time_machine_min}
-                <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-                0
-            </span>
-        </label>
+        <TimeMachineScroll min={time_machine_min} />
         <div>
             {i18n("starts-at")}
             <br />
@@ -689,16 +681,7 @@
     <GraphContainer>
         <h1>{i18n("review-interval-time-machine")}</h1>
         <BarScrollable data={time_machine_bar} left_aligned />
-        <label class="scroll">
-            <span>
-                {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
-            </span>
-            <span class="scroll">
-                {time_machine_min}
-                <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-                0
-            </span>
-        </label>
+        <TimeMachineScroll min={time_machine_min} />
         <span>{i18n("x-total-cards", { val: time_machine_mature + time_machine_young })}</span>
         <p>{i18n("review-interval-time-machine-help")}</p>
         {#if truncated}
@@ -709,16 +692,7 @@
         <h1>{i18n("stability-time-machine")}</h1>
         {#if $memorised_stats}
             <BarScrollable data={stability_time_machine_bar} left_aligned />
-            <label class="scroll">
-                <span>
-                    {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
-                </span>
-                <span class="scroll">
-                    {time_machine_min}
-                    <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-                    0
-                </span>
-            </label>
+            <TimeMachineScroll min={time_machine_min} />
             <p>{i18n("stability-time-machine-help")}</p>
             {#if truncated}
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -774,29 +748,12 @@
             <input type="checkbox" bind:checked={filtered} />
             {i18n("include-filtered")}
         </label>
-        <span class="scroll">
-            {time_machine_min}
-            <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-            0
-        </span>
+        <TimeMachineScroll min={time_machine_min} />
         <p>{i18n("daily-hourly-breakdown-help")}</p>
     </GraphContainer>
 </GraphCategory>
 
 <style lang="scss">
-    label.scroll {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 0.5em 1em;
-        align-items: baseline;
-        width: 100%;
-    }
-    .scroll {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 0.5em 1em;
-    }
-
     div.options {
         display: flex;
         justify-content: center;
