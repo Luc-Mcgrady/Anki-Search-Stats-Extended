@@ -174,7 +174,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .value((obj, key) => obj.values[key])(chart.data)
 
     const {
-        columnLabeler = barStringLabeler("Index: {$value}"),
+        columnLabeler = (a) => `"${a}"`,
         extraStats = totalCalc,
         column_counts = true,
         precision = 2,
