@@ -230,7 +230,7 @@ export function barHourLabeler(hour: string) {
 
 export function barStringLabeler(pattern: Pattern) {
     return (label: string, width: number = 1) => {
-        const rightmost = width > 1 ? `-${(+label + width - 1).toPrecision(2)}` : ""
+        const rightmost = width > 1 ? `-${_.round(+label + width - 1, 2)}` : ""
         const value = `${label}${rightmost}`
         return i18n_bundle.formatPattern(pattern, { value })
     }
