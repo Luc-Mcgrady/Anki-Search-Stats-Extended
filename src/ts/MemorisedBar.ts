@@ -25,9 +25,7 @@ export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
     configs: typeof SSEother.deck_configs,
-    config_mapping: typeof SSEother.deck_config_ids,
-    leech_elapsed_threshold = 10,
-    leech_min_reviews = 5
+    config_mapping: typeof SSEother.deck_config_ids
 ) {
     console.log(`ts-fsrs ${FSRSVersion}`)
 
@@ -51,6 +49,8 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let stable_retrievability_days: number[] = []
+
     function card_config(cid: number) {
         const card = cards_by_id[cid]
         if (!card) {
@@ -75,6 +75,12 @@ export function getMemorisedDays(
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
+                function stability_weight(s: number): number {
+                    return 1 - Math.exp(-((8 / 365) * s))
+                }
+                stable_retrievability_days[day] =
+                    (stable_retrievability_days[day] || 0) +
+                    retrievability * stability_weight(card.stability)
             }
         }
     }
@@ -100,10 +106,6 @@ export function getMemorisedDays(
     let day_medians: number[] = []
     let day_means: number[] = []
     let last_day = dayFromMs(revlogs[0].id)
-    let probabilities = _.mapValues(
-        _.groupBy(revlogs, (r) => r.cid),
-        (_) => [1]
-    )
 
     for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
@@ -122,15 +124,12 @@ export function getMemorisedDays(
             const stabilities = Object.values(last_stability)
             day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
             day_means[day] = d3.mean(stabilities) ?? 0
-            console.log(day + ":" + day_medians[day])
         }
         last_day = dayFromMs(revlog.id)
 
-        // on forget
         if (revlog.ivl == 0 && !new_card) {
             card = fsrs.forget(card, now).card
             fsrsCards[revlog.cid] = card
-            probabilities[revlog.cid] = [1]
         }
         // set due date or reschedule
         if (grade == 0) {
@@ -169,24 +168,11 @@ export function getMemorisedDays(
 
             const p = fsrs.forgetting_curve(elapsed, card.stability)
             const y = grade > 1 ? 1 : 0
-
             let card_type: LossBin[]
 
             fatigue_bins.all[today_so_far] = incrementLoss(fatigue_bins.all[today_so_far], p, y)
 
             if (elapsed >= 1) {
-                if (elapsed >= leech_elapsed_threshold) {
-                    if (!new_card) {
-                        const leech_probabilities = probabilities[revlog.cid]
-                        for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
-                            // debugger
-                            leech_probabilities[j] =
-                                (leech_probabilities[j] ?? 0) * (1 - p) +
-                                (j > 0 ? leech_probabilities[j - 1] * p : 0)
-                        }
-                    }
-                }
-
                 if (!new_card && card.stability > 1) {
                     const r_bin_power = 1.4
                     const r_bin = _.round(
@@ -269,18 +255,14 @@ export function getMemorisedDays(
         )
     )
 
-    const leech_probabilities = _.mapValues(probabilities, (p) =>
-        p.length > leech_min_reviews ? _.sum(p) : 1
-    )
-
     return {
         retrievabilityDays,
+        stable_retrievability_days,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
         stability_bins_days: stability_day_bins,
         day_medians,
         day_means,
-        leech_probabilities,
         difficulty_days: difficulty_day_bins,
     }
 }

@@ -11,7 +11,6 @@ import { tooltipDate, tooltipX } from "./tooltip"
 export type BarDatum = {
     values: number[]
     label: string
-    onClick?: () => void
 }
 
 export type LossBar = [number, number] // [MSE, Count]
@@ -210,12 +209,6 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
             })
         })
         .on("mouseleave", () => tooltipShown.set(false))
-        .on("click", (_, d) => {
-            if (d.onClick) {
-                d.onClick()
-            }
-        })
-        .style("cursor", (d) => (d.onClick ? "pointer" : "default"))
 
     return { x, y, svg: axis, maxValue, chart }
 }
