@@ -31,7 +31,7 @@
         }
     }
 
-    const unsubscibe = graph_mode.subscribe((mode) => {
+    const unsubscribe = graph_mode.subscribe((mode) => {
         if (mode === "Bar") {
             steps = barScroll
             last = barSize
@@ -41,7 +41,7 @@
         }
     })
 
-    onDestroy(unsubscibe)
+    onDestroy(unsubscribe)
 </script>
 
 <GraphTypeSelector>

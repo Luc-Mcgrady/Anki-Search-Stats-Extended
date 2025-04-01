@@ -69,3 +69,4 @@ tooltipShown.subscribe(() =>
         }
     }, 1000)
 )
+graph_mode.subscribe(() => graph_mode.set(get(config)?.graphMode ?? "Bar"))
