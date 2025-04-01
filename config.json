@@ -8,5 +8,6 @@
     "warnings": true,
     "trends": true,
     "badGraphs": false,
-    "forceLang": null
+    "forceLang": null,
+    "graphMode" : "Pie"
 }
