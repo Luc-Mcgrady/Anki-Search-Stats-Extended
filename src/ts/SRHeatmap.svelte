@@ -79,7 +79,7 @@
     function open_browser_search(selection: HeatmapSelectionData) {
         if (searchString !== undefined && searchString !== null) {
             browserSearch(
-                `browserSearch:(${searchString})` +
+                `(${searchString})` +
                     ` prop:r>=${selection.x_from}` +
                     ` prop:r<=${selection.x_to}` +
                     ` prop:s>=${selection.y_from}` +
