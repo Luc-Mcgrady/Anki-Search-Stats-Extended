@@ -122,7 +122,6 @@ export function getMemorisedDays(
             const stabilities = Object.values(last_stability)
             day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
             day_means[day] = d3.mean(stabilities) ?? 0
-            console.log(day + ":" + day_medians[day])
         }
         last_day = dayFromMs(revlog.id)
 
