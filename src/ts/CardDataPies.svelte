@@ -151,4 +151,23 @@
             {i18n("repetition-total-help")}
         </p>
     </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("repetition-by-introduced")}</h1>
+        <IntervalGraph
+            intervals={repetitions.map((e, i) => e * i)}
+            bind:steps={repetitions_steps}
+            bind:last={repetitions_last}
+            pieInfo={{
+                totalDescriptor: i18n("total-repetitions"),
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("repetition-total"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <p>
+            {i18n("repetition-by-introduced-help")}
+        </p>
+    </GraphContainer>
 </GraphCategory>

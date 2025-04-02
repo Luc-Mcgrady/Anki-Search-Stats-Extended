@@ -190,6 +190,10 @@ repetition-total = Repetition Total
 repetition-total-help = 
     This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a repetitions per card of 3, the repetition total for 3 would be 6.
 
+repetition-by-introduced = Repetitions Count by Introduced duration distribution
+repetition-by-introduced-help =
+    This graph shows the number of repetitions for cards which have been introduced for the given amount of time. This can be useful to see how many reviews by day you did in average for cards of a certain age.
+
 preparing-review-stats = Preparing Review Stats...
 
 review-graphs-warning-title = Review Graphs
