@@ -69,3 +69,6 @@ tooltipShown.subscribe(() =>
         }
     }, 1000)
 )
+config.subscribe(($config) =>
+    graph_mode.set($config?.graphMode?.toLowerCase() == "bar" ? "Bar" : "Pie")
+)
