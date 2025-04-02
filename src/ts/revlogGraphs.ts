@@ -237,20 +237,20 @@ export function calculateRevlogStats(
 
     let lapse_by_introduced_distribution = new Array<number>() // [ratioBins, countBins]
 
-    // for (const card of cardData) {
-    //     if (isNotSuspended(card) || include_suspended) {
-    //         const introduced_date = introduced.get(card.id)
-    //         const reintroduced_date = reintroduced.get(card.id)
-    //         const considered_date = reintroduced_date ?? introduced_date ?? Date.now()
-    //         if (introduced_date && reintroduced_date) {
-    //             const lapse = card.lapses
-    //             const introduced_duration = (Date.now() - considered_date.valueOf()) / day_ms
-    //             const ratio = Math.floor(lapse / introduced_duration)
-    //             lapse_by_introduced_distribution[ratio] =
-    //                 (lapse_by_introduced_distribution[ratio] ?? 0) + 1
-    //         }
-    //     }
-    // }
+    for (const card of cardData) {
+        if (isNotSuspended(card) || include_suspended) {
+            const introduced_date = introduced.get(card.id)
+            const reintroduced_date = reintroduced.get(card.id)
+            const considered_date = reintroduced_date ?? introduced_date ?? Date.now()
+            if (introduced_date && reintroduced_date) {
+                const lapse = card.lapses
+                const introduced_duration = (Date.now() - considered_date.valueOf()) / day_ms
+                const ratio = Math.floor(lapse / introduced_duration)
+                lapse_by_introduced_distribution[ratio] =
+                    (lapse_by_introduced_distribution[ratio] ?? 0) + 1
+            }
+        }
+    }
 
     for (let i = 0; i < lapse_by_introduced_distribution.length; i++) {
         // console.log(`Lapse Ratio: ${i}, Count: ${lapse_by_introduced_distribution[i]}`)
