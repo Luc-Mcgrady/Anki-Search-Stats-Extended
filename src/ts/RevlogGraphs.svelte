@@ -1,9 +1,10 @@
 <script lang="ts">
     import GraphContainer from "./GraphContainer.svelte"
     import IntervalGraph from "./IntervalGraph.svelte"
-    import { catchErrors, type CardData, type Revlog } from "./search"
+    import { browserSearchCids, catchErrors, type CardData, type Revlog } from "./search"
     import {
         binSize,
+        cids,
         config,
         include_suspended,
         memorised_stats,
@@ -266,8 +267,7 @@
             label: `${((bin.x1 ?? 0) * 100)?.toPrecision(3)}%`,
             values: [bin.length],
             onClick: () => {
-                // @ts-ignore Typescript does not know that Anki has added bridgeCommand
-                window.bridgeCommand(`browserSearch:cid:${bin.map((e) => e[0]).join(",")}`)
+                browserSearchCids(bin.map((e) => e[0]))
             },
         })),
         tick_spacing: Math.floor(granularity / 5),

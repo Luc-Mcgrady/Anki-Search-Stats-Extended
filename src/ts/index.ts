@@ -8,6 +8,10 @@ declare global {
     let css: string
     let SSEconfig: SSEconfig
     let SSEother: SSEother
+
+    interface Window {
+        bridgeCommand: (string: string) => void
+    }
 }
 
 patchFetch()
