@@ -480,7 +480,8 @@
     <GraphContainer>
         <h1>{i18n("lapse-by-days-ratio-distribution")}</h1>
         {#if lapse_by_introduced_distribution}
-            <Bar
+            <BarScrollable
+                left_aligned
                 data={{
                     row_colours: ["red"],
                     row_labels: [i18n("lapse-by-days")],

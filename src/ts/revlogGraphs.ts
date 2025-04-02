@@ -244,8 +244,8 @@ export function calculateRevlogStats(
             const considered_date = reintroduced_date ?? introduced_date ?? Date.now()
             if (introduced_date && reintroduced_date) {
                 const lapse = card.lapses
-                const introduced_duration = (Date.now() - considered_date.valueOf()) / day_ms
-                const ratio = Math.floor(lapse / introduced_duration)
+                const introduced_duration = today - considered_date
+                const ratio = Math.floor((lapse * 100) / introduced_duration)
                 lapse_by_introduced_distribution[ratio] =
                     (lapse_by_introduced_distribution[ratio] ?? 0) + 1
             }
@@ -253,7 +253,7 @@ export function calculateRevlogStats(
     }
 
     for (let i = 0; i < lapse_by_introduced_distribution.length; i++) {
-        // console.log(`Lapse Ratio: ${i}, Count: ${lapse_by_introduced_distribution[i]}`)
+        console.log(`Lapse Ratio: ${i}, Count: ${lapse_by_introduced_distribution[i]}`)
     }
 
     return {
