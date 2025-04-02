@@ -4,7 +4,6 @@
     import { searchJoin } from "./root"
     import { custom_pie_mode, searchString } from "./stores"
     import CancelablePromise, { cancelable } from "cancelable-promise"
-    import { i18n } from "./i18n"
 
     export let data: Writable<SearchPieData>
     export let promise: CancelablePromise<number> = CancelablePromise.resolve(0)
@@ -23,5 +22,5 @@
     }
 </script>
 
-<input type="text" bind:value={$data.search} placeholder={i18n("search-string")} />
-<input type="text" bind:value={$data.colour} placeholder={i18n("css-colour")} />
+<input type="text" bind:value={$data.search} placeholder="Search string" />
+<input type="text" bind:value={$data.colour} placeholder="CSS Colour" />

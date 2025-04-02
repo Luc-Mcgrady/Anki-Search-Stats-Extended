@@ -2,7 +2,6 @@
     import { barDateLabeler } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import { calcTimePerReview } from "./dayTimings"
-    import { i18n, i18n_pattern } from "./i18n"
     import type { GraphsResponse_ReviewCountsAndTimes } from "./proto/anki/stats_pb"
     import { today } from "./revlogGraphs"
     import { searchLimit } from "./stores"
@@ -15,7 +14,7 @@
 
     $: bar = {
         row_colours: ["#fcba03"],
-        row_labels: [i18n("seconds-per-review")],
+        row_labels: ["Time Spent Per Review (s)"],
         data: Array.from(time_spent).map((data, i) => ({
             label: (i - today).toString(),
             values: [data],
@@ -33,5 +32,8 @@
     average
     {limit}
     trend
-    trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
+    trend_info={{
+        x: "day",
+        y: "average second",
+    }}
 />

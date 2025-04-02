@@ -6,19 +6,18 @@
   "main": "index.js",
   "scripts": {
     "build": "node esbuild.mjs",
-    "format": "prettier --config .prettierrc src --write --cache --end-of-line auto",
+    "format": "prettier --config .prettierrc src --write",
     "test": "jest"
   },
   "author": "",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@fluent/bundle": "^0.18.0",
     "cancelable-promise": "^4.3.1",
     "d3": "^7.8.5",
     "lodash": "^4.17.21",
     "rainbowvis.js": "^1.1.1",
     "trendline": "^1.0.0",
-    "ts-fsrs": "^4.7.0"
+    "ts-fsrs": "^4.6.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",

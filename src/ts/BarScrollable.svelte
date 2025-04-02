@@ -10,7 +10,6 @@
     import Bar from "./Bar.svelte"
     import TrendValue from "./TrendValue.svelte"
     import { trendLine, type TrendInfo, type TrendLine } from "./trend"
-    import { i18n } from "./i18n"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
@@ -89,11 +88,11 @@
 
 <div class="options">
     <label>
-        {i18n("bar-width")}
+        Bar Width
         <input type="number" bind:value={binSize} />
     </label>
     <label>
-        {i18n("scroll")}
+        Scroll
         <input type="number" bind:value={offset} step={binSize} />
     </label>
 </div>

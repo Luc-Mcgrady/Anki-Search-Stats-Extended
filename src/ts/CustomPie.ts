@@ -1,5 +1,7 @@
+import { get } from "svelte/store"
 import type { PieDatum } from "./pie"
 import { getCardData, search } from "./search"
+import { burdenOrLoad } from "./stores"
 
 export type SearchPieData = PieDatum & { search: string }
 
@@ -20,7 +22,7 @@ export async function getQuery(query: string, mode: string): Promise<number> {
     }
     const cards = await getCardData(cids)
     switch (mode) {
-        case "Load":
+        case get(burdenOrLoad):
             return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)
         case "Lapses":
             return cards.reduce((p, n) => (p += n.lapses), 0)

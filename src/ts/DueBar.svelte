@@ -4,7 +4,6 @@
     import { barDateLabeler, type BarDatum } from "./bar"
     import type { GraphsResponse_FutureDue } from "./proto/anki/stats_pb"
     import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
-    import { i18n } from "./i18n"
 
     export let all: GraphsResponse_FutureDue
     export let mature: GraphsResponse_FutureDue
@@ -40,12 +39,7 @@
 <Bar
     data={{
         row_colours: [MATURE_COLOUR, YOUNG_COLOUR, "#fb6a4a", "#fd8d3c"],
-        row_labels: [
-            i18n("mature-count"),
-            i18n("young-count"),
-            i18n("relearning-count"),
-            i18n("learning-count"),
-        ],
+        row_labels: ["Mature", "Young", "Relearning", "Learning"],
         data: bars,
         tick_spacing: 5,
         columnLabeler: barDateLabeler,

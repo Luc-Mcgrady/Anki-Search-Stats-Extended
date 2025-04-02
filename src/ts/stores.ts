@@ -1,7 +1,8 @@
 import { derived, get, writable } from "svelte/store"
+import type { LossBar } from "./bar"
 import type { SSEconfig, SSEother } from "./config"
-import type { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
+import type { Buckets } from "./revlogGraphs"
 import { getRevlogs, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
 
@@ -23,9 +24,10 @@ export let revlogs = writable<null | Revlog[]>(null)
 export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
 export let custom_pie_mode = writable("Count")
-export let graph_mode = writable<"Bar" | "Pie">("Pie")
+export let graph_mode = writable<"Bar" | "Pie">(SSEconfig.graphMode)
 
 // Config related stats
+export let burdenOrLoad = writable("Load")
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)
@@ -37,8 +39,9 @@ export let scroll = writable(0)
 export let binSize = writable(1)
 
 // Graphs which are displayed in sections other than the one in which they are processed
+export let fatigueLoss = writable<Buckets<LossBar[]> | undefined>(undefined)
 export let target_R_days = writable<number[]>([])
-export let memorised_stats = writable<undefined | ReturnType<typeof getMemorisedDays>>(undefined)
+export let stability_days = writable<number[][]>([])
 
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({

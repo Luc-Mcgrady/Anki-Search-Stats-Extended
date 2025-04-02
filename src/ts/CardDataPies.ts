@@ -1,4 +1,4 @@
-import { forgetting_curve } from "ts-fsrs"
+import { FSRS } from "ts-fsrs"
 import { day_ms } from "./revlogGraphs"
 import type { CardData } from "./search"
 
@@ -9,6 +9,7 @@ export function calculateCardDataPies(
 ) {
     let lapses: number[] = []
     let repetitions: number[] = []
+    let avg_repetitions_per_lapses: number[] = []
     let lapses_burden: number[] = []
     let repetitions_burden: number[] = []
     let target_R_days: number[] = []
@@ -19,6 +20,11 @@ export function calculateCardDataPies(
             if (card.reps > 0) {
                 lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
                 repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
+
+                const old_avg_repetitions_per_lapses = avg_repetitions_per_lapses[card.lapses] ?? 0
+                avg_repetitions_per_lapses[card.lapses] =
+                    old_avg_repetitions_per_lapses +
+                    (card.reps - old_avg_repetitions_per_lapses) / (lapses[card.lapses] ?? 1)
 
                 const burden = card.ivl > 0 ? 1 / card.ivl : 1
 
@@ -33,7 +39,7 @@ export function calculateCardDataPies(
                                 ? card.due - days_elapsed
                                 : 0
                             : card.due / day_ms
-                    const target_R = forgetting_curve(card.ivl, stability)
+                    const target_R = FSRS.prototype.forgetting_curve(card.ivl, stability)
                     target_R_days[due] = (target_R_days[due] ?? 0) + target_R
                 }
             }
@@ -45,5 +51,12 @@ export function calculateCardDataPies(
         delete lapses_burden[0]
     }
 
-    return { lapses, repetitions, lapses_burden, repetitions_burden, target_R_days }
+    return {
+        lapses,
+        repetitions,
+        avg_repetitions_per_lapses,
+        lapses_burden,
+        repetitions_burden,
+        target_R_days,
+    }
 }

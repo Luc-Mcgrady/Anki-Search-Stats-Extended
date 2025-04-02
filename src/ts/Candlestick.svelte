@@ -3,7 +3,6 @@
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
     import { limit_area_width, limitArea } from "./bar"
     import { trendLine, type TrendLine } from "./trend"
-    import { i18n } from "./i18n"
 
     let svg: SVGElement | null = null
 
@@ -55,11 +54,11 @@
 
 <div class="options">
     <label>
-        {i18n("bar-width")}
+        Bar Width
         <input type="number" bind:value={binSize} />
     </label>
     <label>
-        {i18n("scroll")}
+        Scroll
         <input type="number" bind:value={offset} step={binSize} />
     </label>
 </div>

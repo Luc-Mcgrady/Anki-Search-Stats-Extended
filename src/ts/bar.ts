@@ -1,17 +1,14 @@
-import type { Pattern } from "@fluent/bundle/esm/ast"
 import * as d3 from "d3"
 import _ from "lodash"
 import { totalCalc } from "./barHelpers"
 import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
-import { i18n_bundle } from "./i18n"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
 export type BarDatum = {
     values: number[]
     label: string
-    onClick?: () => void
 }
 
 export type LossBar = [number, number] // [MSE, Count]
@@ -174,7 +171,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .value((obj, key) => obj.values[key])(chart.data)
 
     const {
-        columnLabeler = (a) => `"${a}"`,
+        columnLabeler = barStringLabeler("Index"),
         extraStats = totalCalc,
         column_counts = true,
         precision = 2,
@@ -210,12 +207,6 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
             })
         })
         .on("mouseleave", () => tooltipShown.set(false))
-        .on("click", (_, d) => {
-            if (d.onClick) {
-                d.onClick()
-            }
-        })
-        .style("cursor", (d) => (d.onClick ? "pointer" : "default"))
 
     return { x, y, svg: axis, maxValue, chart }
 }
@@ -224,23 +215,11 @@ export function barDateLabeler(label: string, width: number = 1) {
     return tooltipDate(+label, width) + ":"
 }
 
-export function barHourLabeler(hour: string) {
-    return `${hour.padStart(2, "0")}:00`
-}
-
-export function barStringLabeler(pattern: Pattern) {
-    return (label: string, width: number = 1) => {
-        const rightmost = width > 1 ? `-${_.round(+label + width - 1, 2)}` : ""
-        const value = `${label}${rightmost}`
-        return i18n_bundle.formatPattern(pattern, { value })
-    }
-}
-
-export function rangeBarStringLabeler(pattern: Pattern, x: string) {
+export function barStringLabeler(text: string) {
     return (label: string, width: number = 1) => {
         const rightmost = width > 1 ? `-${+label + width - 1}` : ""
         const value = `${label}${rightmost}`
-        return i18n_bundle.formatPattern(pattern, { range: value, x })
+        return `${text.replace("$s", value)}:`
     }
 }
 

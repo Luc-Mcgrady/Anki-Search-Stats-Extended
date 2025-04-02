@@ -1,15 +1,12 @@
 import _ from "lodash"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
-import { i18n } from "./i18n"
 import type { CardData, Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
 export const day_ms = 1000 * 60 * 60 * 24
 
-const timezone_offset_mins = new Date().getTimezoneOffset()
-const timezone_offset_ms = timezone_offset_mins * 60 * 1000
 export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover_ms) / day_ms)
 }
@@ -83,8 +80,6 @@ export function calculateRevlogStats(
     let day_initial_ease: number[][] = emptyArray(initialEase())
     let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
     let interval_ease = emptyArray(initialEase())
-    let day_review_hours = emptyArray(Array(24).fill(0))
-    let day_filtered_review_hours = emptyArray(Array(24).fill(0))
 
     let day_ease = emptyRevlogBuckets()
     let fatigue_ease = emptyRevlogBuckets()
@@ -109,7 +104,6 @@ export function calculateRevlogStats(
 
     for (const revlog of revlogData) {
         const day = dayFromMs(revlog.id)
-        const hour = Math.floor(((revlog.id - timezone_offset_ms) % day_ms) / (60 * 60 * 1000))
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
         const card = id_card_data[revlog.cid]
@@ -118,13 +112,6 @@ export function calculateRevlogStats(
 
         // Check for reschedules
         if (revlog.time != 0) {
-            if (revlog.type < 3) {
-                day_review_hours[day] ??= Array(24).fill(0)
-                day_review_hours[day][hour] = day_review_hours[day][hour] + 1
-            }
-            day_filtered_review_hours[day] ??= Array(24).fill(0)
-            day_filtered_review_hours[day][hour] = day_filtered_review_hours[day][hour] + 1
-
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
             incrementEase(day_ease.all, day, ease)
@@ -196,14 +183,15 @@ export function calculateRevlogStats(
 
         const after_review = last_cids[revlog.cid]
 
+        // If the card is suspended, ignore burden from its last review
+        if (!after_review && current.queue == -1) {
+            last_cids[revlog.cid] = revlog
+            return
+        }
+
         // If the card is still learning, use the card data
         let ivl = after_review ? revlog.ivl : current.ivl
         ivl = ivl >= 0 ? ivl : 1
-
-        // If the card is suspended
-        if (!after_review && current.queue == -1) {
-            ivl = -1
-        }
 
         let to = after_review ? dayFromMs(after_review.id) : end + 1
 
@@ -248,20 +236,18 @@ export function calculateRevlogStats(
         day_forgotten,
         remaining_forgotten,
         intervals,
-        day_review_hours,
-        day_filtered_review_hours,
     }
 }
 
 export const EASE_COLOURS = ["#a50026", "#fdbe70", "#b6e076", "#006837"].reverse()
-export const EASE_LABELS = [i18n("again"), i18n("hard"), i18n("good"), i18n("easy")].reverse()
+export const EASE_LABELS = ["Again", "Hard", "Good", "Easy"].reverse()
 
 export function retentionStats(data: BarDatum) {
     return [_.sum(data.values) ? formatRetention(1 - data.values[3]) : "No data"]
 }
 
 export function formatRetention(value: number) {
-    return i18n("percent-correct", { percentage: (100 * value).toFixed(2) })
+    return `${(100 * value).toFixed(2)}% Correct`
 }
 
 export function easeBarChart(

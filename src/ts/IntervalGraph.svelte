@@ -6,7 +6,6 @@
     import NoGraph from "./NoGraph.svelte"
     import { graph_mode, include_suspended, zero_inclusive } from "./stores"
     import GraphTypeSelector from "./GraphTypeSelector.svelte"
-    import { i18n } from "./i18n"
     export let include_suspended_option = true
     export let zero_inclusive_option = false
     export let intervals: Record<number, number> | null
@@ -47,24 +46,24 @@
 <GraphTypeSelector>
     <label>
         <input type="radio" bind:group={$graph_mode} value="Pie" />
-        {i18n("pie")}
+        Pie
     </label>
     <label>
         <input type="radio" bind:group={$graph_mode} value="Bar" />
-        {i18n("bar")}
+        Bar
     </label>
 </GraphTypeSelector>
 <div>
     {#if zero_inclusive_option && $graph_mode == "Pie"}
         <label class="checkbox">
             <input type="checkbox" bind:checked={$zero_inclusive} />
-            {i18n("zero-inclusive")}
+            Zero Inclusive
         </label>
     {/if}
     {#if include_suspended_option}
         <label class="checkbox">
             <input type="checkbox" bind:checked={$include_suspended} />
-            {i18n("include-suspended")}
+            Include suspended
         </label>
     {/if}
 </div>

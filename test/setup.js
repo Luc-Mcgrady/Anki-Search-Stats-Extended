@@ -4,4 +4,3 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 global.fetch = undefined
 global.SSEconfig = {}
-global.SSEother = {lang: "en"}
