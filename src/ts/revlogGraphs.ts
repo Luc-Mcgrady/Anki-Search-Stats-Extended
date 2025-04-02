@@ -1,4 +1,5 @@
 import _ from "lodash"
+import { isNotSuspended } from "./ankiUtilities"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { i18n } from "./i18n"
@@ -52,6 +53,7 @@ export function IDify<T extends { id: number }>(array: T[]) {
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
+    include_suspended: boolean,
     end: number = today
 ) {
     let id_card_data = IDify(cardData)
@@ -92,8 +94,8 @@ export function calculateRevlogStats(
 
     let forgotten = new Set<number>()
     let card_times: Record<number, number> = {}
-    let introduced = new Set<number>()
-    let reintroduced = new Set<number>()
+    let introduced = new Map<number, Date>()
+    let reintroduced = new Map<number, Date>()
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
 
@@ -178,8 +180,8 @@ export function calculateRevlogStats(
             } else {
                 incrementEase(day_initial_ease, day, ease)
             }
-            introduced.add(revlog.cid)
-            reintroduced.add(revlog.cid)
+            introduced.set(revlog.cid, new Date(revlog.id))
+            reintroduced.set(revlog.cid, new Date(revlog.id))
             forgotten.delete(revlog.cid)
         }
         if (card) {
@@ -233,6 +235,27 @@ export function calculateRevlogStats(
 
     const remaining_forgotten = forgotten.size
 
+    let lapse_by_introduced_distribution = new Array<number>() // [ratioBins, countBins]
+
+    for (const card of cardData) {
+        if (isNotSuspended(card) || include_suspended) {
+            const introduced_date = introduced.get(card.id)
+            const reintroduced_date = reintroduced.get(card.id)
+            const considered_date = reintroduced_date ?? introduced_date ?? Date.now()
+            if (introduced_date && reintroduced_date) {
+                const lapse = card.lapses
+                const introduced_duration = (Date.now() - considered_date.valueOf()) / day_ms
+                const ratio = Math.floor((lapse * 100) / introduced_duration)
+                lapse_by_introduced_distribution[ratio] =
+                    (lapse_by_introduced_distribution[ratio] ?? 0) + 1
+            }
+        }
+    }
+
+    for (let i = 0; i < lapse_by_introduced_distribution.length; i++) {
+        console.log(`Lapse Ratio: ${i}, Count: ${lapse_by_introduced_distribution[i]}`)
+    }
+
     return {
         day_initial_ease,
         day_initial_reintroduced_ease,
@@ -250,6 +273,7 @@ export function calculateRevlogStats(
         intervals,
         day_review_hours,
         day_filtered_review_hours,
+        lapse_by_introduced_distribution,
     }
 }
 

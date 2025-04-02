@@ -5,6 +5,7 @@
     import {
         binSize,
         config,
+        include_suspended,
         memorised_stats,
         pieLast,
         pieSteps,
@@ -60,7 +61,8 @@
         interval_ease,
         day_review_hours,
         day_filtered_review_hours,
-    } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
+        lapse_by_introduced_distribution,
+    } = catchErrors(() => calculateRevlogStats(revlogData, cardData, $include_suspended)))
 
     $: burden_change = DeltaIfy(burden)
     $: realScroll = -Math.abs($scroll)
@@ -471,6 +473,23 @@
                     {i18n("mean")}
                 </label>
             </div>
+        {:else}
+            <MemorisedCalculator />
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("lapse-by-days-ratio-distribution")}</h1>
+        {#if $memorised_stats}
+            <Bar
+                data={{
+                    row_colours: ["red"],
+                    row_labels: [i18n("lapse-by-days")],
+                    data: lapse_by_introduced_distribution.map((v, i) => ({
+                        label: i.toString(),
+                        values: [v ?? 0],
+                    })),
+                }}
+            />
         {:else}
             <MemorisedCalculator />
         {/if}

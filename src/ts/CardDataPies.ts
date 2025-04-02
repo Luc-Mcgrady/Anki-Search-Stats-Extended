@@ -1,4 +1,5 @@
 import { forgetting_curve } from "ts-fsrs"
+import { isSuspended } from "./ankiUtilities"
 import { day_ms } from "./revlogGraphs"
 import type { CardData } from "./search"
 
@@ -15,7 +16,7 @@ export function calculateCardDataPies(
     const days_elapsed = SSEother.days_elapsed
 
     for (const card of cardData ?? []) {
-        if (include_suspended || card.queue !== -1) {
+        if (include_suspended || isSuspended(card)) {
             if (card.reps > 0) {
                 lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
                 repetitions[card.reps] = (repetitions[card.reps] ?? 0) + 1
