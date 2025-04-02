@@ -479,7 +479,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("lapse-by-days-ratio-distribution")}</h1>
-        {#if $memorised_stats}
+        {#if lapse_by_introduced_distribution}
             <Bar
                 data={{
                     row_colours: ["red"],
@@ -491,7 +491,7 @@
                 }}
             />
         {:else}
-            <MemorisedCalculator />
+            <NoGraph />
         {/if}
     </GraphContainer>
     <GraphContainer>
