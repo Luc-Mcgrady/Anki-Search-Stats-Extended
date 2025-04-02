@@ -1,6 +1,6 @@
 <script lang="ts">
     import { other } from "./stores"
-    import type { CardData } from "./search"
+    import { browserSearch, type CardData } from "./search"
 
     import Heatmap from "./Heatmap.svelte"
     import type { HeatmapData, HeatmapSelectionData } from "./heatmap"
@@ -78,8 +78,7 @@
 
     function open_browser_search(selection: HeatmapSelectionData) {
         if (searchString !== undefined && searchString !== null) {
-            // @ts-ignore Typescript does not know that Anki has added bridgeCommand
-            window.bridgeCommand(
+            browserSearch(
                 `browserSearch:(${searchString})` +
                     ` prop:r>=${selection.x_from}` +
                     ` prop:r<=${selection.x_to}` +

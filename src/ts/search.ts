@@ -91,3 +91,11 @@ export async function getCardData(cids: number[]) {
 export async function getRevlogs(cids: number[], day_range: number) {
     return (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as Revlog[]
 }
+
+export function browserSearch(search: string) {
+    window.bridgeCommand(`browserSearch:cid:${search}`)
+}
+
+export function browserSearchCids(cids: (number | string)[]) {
+    browserSearch(cids.join(","))
+}
