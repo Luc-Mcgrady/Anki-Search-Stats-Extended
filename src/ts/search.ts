@@ -97,5 +97,5 @@ export function browserSearch(search: string) {
 }
 
 export function browserSearchCids(cids: (number | string)[]) {
-    browserSearch(cids.join(","))
+    browserSearch(`cid:${cids.join(",")}`)
 }
