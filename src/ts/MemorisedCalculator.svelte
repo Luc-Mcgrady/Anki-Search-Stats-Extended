@@ -10,7 +10,14 @@
 
     $: if ($revlogs && $card_data && show) {
         $memorised_stats = catchErrors(() =>
-            getMemorisedDays($revlogs, $card_data, SSEother.deck_configs, SSEother.deck_config_ids)
+            getMemorisedDays(
+                $revlogs,
+                $card_data,
+                SSEother.deck_configs,
+                SSEother.deck_config_ids,
+                2,
+                2
+            )
         )
     }
 </script>
