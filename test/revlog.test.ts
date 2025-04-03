@@ -30,7 +30,7 @@ const burden_revlogs : Revlog[] = [
 // console.log(burden_revlogs.map(revlog=>({id: revlog.id / day_ms, ...revlog})))
 
 const end = 10
-const {burden, intervals} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
+const {burden, intervals} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, false, end)
 
 test("Burden", () =>{
     // expect(burden.length).toEqual(end + 1)
