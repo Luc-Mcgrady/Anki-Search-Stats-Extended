@@ -246,7 +246,7 @@ export function calculateRevlogStats(
                 const lapse = card.lapses
                 const introduced_duration = today - considered_date
                 const ratio = Math.floor((lapse * 100) / introduced_duration)
-                if (ratio >= 25) {
+                if (ratio >= 10) {
                     console.log(
                         `Lapse Ratio: ${ratio}, Card ID: ${card.id}, Lapses: ${lapse}, Introduced Duration: ${introduced_duration}`
                     )

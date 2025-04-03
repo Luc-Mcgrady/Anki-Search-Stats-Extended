@@ -482,6 +482,7 @@
         {#if lapse_by_introduced_distribution}
             <BarScrollable
                 left_aligned
+                bins={30}
                 data={{
                     row_colours: ["red"],
                     row_labels: [i18n("lapse-by-days")],
