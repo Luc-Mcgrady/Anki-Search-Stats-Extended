@@ -28,6 +28,7 @@
         lapses_avg_burden,
         repetitions_burden,
         repetitions_avg_burden,
+        total_burden,
         target_R_days,
     } = catchErrors(() =>
         calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
@@ -38,6 +39,9 @@
 
     let repetitions_last = 21
     let repetitions_steps = 7
+
+    let normalize_burden = false
+    let cumulative_burden = false
 
     $: $target_R_days_values = $data ? target_R_days : []
 </script>
@@ -128,7 +132,12 @@
     <GraphContainer>
         <h1>{i18n("repetition-load")}</h1>
         <IntervalGraph
-            intervals={repetitions_burden}
+            intervals={repetitions_burden
+                .map((burden) => (normalize_burden ? (burden / total_burden) * 100 : burden))
+                .map((burden, i, last_mapepd_burden) =>
+                    cumulative_burden ? _.sum(last_mapepd_burden.slice(1, i)) + burden : burden
+                )}
+            average={normalize_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -143,6 +152,14 @@
         <p>
             {i18n("repetition-load-help")}
         </p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("repetition-avg-load")}</h1>
