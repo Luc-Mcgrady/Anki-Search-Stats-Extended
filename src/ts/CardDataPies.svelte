@@ -225,6 +225,37 @@
         </label>
     </GraphContainer>
     <GraphContainer>
+        <h1>{i18n("repetition-load-ratio-over-card-ratio")}</h1>
+        <IntervalGraph
+            intervals={repetitions
+                .map(
+                    (card, i) => repetitions_burden[i] / total_burden / (card / _.sum(repetitions))
+                )
+                .map((card, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + card : card
+                )}
+            average
+            bind:steps={repetitions_steps}
+            bind:last={repetitions_last}
+            pieInfo={{
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-count"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <p>{i18n("repetition-distribution-help")}</p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
+    </GraphContainer>
+    <GraphContainer>
         <h1>{i18n("repetition-total")}</h1>
         <IntervalGraph
             intervals={repetitions.map((e, i) => e * i)}
