@@ -25,7 +25,7 @@ export function calculateCardDataPies(
                 const burden = card.ivl > 0 ? 1 / card.ivl : 1
 
                 lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + burden
-                const old_lapses_avg_burden = repetitions_avg_burden[card.reps] ?? 0
+                const old_lapses_avg_burden = lapses_avg_burden[card.reps] ?? 0
                 lapses_avg_burden[card.reps] =
                     old_lapses_avg_burden + (burden - old_lapses_avg_burden) / lapses[card.reps]
 
