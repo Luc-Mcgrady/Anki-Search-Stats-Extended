@@ -18,7 +18,7 @@
     let pieSteps = steps
     let pieLast = last
 
-    let barScroll = zero_inclusive_option ? 1 : 0
+    let barScroll = zero_inclusive_option ? 0 : 1
     let barSize = 1
 
     $: {
