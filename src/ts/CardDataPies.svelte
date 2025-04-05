@@ -134,10 +134,10 @@
         <IntervalGraph
             intervals={repetitions_burden
                 .map((burden) => (normalize_burden ? (burden / total_burden) * 100 : burden))
-                .map((burden, i, last_mapepd_burden) =>
-                    cumulative_burden ? _.sum(last_mapepd_burden.slice(1, i)) + burden : burden
+                .map((burden, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + burden : burden
                 )}
-            average={normalize_burden}
+            average={cumulative_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -164,7 +164,14 @@
     <GraphContainer>
         <h1>{i18n("repetition-avg-load")}</h1>
         <IntervalGraph
-            intervals={repetitions_avg_burden}
+            intervals={repetitions_avg_burden
+                .map((burden) =>
+                    normalize_burden ? (burden / _.sum(repetitions_avg_burden)) * 100 : burden
+                )
+                .map((burden, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + burden : burden
+                )}
+            average={cumulative_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -179,6 +186,14 @@
         <p>
             {i18n("repetition-load-help")}
         </p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("repetition-distribution")}</h1>
