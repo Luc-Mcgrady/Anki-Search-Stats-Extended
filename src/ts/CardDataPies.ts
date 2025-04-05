@@ -10,7 +10,9 @@ export function calculateCardDataPies(
     let lapses: number[] = []
     let repetitions: number[] = []
     let lapses_burden: number[] = []
+    let lapses_avg_burden: number[] = []
     let repetitions_burden: number[] = []
+    let repetitions_avg_burden: number[] = []
     let target_R_days: number[] = []
     const days_elapsed = SSEother.days_elapsed
 
@@ -23,7 +25,15 @@ export function calculateCardDataPies(
                 const burden = card.ivl > 0 ? 1 / card.ivl : 1
 
                 lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + burden
+                const old_lapses_avg_burden = repetitions_avg_burden[card.reps] ?? 0
+                lapses_avg_burden[card.reps] =
+                    old_lapses_avg_burden + (old_lapses_avg_burden - burden) / lapses[card.reps]
+
                 repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + burden
+                const old_repetitions_avg_burden = repetitions_avg_burden[card.reps] ?? 0
+                repetitions_avg_burden[card.reps] =
+                    old_repetitions_avg_burden +
+                    (old_repetitions_avg_burden - burden) / repetitions[card.reps]
 
                 const stability = JSON.parse(card.data).s
                 if (stability && card.ivl > 0 && card.type == 2 && card.queue > 0) {
@@ -45,5 +55,13 @@ export function calculateCardDataPies(
         delete lapses_burden[0]
     }
 
-    return { lapses, repetitions, lapses_burden, repetitions_burden, target_R_days }
+    return {
+        lapses,
+        repetitions,
+        lapses_burden,
+        lapses_avg_burden,
+        repetitions_burden,
+        repetitions_avg_burden,
+        target_R_days,
+    }
 }

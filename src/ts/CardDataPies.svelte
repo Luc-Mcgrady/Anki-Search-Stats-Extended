@@ -21,8 +21,16 @@
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
-        () => calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
+    $: ({
+        lapses,
+        repetitions,
+        lapses_burden,
+        lapses_avg_burden,
+        repetitions_burden,
+        repetitions_avg_burden,
+        target_R_days,
+    } = catchErrors(() =>
+        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
 
     let lapse_last = 7
@@ -39,6 +47,26 @@
         <h1>{i18n("lapse-load")}</h1>
         <IntervalGraph
             intervals={lapses_burden}
+            bind:steps={lapse_steps}
+            bind:last={lapse_last}
+            pieInfo={{
+                totalDescriptor: i18n("load"),
+                countDescriptor: i18n("highest-lapse-count"),
+                legend_left: i18n("lapse-count"),
+                legend_right: i18n("card-load"),
+                spectrumFrom: "#bd3f09",
+                spectrumTo: "#612207",
+            }}
+            zero_inclusive_option
+        ></IntervalGraph>
+        <p>
+            {i18n("lapse-load-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("lapse-average-load")}</h1>
+        <IntervalGraph
+            intervals={lapses_avg_burden}
             bind:steps={lapse_steps}
             bind:last={lapse_last}
             pieInfo={{
@@ -101,6 +129,25 @@
         <h1>{i18n("repetition-load")}</h1>
         <IntervalGraph
             intervals={repetitions_burden}
+            bind:steps={repetitions_steps}
+            bind:last={repetitions_last}
+            pieInfo={{
+                totalDescriptor: i18n("load"),
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-load"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <p>
+            {i18n("repetition-load-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("repetition-avg-load")}</h1>
+        <IntervalGraph
+            intervals={repetitions_avg_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
