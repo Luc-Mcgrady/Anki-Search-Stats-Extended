@@ -71,7 +71,7 @@
 </div>
 {#if intervals}
     {#if $graph_mode == "Pie"}
-        <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
+        <IntervalPie {intervals} {pieInfo} bind:last bind:steps {average}></IntervalPie>
     {:else}
         <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps} {average}
         ></IntervalBar>
