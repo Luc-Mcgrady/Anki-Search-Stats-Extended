@@ -27,13 +27,13 @@ export function calculateCardDataPies(
                 lapses_burden[card.lapses] = (lapses_burden[card.lapses] ?? 0) + burden
                 const old_lapses_avg_burden = repetitions_avg_burden[card.reps] ?? 0
                 lapses_avg_burden[card.reps] =
-                    old_lapses_avg_burden + (old_lapses_avg_burden - burden) / lapses[card.reps]
+                    old_lapses_avg_burden + (burden - old_lapses_avg_burden) / lapses[card.reps]
 
                 repetitions_burden[card.reps] = (repetitions_burden[card.reps] ?? 0) + burden
                 const old_repetitions_avg_burden = repetitions_avg_burden[card.reps] ?? 0
                 repetitions_avg_burden[card.reps] =
                     old_repetitions_avg_burden +
-                    (old_repetitions_avg_burden - burden) / repetitions[card.reps]
+                    (burden - old_repetitions_avg_burden) / repetitions[card.reps]
 
                 const stability = JSON.parse(card.data).s
                 if (stability && card.ivl > 0 && card.type == 2 && card.queue > 0) {
