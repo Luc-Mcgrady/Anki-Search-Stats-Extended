@@ -12,6 +12,8 @@
     export let binSize = 1
     export let offset = 0
 
+    export let average = false
+
     let interval_array: number[] = []
     $: {
         interval_array = []
@@ -37,4 +39,4 @@
     }
 </script>
 
-<BarScrollable data={bar_data} bind:binSize bind:offset left_aligned></BarScrollable>
+<BarScrollable data={bar_data} bind:binSize bind:offset left_aligned {average}></BarScrollable>

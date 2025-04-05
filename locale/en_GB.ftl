@@ -178,9 +178,13 @@ highest-repetition-count = Most Repetitions
 repetition-count = Repetitions
 total-repetitions = Total Repetitions
 
-repetition-load = Repetition Load
+repetition-load = Repetition Total Load
 repetition-load-help = 
     This graph shows the sum of "1 / interval" for all cards which have the given number of repetitions.
+
+repetition-avg-load = Repetition Average Load
+repetition-avg-help =
+    This graph shows the average of "1 / interval" for all cards which have the given number of repetitions.
 
 repetition-distribution = Repetition Distribution
 repetition-distribution-help = 

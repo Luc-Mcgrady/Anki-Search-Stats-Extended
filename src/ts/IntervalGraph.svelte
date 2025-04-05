@@ -11,6 +11,7 @@
     export let zero_inclusive_option = false
     export let intervals: Record<number, number> | null
     export let pieInfo: IntervalPieInfo = {}
+    export let average = false
 
     export let steps = 7 // For bar, scroll
     export let last = 21 // for bar, bar_size
@@ -18,7 +19,7 @@
     let pieSteps = steps
     let pieLast = last
 
-    let barScroll = zero_inclusive_option ? 1 : 0
+    let barScroll = zero_inclusive_option ? 0 : 1
     let barSize = 1
 
     $: {
@@ -70,9 +71,10 @@
 </div>
 {#if intervals}
     {#if $graph_mode == "Pie"}
-        <IntervalPie {intervals} {pieInfo} bind:last bind:steps></IntervalPie>
+        <IntervalPie {intervals} {pieInfo} bind:last bind:steps {average}></IntervalPie>
     {:else}
-        <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps}></IntervalBar>
+        <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps} {average}
+        ></IntervalBar>
     {/if}
 {:else}
     <NoGraph></NoGraph>
