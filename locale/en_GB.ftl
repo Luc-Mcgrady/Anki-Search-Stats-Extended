@@ -258,7 +258,7 @@ memorised-truncated-warning =
     affect the results.
 
 retrievability-and-stability = Retrievability & Stability
-cards-and-stability = stable cards
+cards-and-stability = Stable cards
 
 # Between Minus Within? If I'm honest I have no idea what this stands for.
 b-w-matrix = B-W Matrix
