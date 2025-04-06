@@ -51,6 +51,8 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let stable_retrievability_days: number[] = []
+
     function card_config(cid: number) {
         const card = cards_by_id[cid]
         if (!card) {
@@ -75,6 +77,12 @@ export function getMemorisedDays(
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
+                function stability_weight(s: number): number {
+                    return 1 - Math.exp(-((8 / 365) * s))
+                }
+                stable_retrievability_days[day] =
+                    (stable_retrievability_days[day] || 0) +
+                    retrievability * stability_weight(card.stability)
             }
         }
     }
@@ -122,7 +130,6 @@ export function getMemorisedDays(
             const stabilities = Object.values(last_stability)
             day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
             day_means[day] = d3.mean(stabilities) ?? 0
-            console.log(day + ":" + day_medians[day])
         }
         last_day = dayFromMs(revlog.id)
 
@@ -275,6 +282,7 @@ export function getMemorisedDays(
 
     return {
         retrievabilityDays,
+        stable_retrievability_days,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
         stability_bins_days: stability_day_bins,
