@@ -257,6 +257,9 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+retrievability-and-stability = Retrievability & Stability
+cards-and-stability = Stable cards
+
 # Between Minus Within? If I'm honest I have no idea what this stands for.
 b-w-matrix = B-W Matrix
 
@@ -358,8 +361,8 @@ forgotten-per-day = {$value} {$value ->
 
 # This tables description and help will most likely change or become a bad graph
 leech-detector = Lapse Odds (Experimental)
-leech-detector-help = 
-    A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention. 
+leech-detector-help =
+    A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention.
     The higher the value, the less likely the cards are to have that number of leeches.
     The formula for calculating this may change in the future.
 
