@@ -74,23 +74,23 @@
         <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
     {/if}
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
+    <div>
+        <label>
+            <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
+            {i18n("Retrievability")}
+        </label>
+        <label>
+            <input
+                type="radio"
+                value={MemorisedType.STABLE_RETRIEVABILITY}
+                bind:group={memorised_type}
+            />
+            {i18n("retrievability-and-stability")}
+        </label>
+    </div>
 {:else}
     <MemorisedCalculator />
 {/if}
-<div>
-    <label>
-        <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
-        {i18n("Retrievability")}
-    </label>
-    <label>
-        <input
-            type="radio"
-            value={MemorisedType.STABLE_RETRIEVABILITY}
-            bind:group={memorised_type}
-        />
-        {i18n("retrievability-and-stability")}
-    </label>
-</div>
 {#if bw_matrix}
     <details>
         <summary>{i18n("b-w-matrix")}</summary>
