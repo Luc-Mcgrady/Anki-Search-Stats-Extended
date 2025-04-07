@@ -363,7 +363,7 @@ forgotten-per-day = {$value} {$value ->
 leech-detector = Lapse Odds (Experimental)
 leech-detector-help =
     A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention.
-    The higher the value, the less likely the cards are to have that number of leeches.
+    The higher the value, the less likely the cards are to have that number of lapses.
     The formula for calculating this may change in the future.
 
 # Graphs that are hidden by default, translate if you want to
