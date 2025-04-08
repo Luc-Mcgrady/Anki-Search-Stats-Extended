@@ -96,6 +96,7 @@ export function calculateRevlogStats(
     let reintroduced = new Set<number>()
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
+    let due_days = emptyArray(0)
 
     let last_siblings: (undefined | SiblingReview)[] = []
     let sibling_time_ease: number[][] = emptyArray(initialEase())
@@ -207,15 +208,21 @@ export function calculateRevlogStats(
 
         let to = after_review ? dayFromMs(after_review.id) : end + 1
 
+        let due = day + revlog.ivl
         for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
             intervals[intervalDay][ivl] = (intervals[intervalDay][ivl] ?? 0) + 1
+
+            due_days[intervalDay] ??= 0
+            due_days[intervalDay][_.max([due - intervalDay, 0])!]
         }
 
         last_cids[revlog.cid] = revlog
 
         return undefined
     }, undefined)
+
+    console.log(due_days)
 
     const burden = Array.from(intervals).map((v) => {
         if (!v) {
