@@ -279,6 +279,10 @@ average-stability-over-time-help =
     90% of the bar will marked as young). A cards maturity is calculated here using the stability, not the interval,
     which makes it also desired retention independent.
 
+lapse-by-days-ratio-distribution = Lapse by Days Ratio Distribution
+lapse-by-days-ratio-distribution-help =
+    This graph shows the ratio of lapses to days since the last review. The higher the value, the more likely it is a leech.
+
 median = Median
 mean = Mean
 
