@@ -93,9 +93,9 @@ export async function getRevlogs(cids: number[], day_range: number) {
 }
 
 export function browserSearch(search: string) {
-    window.bridgeCommand(`browserSearch:cid:${search}`)
+    window.bridgeCommand(`browserSearch:${search}`)
 }
 
 export function browserSearchCids(cids: (number | string)[]) {
-    browserSearch(cids.join(","))
+    browserSearch(`cid:${cids.join(",")}`)
 }
