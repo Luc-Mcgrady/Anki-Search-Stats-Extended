@@ -21,8 +21,17 @@
     export let cardData: CardData[] | null
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, repetitions, lapses_burden, repetitions_burden, target_R_days } = catchErrors(
-        () => calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
+    $: ({
+        lapses,
+        repetitions,
+        lapses_burden,
+        lapses_avg_burden,
+        repetitions_burden,
+        repetitions_avg_burden,
+        total_burden,
+        target_R_days,
+    } = catchErrors(() =>
+        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
     ))
 
     let lapse_last = 7
@@ -30,6 +39,9 @@
 
     let repetitions_last = 21
     let repetitions_steps = 7
+
+    let normalize_burden = false
+    let cumulative_burden = false
 
     $: $target_R_days_values = $data ? target_R_days : []
 </script>
@@ -39,6 +51,26 @@
         <h1>{i18n("lapse-load")}</h1>
         <IntervalGraph
             intervals={lapses_burden}
+            bind:steps={lapse_steps}
+            bind:last={lapse_last}
+            pieInfo={{
+                totalDescriptor: i18n("load"),
+                countDescriptor: i18n("highest-lapse-count"),
+                legend_left: i18n("lapse-count"),
+                legend_right: i18n("card-load"),
+                spectrumFrom: "#bd3f09",
+                spectrumTo: "#612207",
+            }}
+            zero_inclusive_option
+        ></IntervalGraph>
+        <p>
+            {i18n("lapse-load-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("lapse-average-load")}</h1>
+        <IntervalGraph
+            intervals={lapses_avg_burden}
             bind:steps={lapse_steps}
             bind:last={lapse_last}
             pieInfo={{
@@ -100,7 +132,12 @@
     <GraphContainer>
         <h1>{i18n("repetition-load")}</h1>
         <IntervalGraph
-            intervals={repetitions_burden}
+            intervals={repetitions_burden
+                .map((burden) => (normalize_burden ? (burden / total_burden) * 100 : burden))
+                .map((burden, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + burden : burden
+                )}
+            average={cumulative_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -115,11 +152,58 @@
         <p>
             {i18n("repetition-load-help")}
         </p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("repetition-avg-load")}</h1>
+        <IntervalGraph
+            intervals={repetitions_avg_burden
+                .map((burden) =>
+                    normalize_burden ? (burden / _.sum(repetitions_avg_burden)) * 100 : burden
+                )
+                .map((burden, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + burden : burden
+                )}
+            average
+            bind:steps={repetitions_steps}
+            bind:last={repetitions_last}
+            pieInfo={{
+                totalDescriptor: i18n("load"),
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-load"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <p>
+            {i18n("repetition-load-help")}
+        </p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("repetition-distribution")}</h1>
         <IntervalGraph
-            intervals={repetitions}
+            intervals={repetitions
+                .map((card) => (normalize_burden ? (card / _.sum(repetitions)) * 100 : card))
+                .map((card, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + card : card
+                )}
+            average={cumulative_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -131,6 +215,45 @@
             }}
         />
         <p>{i18n("repetition-distribution-help")}</p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("repetition-load-ratio-over-card-ratio")}</h1>
+        <IntervalGraph
+            intervals={repetitions
+                .map(
+                    (card, i) => repetitions_burden[i] / total_burden / (card / _.sum(repetitions))
+                )
+                .map((card, i, last_arr) =>
+                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + card : card
+                )}
+            average
+            bind:steps={repetitions_steps}
+            bind:last={repetitions_last}
+            pieInfo={{
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-count"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <p>{i18n("repetition-distribution-help")}</p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("repetition-total")}</h1>
