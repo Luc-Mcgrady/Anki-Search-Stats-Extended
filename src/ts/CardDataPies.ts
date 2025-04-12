@@ -54,43 +54,49 @@ export function calculateCardDataPies(
         }
     }
 
-    const load_by_reps_sorted = (cardData ?? [])
-        .filter((card) => (include_suspended || card.queue !== -1) && card.reps > 0)
-        .map((card) => [card.reps, card.ivl])
-        .map(([reps, ivl]) => [reps, 1 / ivl])
-        .sort((a, b) => a[0] - b[0])
+    function getLoadByCardMetric(metric: (card: CardData) => number) {
+        const load_by_value_sorted = (cardData ?? [])
+            .filter((card) => (include_suspended || card.queue !== -1) && metric(card) >= 0)
+            .map((card) => [metric(card), card.ivl])
+            .map(([val, ivl]) => [val, 1 / ivl])
+            .sort((a, b) => a[0] - b[0])
 
-    const repetitions_bucket_count = 20
-    let repetitions_load_buckets = []
+        const values_bucket_count = 20
+        let values_load_buckets = []
 
-    if (load_by_reps_sorted.length > 20) {
-        for (let bucket_index = 0; bucket_index < repetitions_bucket_count; bucket_index++) {
-            let bucket_max_size = Math.floor(load_by_reps_sorted.length / repetitions_bucket_count)
-            const bucket_start = bucket_index * bucket_max_size
-            const bucket_end = Math.min(
-                (bucket_index + 1) * bucket_max_size,
-                load_by_reps_sorted.length
-            )
-            const bucket_size = bucket_end - bucket_start
-            const bucket_data = load_by_reps_sorted.slice(bucket_start, bucket_end)
-            const sum_load = bucket_data
-                .map(([_, load]) => load)
-                .reduce((sum, current) => sum + current, 0)
-            const bucket_min_rep = bucket_data[0][0]
-            const bucket_max_rep = bucket_data[bucket_size - 1][0]
-            repetitions_load_buckets.push({
-                start_rep: bucket_min_rep,
-                end_rep: bucket_max_rep,
-                load: {
-                    sum: sum_load,
-                    avg: sum_load / bucket_size,
-                },
-            })
-            console.log(
-                `Bucket ${bucket_index}: ${bucket_min_rep} - ${bucket_max_rep} reps, sum load: ${sum_load}, avg load: ${sum_load / bucket_size}`
-            )
+        if (load_by_value_sorted.length > values_bucket_count) {
+            for (let bucket_index = 0; bucket_index < values_bucket_count; bucket_index++) {
+                let bucket_max_size = Math.floor(load_by_value_sorted.length / values_bucket_count)
+                const bucket_start = bucket_index * bucket_max_size
+                const bucket_end = Math.min(
+                    (bucket_index + 1) * bucket_max_size,
+                    load_by_value_sorted.length
+                )
+                const bucket_size = bucket_end - bucket_start
+                const bucket_data = load_by_value_sorted.slice(bucket_start, bucket_end)
+                const sum_load = bucket_data
+                    .map(([_, load]) => load)
+                    .reduce((sum, current) => sum + current, 0)
+                const bucket_min_value = bucket_data[0][0]
+                const bucket_max_value = bucket_data[bucket_size - 1][0]
+                values_load_buckets.push({
+                    start_val: bucket_min_value,
+                    end_val: bucket_max_value,
+                    load: {
+                        sum: sum_load,
+                        avg: sum_load / bucket_size,
+                    },
+                })
+                console.log(
+                    `Bucket ${bucket_index}: ${bucket_min_value} - ${bucket_max_value} (${arguments.callee.name}), sum load: ${sum_load}, avg load: ${sum_load / bucket_size}`
+                )
+            }
         }
+        return values_load_buckets
     }
+
+    const repetitions_load_buckets = getLoadByCardMetric((card) => card.reps)
+    const lapses_load_buckets = getLoadByCardMetric((card) => card.lapses)
 
     if (!zero_inclusive) {
         delete lapses[0]
@@ -113,6 +119,7 @@ export function calculateCardDataPies(
         repetitions,
         lapses_burden,
         lapses_avg_burden,
+        lapses_load_buckets,
         repetitions_burden,
         repetitions_avg_burden,
         repetitions_load_buckets,

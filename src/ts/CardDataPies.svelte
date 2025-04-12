@@ -26,6 +26,7 @@
         repetitions,
         lapses_burden,
         lapses_avg_burden,
+        lapses_load_buckets,
         repetitions_burden,
         repetitions_avg_burden,
         repetitions_load_buckets,
@@ -53,9 +54,12 @@
     <GraphContainer>
         <h1>{i18n("lapse-load")}</h1>
         <IntervalGraph
-            intervals={lapses_burden}
+            intervals={lapses_burden.map((burden) =>
+                normalize_burden ? (burden / total_burden) * 100 : burden
+            )}
             bind:steps={lapse_steps}
             bind:last={lapse_last}
+            cumulative={cumulative_burden}
             pieInfo={{
                 totalDescriptor: i18n("load"),
                 countDescriptor: i18n("highest-lapse-count"),
@@ -69,6 +73,14 @@
         <p>
             {i18n("lapse-load-help")}
         </p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("lapse-average-load")}</h1>
@@ -108,6 +120,33 @@
         <p>
             {i18n("lapse-distribution-help")}
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("lapses-load-ratio-over-card-ratio")}</h1>
+        <IntervalGraph
+            intervals={lapses_load_buckets
+                .map((bucket) => bucket.load.sum)
+                .map((sum) => (normalize_burden ? (sum / total_burden) * 100 : sum))}
+            cumulative={cumulative_burden}
+            max={lapses_load_buckets.length}
+            zero_inclusive_option={true}
+            pieInfo={{
+                countDescriptor: i18n("highest-lapse-count"),
+                legend_left: i18n("lapse-count"),
+                legend_right: i18n("card-count"),
+                spectrumFrom: "#bd3f09",
+                spectrumTo: "#612207",
+            }}
+        />
+        <p>{i18n("lapse-distribution-help")}</p>
+        <label>
+            <input type="checkbox" bind:checked={normalize_burden} />
+            {i18n("as-ratio")}
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={cumulative_burden} />
+            {i18n("cumulative")}
+        </label>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("lapse-total")}</h1>
@@ -227,7 +266,7 @@
                 .map((bucket) => bucket.load.sum)
                 .map((sum) => (normalize_burden ? (sum / total_burden) * 100 : sum))}
             cumulative={cumulative_burden}
-            max={20}
+            max={repetitions_load_buckets.length}
             zero_inclusive_option={true}
             pieInfo={{
                 countDescriptor: i18n("highest-repetition-count"),
