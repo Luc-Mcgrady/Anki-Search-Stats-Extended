@@ -98,8 +98,8 @@ export function calculateCardDataPies(
         return values_load_buckets
     }
 
-    const repetitions_load_buckets = getLoadByCardMetric((card) => card.reps, true)
-    const lapses_load_buckets = getLoadByCardMetric((card) => card.lapses)
+    const repetitions_load_buckets = getLoadByCardMetric((card) => card.reps)
+    const lapses_load_buckets = getLoadByCardMetric((card) => card.lapses, true)
 
     if (!zero_inclusive) {
         delete lapses[0]
