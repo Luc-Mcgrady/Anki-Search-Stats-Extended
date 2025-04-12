@@ -12,6 +12,7 @@
     export let intervals: Record<number, number> | null
     export let pieInfo: IntervalPieInfo = {}
     export let average = false
+    export let cumulative = false
 
     export let steps = 7 // For bar, scroll
     export let last = 21 // for bar, bar_size
@@ -73,7 +74,13 @@
     {#if $graph_mode == "Pie"}
         <IntervalPie {intervals} {pieInfo} bind:last bind:steps {average}></IntervalPie>
     {:else}
-        <IntervalBar {intervals} {pieInfo} bind:binSize={last} bind:offset={steps} {average}
+        <IntervalBar
+            {intervals}
+            {pieInfo}
+            bind:binSize={last}
+            bind:offset={steps}
+            {average}
+            {cumulative}
         ></IntervalBar>
     {/if}
 {:else}

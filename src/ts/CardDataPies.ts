@@ -17,7 +17,9 @@ export function calculateCardDataPies(
     let target_R_days: number[] = []
     const days_elapsed = SSEother.days_elapsed
 
+    console.log(`cardData (1): ${JSON.stringify(cardData)}, size : ${cardData.length}`)
     for (const card of cardData ?? []) {
+        console.log(`card : ${JSON.stringify(card)}`)
         if (include_suspended || card.queue !== -1) {
             if (card.reps > 0) {
                 lapses[card.lapses] = (lapses[card.lapses] ?? 0) + 1
@@ -52,6 +54,44 @@ export function calculateCardDataPies(
         }
     }
 
+    const load_by_reps_sorted = (cardData ?? [])
+        .filter((card) => (include_suspended || card.queue !== -1) && card.reps > 0)
+        .map((card) => [card.reps, card.ivl])
+        .map(([reps, ivl]) => [reps, 1 / ivl])
+        .sort((a, b) => a[0] - b[0])
+
+    const repetitions_bucket_count = 20
+    let repetitions_load_buckets = []
+
+    if (load_by_reps_sorted.length > 20) {
+        for (let bucket_index = 0; bucket_index < repetitions_bucket_count; bucket_index++) {
+            let bucket_max_size = Math.floor(load_by_reps_sorted.length / repetitions_bucket_count)
+            const bucket_start = bucket_index * bucket_max_size
+            const bucket_end = Math.min(
+                (bucket_index + 1) * bucket_max_size,
+                load_by_reps_sorted.length
+            )
+            const bucket_size = bucket_end - bucket_start
+            const bucket_data = load_by_reps_sorted.slice(bucket_start, bucket_end)
+            const sum_load = bucket_data
+                .map(([_, load]) => load)
+                .reduce((sum, current) => sum + current, 0)
+            const bucket_min_rep = bucket_data[0][0]
+            const bucket_max_rep = bucket_data[bucket_size - 1][0]
+            repetitions_load_buckets.push({
+                start_rep: bucket_min_rep,
+                end_rep: bucket_max_rep,
+                load: {
+                    sum: sum_load,
+                    avg: sum_load / bucket_size,
+                },
+            })
+            console.log(
+                `Bucket ${bucket_index}: ${bucket_min_rep} - ${bucket_max_rep} reps, sum load: ${sum_load}, avg load: ${sum_load / bucket_size}`
+            )
+        }
+    }
+
     if (!zero_inclusive) {
         delete lapses[0]
         delete lapses_burden[0]
@@ -75,6 +115,7 @@ export function calculateCardDataPies(
         lapses_avg_burden,
         repetitions_burden,
         repetitions_avg_burden,
+        repetitions_load_buckets,
         total_burden,
         target_R_days,
     }

@@ -28,6 +28,7 @@
         lapses_avg_burden,
         repetitions_burden,
         repetitions_avg_burden,
+        repetitions_load_buckets,
         total_burden,
         target_R_days,
     } = catchErrors(() =>
@@ -39,6 +40,8 @@
 
     let repetitions_last = 21
     let repetitions_steps = 7
+
+    let repetitions_load_buckets_count = 20
 
     let normalize_burden = false
     let cumulative_burden = false
@@ -132,14 +135,12 @@
     <GraphContainer>
         <h1>{i18n("repetition-load")}</h1>
         <IntervalGraph
-            intervals={repetitions_burden
-                .map((burden) => (normalize_burden ? (burden / total_burden) * 100 : burden))
-                .map((burden, i, last_arr) =>
-                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + burden : burden
-                )}
-            average={cumulative_burden}
+            intervals={repetitions_burden.map((burden) =>
+                normalize_burden ? (burden / total_burden) * 100 : burden
+            )}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
+            cumulative={cumulative_burden}
             pieInfo={{
                 totalDescriptor: i18n("load"),
                 countDescriptor: i18n("highest-repetition-count"),
@@ -164,14 +165,11 @@
     <GraphContainer>
         <h1>{i18n("repetition-avg-load")}</h1>
         <IntervalGraph
-            intervals={repetitions_avg_burden
-                .map((burden) =>
-                    normalize_burden ? (burden / _.sum(repetitions_avg_burden)) * 100 : burden
-                )
-                .map((burden, i, last_arr) =>
-                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + burden : burden
-                )}
+            intervals={repetitions_avg_burden.map((burden) =>
+                normalize_burden ? (burden / _.sum(repetitions_avg_burden)) * 100 : burden
+            )}
             average
+            cumulative={cumulative_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -198,12 +196,10 @@
     <GraphContainer>
         <h1>{i18n("repetition-distribution")}</h1>
         <IntervalGraph
-            intervals={repetitions
-                .map((card) => (normalize_burden ? (card / _.sum(repetitions)) * 100 : card))
-                .map((card, i, last_arr) =>
-                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + card : card
-                )}
-            average={cumulative_burden}
+            intervals={repetitions.map((card) =>
+                normalize_burden ? (card / _.sum(repetitions)) * 100 : card
+            )}
+            cumulative={cumulative_burden}
             bind:steps={repetitions_steps}
             bind:last={repetitions_last}
             pieInfo={{
@@ -227,16 +223,12 @@
     <GraphContainer>
         <h1>{i18n("repetition-load-ratio-over-card-ratio")}</h1>
         <IntervalGraph
-            intervals={repetitions
-                .map(
-                    (card, i) => repetitions_burden[i] / total_burden / (card / _.sum(repetitions))
-                )
-                .map((card, i, last_arr) =>
-                    cumulative_burden ? _.sum(last_arr.slice(1, i)) + card : card
-                )}
-            average
-            bind:steps={repetitions_steps}
-            bind:last={repetitions_last}
+            intervals={repetitions_load_buckets
+                .map((bucket) => bucket.load.sum)
+                .map((sum) => (normalize_burden ? (sum / total_burden) * 100 : sum))}
+            cumulative={cumulative_burden}
+            bind:last={repetitions_load_buckets_count}
+            zero_inclusive_option={true}
             pieInfo={{
                 countDescriptor: i18n("highest-repetition-count"),
                 legend_left: i18n("repetition-count"),

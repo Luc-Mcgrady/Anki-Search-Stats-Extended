@@ -19,6 +19,7 @@
     export let offset = 0
     export let bins = 30
     export let average = false
+    export let cumulative = false
     export let left_aligned = false
     export let limit: number = -1
     export let trend = false
@@ -82,6 +83,18 @@
                 } else {
                     bar.values = bar.values.map((a) => a / (count || 1))
                 }
+            })
+        }
+
+        console.log(`cumulative : ${cumulative}`)
+        if (cumulative) {
+            bars = bars.map((bar, i_bar) => {
+                if (i_bar > 0) {
+                    bar.values = bar.values.map(
+                        (value, i_value) => value + bars[i_bar - 1].values[i_value]
+                    )
+                }
+                return bar
             })
         }
     }
