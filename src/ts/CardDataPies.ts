@@ -54,9 +54,12 @@ export function calculateCardDataPies(
         }
     }
 
-    function getLoadByCardMetric(metric: (card: CardData) => number) {
+    function getLoadByCardMetric(metric: (card: CardData) => number, include_zero = false) {
         const load_by_value_sorted = (cardData ?? [])
-            .filter((card) => (include_suspended || card.queue !== -1) && metric(card) >= 0)
+            .filter(
+                (card) =>
+                    (include_suspended || card.queue !== -1) && (include_zero || metric(card) > 0)
+            )
             .map((card) => [metric(card), card.ivl])
             .map(([val, ivl]) => [val, 1 / ivl])
             .sort((a, b) => a[0] - b[0])
@@ -88,7 +91,7 @@ export function calculateCardDataPies(
                     },
                 })
                 console.log(
-                    `Bucket ${bucket_index}: ${bucket_min_value} - ${bucket_max_value} (${arguments.callee.name}), sum load: ${sum_load}, avg load: ${sum_load / bucket_size}`
+                    `Bucket ${bucket_index}: ${bucket_min_value} - ${bucket_max_value}, sum load: ${sum_load}, avg load: ${sum_load / bucket_size}`
                 )
             }
         }
