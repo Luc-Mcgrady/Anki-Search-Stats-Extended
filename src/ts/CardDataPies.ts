@@ -54,12 +54,9 @@ export function calculateCardDataPies(
         }
     }
 
-    function getLoadByCardMetric(metric: (card: CardData) => number, include_zero = false) {
+    function getLoadByCardMetric(metric: (card: CardData) => number) {
         const load_by_value_sorted = (cardData ?? [])
-            .filter(
-                (card) =>
-                    (include_suspended || card.queue !== -1) && (include_zero || metric(card) > 0)
-            )
+            .filter((card) => (include_suspended || card.queue !== -1) && card.reps > 0)
             .map((card) => [metric(card), card.ivl])
             .map(([val, ivl]) => [val, 1 / ivl])
             .sort((a, b) => a[0] - b[0])
@@ -99,7 +96,7 @@ export function calculateCardDataPies(
     }
 
     const repetitions_load_buckets = getLoadByCardMetric((card) => card.reps)
-    const lapses_load_buckets = getLoadByCardMetric((card) => card.lapses, true)
+    const lapses_load_buckets = getLoadByCardMetric((card) => card.lapses)
 
     if (!zero_inclusive) {
         delete lapses[0]
