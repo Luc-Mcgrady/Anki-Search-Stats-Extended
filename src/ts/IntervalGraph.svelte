@@ -16,6 +16,7 @@
 
     export let steps = 7 // For bar, scroll
     export let last = 21 // for bar, bar_size
+    export let max = 30
 
     let pieSteps = steps
     let pieLast = last
@@ -77,6 +78,7 @@
         <IntervalBar
             {intervals}
             {pieInfo}
+            bins={max}
             bind:binSize={last}
             bind:offset={steps}
             {average}

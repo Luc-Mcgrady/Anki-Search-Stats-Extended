@@ -227,7 +227,7 @@
                 .map((bucket) => bucket.load.sum)
                 .map((sum) => (normalize_burden ? (sum / total_burden) * 100 : sum))}
             cumulative={cumulative_burden}
-            bind:last={repetitions_load_buckets_count}
+            max={20}
             zero_inclusive_option={true}
             pieInfo={{
                 countDescriptor: i18n("highest-repetition-count"),
