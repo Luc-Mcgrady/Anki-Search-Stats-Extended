@@ -702,7 +702,6 @@
             <p>
                 {i18n("naive-sibling-similarity-help")}
             </p>
-            <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
         <GraphContainer>
             <h1>{i18n("rating-fatigue")}</h1>
@@ -732,7 +731,6 @@
             <p>
                 {i18n("rating-fatigue-help")}
             </p>
-            <small><Warning always>{i18n("bad-graph")}</Warning></small>
         </GraphContainer>
         {#if $memorised_stats}
             <GraphContainer>
@@ -757,7 +755,6 @@
                 <p>
                     {i18n("fsrs-loss-by-fatigue-help")}
                 </p>
-                <small><Warning always>{i18n("bad-graph")}</Warning></small>
             </GraphContainer>
         {/if}
     </GraphCategory>

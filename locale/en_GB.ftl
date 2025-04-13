@@ -367,7 +367,7 @@ leech-detector-help =
     The formula for calculating this may change in the future.
 
 # Graphs that are hidden by default, translate if you want to
-bad-graph = Bad Graph
+bad-graph = Bad Graphs
 
 naive-sibling-similarity = Naive Sibling Similarity
 naive-sibling-similarity-help = 
