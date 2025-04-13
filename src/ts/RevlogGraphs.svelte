@@ -518,11 +518,7 @@
                 <span>
                     {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
                 </span>
-                <span class="scroll">
-                    {time_machine_min}
-                    <input type="range" min={time_machine_min} max={0} bind:value={$scroll} />
-                    0
-                </span>
+                <TimeMachineScroll min={time_machine_min} />
             </label>
             <p>{i18n("difficulty-time-machine-help")}</p>
             {#if truncated}
