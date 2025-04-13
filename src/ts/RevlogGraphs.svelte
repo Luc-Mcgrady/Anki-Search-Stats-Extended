@@ -280,7 +280,7 @@
     }
 </script>
 
-<GraphCategory>
+<GraphCategory hidden_title={i18n("time-distribution")} config_name="time">
     <GraphContainer>
         <h1>{i18n("time-distribution")}</h1>
         <IntervalGraph
@@ -323,7 +323,7 @@
         </p>
     </GraphContainer>
 </GraphCategory>
-<GraphCategory>
+<GraphCategory hidden_title={i18n("introduced")} config_name="introduced">
     <GraphContainer>
         <h1>{i18n("introduced")}</h1>
         <BarScrollable
@@ -640,7 +640,7 @@
         </p>
     </GraphContainer>
 </GraphCategory>
-<GraphCategory>
+<GraphCategory hidden_title={i18n("card-count-time-machine")} config_name="time-machine">
     <GraphContainer>
         <h1>{i18n("card-count-time-machine")}</h1>
         <Pie

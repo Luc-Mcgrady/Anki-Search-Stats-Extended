@@ -147,7 +147,7 @@
             </p>
         </GraphContainer>
     </GraphCategory>
-    <GraphCategory>
+    <GraphCategory hidden_title={i18n("interval-distribution")} config_name="interval">
         <GraphContainer>
             <h1>{i18n("interval-distribution")}</h1>
             <IntervalGraph {intervals} bind:last={interval_last} bind:steps={interval_steps} />

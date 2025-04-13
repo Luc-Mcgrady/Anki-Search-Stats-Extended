@@ -2,6 +2,7 @@
     let hidden = false
     // If falsy, Disables hide button
     export let hidden_title = ""
+    export let config_name = ""
 </script>
 
 <div class={`separator ${hidden ? "hidden" : ""}`}>
