@@ -4,14 +4,15 @@
     export let hidden_title = ""
 </script>
 
-<div class="separator">
+<div class={`separator ${hidden ? "hidden" : ""}`}>
     {#if hidden_title}
         <button
+            class="btn"
             on:click={() => {
                 hidden = !hidden
             }}
         >
-            {">"}
+            &gt;
         </button>
         {#if hidden}
             <h3>{hidden_title}...</h3>
@@ -29,23 +30,31 @@
     div.separator {
         display: flex;
         align-items: center;
-        font-weight: 900;
-        font-size: xx-large;
         opacity: 0.5;
     }
 
     div button,
     div button:hover {
+        font-weight: 900;
+        font-size: xx-large;
+
         background: none;
         border: none;
         border-radius: none;
+
+        transform: rotate(90deg);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    div.hidden button {
+        transform: rotate(0deg);
     }
 
     span,
     button,
     hr,
     h3 {
-        margin: 1rem;
+        margin: 1rem 0.5rem;
     }
 
     hr {
