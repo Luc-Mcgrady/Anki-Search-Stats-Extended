@@ -98,5 +98,12 @@ def revlogs() -> bytes:
     revlogs = [{k.replace("revlog.", ""): v for k, v in zip(REVLOG_COLUMNS, a)} for a in revlogs]
     return Response(json.dumps(revlogs))
 
-
 post_handlers["revlogs"] = revlogs
+
+def write_config():
+    req = json.loads(request.data)
+    config = mw.addonManager.getConfig(__name__)
+    config[req["key"]] = req["value"]
+    mw.addonManager.writeConfig(__name__, config)
+
+post_handlers["writeConfig"] = write_config
