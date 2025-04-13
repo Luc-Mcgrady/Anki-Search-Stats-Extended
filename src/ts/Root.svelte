@@ -71,7 +71,7 @@
 <h1>{i18n("title-search-stats-extended")}</h1>
 
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>
-    <GraphCategory>
+    <GraphCategory hidden_title={i18n("future-due-types")} config_name="due">
         <GraphContainer>
             <h1>{i18n("future-due-types")}</h1>
             {#if $data?.futureDue && $learn_data?.futureDue && $mature_data?.futureDue && $relearn_data?.futureDue}
@@ -114,6 +114,8 @@
                 {i18n("intra-day-due-help")}
             </p>
         </GraphContainer>
+    </GraphCategory>
+    <GraphCategory hidden_title={i18n("todays-retention")} config_name="misc">
         <GraphContainer>
             <h1>{i18n("todays-retention")}</h1>
             {#if false && $data?.trueRetention}

@@ -11,6 +11,8 @@
     "forceLang": null,
     "graphMode": "Pie",
     "categories": {
+        "due": true,
+        "misc": true,
         "interval": false,
         "lapse": false,
         "repetition": false,
