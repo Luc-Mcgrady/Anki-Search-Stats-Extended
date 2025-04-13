@@ -1,19 +1,26 @@
 <script lang="ts">
     let hidden = false
+    // If falsy, Disables hide button
+    export let hidden_title = ""
 </script>
 
 <div class="separator">
-    <button
-        on:click={() => {
-            hidden = !hidden
-        }}
-    >
-        {">"}
-    </button>
+    {#if hidden_title}
+        <button
+            on:click={() => {
+                hidden = !hidden
+            }}
+        >
+            {">"}
+        </button>
+        {#if hidden}
+            <h3>{hidden_title}...</h3>
+        {/if}
+    {/if}
     <hr />
 </div>
 <div class="category">
-    {#if !hidden}
+    {#if !hidden || !hidden_title}
         <slot />
     {/if}
 </div>
@@ -24,14 +31,17 @@
         align-items: center;
         font-weight: 900;
         font-size: xx-large;
+        opacity: 0.5;
     }
 
-    span {
-        margin: 0.5em;
+    span,
+    h3 {
+        margin: 1rem;
     }
 
     hr {
         flex-grow: 1;
+        opacity: 1;
     }
 
     // Copied from anki/ts/graphs/GraphsPage.svelte
