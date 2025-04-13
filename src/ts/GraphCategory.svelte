@@ -1,8 +1,11 @@
 <script lang="ts">
-    let hidden = false
+    import { shownCategories } from "./stores"
+
     // If falsy, Disables hide button
     export let hidden_title = ""
     export let config_name = ""
+
+    let hidden = !SSEconfig?.categories?.[config_name]
 </script>
 
 <div class={`separator ${hidden ? "hidden" : ""}`}>
@@ -11,6 +14,7 @@
             class="btn"
             on:click={() => {
                 hidden = !hidden
+                $shownCategories[config_name] = hidden
             }}
         >
             &gt;

@@ -9,5 +9,13 @@
     "trends": true,
     "badGraphs": false,
     "forceLang": null,
-    "graphMode" : "Pie"
+    "graphMode": "Pie",
+    "categories": {
+        "interval": false,
+        "lapse": false,
+        "repetition": false,
+        "time": false,
+        "introduced": true,
+        "time_machine": true
+    } 
 }

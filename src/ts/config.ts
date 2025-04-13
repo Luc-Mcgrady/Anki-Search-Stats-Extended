@@ -9,6 +9,7 @@ export type SSEconfig = Partial<{
     trends: boolean
     badGraphs: boolean
     graphMode: "Bar" | "Pie"
+    categories: Record<string, boolean>
 }>
 
 export type DeckConfig = {

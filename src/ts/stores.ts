@@ -2,7 +2,7 @@ import { derived, get, writable } from "svelte/store"
 import type { SSEconfig, SSEother } from "./config"
 import type { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-import { getRevlogs, type CardData, type Revlog } from "./search"
+import { getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
 
 // Data related
@@ -29,6 +29,9 @@ export let graph_mode = writable<"Bar" | "Pie">("Pie")
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)
+export let shownCategories = writable(SSEconfig.categories ?? {})
+
+shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
 
 // Revlog graph specific stores
 export let pieLast = writable(59)
