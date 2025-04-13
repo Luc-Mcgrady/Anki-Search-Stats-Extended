@@ -34,7 +34,16 @@
         opacity: 0.5;
     }
 
+    div button,
+    div button:hover {
+        background: none;
+        border: none;
+        border-radius: none;
+    }
+
     span,
+    button,
+    hr,
     h3 {
         margin: 1rem;
     }
