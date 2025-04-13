@@ -21,6 +21,6 @@
         "rating": true,
         "load": true,
         "introduced": true,
-        "time_machine": true
+        "timeMachine": true
     } 
 }

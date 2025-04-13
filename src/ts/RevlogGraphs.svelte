@@ -576,7 +576,7 @@
         {/if}
     </GraphContainer>
 </GraphCategory>
-<GraphCategory hidden_title={i18n("card-count-time-machine")} config_name="time-machine">
+<GraphCategory hidden_title={i18n("card-count-time-machine")} config_name="timeMachine">
     <GraphContainer>
         <h1>{i18n("card-count-time-machine")}</h1>
         <Pie
