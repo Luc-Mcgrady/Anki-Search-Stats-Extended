@@ -15,6 +15,9 @@
         "lapse": false,
         "repetition": false,
         "time": false,
+        "fsrs": true,
+        "rating": true,
+        "load": true,
         "introduced": true,
         "time_machine": true
     } 
