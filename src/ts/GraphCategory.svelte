@@ -1,13 +1,41 @@
-<script lang="ts"></script>
+<script lang="ts">
+    let hidden = false
+</script>
 
-<hr />
-<div>
-    <slot />
+<div class="separator">
+    <button
+        on:click={() => {
+            hidden = !hidden
+        }}
+    >
+        {">"}
+    </button>
+    <hr />
+</div>
+<div class="category">
+    {#if !hidden}
+        <slot />
+    {/if}
 </div>
 
 <style lang="scss">
+    div.separator {
+        display: flex;
+        align-items: center;
+        font-weight: 900;
+        font-size: xx-large;
+    }
+
+    span {
+        margin: 0.5em;
+    }
+
+    hr {
+        flex-grow: 1;
+    }
+
     // Copied from anki/ts/graphs/GraphsPage.svelte
-    div {
+    div.category {
         display: grid;
         gap: 1em;
         grid-template-columns: repeat(3, minmax(0, 1fr));
