@@ -732,9 +732,9 @@
                 {i18n("rating-fatigue-help")}
             </p>
         </GraphContainer>
-        {#if $memorised_stats}
-            <GraphContainer>
-                <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
+        <GraphContainer>
+            <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
+            {#if $memorised_stats}
                 <BarScrollable
                     bind:binSize={fatigue_bin_size}
                     data={{
@@ -752,11 +752,13 @@
                     trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
                 ></BarScrollable>
                 <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
-                <p>
-                    {i18n("fsrs-loss-by-fatigue-help")}
-                </p>
-            </GraphContainer>
-        {/if}
+            {:else}
+                <MemorisedCalculator />
+            {/if}
+            <p>
+                {i18n("fsrs-loss-by-fatigue-help")}
+            </p>
+        </GraphContainer>
     </GraphCategory>
 {/if}
 
