@@ -14,7 +14,7 @@
             class="btn"
             on:click={() => {
                 hidden = !hidden
-                $shownCategories[config_name] = hidden
+                $shownCategories[config_name] = !hidden
             }}
         >
             &gt;
