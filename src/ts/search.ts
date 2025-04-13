@@ -1,5 +1,3 @@
-import { realFetch } from "./root"
-
 export function catchErrors<Return>(func: () => Return): Return {
     try {
         return func()
@@ -15,7 +13,7 @@ ${e?.stack ? e.stack : e}`)
 }
 
 async function endpoint(endpoint: string, body?: string) {
-    const resp = await realFetch(`/_anki/${endpoint}`, {
+    const resp = await fetch(`/_anki/${endpoint}`, {
         method: "POST",
         body,
         headers: { "Content-Type": "application/binary" },
