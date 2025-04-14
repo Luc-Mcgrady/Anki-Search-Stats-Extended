@@ -15,6 +15,7 @@ export function dayFromMs(ms: number) {
 }
 
 export const today = dayFromMs(Date.now())
+export const no_rollover_today = Math.floor(Date.now() / day_ms)
 
 interface SiblingReview {
     cid: number
@@ -109,6 +110,7 @@ export function calculateRevlogStats(
 
     for (const revlog of revlogData) {
         const day = dayFromMs(revlog.id)
+        const no_rollover_day = Math.floor(revlog.id / day_ms)
         const hour = Math.floor(((revlog.id - timezone_offset_ms) % day_ms) / (60 * 60 * 1000))
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
@@ -119,11 +121,13 @@ export function calculateRevlogStats(
         // Check for reschedules
         if (revlog.time != 0) {
             if (revlog.type < 3) {
-                day_review_hours[day] ??= Array(24).fill(0)
-                day_review_hours[day][hour] = day_review_hours[day][hour] + 1
+                day_review_hours[no_rollover_day] ??= Array(24).fill(0)
+                day_review_hours[no_rollover_day][hour] =
+                    day_review_hours[no_rollover_day][hour] + 1
             }
-            day_filtered_review_hours[day] ??= Array(24).fill(0)
-            day_filtered_review_hours[day][hour] = day_filtered_review_hours[day][hour] + 1
+            day_filtered_review_hours[no_rollover_day] ??= Array(24).fill(0)
+            day_filtered_review_hours[no_rollover_day][hour] =
+                day_filtered_review_hours[no_rollover_day][hour] + 1
 
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
