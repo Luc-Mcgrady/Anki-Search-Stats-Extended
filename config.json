@@ -7,7 +7,6 @@
     "piePercentages": false,
     "warnings": true,
     "trends": true,
-    "badGraphs": false,
     "forceLang": null,
     "graphMode": "Pie",
     "categories": {
@@ -21,6 +20,7 @@
         "rating": true,
         "load": true,
         "introduced": true,
-        "timeMachine": true
+        "timeMachine": true,
+        "bad": "removed"
     } 
 }
