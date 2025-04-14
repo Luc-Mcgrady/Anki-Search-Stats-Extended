@@ -68,9 +68,9 @@
     }
 </script>
 
-<h1>{i18n("title-search-stats-extended")}</h1>
-
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>
+    <hr />
+    <h1 class="header">{i18n("title-search-stats-extended")}</h1>
     <GraphCategory hidden_title={i18n("future-due-types")} config_name="due">
         <GraphContainer>
             <h1>{i18n("future-due-types")}</h1>
@@ -174,7 +174,7 @@
                 addedCards={$data.added.added}
             />
         {:else}
-            <h1>{i18n("preparing-review-stats")}</h1>
+            <h1 class="header">{i18n("preparing-review-stats")}</h1>
         {/if}
     {:else}
         <GraphCategory>
@@ -211,6 +211,10 @@
 </div>
 
 <style lang="scss">
+    h1.header {
+        margin: 1.5rem;
+    }
+
     div.tooltip {
         position: absolute;
         opacity: 0;
