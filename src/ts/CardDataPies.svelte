@@ -34,7 +34,7 @@
     $: $target_R_days_values = $data ? target_R_days : []
 </script>
 
-<GraphCategory>
+<GraphCategory hidden_title={i18n("lapse-distribution")} config_name="lapse">
     <GraphContainer>
         <h1>{i18n("lapse-load")}</h1>
         <IntervalGraph
@@ -95,7 +95,7 @@
         </p>
     </GraphContainer>
 </GraphCategory>
-<GraphCategory>
+<GraphCategory hidden_title={i18n("repetition-distribution")} config_name="repetition">
     <!-- Repetition  -->
     <GraphContainer>
         <h1>{i18n("repetition-load")}</h1>

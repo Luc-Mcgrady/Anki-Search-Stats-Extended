@@ -1,13 +1,76 @@
-<script lang="ts"></script>
+<script lang="ts">
+    import { shownCategories } from "./stores"
 
-<hr />
-<div>
-    <slot />
-</div>
+    // If falsy, Disables hide button
+    export let hidden_title = ""
+    export let config_name = ""
+
+    let hidden = !SSEconfig?.categories?.[config_name]
+</script>
+
+{#if SSEconfig?.categories?.[config_name] !== "removed"}
+    <div class={`separator ${hidden ? "hidden" : ""}`}>
+        {#if hidden_title}
+            <button
+                class="btn"
+                on:click={() => {
+                    hidden = !hidden
+                    $shownCategories[config_name] = !hidden
+                }}
+            >
+                &gt;
+            </button>
+            {#if hidden}
+                <h3>{hidden_title}...</h3>
+            {/if}
+        {/if}
+        <hr />
+    </div>
+    <div class="category">
+        {#if !hidden || !hidden_title}
+            <slot />
+        {/if}
+    </div>
+{/if}
 
 <style lang="scss">
+    div.separator {
+        display: flex;
+        align-items: center;
+        opacity: 0.5;
+    }
+
+    div button,
+    div button:hover {
+        font-weight: 900;
+        font-size: xx-large;
+
+        background: none;
+        border: none;
+        border-radius: none;
+
+        transform: rotate(90deg);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    div.hidden button {
+        transform: rotate(0deg);
+    }
+
+    span,
+    button,
+    hr,
+    h3 {
+        margin: 1rem 0.5rem;
+    }
+
+    hr {
+        flex-grow: 1;
+        opacity: 1;
+    }
+
     // Copied from anki/ts/graphs/GraphsPage.svelte
-    div {
+    div.category {
         display: grid;
         gap: 1em;
         grid-template-columns: repeat(3, minmax(0, 1fr));

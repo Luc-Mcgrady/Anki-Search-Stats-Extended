@@ -7,7 +7,20 @@
     "piePercentages": false,
     "warnings": true,
     "trends": true,
-    "badGraphs": false,
     "forceLang": null,
-    "graphMode" : "Pie"
+    "graphMode": "Pie",
+    "categories": {
+        "due": true,
+        "misc": true,
+        "interval": false,
+        "lapse": false,
+        "repetition": false,
+        "time": false,
+        "fsrs": true,
+        "rating": true,
+        "load": true,
+        "introduced": true,
+        "timeMachine": true,
+        "bad": "removed"
+    } 
 }
