@@ -22,6 +22,7 @@
         calculateRevlogStats,
         day_ms,
         easeBarChart,
+        no_rollover_today,
         today,
         type RevlogBuckets,
     } from "./revlogGraphs"
@@ -184,8 +185,8 @@
     let range = 7
     let filtered = false
 
-    $: hours_begin = today + realScroll - range + 1
-    $: hours_end = today + realScroll + 1
+    $: hours_begin = no_rollover_today + realScroll - range + 1
+    $: hours_end = no_rollover_today + realScroll + 2
     $: day_range = filtered
         ? day_filtered_review_hours.slice(hours_begin, hours_end)
         : day_review_hours.slice(hours_begin, hours_end)
