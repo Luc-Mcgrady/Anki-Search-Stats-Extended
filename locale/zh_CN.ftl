@@ -169,7 +169,7 @@ lapse-load-help =
 lapse-distribution = 遗忘分布
 lapse-distribution-help = 
     当非“学习中”状态的卡片被“重来”时，遗忘次数+1。
-    默认7次遗忘会标记为"记忆难点"，可在牌组设置的"记忆难点阈值"修改。
+    默认8次遗忘会标记为"记忆难点"，可在牌组设置的"记忆难点阈值"修改。
 
 lapse-total = 遗忘总数
 lapse-total-help = 
