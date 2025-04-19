@@ -227,7 +227,7 @@ introduced-truncated-warning =
     截止日期前的重新学习不生效。
 
 forgotten = 已遗忘
-forgotten-help = 手动标记为"新卡片"即视为遗忘。
+forgotten-help = 手动标记为“新卡片”即视为遗忘。
 forgotten-truncated-warning = 截止日期前的遗忘不生效。
 forgotten-cards-not-yet-reintroduced = 未重新学习的遗忘卡片: {$number}
 
