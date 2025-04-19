@@ -81,11 +81,11 @@ next-card-at = 下一张卡片将在{ $hours ->
         [0] {""}
         [one] {" "}{ $hours }小时
         *[many] {" "}{ $hours }小时
-    } { $minutes ->
+    }{ $minutes ->
         [0] {""}
         [one] { $minutes }分钟
         *[many] { $minutes }分钟
-    } 后于 {$time} 准备好
+    } 后（{$time}）准备好
 
 todays-retention = 今日记忆保留率
 todays-retention-help = 
