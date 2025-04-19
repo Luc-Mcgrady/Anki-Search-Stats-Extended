@@ -257,7 +257,7 @@ memorised-truncated-warning =
     该图表重新模拟了您的复习历史，忽略开头部分会显著影响模拟结果。
     
 retrievability-and-stability = 记忆可提取性和稳定期
-cards-and-stability = 稳定的卡片
+cards-and-stability = 卡片和稳定期
 
 # Between Minus Within? If I'm honest I have no idea what this stands for.
 b-w-matrix = B-W矩阵
