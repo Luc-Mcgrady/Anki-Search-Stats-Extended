@@ -27,15 +27,19 @@
             {/if}
             <hr />
         </div>
-        <div class="category">
-            {#if !hidden || !hidden_title}
-                <slot />
-            {/if}
-        </div>
     </label>
+    <div class="category">
+        {#if !hidden || !hidden_title}
+            <slot />
+        {/if}
+    </div>
 {/if}
 
 <style lang="scss">
+    label {
+        display: contents;
+    }
+
     div.separator {
         display: flex;
         align-items: center;
