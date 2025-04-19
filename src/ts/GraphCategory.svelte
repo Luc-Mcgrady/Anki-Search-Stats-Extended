@@ -9,28 +9,30 @@
 </script>
 
 {#if SSEconfig?.categories?.[config_name] !== "removed"}
-    <div class={`separator ${hidden ? "hidden" : ""}`}>
-        {#if hidden_title}
-            <button
-                class="btn"
-                on:click={() => {
-                    hidden = !hidden
-                    $shownCategories[config_name] = !hidden
-                }}
-            >
-                &gt;
-            </button>
-            {#if hidden}
-                <h3>{hidden_title}...</h3>
+    <label>
+        <div class={`separator ${hidden ? "hidden" : ""}`}>
+            {#if hidden_title}
+                <button
+                    class="btn"
+                    on:click={() => {
+                        hidden = !hidden
+                        $shownCategories[config_name] = !hidden
+                    }}
+                >
+                    &gt;
+                </button>
+                {#if hidden}
+                    <h3>{hidden_title}...</h3>
+                {/if}
             {/if}
-        {/if}
-        <hr />
-    </div>
-    <div class="category">
-        {#if !hidden || !hidden_title}
-            <slot />
-        {/if}
-    </div>
+            <hr />
+        </div>
+        <div class="category">
+            {#if !hidden || !hidden_title}
+                <slot />
+            {/if}
+        </div>
+    </label>
 {/if}
 
 <style lang="scss">
