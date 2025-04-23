@@ -260,7 +260,7 @@ export function calculateRevlogStats(
         intervals,
         day_review_hours,
         day_filtered_review_hours,
-        learn_steps_per_card,
+        learn_steps_per_card: Object.values(learn_steps_per_card),
     }
 }
 

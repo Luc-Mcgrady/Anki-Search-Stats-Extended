@@ -241,7 +241,7 @@
         columnLabeler: barStringLabeler(i18n_pattern("difficulty-of")),
     }
 
-    $: learn_repetitions = Object.values(learn_steps_per_card).reduce(
+    $: learn_repetitions = learn_steps_per_card.reduce(
         (p, n) => {
             p[n] = (p[n] ?? 0) + 1
             return p
@@ -503,6 +503,8 @@
                 spectrumTo: "#0b4f99",
             }}
         />
+        <span>Mean = {d3.mean(learn_steps_per_card)}</span>
+        <span>Median = {d3.quantile(learn_steps_per_card, 0.5)}</span>
         <p>{i18n("learn-repetition-distribution-help")}</p>
     </GraphContainer>
 </GraphCategory>
