@@ -62,6 +62,7 @@
         interval_ease,
         day_review_hours,
         day_filtered_review_hours,
+        learn_steps_per_card,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -239,6 +240,14 @@
         barWidth: 10 / difficulty_bins.length + 1,
         columnLabeler: barStringLabeler(i18n_pattern("difficulty-of")),
     }
+
+    $: learn_repetitions = Object.values(learn_steps_per_card).reduce(
+        (p, n) => {
+            p[n] = (p[n] ?? 0) + 1
+            return p
+        },
+        {} as Record<number, number>
+    )
 
     let include_reintroduced = true
     $: truncated = $searchLimit !== 0
@@ -481,6 +490,20 @@
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("learn-repetition-distribution")}</h1>
+        <IntervalGraph
+            intervals={learn_repetitions}
+            pieInfo={{
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-count"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <p>{i18n("learn-repetition-distribution-help")}</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
