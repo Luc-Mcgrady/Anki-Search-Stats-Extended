@@ -39,9 +39,14 @@ export function getMemorisedDays(
     function getFsrs(config: DeckConfig) {
         const id = config.id
         if (!deckFsrs[id]) {
+            console.log(config.fsrsParams6)
             deckFsrs[id] = Fsrs(
                 generatorParameters({
-                    w: config.fsrsParams5 ? config.fsrsParams5 : config.fsrsWeights,
+                    w: config.fsrsParams6
+                        ? config.fsrsParams6
+                        : config.fsrsParams5
+                          ? config.fsrsParams5
+                          : config.fsrsWeights,
                     enable_fuzz: false,
                     enable_short_term: true,
                 })
