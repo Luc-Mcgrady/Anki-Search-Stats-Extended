@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { FSRS, FSRSVersion, generatorParameters } from "ts-fsrs"
-import { historicalFSRS, type HistoricalRevlog } from "ts-fsrs-memorized"
+import { historicalFSRS, type HistoricalReviewLog } from "ts-fsrs-memorized"
 import type { CardData, Revlog } from "./search"
 
 export interface LossBin {
@@ -19,7 +19,7 @@ export function getMemorisedDays(
 ) {
     console.log(`ts-fsrs ${FSRSVersion}`)
 
-    let historicalRevlogs: HistoricalRevlog[] = revlogs
+    let historicalRevlogs: HistoricalReviewLog[] = revlogs
         .filter((revlog) => {
             return !(
                 (revlog.ease == 0 && revlog.ivl != 0) ||
@@ -30,7 +30,7 @@ export function getMemorisedDays(
             const rating = revlog.ease != 0 ? revlog.ease : -1
             return {
                 rating,
-                time: new Date(revlog.id),
+                review: new Date(revlog.id),
                 cid: revlog.cid,
             }
         })
