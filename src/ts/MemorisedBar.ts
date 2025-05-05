@@ -47,10 +47,10 @@ export function getMemorisedDays(
     )
 
     let historicalCards = Object.fromEntries(
-        cards.map((card) => [card.id, { fsrs: presetFsrs[config_mapping[card.did]] }])
-    )
+        cards.map((card) => [card.id, presetFsrs[config_mapping[card.did]]])
+    ) as Record<number, FSRS>
 
-    let { sumR } = historicalFSRS(historicalRevlogs, historicalCards)
+    let { historicalRetention } = historicalFSRS(historicalRevlogs, historicalCards)
 
     const bw_matrix = <number[]>[]
     const stable_retrievability_days = <number[]>[]
@@ -61,7 +61,7 @@ export function getMemorisedDays(
     const difficulty_day_bins = <number[]>[]
 
     return {
-        retrievabilityDays: sumR,
+        retrievabilityDays: historicalRetention,
         stable_retrievability_days,
         fatigueRMSE: [],
         bw_matrix,
