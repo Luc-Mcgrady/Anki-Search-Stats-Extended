@@ -16,6 +16,7 @@
     enum MemorisedType {
         RETRIEVABILITY,
         STABLE_RETRIEVABILITY,
+        AVERAGE,
     }
 
     let memorised_type: MemorisedType = MemorisedType.RETRIEVABILITY
@@ -61,6 +62,14 @@
     $: if (svg && bw_matrix) {
         matrix({ grid: bw_matrix, hoverTooltip }, svg)
     }
+
+    let average_r = <number[]>[]
+    $: if ($memorised_stats?.totalCards) {
+        average_r = _.zip(retrievabilityDays, $memorised_stats.totalCards).map(([r, c]) => {
+            console.log({ r, c })
+            return (r ?? 0) / (c ?? 1)
+        })
+    }
 </script>
 
 {#if $memorised_stats}
@@ -70,8 +79,10 @@
             label={i18n("cards-and-stability")}
             bind:trend_data
         />
-    {:else}
+    {:else if memorised_type == MemorisedType.RETRIEVABILITY}
         <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
+    {:else}
+        <LineOrCandlestick data={average_r} label={i18n("retrievability")} bind:trend_data />
     {/if}
     <TrendValue info={trend_info} trend={trend_data} n={$binSize} />
     <div>
@@ -86,6 +97,10 @@
                 bind:group={memorised_type}
             />
             {i18n("retrievability-and-stability")}
+        </label>
+        <label>
+            <input type="radio" value={MemorisedType.AVERAGE} bind:group={memorised_type} />
+            {i18n("average-retention-per-card")}
         </label>
     </div>
 {:else}

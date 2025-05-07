@@ -51,6 +51,7 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let totalCards: number[] = []
     let stable_retrievability_days: number[] = []
 
     function card_config(cid: number) {
@@ -68,6 +69,7 @@ export function getMemorisedDays(
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
+            totalCards[day] = (totalCards[day] | 0) + 1
             // If the cards not been forgotten
             if (card.stability) {
                 const stability_bin = Math.round(s)
@@ -282,6 +284,7 @@ export function getMemorisedDays(
 
     return {
         retrievabilityDays,
+        totalCards,
         stable_retrievability_days,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,
