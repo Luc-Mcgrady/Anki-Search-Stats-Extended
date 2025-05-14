@@ -492,7 +492,7 @@
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>{i18n("learn-repetition-distribution")}</h1>
+        <h1>{i18n("learn-reviews-per-card")}</h1>
         <IntervalGraph
             intervals={learn_repetitions}
             pieInfo={{
@@ -503,9 +503,9 @@
                 spectrumTo: "#0b4f99",
             }}
         />
-        <span>Mean = {d3.mean(learn_steps_per_card)}</span>
-        <span>Median = {d3.quantile(learn_steps_per_card, 0.5)}</span>
-        <p>{i18n("learn-repetition-distribution-help")}</p>
+        <span>{i18n("mean")} = {d3.mean(learn_steps_per_card)?.toPrecision(2)}</span>
+        <span>{i18n("median")} = {d3.quantile(learn_steps_per_card, 0.5)}</span>
+        <p>{i18n("learn-reviews-per-card-help")}</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
