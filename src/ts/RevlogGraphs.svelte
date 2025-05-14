@@ -15,7 +15,7 @@
     import _, { size } from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
-    import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
+    import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barHourLabeler, barStringLabeler, type BarChart } from "./bar"
     import {
@@ -112,7 +112,8 @@
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
-    $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21)) || 0
+    $: time_machine_learn = time_machine_intervals[0] || 0
+    $: time_machine_young = _.sum(time_machine_intervals.slice(1, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
     $: time_machine_suspended = time_machine_intervals[-1] ?? 0
     $: time_machine_added = Object.entries(addedCards).reduce(
@@ -148,6 +149,11 @@
             label: i18n("young-count"),
             value: time_machine_young,
             colour: YOUNG_COLOUR,
+        },
+        {
+            label: i18n("learning-count"),
+            value: time_machine_learn,
+            colour: LEARN_COLOUR,
         },
         {
             label: i18n("suspended"),
