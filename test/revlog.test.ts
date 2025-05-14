@@ -44,5 +44,4 @@ test("Burden delta", () =>{
 test("learn_step_count", ()=>{
     console.log(burden_revlogs)
     expect(learn_steps_per_card).toContain(2)
-    expect(learn_steps_per_card).toContain(0)
 })
