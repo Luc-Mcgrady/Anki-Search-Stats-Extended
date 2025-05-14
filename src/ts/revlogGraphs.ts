@@ -102,7 +102,7 @@ export function calculateRevlogStats(
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
 
-    let learn_steps_per_card: Record<number, number> = _.mapValues(id_card_data, ()=>0)
+    let learn_steps_per_card: Record<number, number> = _.mapValues(id_card_data, () => 0)
 
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
