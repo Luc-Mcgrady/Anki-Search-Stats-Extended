@@ -62,6 +62,7 @@
         interval_ease,
         day_review_hours,
         day_filtered_review_hours,
+        learn_steps_per_card,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -239,6 +240,14 @@
         barWidth: 10 / difficulty_bins.length + 1,
         columnLabeler: barStringLabeler(i18n_pattern("difficulty-of")),
     }
+
+    $: learn_repetitions = learn_steps_per_card.reduce(
+        (learn_repetitions, count) => {
+            learn_repetitions[count] = (learn_repetitions[count] ?? 0) + 1
+            return learn_repetitions
+        },
+        {} as Record<number, number>
+    )
 
     let include_reintroduced = true
     $: truncated = $searchLimit !== 0
@@ -481,6 +490,22 @@
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("learn-reviews-per-card")}</h1>
+        <IntervalGraph
+            intervals={learn_repetitions}
+            pieInfo={{
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-count"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <span>{i18n("mean")} = {d3.mean(learn_steps_per_card)?.toPrecision(2)}</span>
+        <span>{i18n("median")} = {d3.quantile(learn_steps_per_card, 0.5)}</span>
+        <p>{i18n("learn-reviews-per-card-help")}</p>
     </GraphContainer>
 </GraphCategory>
 <GraphCategory hidden_title="FSRS" config_name="fsrs">

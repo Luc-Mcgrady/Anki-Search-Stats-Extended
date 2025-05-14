@@ -241,6 +241,9 @@ load-trend-help =
 x-change = Change: {$val}
 x-total = Total: {$val}
 
+learn-reviews-per-card = Learn Reviews per Card
+learn-reviews-per-card-help = The number of reviews it took before the card left the learning phase (graduated). Resets for cards which were forgotten.
+
 ratings = Ratings
 ratings-help = 
     The rating of every review you did that day, learning or otherwise. The ratio displays it as a percent of all cards reviewed that day. calculate (1-again)% to get your retention for that day (shown as " % Correct " in the tooltip).

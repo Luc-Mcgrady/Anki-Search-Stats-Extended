@@ -102,6 +102,8 @@ export function calculateRevlogStats(
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
 
+    let learn_steps_per_card: Record<number, number> = {}
+
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
         ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
@@ -124,6 +126,10 @@ export function calculateRevlogStats(
                 day_review_hours[no_rollover_day] ??= Array(24).fill(0)
                 day_review_hours[no_rollover_day][hour] =
                     day_review_hours[no_rollover_day][hour] + 1
+
+                if (revlog.type == 0) {
+                    learn_steps_per_card[revlog.cid] = (learn_steps_per_card[revlog.cid] ?? 0) + 1
+                }
             }
             day_filtered_review_hours[no_rollover_day] ??= Array(24).fill(0)
             day_filtered_review_hours[no_rollover_day][hour] =
@@ -172,6 +178,7 @@ export function calculateRevlogStats(
             forgotten.add(revlog.cid)
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
+                delete learn_steps_per_card[revlog.cid]
             }
         } else if (!introduced.has(revlog.cid) && revlog.ivl != 0) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
@@ -252,6 +259,7 @@ export function calculateRevlogStats(
         intervals,
         day_review_hours,
         day_filtered_review_hours,
+        learn_steps_per_card: Object.values(learn_steps_per_card),
     }
 }
 
