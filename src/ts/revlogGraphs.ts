@@ -196,12 +196,12 @@ export function calculateRevlogStats(
         const next_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
         let ivl = next_review ? revlog.ivl : card.ivl
+        // Ignore "forgets"
         if (revlog.ivl == 0 || (!next_review && card.queue == 0)) {
             last_cids[revlog.cid] = revlog
             return undefined
         }
-        // Ignore "forgets"
-        ivl = ivl > 0 ? ivl : 1
+        ivl = ivl > 0 ? ivl : 0
 
         // If the card is suspended
         if (!next_review && card.queue == -1) {
