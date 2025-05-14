@@ -243,10 +243,7 @@
 
     $: learn_repetitions = learn_steps_per_card.reduce(
         (learn_repetitions, count) => {
-            // Filter unlearned cards
-            if (count) {
-                learn_repetitions[count] = (learn_repetitions[count] ?? 0) + 1
-            }
+            learn_repetitions[count] = (learn_repetitions[count] ?? 0) + 1
             return learn_repetitions
         },
         {} as Record<number, number>

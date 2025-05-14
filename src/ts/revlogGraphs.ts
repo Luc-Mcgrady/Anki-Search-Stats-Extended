@@ -102,7 +102,7 @@ export function calculateRevlogStats(
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
 
-    let learn_steps_per_card: Record<number, number> = _.mapValues(id_card_data, () => 0)
+    let learn_steps_per_card: Record<number, number> = {}
 
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
@@ -178,7 +178,7 @@ export function calculateRevlogStats(
             forgotten.add(revlog.cid)
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
-                learn_steps_per_card[revlog.cid] = 0
+                delete learn_steps_per_card[revlog.cid]
             }
         } else if (!introduced.has(revlog.cid) && revlog.ivl != 0) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
