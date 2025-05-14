@@ -186,30 +186,29 @@ export function calculateRevlogStats(
             reintroduced.add(revlog.cid)
             forgotten.delete(revlog.cid)
         }
-        if (card) {
-            if (revlog.ivl >= 0 || card.ivl < 0) {
-                burden_revlogs.push(revlog)
-            }
-        }
     }
 
     // "reduceRight" Used here to iterate backwards, never returns true
-    burden_revlogs.reduceRight((_p, revlog) => {
+    revlogData.reduceRight((_p, revlog) => {
         const day = dayFromMs(revlog.id)
-        const current = id_card_data[revlog.cid]
+        const card = id_card_data[revlog.cid]
 
-        const after_review = last_cids[revlog.cid]
-
+        const next_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
-        let ivl = after_review ? revlog.ivl : current.ivl
-        ivl = ivl >= 0 ? ivl : 1
+        let ivl = next_review ? revlog.ivl : card.ivl
+        if (revlog.ivl == 0 || (!next_review && card.queue == 0)) {
+            last_cids[revlog.cid] = revlog
+            return undefined
+        }
+        // Ignore "forgets"
+        ivl = ivl > 0 ? ivl : 1
 
         // If the card is suspended
-        if (!after_review && current.queue == -1) {
+        if (!next_review && card.queue == -1) {
             ivl = -1
         }
 
-        let to = after_review ? dayFromMs(after_review.id) : end + 1
+        let to = next_review ? dayFromMs(next_review.id) : end + 1
 
         for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
@@ -225,8 +224,7 @@ export function calculateRevlogStats(
         if (!v) {
             return 0
         } else {
-            delete v[0]
-            return _.sum(v.map((val, ivl) => val / ivl)) ?? 0
+            return _.sum(v.map((val, ivl) => val / (ivl || 1))) ?? 0
         }
     })
 
