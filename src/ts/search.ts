@@ -51,6 +51,7 @@ export interface CardData {
     ord: number
     mod: number
     usn: number
+    // https://github.com/ankitects/anki/blob/main/pylib/anki/consts.py#L22-L29
     type: number
     queue: number
     due: number

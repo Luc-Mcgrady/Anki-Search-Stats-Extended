@@ -202,7 +202,7 @@ export function calculateRevlogStats(
 
         const next_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
-        let ivl = next_review ? revlog.ivl : card.ivl
+        let ivl = next_review ? revlog.ivl : card.type != 3 && card.type != 1 ? card.ivl : 0
         // Ignore "forgets"
         if (revlog.ivl == 0 || (!next_review && card.queue == 0)) {
             last_cids[revlog.cid] = revlog
