@@ -78,7 +78,6 @@ export function getExtraDataFromCard(card: CardData): CardExtraData {
     return JSON.parse(card.data)
 }
 
-
 export function getCardDecay(card: CardData) {
     return getDecay(getExtraDataFromCard(card))
 }

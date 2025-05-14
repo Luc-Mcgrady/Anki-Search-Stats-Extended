@@ -2,6 +2,7 @@ import * as d3 from "d3"
 import _ from "lodash"
 import {
     type Card,
+    checkParameters,
     createEmptyCard,
     dateDiffInDays,
     type FSRS,
@@ -42,11 +43,13 @@ export function getMemorisedDays(
             console.log(config.fsrsParams6)
             deckFsrs[id] = Fsrs(
                 generatorParameters({
-                    w: config.fsrsParams6
-                        ? config.fsrsParams6
-                        : config.fsrsParams5
-                          ? config.fsrsParams5
-                          : config.fsrsWeights,
+                    w: checkParameters(
+                        config.fsrsParams6
+                            ? config.fsrsParams6
+                            : config.fsrsParams5
+                              ? config.fsrsParams5
+                              : config.fsrsWeights
+                    ),
                     enable_fuzz: false,
                     enable_short_term: true,
                 })
