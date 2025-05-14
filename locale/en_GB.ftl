@@ -21,6 +21,7 @@ mature-count = {mature}
 young-count = {young}
 learning-count = Learning
 relearning-count = Relearning
+learning-and-relearning-count = (Re)Learning
 new-count = New
 suspended = Suspended 
 

@@ -151,7 +151,7 @@
             colour: YOUNG_COLOUR,
         },
         {
-            label: i18n("learning-count"),
+            label: i18n("learning-and-relearning-count"),
             value: time_machine_learn,
             colour: LEARN_COLOUR,
         },
