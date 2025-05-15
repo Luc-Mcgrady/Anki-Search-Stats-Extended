@@ -219,7 +219,13 @@ export function calculateRevlogStats(
 
         for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
+            // -1 suspended
+            // -2 learn (0 still contains learn as well)
             intervals[intervalDay][ivl] = (intervals[intervalDay][ivl] ?? 0) + 1
+
+            if (ivl == 0 && (revlog.type == 0 || (!next_review && card.type == 1))) {
+                intervals[intervalDay][-2] = (intervals[intervalDay][-2] ?? 0) + 1
+            }
         }
 
         last_cids[revlog.cid] = revlog

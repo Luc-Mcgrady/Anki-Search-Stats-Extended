@@ -112,7 +112,8 @@
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
-    $: time_machine_learn = time_machine_intervals[0] || 0
+    $: time_machine_re_learn = time_machine_intervals[0] || 0
+    $: time_machine_learn = time_machine_intervals[-2] || 0
     $: time_machine_young = _.sum(time_machine_intervals.slice(1, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
     $: time_machine_suspended = time_machine_intervals[-1] ?? 0
@@ -151,9 +152,14 @@
             colour: YOUNG_COLOUR,
         },
         {
-            label: i18n("learning-and-relearning-count"),
+            label: i18n("learning-count"),
             value: time_machine_learn,
             colour: LEARN_COLOUR,
+        },
+        {
+            label: i18n("relearning-count"),
+            value: time_machine_re_learn - time_machine_learn,
+            colour: RELEARN_COLOUR,
         },
         {
             label: i18n("suspended"),
@@ -166,6 +172,7 @@
                 time_machine_added -
                 time_machine_young -
                 time_machine_mature -
+                time_machine_re_learn -
                 time_machine_suspended,
             colour: "#6baed6",
         },
