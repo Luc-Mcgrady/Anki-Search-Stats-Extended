@@ -183,12 +183,6 @@
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
 
-    $: console.log({
-        day_review_hours,
-        today: day_review_hours[today + realScroll],
-        hours_time_machine,
-    })
-
     let range = 7
     let filtered = false
 
