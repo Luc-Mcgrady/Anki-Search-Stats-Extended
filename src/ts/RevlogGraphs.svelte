@@ -112,7 +112,7 @@
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
-    $: time_machine_re_learn = time_machine_intervals[0] || 0
+    $: time_machine_intra_day = time_machine_intervals[0] || 0
     $: time_machine_learn = time_machine_intervals[-2] || 0
     $: time_machine_young = _.sum(time_machine_intervals.slice(1, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
@@ -121,6 +121,10 @@
         (p, [i, v]) => p + (+i <= realScroll ? v : 0),
         0
     )
+
+    $: total_intervals = time_machine_mature + time_machine_young + time_machine_intra_day
+    $: intervals_mean =
+        intervals[today + realScroll].reduce((p, c, i) => p + c * i) / total_intervals
 
     let left_bound_at = "Review"
 
@@ -158,7 +162,7 @@
         },
         {
             label: i18n("relearning-count"),
-            value: time_machine_re_learn - time_machine_learn,
+            value: time_machine_intra_day - time_machine_learn,
             colour: RELEARN_COLOUR,
         },
         {
@@ -172,7 +176,7 @@
                 time_machine_added -
                 time_machine_young -
                 time_machine_mature -
-                time_machine_re_learn -
+                time_machine_intra_day -
                 time_machine_suspended,
             colour: "#6baed6",
         },
@@ -510,7 +514,7 @@
                 spectrumTo: "#0b4f99",
             }}
         />
-        <span>{i18n("mean")} = {d3.mean(learn_steps_per_card)?.toPrecision(2)}</span>
+        <span>{i18n("mean")} = {d3.mean(learn_steps_per_card)?.toFixed(2)}</span>
         <span>{i18n("median")} = {d3.quantile(learn_steps_per_card, 0.5)}</span>
         <p>{i18n("learn-reviews-per-card-help")}</p>
     </GraphContainer>
@@ -653,8 +657,11 @@
         <h1>{i18n("review-interval-time-machine")}</h1>
         <BarScrollable data={time_machine_bar} left_aligned />
         <TimeMachineScroll min={time_machine_min} />
-        <span>{i18n("x-total-cards", { val: time_machine_mature + time_machine_young })}</span>
+        <span>{i18n("x-total-cards", { val: total_intervals })}</span>
         <p>{i18n("review-interval-time-machine-help")}</p>
+        <span>
+            {i18n("mean")} = {intervals_mean.toFixed(2)}
+        </span>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
