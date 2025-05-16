@@ -53,6 +53,7 @@ export type DeckConfig = {
     buryInterdayLearning: boolean
     fsrsWeights: Array<number>
     fsrsParams5: Array<number>
+    fsrsParams6: Array<number>
     desiredRetention: number
     ignoreRevlogsBeforeDate: string
     easyDaysPercentages: Array<number>
