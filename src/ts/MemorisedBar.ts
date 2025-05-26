@@ -5,6 +5,7 @@ import {
     checkParameters,
     createEmptyCard,
     dateDiffInDays,
+    default_w,
     type FSRS,
     fsrs as Fsrs,
     type FSRSState,
@@ -40,17 +41,19 @@ export function getMemorisedDays(
     function getFsrs(config: DeckConfig) {
         const id = config.id
         if (!deckFsrs[id]) {
+            const configParams = [
+                config.fsrsParams6,
+                config.fsrsParams5,
+                config.fsrsParams4,
+                config.fsrsWeights,
+            ]
+
+            const params =
+                configParams.find((arr) => Array.isArray(arr) && arr.length > 0) ?? default_w
+
             deckFsrs[id] = Fsrs(
                 generatorParameters({
-                    w: checkParameters(
-                        config.fsrsParams6
-                            ? config.fsrsParams6
-                            : config.fsrsParams5
-                              ? config.fsrsParams5
-                              : config.fsrsWeights
-                                ? config.fsrsWeights
-                                : config.fsrsParams4
-                    ),
+                    w: checkParameters(params),
                     enable_fuzz: false,
                     enable_short_term: true,
                 })
