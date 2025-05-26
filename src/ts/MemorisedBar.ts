@@ -48,6 +48,8 @@ export function getMemorisedDays(
                             : config.fsrsParams5
                               ? config.fsrsParams5
                               : config.fsrsWeights
+                                ? config.fsrsWeights
+                                : config.fsrsParams4
                     ),
                     enable_fuzz: false,
                     enable_short_term: true,
