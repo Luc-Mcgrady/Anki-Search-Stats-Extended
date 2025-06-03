@@ -84,7 +84,7 @@
     <div>
         <label>
             <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
-            {i18n("retrievability")}
+            {i18n("cards")}
         </label>
         <label>
             <input type="radio" value={MemorisedType.NOTES} bind:group={memorised_type} />

@@ -260,6 +260,8 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+cards = Cards
+notes = Notes
 retrievability-and-stability = Retrievability & Stability
 cards-and-stability = Stable cards
 
