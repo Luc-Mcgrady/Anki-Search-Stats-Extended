@@ -1,7 +1,7 @@
 import esbuild from 'esbuild'
 import esbuildSvelte from "esbuild-svelte";
 import {typecheckPlugin} from '@jgoz/esbuild-plugin-typecheck';
-import sveltePreprocess from "svelte-preprocess";
+import {sveltePreprocess} from "svelte-preprocess";
 
 esbuild.build({
     entryPoints: ["src/ts/index.ts"],

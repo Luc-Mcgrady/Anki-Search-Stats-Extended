@@ -15,7 +15,7 @@
     import _, { size } from "lodash"
     import BarScrollable from "./BarScrollable.svelte"
     import type { PieDatum } from "./pie"
-    import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
+    import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "./graph"
     import Pie from "./Pie.svelte"
     import { barDateLabeler, barHourLabeler, barStringLabeler, type BarChart } from "./bar"
     import {
@@ -62,6 +62,7 @@
         interval_ease,
         day_review_hours,
         day_filtered_review_hours,
+        learn_steps_per_card,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     $: burden_change = DeltaIfy(burden)
@@ -111,13 +112,19 @@
     }
 
     $: time_machine_intervals = intervals[today + realScroll] ?? []
-    $: time_machine_young = _.sum(time_machine_intervals.slice(0, 21)) || 0
+    $: time_machine_intra_day = time_machine_intervals[0] || 0
+    $: time_machine_learn = time_machine_intervals[-2] || 0
+    $: time_machine_young = _.sum(time_machine_intervals.slice(1, 21)) || 0
     $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
     $: time_machine_suspended = time_machine_intervals[-1] ?? 0
     $: time_machine_added = Object.entries(addedCards).reduce(
         (p, [i, v]) => p + (+i <= realScroll ? v : 0),
         0
     )
+
+    $: total_intervals = time_machine_mature + time_machine_young + time_machine_intra_day
+    $: intervals_mean =
+        intervals[today + realScroll].reduce((p, c, i) => p + c * i) / total_intervals
 
     let left_bound_at = "Review"
 
@@ -149,6 +156,16 @@
             colour: YOUNG_COLOUR,
         },
         {
+            label: i18n("learning-count"),
+            value: time_machine_learn,
+            colour: LEARN_COLOUR,
+        },
+        {
+            label: i18n("relearning-count"),
+            value: time_machine_intra_day - time_machine_learn,
+            colour: RELEARN_COLOUR,
+        },
+        {
             label: i18n("suspended"),
             value: time_machine_suspended,
             colour: "yellow",
@@ -159,6 +176,7 @@
                 time_machine_added -
                 time_machine_young -
                 time_machine_mature -
+                time_machine_intra_day -
                 time_machine_suspended,
             colour: "#6baed6",
         },
@@ -175,12 +193,6 @@
         tick_spacing: 5,
         columnLabeler: barStringLabeler(i18n_bundle.getMessage("interval-of")?.value!),
     }
-
-    $: console.log({
-        day_review_hours,
-        today: day_review_hours[today + realScroll],
-        hours_time_machine,
-    })
 
     let range = 7
     let filtered = false
@@ -239,6 +251,14 @@
         barWidth: 10 / difficulty_bins.length + 1,
         columnLabeler: barStringLabeler(i18n_pattern("difficulty-of")),
     }
+
+    $: learn_repetitions = learn_steps_per_card.reduce(
+        (learn_repetitions, count) => {
+            learn_repetitions[count] = (learn_repetitions[count] ?? 0) + 1
+            return learn_repetitions
+        },
+        {} as Record<number, number>
+    )
 
     let include_reintroduced = true
     $: truncated = $searchLimit !== 0
@@ -339,7 +359,7 @@
         </p>
         {#if truncated}
             <Warning>
-                {i18n("introduced-truncated-warning ")}
+                {i18n("introduced-truncated-warning")}
             </Warning>
         {/if}
     </GraphContainer>
@@ -482,6 +502,22 @@
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("learn-reviews-per-card")}</h1>
+        <IntervalGraph
+            intervals={learn_repetitions}
+            pieInfo={{
+                countDescriptor: i18n("highest-repetition-count"),
+                legend_left: i18n("repetition-count"),
+                legend_right: i18n("card-count"),
+                spectrumFrom: "#5ca7f7",
+                spectrumTo: "#0b4f99",
+            }}
+        />
+        <span>{i18n("mean")} = {d3.mean(learn_steps_per_card)?.toFixed(2)}</span>
+        <span>{i18n("median")} = {d3.quantile(learn_steps_per_card, 0.5)}</span>
+        <p>{i18n("learn-reviews-per-card-help")}</p>
+    </GraphContainer>
 </GraphCategory>
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
     <GraphContainer>
@@ -621,8 +657,11 @@
         <h1>{i18n("review-interval-time-machine")}</h1>
         <BarScrollable data={time_machine_bar} left_aligned />
         <TimeMachineScroll min={time_machine_min} />
-        <span>{i18n("x-total-cards", { val: time_machine_mature + time_machine_young })}</span>
+        <span>{i18n("x-total-cards", { val: total_intervals })}</span>
         <p>{i18n("review-interval-time-machine-help")}</p>
+        <span>
+            {i18n("mean")} = {intervals_mean.toFixed(2)}
+        </span>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}

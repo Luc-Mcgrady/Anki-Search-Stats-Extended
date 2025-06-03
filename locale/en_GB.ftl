@@ -241,6 +241,9 @@ load-trend-help =
 x-change = Change: {$val}
 x-total = Total: {$val}
 
+learn-reviews-per-card = Learn Reviews per Card
+learn-reviews-per-card-help = The number of reviews it took before the card left the learning phase (graduated). Resets for cards which were forgotten.
+
 ratings = Ratings
 ratings-help = 
     The rating of every review you did that day, learning or otherwise. The ratio displays it as a percent of all cards reviewed that day. calculate (1-again)% to get your retention for that day (shown as " % Correct " in the tooltip).
@@ -257,6 +260,8 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+cards = Cards
+notes = Notes
 retrievability-and-stability = Retrievability & Stability
 cards-and-stability = Stable cards
 
@@ -294,6 +299,9 @@ card-count-time-machine-help =
     Shows your card type counts for a given date.
     
     New suspended cards count as new, not suspended.
+
+    Learn and re-learn count for the end of the day, and not for learning steps greater than 1 day.
+    e.g. You failed to finish the learning steps that day.
 
 starts-at = Starts at
 first-added = First Added

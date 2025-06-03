@@ -3,7 +3,7 @@
     import Bar from "./Bar.svelte"
     import { barDateLabeler, type BarDatum } from "./bar"
     import type { GraphsResponse_FutureDue } from "./proto/anki/stats_pb"
-    import { MATURE_COLOUR, YOUNG_COLOUR } from "./graph"
+    import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "./graph"
     import { i18n } from "./i18n"
 
     export let all: GraphsResponse_FutureDue
@@ -39,7 +39,7 @@
 
 <Bar
     data={{
-        row_colours: [MATURE_COLOUR, YOUNG_COLOUR, "#fb6a4a", "#fd8d3c"],
+        row_colours: [MATURE_COLOUR, YOUNG_COLOUR, RELEARN_COLOUR, LEARN_COLOUR],
         row_labels: [
             i18n("mature-count"),
             i18n("young-count"),

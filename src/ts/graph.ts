@@ -11,3 +11,5 @@ export function defaultGraphBounds() {
 
 export const MATURE_COLOUR = "#31a354"
 export const YOUNG_COLOUR = "#74c476"
+export const LEARN_COLOUR = "#fd8d3c"
+export const RELEARN_COLOUR = "#fb6a4a"
