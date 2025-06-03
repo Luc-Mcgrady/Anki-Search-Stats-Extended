@@ -1,26 +1,20 @@
 name: Makefile CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
   build-test:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: Build
-      run: make
-    
-    - name: Test
-      run: npm run test
+      - name: Build
+        run: make
+
+      - name: Test
+        run: npm run test
 
   format:
     runs-on: ubuntu-latest

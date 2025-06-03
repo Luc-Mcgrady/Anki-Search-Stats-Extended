@@ -7,6 +7,7 @@
     import { other, searchString } from "./stores"
     import NoGraph from "./NoGraph.svelte"
     import { i18n } from "./i18n"
+    import { LEARN_COLOUR, RELEARN_COLOUR } from "./graph"
 
     let next_card_time: Date | null = null
     let next_card_time_until: string = ""
@@ -114,7 +115,7 @@
         <Bar
             data={{
                 row_labels: [i18n("relearning-count"), i18n("learning-count")],
-                row_colours: ["#fb6a4a", "#fd8d3c"],
+                row_colours: [RELEARN_COLOUR, LEARN_COLOUR],
                 data,
                 columnLabeler: barHourLabeler,
             }}
