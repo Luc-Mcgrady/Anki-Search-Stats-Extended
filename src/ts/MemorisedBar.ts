@@ -63,6 +63,7 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let totalCards: number[] = []
     let noteRetrievabilityDays: number[] = []
     let stable_retrievability_days: number[] = []
 
@@ -97,6 +98,7 @@ export function getMemorisedDays(
             const retrievability = fsrs.forgetting_curve(day - from, s)
             const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
+            totalCards[day] = (totalCards[day] | 0) + 1
             if (card_count) {
                 noteRetrievabilityDays[day] =
                     (noteRetrievabilityDays[day] || 0) + retrievability / card_count
@@ -315,6 +317,7 @@ export function getMemorisedDays(
 
     return {
         retrievabilityDays,
+        totalCards,
         noteRetrievabilityDays,
         stable_retrievability_days,
         fatigueRMSE,

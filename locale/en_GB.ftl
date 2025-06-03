@@ -262,6 +262,8 @@ memorised-truncated-warning =
 
 cards = Cards
 notes = Notes
+average-retrievability = Average Per Card
+retrievability = Retrievability
 retrievability-and-stability = Retrievability & Stability
 cards-and-stability = Stable cards
 
