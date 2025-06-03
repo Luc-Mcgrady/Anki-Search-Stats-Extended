@@ -102,16 +102,16 @@
             {i18n("notes")}
         </label>
         <label>
+            <input type="radio" value={MemorisedType.AVERAGE} bind:group={memorised_type} />
+            {i18n("average-retrievability")}
+        </label>
+        <label>
             <input
                 type="radio"
                 value={MemorisedType.STABLE_RETRIEVABILITY}
                 bind:group={memorised_type}
             />
             {i18n("retrievability-and-stability")}
-        </label>
-        <label>
-            <input type="radio" value={MemorisedType.AVERAGE} bind:group={memorised_type} />
-            {i18n("average-retention-per-card")}
         </label>
     </div>
 {:else}
