@@ -51,7 +51,16 @@ export function getMemorisedDays(
     }
 
     let retrievabilityDays: number[] = []
+    let noteRetrievabilityDays: number[] = []
     let stable_retrievability_days: number[] = []
+
+    let cardCounts = cards.reduce(
+        (p, c) => {
+            p[c.nid] = (p[c.nid] ?? 0) + 1
+            return p
+        },
+        <number[]>[]
+    )
 
     function card_config(cid: number) {
         const card = cards_by_id[cid]
@@ -64,10 +73,22 @@ export function getMemorisedDays(
     let stability_day_bins: number[][] = []
     let difficulty_day_bins: number[][] = []
 
-    function forgetting_curve(fsrs: FSRS, s: number, from: number, to: number, card: Card) {
+    function forgetting_curve(
+        fsrs: FSRS,
+        s: number,
+        from: number,
+        to: number,
+        card: Card,
+        cid: number
+    ) {
         for (const day of _.range(from, to)) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
+            const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
+            if (card_count) {
+                noteRetrievabilityDays[day] =
+                    (noteRetrievabilityDays[day] || 0) + retrievability / card_count
+            }
             // If the cards not been forgotten
             if (card.stability) {
                 const stability_bin = Math.round(s)
@@ -150,7 +171,7 @@ export function getMemorisedDays(
         if (last_stability[revlog.cid]) {
             const previous = dayFromMs(card.last_review!.getTime())
             const stability = last_stability[revlog.cid]
-            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), card)
+            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), card, revlog.cid)
         }
 
         //console.log(grade)
@@ -243,7 +264,7 @@ export function getMemorisedDays(
         const num_cid = +cid
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
-        forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, card)
+        forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, card, num_cid)
         if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
             const expected = last_stability[num_cid]
             const actual = JSON.parse(cards_by_id[num_cid].data).s
@@ -282,6 +303,7 @@ export function getMemorisedDays(
 
     return {
         retrievabilityDays,
+        noteRetrievabilityDays,
         stable_retrievability_days,
         fatigueRMSE,
         bw_matrix: bw_matrix_count,

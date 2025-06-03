@@ -15,6 +15,7 @@
 
     enum MemorisedType {
         RETRIEVABILITY,
+        NOTES,
         STABLE_RETRIEVABILITY,
     }
 
@@ -70,6 +71,12 @@
             label={i18n("cards-and-stability")}
             bind:trend_data
         />
+    {:else if memorised_type == MemorisedType.NOTES}
+        <LineOrCandlestick
+            data={Array.from($memorised_stats.noteRetrievabilityDays || [])}
+            label={i18n("notes")}
+            bind:trend_data
+        />
     {:else}
         <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
     {/if}
@@ -77,7 +84,11 @@
     <div>
         <label>
             <input type="radio" value={MemorisedType.RETRIEVABILITY} bind:group={memorised_type} />
-            {i18n("Retrievability")}
+            {i18n("cards")}
+        </label>
+        <label>
+            <input type="radio" value={MemorisedType.NOTES} bind:group={memorised_type} />
+            {i18n("notes")}
         </label>
         <label>
             <input
