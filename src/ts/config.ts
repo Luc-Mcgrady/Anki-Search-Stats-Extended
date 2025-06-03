@@ -51,8 +51,11 @@ export type DeckConfig = {
     newSortOrder: number
     newGatherPriority: number
     buryInterdayLearning: boolean
-    fsrsWeights: Array<number>
+    fsrsParams4: Array<number>
     fsrsParams5: Array<number>
+    fsrsParams6: Array<number>
+    // For older anki versions
+    fsrsWeights: Array<number>
     desiredRetention: number
     ignoreRevlogsBeforeDate: string
     easyDaysPercentages: Array<number>
