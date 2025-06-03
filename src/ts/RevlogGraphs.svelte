@@ -359,7 +359,7 @@
         </p>
         {#if truncated}
             <Warning>
-                {i18n("introduced-truncated-warning ")}
+                {i18n("introduced-truncated-warning")}
             </Warning>
         {/if}
     </GraphContainer>
