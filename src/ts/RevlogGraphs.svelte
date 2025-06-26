@@ -40,6 +40,7 @@
     import NoGraph from "./NoGraph.svelte"
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
     import TimeMachineScroll from "./TimeMachineScroll.svelte"
+    import FsrsCalibration from "./FSRSCalibration.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -787,6 +788,20 @@
                 trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
             ></BarScrollable>
             <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
+        {:else}
+            <MemorisedCalculator />
+        {/if}
+        <p>
+            {i18n("fsrs-loss-by-fatigue-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("calibration")}</h1>
+        {#if $memorised_stats}
+            <FsrsCalibration data={$memorised_stats.calibration} />
+            <p>
+                {i18n("calibration-help")}
+            </p>
         {:else}
             <MemorisedCalculator />
         {/if}
