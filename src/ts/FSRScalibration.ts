@@ -69,10 +69,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
             d3
                 .line<[number, number, number]>()
                 .defined((d) => !!d)
-                .x((d) => {
-                    debugger
-                    return x(d[2])
-                })
+                .x((d) => x(d[2]))
                 .y((d) => y(d[0]))
         )
 
