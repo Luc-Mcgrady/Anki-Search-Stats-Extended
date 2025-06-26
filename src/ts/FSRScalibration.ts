@@ -27,9 +27,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("opacity", 0.5)
         .call(d3.axisBottom(x).ticks(7))
 
-    let data = bins.map(
-        (d, i) => [d.predicted / d.count, d.count, i / 20] as [number, number, number]
-    )
+    let data = bins.map((d, i) => [d.real / d.count, d.count, i / 20] as [number, number, number])
 
     const bar_width = width / data.length + 1
     axis.append("g")
