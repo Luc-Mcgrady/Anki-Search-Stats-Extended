@@ -9,6 +9,10 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
 
     const x = d3.scaleLinear().domain([0, 1]).range([0, width])
     const y = d3.scaleLinear().domain([1, 0]).range([0, height])
+    const count_y = d3
+        .scaleLinear()
+        .domain([d3.max(bins.map((d) => d.count)) ?? 0, 0])
+        .range([height, 0])
 
     const axis = d3
         .select(svg)
@@ -27,6 +31,16 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     )
 
     console.log({ data })
+
+    const bar_width = width / data.length + 1
+    axis.append("g")
+        .selectAll("g")
+        .data(data.filter((a) => a))
+        .join("rect")
+        .attr("height", (d) => count_y(d[1]))
+        .attr("width", bar_width)
+        .attr("x", (d, i) => x(d[2])! - (i > 0 ? bar_width / 2 : 0))
+        .attr("y", (d) => height - count_y(d[1]))
 
     d3.select(svg)
         .append("path")
@@ -64,7 +78,6 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
                 .y((d) => y(d[0]))
         )
 
-    const bar_width = width / data.length + 1
     axis.append("g")
         .selectAll("g")
         .data(data.filter((a) => a))
