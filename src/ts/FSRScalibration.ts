@@ -31,8 +31,6 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         (d, i) => [d.predicted / d.count, d.count, i / 20] as [number, number, number]
     )
 
-    console.log({ data })
-
     const bar_width = width / data.length + 1
     axis.append("g")
         .selectAll("g")

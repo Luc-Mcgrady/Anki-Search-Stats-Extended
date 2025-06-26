@@ -328,8 +328,6 @@ export function getMemorisedDays(
         p.length > leech_min_reviews ? _.sum(p) : 1
     )
 
-    console.log({ calibration })
-
     return {
         retrievabilityDays,
         totalCards,
