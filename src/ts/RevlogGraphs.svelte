@@ -532,6 +532,17 @@
         </p>
     </GraphContainer>
     <GraphContainer>
+        <h1>{i18n("fsrs-calibration")}</h1>
+        {#if $memorised_stats}
+            <FsrsCalibration data={$memorised_stats.calibration} />
+        {:else}
+            <MemorisedCalculator />
+        {/if}
+        <p>
+            {i18n("fsrs-calibration-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
         <h1>{i18n("stability-time-machine")}</h1>
         {#if $memorised_stats}
             <BarScrollable data={stability_time_machine_bar} left_aligned />
@@ -788,20 +799,6 @@
                 trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
             ></BarScrollable>
             <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-        <p>
-            {i18n("fsrs-loss-by-fatigue-help")}
-        </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("calibration")}</h1>
-        {#if $memorised_stats}
-            <FsrsCalibration data={$memorised_stats.calibration} />
-            <p>
-                {i18n("calibration-help")}
-            </p>
         {:else}
             <MemorisedCalculator />
         {/if}

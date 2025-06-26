@@ -1,5 +1,6 @@
 import * as d3 from "d3"
 import { defaultGraphBounds } from "./graph"
+import { i18n } from "./i18n"
 import type { LossBin } from "./MemorisedBar"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
@@ -37,6 +38,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .selectAll("g")
         .data(data.filter((a) => a))
         .join("rect")
+        .attr("fill", "darkblue")
         .attr("height", (d) => count_y(d[1]))
         .attr("width", bar_width)
         .attr("x", (d, i) => x(d[2])! - (i > 0 ? bar_width / 2 : 0))
@@ -94,9 +96,9 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
                 y: e.pageY,
                 // Todo: i18n
                 text: [
-                    `Perfect ${(d[2] * 100).toFixed(0)}%:`,
-                    `Predicted: ${value_string}%`,
-                    `Reviews: ${d[1]}`,
+                    `${i18n("perfect")} ${(d[2] * 100).toFixed(0)}%:`,
+                    `${i18n("predicted")}: ${value_string}%`,
+                    `${i18n("count")}: ${d[1]}`,
                 ],
             })
         })
