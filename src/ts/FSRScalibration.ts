@@ -8,6 +8,11 @@ import { tooltipX } from "./tooltip"
 export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     const { width, height } = defaultGraphBounds()
 
+    interface CalibrationBinData {
+        bin: LossBin
+        index: number
+    }
+
     const x = d3.scaleLinear().domain([0, 1]).range([0, width])
     const y = d3.scaleLinear().domain([1, 0]).range([0, height])
 
@@ -37,23 +42,22 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
 
     let data = bins.map(
         (d, i) =>
-            [d.real / d.count, d.count, d.predicted / d.count, i] as [
-                number,
-                number,
-                number,
-                number,
-            ]
+            // Converted to proportion
+            <CalibrationBinData>{
+                bin: { real: d.real / d.count, predicted: d.predicted / d.count, count: d.count },
+                index: i,
+            }
     )
 
     axis.append("g")
         .selectAll("g")
-        .data(data.filter(([d, _]) => d))
+        .data(data.filter((d) => d))
         .join("rect")
         .attr("fill", "darkblue")
-        .attr("height", (d) => count_y(d[1]))
-        .attr("width", (d) => binWidth(d[3])[1] - binWidth(d[3])[0])
-        .attr("x", (d) => binWidth(d[3])[0])
-        .attr("y", (d) => height - count_y(d[1]))
+        .attr("height", (d) => count_y(d.bin.count))
+        .attr("width", (d) => binWidth(d.index)[1] - binWidth(d.index)[0])
+        .attr("x", (d) => binWidth(d.index)[0])
+        .attr("y", (d) => height - count_y(d.bin.count))
 
     d3.select(svg)
         .append("path")
@@ -65,11 +69,11 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr(
             "d",
             d3
-                .line<[number, number, number, number]>()
+                .line<CalibrationBinData>()
                 .x((d, i) => {
-                    return x(d ? d[2] : i)
+                    return x(d ? d.bin.predicted : i)
                 })
-                .y((d, i) => y(d ? d[2] : i))
+                .y((d, i) => y(d ? d.bin.predicted : i))
         )
 
     d3.select(svg)
@@ -82,10 +86,10 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr(
             "d",
             d3
-                .line<[number, number, number, number]>()
+                .line<CalibrationBinData>()
                 .defined((d) => !!d)
-                .x((d) => x(d[2]))
-                .y((d) => y(d[0]))
+                .x((d) => x(d.bin.predicted))
+                .y((d) => y(d.bin.real))
         )
 
     axis.append("g")
@@ -94,19 +98,19 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .join("rect")
         .attr("class", "hover-bar")
         .attr("height", height)
-        .attr("width", (d) => binWidth(d[3])[1] - binWidth(d[3])[0])
-        .attr("x", (d) => binWidth(d[3])[0])
+        .attr("width", (d) => binWidth(d.index)[1] - binWidth(d.index)[0])
+        .attr("x", (d) => binWidth(d.index)[0])
         .attr("y", 0)
         .on("mouseover", (e: MouseEvent, d) => {
-            const value_string = (d[0] * 100).toPrecision(5)
+            const value_string = (d.bin.real * 100).toPrecision(5)
             tooltip.set({
                 x: tooltipX(e),
                 y: e.pageY,
                 // Todo: i18n
                 text: [
-                    `${i18n("perfect")} ${(d[2] * 100).toFixed(0)}%:`,
+                    `${i18n("perfect")} ${(d.bin.predicted * 100).toFixed(0)}%:`,
                     `${i18n("predicted")}: ${value_string}%`,
-                    `${i18n("count")}: ${d[1]}`,
+                    `${i18n("count")}: ${d.bin.count}`,
                 ],
             })
         })
