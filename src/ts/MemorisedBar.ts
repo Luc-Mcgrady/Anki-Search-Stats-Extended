@@ -86,7 +86,8 @@ export function getMemorisedDays(
     let stability_day_bins: number[][] = []
     let difficulty_day_bins: number[][] = []
 
-    let calibration = <LossBin[]>Array(20)
+    const calibration_bin_count = 20
+    let calibration = <LossBin[]>Array(calibration_bin_count)
 
     function forgetting_curve(
         fsrs: FSRS,
@@ -249,13 +250,15 @@ export function getMemorisedDays(
                     retention_row[d_bin] = incrementLoss(retention_row[d_bin], p, y)
 
                     // Calibration graph
-                    let calibration_r_bin = Math.round(p * 20)
+                    let calibration_r_bin =
+                        Math.floor(Math.exp(Math.log(calibration_bin_count + 1) * p)) - 1
                     calibration[calibration_r_bin] = incrementLoss(
                         calibration[calibration_r_bin],
                         p,
                         y
                     )
                 }
+
                 fatigue_bins.not_learn[today_so_far] = incrementLoss(
                     fatigue_bins.not_learn[today_so_far],
                     p,
@@ -306,6 +309,8 @@ export function getMemorisedDays(
             }
         }
     }
+
+    console.log({ deckFsrs })
 
     if (inaccurate_cids.length) {
         const mean_error = _.meanBy(inaccurate_cids, (a) =>

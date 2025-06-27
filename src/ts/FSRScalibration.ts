@@ -10,6 +10,14 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
 
     const x = d3.scaleLinear().domain([0, 1]).range([0, width])
     const y = d3.scaleLinear().domain([1, 0]).range([0, height])
+
+    function binWidth(i: number) {
+        const L = Math.log(bins.length + 1)
+        const pLow = Math.log(i + 1) / L
+        const pHigh = Math.log(i + 2) / L
+        return [x(pLow), x(pHigh)] as [number, number]
+    }
+
     const count_y = d3
         .scaleLinear()
         .domain([d3.max(bins.map((d) => d.count)) ?? 0, 0])
@@ -27,17 +35,24 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("opacity", 0.5)
         .call(d3.axisBottom(x).ticks(7))
 
-    let data = bins.map((d, i) => [d.real / d.count, d.count, i / 20] as [number, number, number])
+    let data = bins.map(
+        (d, i) =>
+            [d.real / d.count, d.count, d.predicted / d.count, i] as [
+                number,
+                number,
+                number,
+                number,
+            ]
+    )
 
-    const bar_width = width / data.length + 1
     axis.append("g")
         .selectAll("g")
-        .data(data.filter((a) => a))
+        .data(data.filter(([d, _]) => d))
         .join("rect")
         .attr("fill", "darkblue")
         .attr("height", (d) => count_y(d[1]))
-        .attr("width", bar_width)
-        .attr("x", (d, i) => x(d[2])! - (i > 0 ? bar_width / 2 : 0))
+        .attr("width", (d) => binWidth(d[3])[1] - binWidth(d[3])[0])
+        .attr("x", (d) => binWidth(d[3])[0])
         .attr("y", (d) => height - count_y(d[1]))
 
     d3.select(svg)
@@ -50,11 +65,11 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr(
             "d",
             d3
-                .line<[number, number, number]>()
+                .line<[number, number, number, number]>()
                 .x((d, i) => {
-                    return x(i / 20)
+                    return x(d ? d[2] : i)
                 })
-                .y((d, i) => y(i / 20))
+                .y((d, i) => y(d ? d[2] : i))
         )
 
     d3.select(svg)
@@ -67,7 +82,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr(
             "d",
             d3
-                .line<[number, number, number]>()
+                .line<[number, number, number, number]>()
                 .defined((d) => !!d)
                 .x((d) => x(d[2]))
                 .y((d) => y(d[0]))
@@ -79,8 +94,8 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .join("rect")
         .attr("class", "hover-bar")
         .attr("height", height)
-        .attr("width", (_, i) => (i > 0 ? bar_width : bar_width / 2))
-        .attr("x", (d, i) => x(d[2])! - (i > 0 ? bar_width / 2 : 0))
+        .attr("width", (d) => binWidth(d[3])[1] - binWidth(d[3])[0])
+        .attr("x", (d) => binWidth(d[3])[0])
         .attr("y", 0)
         .on("mouseover", (e: MouseEvent, d) => {
             const value_string = (d[0] * 100).toPrecision(5)
