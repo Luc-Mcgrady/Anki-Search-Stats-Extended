@@ -42,7 +42,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
 
     let data = bins.map(
         (d, i) =>
-            // Converted to proportion
+            // Converted to proportions
             <CalibrationBinData>{
                 bin: { real: d.real / d.count, predicted: d.predicted / d.count, count: d.count },
                 index: i,
