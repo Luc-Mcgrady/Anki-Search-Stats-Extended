@@ -124,7 +124,7 @@
 
     $: total_intervals = time_machine_mature + time_machine_young + time_machine_intra_day
     $: intervals_mean =
-        intervals[today + realScroll].reduce((p, c, i) => p + c * i) / total_intervals
+        intervals[today + realScroll].reduce((p, c, i) => p + c * i, 0) / total_intervals
 
     let left_bound_at = "Review"
 
