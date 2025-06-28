@@ -26,9 +26,9 @@ export interface LossBin {
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
-    last_forget: number[],
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids,
+    last_forget: number[] = [],
     leech_elapsed_threshold = 10,
     leech_min_reviews = 5
 ) {
@@ -310,8 +310,6 @@ export function getMemorisedDays(
             }
         }
     }
-
-    console.log({ deckFsrs })
 
     if (inaccurate_cids.length) {
         const mean_error = _.meanBy(inaccurate_cids, (a) =>

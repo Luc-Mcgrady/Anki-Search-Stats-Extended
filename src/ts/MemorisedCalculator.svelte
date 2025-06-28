@@ -13,9 +13,9 @@
             getMemorisedDays(
                 $revlogs,
                 $card_data,
-                $last_forget ?? [],
                 SSEother.deck_configs,
                 SSEother.deck_config_ids,
+                $last_forget ?? undefined,
                 2,
                 2
             )
