@@ -260,6 +260,12 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+fsrs-calibration = FSRS Calibration
+fsrs-calibration-help = This compares the average retention you should have on cards (Perfect/orange line) to the retention you actually have (Predicted/blue line).
+
+perfect = Perfect
+predicted = Predicted
+
 cards = Cards
 notes = Notes
 average-retrievability = Average Per Card
