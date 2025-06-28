@@ -62,9 +62,14 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("x", (d) => binWidth(d.index)[0])
         .attr("y", (d) => height - count_y(d.bin.count))
 
+    const diagonalData = [
+        { x: 0, y: 0 },
+        { x: 1, y: 1 },
+    ]
+
     d3.select(svg)
         .append("path")
-        .datum(data)
+        .datum(diagonalData)
         .attr("fill", "none")
         .attr("stroke", "orange")
         .attr("stroke-width", 1.5)
@@ -72,11 +77,9 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr(
             "d",
             d3
-                .line<CalibrationBinData>()
-                .x((d, i) => {
-                    return x(d ? d.bin.predicted : i)
-                })
-                .y((d, i) => y(d ? d.bin.predicted : i))
+                .line<{ x: number; y: number }>()
+                .x((d) => x(d.x))
+                .y((d) => y(d.y))
         )
 
     d3.select(svg)
