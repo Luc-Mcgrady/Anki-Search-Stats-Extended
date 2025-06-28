@@ -101,6 +101,7 @@ export function calculateRevlogStats(
     let last_siblings: (undefined | SiblingReview)[] = []
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
+    let last_forget = []
 
     let learn_steps_per_card: Record<number, number> = {}
 
@@ -176,6 +177,7 @@ export function calculateRevlogStats(
         if (revlog.ease == 0 && revlog.ivl == 0) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
+            last_forget[revlog.cid] = revlog.id
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
                 delete learn_steps_per_card[revlog.cid]
@@ -266,6 +268,7 @@ export function calculateRevlogStats(
         day_review_hours,
         day_filtered_review_hours,
         learn_steps_per_card: Object.values(learn_steps_per_card),
+        last_forget,
     }
 }
 

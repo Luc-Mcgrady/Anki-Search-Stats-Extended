@@ -4,7 +4,7 @@
     import { getMemorisedDays } from "./MemorisedBar"
     import NoGraph from "./NoGraph.svelte"
     import { catchErrors } from "./search"
-    import { card_data, memorised_stats, revlogs, searchLimit } from "./stores"
+    import { card_data, last_forget, memorised_stats, revlogs, searchLimit } from "./stores"
     $: truncated = $searchLimit !== 0
     let show = false
 
@@ -13,6 +13,7 @@
             getMemorisedDays(
                 $revlogs,
                 $card_data,
+                $last_forget ?? [],
                 SSEother.deck_configs,
                 SSEother.deck_config_ids,
                 2,

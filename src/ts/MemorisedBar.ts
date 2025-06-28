@@ -26,6 +26,7 @@ export interface LossBin {
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
+    last_forget: number[],
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids,
     leech_elapsed_threshold = 10,
@@ -234,7 +235,7 @@ export function getMemorisedDays(
                     }
                 }
 
-                if (!new_card && card.stability > 1) {
+                if (!new_card && card.stability > 1 && (last_forget[revlog.cid] ?? 0) < revlog.id) {
                     // B-W matrix
                     const r_bin_power = 1.4
                     const r_bin = _.round(

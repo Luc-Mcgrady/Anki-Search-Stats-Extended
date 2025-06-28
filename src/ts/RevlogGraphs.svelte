@@ -6,6 +6,7 @@
         binSize,
         cids,
         config,
+        last_forget,
         memorised_stats,
         pieLast,
         pieSteps,
@@ -37,7 +38,6 @@
     import { i18n, i18n_bundle, i18n_pattern } from "./i18n"
     import Bar from "./Bar.svelte"
     import * as d3 from "d3"
-    import NoGraph from "./NoGraph.svelte"
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
     import TimeMachineScroll from "./TimeMachineScroll.svelte"
     import FsrsCalibration from "./FSRSCalibration.svelte"
@@ -64,14 +64,13 @@
         day_review_hours,
         day_filtered_review_hours,
         learn_steps_per_card,
+        last_forget: local_last_forget,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
-    $: burden_change = DeltaIfy(burden)
+    $: $last_forget = local_last_forget
     $: realScroll = -Math.abs($scroll)
     const bins = 30
     $: start = today - bins * $binSize + realScroll
-
-    $: burden_start = burden[start] ?? 0
 
     function barLabel(i: number) {
         return (i - today).toString()
