@@ -23,17 +23,20 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         return [x(pLow), x(pHigh)] as [number, number]
     }
 
-    const count_y = d3
-        .scaleLinear()
-        .domain([d3.max(bins.map((d) => d.count)) ?? 0, 0])
-        .range([height, 0])
+    const max_bin = d3.max(bins.map((d) => d.count)) ?? 0
+
+    const count_y = d3.scaleLinear().domain([max_bin, 0]).range([height, 0])
 
     const axis = d3
         .select(svg)
-        .attr("viewBox", `-40 -10 ${width + 50} ${height + 50}`)
+        .attr("viewBox", `-40 -10 ${width + 70} ${height + 50}`)
         .append("g")
 
     axis.append("g").call(d3.axisLeft(y)).attr("opacity", 0.5)
+    axis.append("g")
+        .attr("transform", `translate(${width}, 0)`)
+        .attr("opacity", 0.5)
+        .call(d3.axisRight(count_y))
 
     axis.append("g")
         .attr("transform", `translate(0, ${height})`)
