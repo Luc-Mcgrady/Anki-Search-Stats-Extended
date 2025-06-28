@@ -29,7 +29,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
 
     const axis = d3
         .select(svg)
-        .attr("viewBox", `-40 -10 ${width + 70} ${height + 50}`)
+        .attr("viewBox", `-40 -10 ${width + 50 + Math.log(max_bin) * 10} ${height + 50}`)
         .append("g")
 
     axis.append("g").call(d3.axisLeft(y)).attr("opacity", 0.5)
