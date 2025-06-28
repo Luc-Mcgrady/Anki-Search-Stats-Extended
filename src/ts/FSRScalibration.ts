@@ -14,7 +14,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     }
 
     const x = d3.scaleLinear().domain([0, 1]).range([0, width])
-    const y = d3.scaleLinear().domain([1, 0]).range([0, height])
+    const y = d3.scaleLinear().domain([0, 1]).range([height, 0])
 
     function binWidth(i: number) {
         const L = Math.log(bins.length + 1)
@@ -25,7 +25,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
 
     const max_bin = d3.max(bins.map((d) => d.count)) ?? 0
 
-    const count_y = d3.scaleLinear().domain([max_bin, 0]).range([height, 0])
+    const count_y = d3.scaleLinear().domain([0, max_bin]).range([height, 0])
 
     const axis = d3
         .select(svg)
@@ -58,10 +58,10 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .join("rect")
         .attr("fill", "blue")
         .attr("opacity", 0.5)
-        .attr("height", (d) => count_y(d.bin.count))
+        .attr("height", (d) => height - count_y(d.bin.count))
         .attr("width", (d) => binWidth(d.index)[1] - binWidth(d.index)[0])
         .attr("x", (d) => binWidth(d.index)[0])
-        .attr("y", (d) => height - count_y(d.bin.count))
+        .attr("y", (d) => count_y(d.bin.count))
 
     const diagonalData = [
         { x: 0, y: 0 },
