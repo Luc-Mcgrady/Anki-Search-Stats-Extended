@@ -115,8 +115,8 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
                 y: e.pageY,
                 // Todo: i18n
                 text: [
-                    `${i18n("perfect")} ${(d.bin.predicted * 100).toFixed(0)}%:`,
-                    `${i18n("predicted")}: ${value_string}%`,
+                    `${i18n("predicted")} ${(d.bin.predicted * 100).toFixed(0)}%:`,
+                    `${i18n("actual")}: ${value_string}%`,
                     `${i18n("count")}: ${d.bin.count}`,
                 ],
             })

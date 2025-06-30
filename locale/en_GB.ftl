@@ -261,10 +261,9 @@ memorised-truncated-warning =
     affect the results.
 
 fsrs-calibration = FSRS Calibration
-fsrs-calibration-help = This compares the average retention you should have on cards (Perfect/orange line) to the retention you actually have (Predicted/blue line).
+fsrs-calibration-help = This compares the average retention FSRS predicts you should have on cards (Perfect/orange line) to the retention you actually have (Actual/blue line).
 
-perfect = Perfect
-predicted = Predicted
+actual = Actual
 
 cards = Cards
 notes = Notes
