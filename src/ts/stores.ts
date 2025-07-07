@@ -19,6 +19,8 @@ export let cids = writable<null | number[]>(null)
 export let card_data = writable<null | CardData[]>(null)
 export let revlogs = writable<null | Revlog[]>(null)
 
+export let last_forget = writable<null | number[]>(null)
+
 // Pie chart related
 export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)

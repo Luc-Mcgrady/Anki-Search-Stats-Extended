@@ -28,6 +28,7 @@ export function getMemorisedDays(
     cards: CardData[],
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids,
+    last_forget: number[] = [],
     leech_elapsed_threshold = 10,
     leech_min_reviews = 5
 ) {
@@ -86,6 +87,9 @@ export function getMemorisedDays(
     let stability_day_bins: number[][] = []
     let difficulty_day_bins: number[][] = []
 
+    const calibration_bin_count = 20
+    let calibration = <LossBin[]>Array(calibration_bin_count)
+
     function forgetting_curve(
         fsrs: FSRS,
         s: number,
@@ -99,6 +103,8 @@ export function getMemorisedDays(
             const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
             totalCards[day] = (totalCards[day] | 0) + 1
+
+            // Ignore deleted notes for note count
             if (card_count) {
                 noteRetrievabilityDays[day] =
                     (noteRetrievabilityDays[day] || 0) + retrievability / card_count
@@ -229,7 +235,8 @@ export function getMemorisedDays(
                     }
                 }
 
-                if (!new_card && card.stability > 1) {
+                if (!new_card && card.stability > 1 && (last_forget[revlog.cid] ?? 0) < revlog.id) {
+                    // B-W matrix
                     const r_bin_power = 1.4
                     const r_bin = _.round(
                         Math.pow(
@@ -242,7 +249,17 @@ export function getMemorisedDays(
                     bw_matrix_count[r_bin] ??= []
                     let retention_row = bw_matrix_count[r_bin]
                     retention_row[d_bin] = incrementLoss(retention_row[d_bin], p, y)
+
+                    // Calibration graph
+                    let calibration_r_bin =
+                        Math.floor(Math.exp(Math.log(calibration_bin_count + 1) * p)) - 1
+                    calibration[calibration_r_bin] = incrementLoss(
+                        calibration[calibration_r_bin],
+                        p,
+                        y
+                    )
                 }
+
                 fatigue_bins.not_learn[today_so_far] = incrementLoss(
                     fatigue_bins.not_learn[today_so_far],
                     p,
@@ -327,5 +344,6 @@ export function getMemorisedDays(
         day_means,
         leech_probabilities,
         difficulty_days: difficulty_day_bins,
+        calibration,
     }
 }
