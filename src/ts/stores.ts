@@ -77,3 +77,4 @@ tooltipShown.subscribe(() =>
 config.subscribe(($config) =>
     graph_mode.set($config?.graphMode?.toLowerCase() == "bar" ? "Bar" : "Pie")
 )
+revlogs.subscribe(() => memorised_stats.set(undefined))
