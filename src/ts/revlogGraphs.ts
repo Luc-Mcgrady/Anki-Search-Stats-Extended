@@ -125,7 +125,7 @@ export function calculateRevlogStats(
             if (revlog.type < 3) {
                 day_review_hours[no_rollover_day] ??= Array(24).fill(0)
                 day_review_hours[no_rollover_day][hour] =
-                    day_review_hours[no_rollover_day][hour] + 1
+                    day_review_hours[no_rollover_day][hour] + revlog.time / (1000 * 60 * 60)
 
                 if (revlog.type == 0) {
                     learn_steps_per_card[revlog.cid] = (learn_steps_per_card[revlog.cid] ?? 0) + 1
@@ -133,7 +133,7 @@ export function calculateRevlogStats(
             }
             day_filtered_review_hours[no_rollover_day] ??= Array(24).fill(0)
             day_filtered_review_hours[no_rollover_day][hour] =
-                day_filtered_review_hours[no_rollover_day][hour] + 1
+                day_filtered_review_hours[no_rollover_day][hour] + revlog.time / (1000 * 60 * 60)
 
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
             incrementEase(fatigue_ease.all, day_review_count[day], ease)
