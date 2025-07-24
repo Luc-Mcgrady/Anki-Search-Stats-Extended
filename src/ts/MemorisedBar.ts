@@ -175,7 +175,7 @@ export function getMemorisedDays(
         last_day = dayFromMs(revlog.id)
 
         // on forget
-        if (revlog.ivl == 0 && !new_card) {
+        if (revlog.factor == 0 && revlog.type == 4 && !new_card) {
             card = fsrs.forget(card, now).card
             fsrsCards[revlog.cid] = card
             probabilities[revlog.cid] = [1]

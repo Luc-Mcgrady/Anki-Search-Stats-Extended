@@ -10,7 +10,7 @@ const burden_revlogs : Revlog[] = [
     burden_revlog_builder1.review(-6000, 3),
     burden_revlog_builder1.review(1, 3),
     burden_revlog_builder1.review(2, 3),
-    burden_revlog_builder1.review(0),
+    burden_revlog_builder1.review(0, 0),
     burden_revlog_builder1.wait(2 * day_ms),
     burden_revlog_builder1.review(-5000, 3),
     burden_revlog_builder1.review(-6000, 3),
