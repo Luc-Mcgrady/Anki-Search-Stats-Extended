@@ -96,6 +96,17 @@ export interface Revlog {
     lastIvl: number
     factor: number
     time: number
+    /*
+    Learning = 0,
+    Review = 1,
+    Relearning = 2,
+    /// Old Anki versions called this "Cram" or "Early". It's assigned when
+    /// reviewing cards before they're due, or when rescheduling is
+    /// disabled.
+    Filtered = 3,
+    Manual = 4,
+    Rescheduled = 5,
+    */
     type: number
 }
 

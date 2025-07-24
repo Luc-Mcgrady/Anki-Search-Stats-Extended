@@ -173,7 +173,7 @@ export function calculateRevlogStats(
             incrementEase(fatigue_ease.learn, day_review_count[day], ease)
             incrementEase(time_ease_seconds.learn, second, ease)
         }
-        if (revlog.ease == 0 && revlog.ivl == 0) {
+        if (revlog.factor == 0 && revlog.type == 4) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
             if (revlog.lastIvl != 0) {
@@ -204,7 +204,7 @@ export function calculateRevlogStats(
         // If the card is still learning, use the card data
         let ivl = next_review ? revlog.ivl : card.type != 3 && card.type != 1 ? card.ivl : 0
         // Ignore "forgets"
-        if (revlog.ivl == 0 || (!next_review && card.queue == 0)) {
+        if ((revlog.factor == 0 && revlog.type == 4) || (!next_review && card.queue == 0)) {
             last_cids[revlog.cid] = revlog
             return undefined
         }
