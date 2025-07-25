@@ -1,8 +1,9 @@
 <script lang="ts">
-    export let href: string
+    export let href: string | undefined = undefined
+    export let onClick: undefined | (() => void) = undefined
 </script>
 
-<a {href}><button class="btn"><slot /></button></a>
+<a {href}><button class="btn" on:click={onClick}><slot /></button></a>
 
 <style lang="scss">
     .btn {

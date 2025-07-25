@@ -4,7 +4,7 @@ from anki.hooks import wrap
 from aqt.stats import NewDeckStats
 import os.path
 from pathlib import Path
-from aqt import mw
+from aqt import QDesktopServices, QUrl, mw
 
 addon_dir = Path(os.path.dirname(__file__))
 
@@ -107,3 +107,8 @@ def write_config():
     mw.addonManager.writeConfig(__name__, config)
 
 post_handlers["writeConfig"] = write_config
+
+def open_locale_folder():
+    QDesktopServices.openUrl(QUrl.fromLocalFile(str(addon_dir.joinpath("locale").absolute())))
+
+post_handlers["openLocaleFolder"] = open_locale_folder

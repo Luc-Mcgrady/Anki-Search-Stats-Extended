@@ -3,6 +3,7 @@
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
     import LinkButton from "./LinkButton.svelte"
+    import { openLocaleFolder } from "./search"
 
     let currently_translated = ["en-GB", "zh_CN"]
 </script>
@@ -27,6 +28,7 @@
                 list: currently_translated.toString(),
             })}
         </span>
+        <LinkButton onClick={openLocaleFolder}>Open Locale Folder</LinkButton>
         <br />
         <LinkButton
             href={`https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/new/main/locale?filename=${SSEother.lang}.ftl`}
