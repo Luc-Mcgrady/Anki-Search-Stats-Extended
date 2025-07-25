@@ -235,20 +235,22 @@ export function getMemorisedDays(
                     }
                 }
 
-                if (!new_card && card.stability > 1 && (last_forget[revlog.cid] ?? 0) < revlog.id) {
+                if (!new_card && (last_forget[revlog.cid] ?? 0) < revlog.id) {
                     // B-W matrix
-                    const r_bin_power = 1.4
-                    const r_bin = _.round(
-                        Math.pow(
-                            r_bin_power,
-                            Math.floor(Math.log(card.stability) / Math.log(r_bin_power))
-                        ),
-                        2
-                    )
-                    const d_bin = Math.round(card.difficulty)
-                    bw_matrix_count[r_bin] ??= []
-                    let retention_row = bw_matrix_count[r_bin]
-                    retention_row[d_bin] = incrementLoss(retention_row[d_bin], p, y)
+                    if (card.stability > 1) {
+                        const r_bin_power = 1.4
+                        const r_bin = _.round(
+                            Math.pow(
+                                r_bin_power,
+                                Math.floor(Math.log(card.stability) / Math.log(r_bin_power))
+                            ),
+                            2
+                        )
+                        const d_bin = Math.round(card.difficulty)
+                        bw_matrix_count[r_bin] ??= []
+                        let retention_row = bw_matrix_count[r_bin]
+                        retention_row[d_bin] = incrementLoss(retention_row[d_bin], p, y)
+                    }
 
                     // Calibration graph
                     let calibration_r_bin =
