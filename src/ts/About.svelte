@@ -23,17 +23,12 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("translate")}</h1>
-        Search Stats Extended is currently has localisations for
-        <code>{currently_translated}</code>
-        If you want to translate this addon
-        <br />
-        Make a file for your language ({SSEother.lang}) in
-        <code>
-            {`(Addon menu -> Search Stats Extended -> View Files)/locale/${SSEother.lang}.ftl`}
-        </code>
-        Copy in the original translations from
-        <code>en_GB.ftl</code>
-        translate it and create a pull request on github!
+        <span style:white-space="pre">
+            {i18n("translate-instructions", {
+                lang: SSEother.lang,
+                list: currently_translated.toString(),
+            })}
+        </span>
         <br />
         <LinkButton
             href={`https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/new/main/locale?filename=${SSEother.lang}.ftl`}

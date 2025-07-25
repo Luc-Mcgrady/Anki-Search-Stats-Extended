@@ -376,6 +376,20 @@ forgotten-per-day = {$value} {$value ->
 
 # About section
 
+about = About
+translate = Translate
+
+translate-instructions =
+    Search Stats Extended is currently has localisations for { $list }
+
+    If you want to translate this addon
+    Make a file for your language "{ $lang }.ftl" in 
+    "(Addon menu -> Search Stats Extended -> View Files)/locale/"
+
+    Copy in the original translations from
+    "en_GB.ftl"
+    translate it and create a pull request on github!
+
 credits = Credits
 special-thanks-to = Special thanks to:
 
