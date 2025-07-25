@@ -48,10 +48,16 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("support")}</h1>
-        <a href="https://ankiweb.net/shared/info/1613056169">Like on ankiweb</a>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("config")}</h1>
-        You can find more options to customise your experience in the config Try
+        <LinkButton href="https://ankiweb.net/shared/info/1613056169">
+            {i18n("like-on-ankiweb")}
+        </LinkButton>
+        <LinkButton href="https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended">
+            {i18n("star-on-github")}
+        </LinkButton>
+        <br />
+        <LinkButton href="https://github.com/sponsors/Luc-Mcgrady">
+            {i18n("sponsor-on-github")}
+        </LinkButton>
+        <LinkButton href="https://ko-fi.com/lucmcgrady">{i18n("buy-me-a-coffee")}</LinkButton>
     </GraphContainer>
 </GraphCategory>
