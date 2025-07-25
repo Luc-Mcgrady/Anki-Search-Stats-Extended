@@ -7,14 +7,12 @@
     let currently_translated = ["en-GB", "zh_CN"]
 </script>
 
-<GraphCategory hidden_title={i18n("fluff-and-credits")} config_name="fluff">
+<GraphCategory hidden_title={i18n("info")} config_name="info">
     <GraphContainer>
-        <h1>{i18n("credits")}</h1>
-        Special thanks to:
-
+        <h1>{i18n("special-thanks")}</h1>
         <ul>
             <li>{i18n("credits-llamas")}</li>
-            <li>Ross Brown: {i18n("sxr-heatmap")}</li>
+            <li>{i18n("credits-Ross-Brown")}</li>
             <li>{i18n("credits-Jonathan-Schoreels")}</li>
             <li>{i18n("credits-Huili-fox")}</li>
             <li>{i18n("credits-Jarrett-Ye")}</li>

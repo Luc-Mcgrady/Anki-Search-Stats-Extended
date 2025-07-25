@@ -20,6 +20,7 @@
         "rating": true,
         "load": true,
         "introduced": true,
+        "info": true,
         "timeMachine": true,
         "bad": "removed"
     } 

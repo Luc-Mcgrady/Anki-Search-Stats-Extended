@@ -374,9 +374,9 @@ forgotten-per-day = {$value} {$value ->
         *[many] {$n} days
     }
 
-# About section
+# Info section
 
-about = About
+info = Info
 translate = Translate
 
 translate-instructions =
@@ -391,7 +391,14 @@ translate-instructions =
     translate it and create a pull request on github!
 
 credits = Credits
-special-thanks-to = Special thanks to:
+special-thanks = Special Thanks
+
+credits-llamas = 🦙 (siid): Security and other fixes
+credits-Ross-Brown = Ross Brown: {sxr-heatmap}
+credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} and more.
+credits-Huili-fox = Huili-fox: Chinese localisation
+credits-Jarrett-Ye = Jarrett-Ye: Memorised graph
+credits-Ishiko = Ishiko: Memorised graph
 
 support = Support the Addon
 like-on-ankiweb = Like on AnkiWeb 👍
