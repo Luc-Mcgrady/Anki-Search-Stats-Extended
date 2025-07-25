@@ -393,8 +393,8 @@ special-thanks = Special Thanks
 credits-llamas = 🦙 (siid): Security and other fixes
 credits-Ross-Brown = Ross Brown: {sxr-heatmap}
 credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} and more.
-credits-Huili-fox = Huili-fox: Chinese localisation
-credits-Jarrett-Ye = Jarrett-Ye: Memorised graph
+credits-Huili-fox = Huili fox: Chinese localisation
+credits-Jarrett-Ye = Jarrett Ye: Memorised graph
 credits-Ishiko = Ishiko: Memorised graph
 
 support = Support the Addon
