@@ -379,13 +379,13 @@ forgotten-per-day = {$value} {$value ->
 info = Info
 translate = Translate
 
-translate-instructions-1 = Search Stats Extended currently has localisations for:
+translate-instructions-1 = Currently available translations/locales:
 translate-instructions-2 = For translation instructions, consult "readme.md" found in the locale folder.
 translate-current-locale = Your current locale code is: {$code}
 
 translate-open-locale-folder = Open Locale Folder
-translate-submit-to-github = Submit Translation
-translate-edit-existing-translations = Edit Existing Translations
+translate-submit-to-github = Submit Translation on Github
+translate-edit-existing-translations = Edit Existing Translations on Github
 
 credits = Credits
 special-thanks = Special Thanks
