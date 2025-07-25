@@ -22,23 +22,24 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("translate")}</h1>
-        <span style:white-space="pre">
-            {i18n("translate-instructions", {
-                lang: SSEother.lang,
-                list: currently_translated.toString(),
-            })}
-        </span>
-        <LinkButton onClick={openLocaleFolder}>Open Locale Folder</LinkButton>
+        {i18n("translate-instructions-1")}
+        <code>{currently_translated}</code>
+        {i18n("translate-instructions-2")}
+        <LinkButton onClick={openLocaleFolder}>{i18n("translate-open-locale-folder")}</LinkButton>
+        {i18n("translate-current-locale", {
+            code: SSEother.lang,
+        })}
+
         <br />
         <LinkButton
             href={`https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/new/main/locale?filename=${SSEother.lang}.ftl`}
         >
-            Submit to github
+            {i18n("translate-submit-to-github")}
         </LinkButton>
         <LinkButton
             href={`https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/tree/main/locale`}
         >
-            Edit existing translations
+            {i18n("translate-edit-existing-translations")}
         </LinkButton>
     </GraphContainer>
     <GraphContainer>
