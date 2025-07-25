@@ -374,9 +374,9 @@ forgotten-per-day = {$value} {$value ->
         *[many] {$n} days
     }
 
-# Info section
+# About section
 
-info = Info
+about = About
 translate = Translate
 
 translate-instructions-1 = Currently available translations/locales:

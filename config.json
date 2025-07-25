@@ -10,6 +10,7 @@
     "forceLang": null,
     "graphMode": "Pie",
     "categories": {
+        "about": true,
         "due": true,
         "misc": true,
         "interval": false,
@@ -20,7 +21,6 @@
         "rating": true,
         "load": true,
         "introduced": true,
-        "info": true,
         "timeMachine": true,
         "bad": "removed"
     } 

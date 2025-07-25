@@ -6,7 +6,7 @@
     import { openLocaleFolder } from "./search"
 </script>
 
-<GraphCategory hidden_title={i18n("info")} config_name="info">
+<GraphCategory hidden_title={i18n("about")} config_name="about">
     <GraphContainer>
         <h1>{i18n("special-thanks")}</h1>
         <ul>
