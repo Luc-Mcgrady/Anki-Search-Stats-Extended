@@ -67,7 +67,7 @@
     let average_r = <number[]>[]
     $: if ($memorised_stats?.totalCards) {
         average_r = _.zip(retrievabilityDays, $memorised_stats.totalCards).map(([r, c]) => {
-            console.log({ r, c })
+            // console.log({ r, c })
             return (r ?? 0) / (c ?? 1)
         })
     }

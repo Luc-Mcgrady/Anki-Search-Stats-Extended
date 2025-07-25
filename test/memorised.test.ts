@@ -112,7 +112,7 @@ test("Leech Detection", () =>{
         did: 2
     } as any],
     configs,
-    mappings, 1, 0).leech_probabilities
+    mappings, [], 1, 0).leech_probabilities
 
     expect(leech_probabilities[card.card().id]).toBeCloseTo(0.1)
 })
