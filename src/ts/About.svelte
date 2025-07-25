@@ -4,8 +4,6 @@
     import { i18n } from "./i18n"
     import LinkButton from "./LinkButton.svelte"
     import { openLocaleFolder } from "./search"
-
-    let currently_translated = ["en-GB", "zh_CN"]
 </script>
 
 <GraphCategory hidden_title={i18n("info")} config_name="info">
@@ -23,7 +21,7 @@
     <GraphContainer>
         <h1>{i18n("translate")}</h1>
         {i18n("translate-instructions-1")}
-        <code>{currently_translated}</code>
+        <code>{SSEother.available_langs}</code>
         {i18n("translate-instructions-2")}
         <LinkButton onClick={openLocaleFolder}>{i18n("translate-open-locale-folder")}</LinkButton>
         {i18n("translate-current-locale", {

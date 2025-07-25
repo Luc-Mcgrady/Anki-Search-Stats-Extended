@@ -3,19 +3,27 @@ from anki.hooks import wrap
 
 from aqt.stats import NewDeckStats
 import os.path
+import os
 from pathlib import Path
 from aqt import QDesktopServices, QUrl, mw
 
 addon_dir = Path(os.path.dirname(__file__))
+locale_dir = addon_dir / "locale"
 
 fallback_lang = "en_GB"
 def getLocale(lang: str):
     try:
-        with open(addon_dir / "locale" / f"{lang}.ftl", encoding="utf-8") as f:
+        with open(locale_dir / f"{lang}.ftl", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         print(f"Search Stats Extended: Locale {lang} not found")
         return ""
+
+def getAvailableLangs():
+    try:
+        return [a[:-4] for a in os.listdir(locale_dir) if a.endswith(".ftl")]
+    except Exception as e:
+        return ["Locale folder missing or otherwise inaccessable", e]
 
 def new_refresh(self: NewDeckStats):
     with open(addon_dir / "stats.min.js", encoding="utf-8") as f: # Putting this inside the function allows you to rebuild the page without restarting anki
@@ -33,8 +41,9 @@ def new_refresh(self: NewDeckStats):
         "deck_config_ids": {deck["id"]: deck.get("conf", None) for deck in mw.col.decks.all()},
         "days_elapsed": mw.col.sched.today,
         "lang": lang,
+        "available_langs": getAvailableLangs(),
         "lang_ftl": getLocale(lang),
-        "fallback_ftl": getLocale(fallback_lang)
+        "fallback_ftl": getLocale(fallback_lang),
     }
     setVars = (
         f"const css = `{innerCss}`;" 
@@ -109,6 +118,6 @@ def write_config():
 post_handlers["writeConfig"] = write_config
 
 def open_locale_folder():
-    QDesktopServices.openUrl(QUrl.fromLocalFile(str(addon_dir.joinpath("locale").absolute())))
+    QDesktopServices.openUrl(QUrl.fromLocalFile(str(locale_dir.absolute())))
 
 post_handlers["openLocaleFolder"] = open_locale_folder
