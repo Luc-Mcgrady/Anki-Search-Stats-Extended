@@ -23,6 +23,124 @@ export interface LossBin {
     count: number
 }
 
+/**
+ * This function is written by AI so good luck
+ * Implements the outlier removal logic from the provided Python script.
+ * @param revlogs The full list of review logs.
+ * @returns A Set containing the IDs of revlogs to be excluded.
+ */
+function applyPythonOutlierFilter(revlogs: Revlog[]): Set<number> {
+    // Step 1: Pre-calculate the first rating for each card.
+    // Assumes revlogs are sorted by time.
+    const firstRatings = new Map<number, number>()
+    for (const revlog of revlogs) {
+        if (!firstRatings.has(revlog.cid)) {
+            firstRatings.set(revlog.cid, revlog.ease)
+        }
+    }
+
+    // Step 2: Augment revlogs with delta_t (elapsed days) to prepare for grouping.
+    type AugmentedRevlog = {
+        id: number
+        delta_t: number
+        first_rating: number
+    }
+    const augmentedRevlogs: AugmentedRevlog[] = []
+    const lastReviewDates = new Map<number, Date>()
+
+    for (const revlog of revlogs) {
+        // Skip reviews that aren't rated or are part of cramming.
+        if (revlog.ease === 0 || (revlog.type === 3 && revlog.factor === 0)) {
+            continue
+        }
+
+        const lastReview = lastReviewDates.get(revlog.cid)
+        const now = new Date(revlog.id)
+        let elapsed = 0
+
+        if (lastReview) {
+            const oldDate = new Date(lastReview.getTime() - rollover_ms)
+            oldDate.setHours(0, 0, 0, 0)
+            const newDate = new Date(now.getTime() - rollover_ms)
+            newDate.setHours(0, 0, 0, 0)
+            elapsed = dateDiffInDays(oldDate, newDate)
+        }
+        lastReviewDates.set(revlog.cid, now)
+
+        // The filter only applies to reviews with an actual interval.
+        if (!lastReview || elapsed <= 0) {
+            continue
+        }
+
+        const first_rating = firstRatings.get(revlog.cid)
+        if (first_rating === undefined) continue
+
+        augmentedRevlogs.push({
+            id: revlog.id,
+            delta_t: elapsed,
+            first_rating: first_rating,
+        })
+    }
+
+    // Step 3: Group by first_rating and apply the filtering logic to each group.
+    const revlogsByFirstRating = _.groupBy(augmentedRevlogs, "first_rating")
+    const excludedRevlogIds = new Set<number>()
+
+    for (const ratingStr in revlogsByFirstRating) {
+        const group = revlogsByFirstRating[ratingStr]
+
+        // a. Aggregate by delta_t to get counts.
+        const aggregatedData = _.map(_.groupBy(group, "delta_t"), (reviews, dt) => ({
+            delta_t: Number(dt),
+            count: reviews.length,
+        }))
+
+        // b. Sort by count (asc) then delta_t (desc) to prioritize removing rare/long intervals.
+        aggregatedData.sort((a, b) => {
+            if (a.count !== b.count) {
+                return a.count - b.count
+            }
+            return b.delta_t - a.delta_t
+        })
+
+        // c. Iterate through sorted groups to decide which delta_t's to remove.
+        const total = group.length
+        let has_been_removed = 0
+        const removalThreshold = Math.max(total * 0.05, 20)
+        const deltaTsToRemove = new Set<number>()
+
+        for (const item of aggregatedData) {
+            const { delta_t, count } = item
+
+            if (has_been_removed + count >= removalThreshold) {
+                // Phase 2: After removing the first 5% / 20 items, remove conditionally.
+                const deltaTThreshold = ratingStr !== "4" ? 100 : 365
+                if (count < 6 || delta_t > deltaTThreshold) {
+                    deltaTsToRemove.add(delta_t)
+                    has_been_removed += count
+                }
+            } else {
+                // Phase 1: Unconditionally remove the rarest delta_t groups.
+                deltaTsToRemove.add(delta_t)
+                has_been_removed += count
+            }
+        }
+
+        // d. Collect the IDs of all revlogs that belong to a removed delta_t group.
+        for (const revlog of group) {
+            if (deltaTsToRemove.has(revlog.delta_t)) {
+                excludedRevlogIds.add(revlog.id)
+            }
+        }
+    }
+
+    if (excludedRevlogIds.size > 0) {
+        console.log(`Outlier filter excluded ${excludedRevlogIds.size} reviews from stats.`)
+    }
+
+    return excludedRevlogIds
+}
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -33,6 +151,9 @@ export function getMemorisedDays(
     leech_min_reviews = 5
 ) {
     console.log(`ts-fsrs ${FSRSVersion}`)
+
+    // Apply the new outlier filtering logic at the start.
+    const excludedRevlogIds = applyPythonOutlierFilter(revlogs)
 
     let deckFsrs: Record<number, FSRS> = {}
     let fsrsCards: Record<number, Card> = {}
@@ -154,6 +275,7 @@ export function getMemorisedDays(
         (_) => [1]
     )
 
+    let log: any[] = []
     for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
         if (!config) {
@@ -164,7 +286,6 @@ export function getMemorisedDays(
         const new_card = !fsrsCards[revlog.cid]
         const now = new Date(revlog.id)
         const fsrs = getFsrs(config)
-        //console.log({fsrs})
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
 
         for (let day = last_day; day < dayFromMs(revlog.id); day++) {
@@ -194,7 +315,6 @@ export function getMemorisedDays(
             forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), card, revlog.cid)
         }
 
-        //console.log(grade)
         let memoryState: FSRSState | null = null
         let elapsed = 0
         if (card.last_review) {
@@ -227,7 +347,6 @@ export function getMemorisedDays(
                     if (!new_card) {
                         const leech_probabilities = probabilities[revlog.cid]
                         for (let j = leech_probabilities.length + y - 1; j >= 0; j--) {
-                            // debugger
                             leech_probabilities[j] =
                                 (leech_probabilities[j] ?? 0) * (1 - p) +
                                 (j > 0 ? leech_probabilities[j - 1] * p : 0)
@@ -253,13 +372,22 @@ export function getMemorisedDays(
                     }
 
                     // Calibration graph
-                    let calibration_r_bin =
-                        Math.floor(Math.exp(Math.log(calibration_bin_count + 1) * p)) - 1
-                    calibration[calibration_r_bin] = incrementLoss(
-                        calibration[calibration_r_bin],
-                        p,
-                        y
-                    )
+                    if (!excludedRevlogIds.has(revlog.id)) {
+                        let calibration_r_bin =
+                            Math.floor(Math.exp(Math.log(calibration_bin_count + 1) * p)) - 1
+                        calibration[calibration_r_bin] = incrementLoss(
+                            calibration[calibration_r_bin],
+                            p,
+                            y
+                        )
+                        log.push({
+                            d: card.difficulty,
+                            s: card.stability,
+                            id: revlog.id,
+                            r: p,
+                            y: 1,
+                        })
+                    }
                 }
 
                 fatigue_bins.not_learn[today_so_far] = incrementLoss(
@@ -288,7 +416,7 @@ export function getMemorisedDays(
         fsrsCards[revlog.cid] = card
     }
 
-    // console.log({ deckFsrs })
+    // console.log(log)
 
     let inaccurate_cids: any[] = []
     let accurate_cids: number[] = []
@@ -318,7 +446,9 @@ export function getMemorisedDays(
             Math.abs(a.expected - a.actual)
         ).toFixed(2)
         console.warn(
-            `The stability of the following ${inaccurate_cids.length}/${inaccurate_cids.length + accurate_cids.length} cards differ between SSE and anki with a mean error of ${mean_error}:`,
+            `The stability of the following ${inaccurate_cids.length}/${
+                inaccurate_cids.length + accurate_cids.length
+            } cards differ between SSE and anki with a mean error of ${mean_error}:`,
             { inaccurate_cids, accurate_cids }
         )
     }
