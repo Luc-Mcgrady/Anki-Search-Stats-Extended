@@ -24,113 +24,118 @@ export interface LossBin {
 }
 
 /**
- * This function is written by AI so good luck
- * Implements the outlier removal logic from the provided Python script.
+ * Accurately implements the FSRS outlier filtering logic from the reference Rust code.
+ * This function identifies cards whose first review interval is an outlier and returns
+ * a set of all revlog IDs belonging to those cards.
  * @param revlogs The full list of review logs.
- * @returns A Set containing the IDs of revlogs to be excluded.
+ * @returns A Set containing the IDs of all revlogs for cards deemed outliers.
  */
-function applyPythonOutlierFilter(revlogs: Revlog[]): Set<number> {
-    // Step 1: Pre-calculate the first rating for each card.
-    // Assumes revlogs are sorted by time.
-    const firstRatings = new Map<number, number>()
-    for (const revlog of revlogs) {
-        if (!firstRatings.has(revlog.cid)) {
-            firstRatings.set(revlog.cid, revlog.ease)
-        }
+function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
+    // Step 1: Group revlogs by card and identify the first review interval.
+    // An "item" here represents a card's second review and its history.
+    type SecondReviewItem = {
+        cardId: number
+        firstRating: number
+        secondRating: number
+        deltaT: number
     }
+    const secondReviewItems: SecondReviewItem[] = []
+    const revlogsByCard = _.groupBy(revlogs, (r) => r.cid)
 
-    // Step 2: Augment revlogs with delta_t (elapsed days) to prepare for grouping.
-    type AugmentedRevlog = {
-        id: number
-        delta_t: number
-        first_rating: number
-    }
-    const augmentedRevlogs: AugmentedRevlog[] = []
-    const lastReviewDates = new Map<number, Date>()
+    for (const cardId in revlogsByCard) {
+        const cardRevlogs = revlogsByCard[cardId]
+        if (cardRevlogs.length < 2) continue
 
-    for (const revlog of revlogs) {
-        // Skip reviews that aren't rated or are part of cramming.
-        if (revlog.ease === 0 || (revlog.type === 3 && revlog.factor === 0)) {
-            continue
-        }
+        const firstReview = cardRevlogs[0]
+        const secondReview = cardRevlogs[1]
+        const thirdReview = cardRevlogs[2]
 
-        const lastReview = lastReviewDates.get(revlog.cid)
-        const now = new Date(revlog.id)
-        let elapsed = 0
-
-        if (lastReview) {
-            const oldDate = new Date(lastReview.getTime() - rollover_ms)
-            oldDate.setHours(0, 0, 0, 0)
-            const newDate = new Date(now.getTime() - rollover_ms)
-            newDate.setHours(0, 0, 0, 0)
-            elapsed = dateDiffInDays(oldDate, newDate)
-        }
-        lastReviewDates.set(revlog.cid, now)
-
-        // The filter only applies to reviews with an actual interval.
-        if (!lastReview || elapsed <= 0) {
-            continue
-        }
-
-        const first_rating = firstRatings.get(revlog.cid)
-        if (first_rating === undefined) continue
-
-        augmentedRevlogs.push({
-            id: revlog.id,
-            delta_t: elapsed,
-            first_rating: first_rating,
+        secondReviewItems.push({
+            cardId: Number(cardId),
+            firstRating: firstReview.ease,
+            secondRating: secondReview.ease,
+            deltaT: dateDiffInDays(new Date(secondReview.id), new Date(thirdReview.id)),
         })
     }
 
-    // Step 3: Group by first_rating and apply the filtering logic to each group.
-    const revlogsByFirstRating = _.groupBy(augmentedRevlogs, "first_rating")
-    const excludedRevlogIds = new Set<number>()
+    // Step 2: Group items by first rating and then by delta_t.
+    // groups[firstRating][deltaT] = items[]
+    const groups: Record<number, Record<number, SecondReviewItem[]>> = {}
+    for (const item of secondReviewItems) {
+        const ratingGroup = (groups[item.firstRating] ??= {})
+        const deltaTGroup = (ratingGroup[item.deltaT] ??= [])
+        deltaTGroup.push(item)
+    }
 
-    for (const ratingStr in revlogsByFirstRating) {
-        const group = revlogsByFirstRating[ratingStr]
+    // This will store the (firstRating, deltaT) pairs that are marked for removal.
+    const removedPairs: Record<number, Set<number>> = {
+        1: new Set(),
+        2: new Set(),
+        3: new Set(),
+        4: new Set(),
+    }
 
-        // a. Aggregate by delta_t to get counts.
-        const aggregatedData = _.map(_.groupBy(group, "delta_t"), (reviews, dt) => ({
-            delta_t: Number(dt),
-            count: reviews.length,
+    // Step 3: Apply the filtering logic to each rating group.
+    for (const ratingStr in groups) {
+        const rating = Number(ratingStr)
+        const deltaTGroups = groups[rating]
+
+        let subGroups = Object.entries(deltaTGroups).map(([dt, items]) => ({
+            deltaT: Number(dt),
+            items: items,
         }))
 
-        // b. Sort by count (asc) then delta_t (desc) to prioritize removing rare/long intervals.
-        aggregatedData.sort((a, b) => {
-            if (a.count !== b.count) {
-                return a.count - b.count
+        // Sort by number of items (asc), then by delta_t (asc).
+        // This is equivalent to the Rust code's sort followed by a reverse iteration.
+        subGroups.sort((a, b) => {
+            if (a.items.length !== b.items.length) {
+                return a.items.length - b.items.length
             }
-            return b.delta_t - a.delta_t
+            return a.deltaT - b.deltaT
         })
 
-        // c. Iterate through sorted groups to decide which delta_t's to remove.
-        const total = group.length
-        let has_been_removed = 0
-        const removalThreshold = Math.max(total * 0.05, 20)
-        const deltaTsToRemove = new Set<number>()
+        const totalInGroup = subGroups.reduce((sum, sg) => sum + sg.items.length, 0)
+        const removalThreshold = Math.max(20, Math.floor(totalInGroup / 20))
+        let hasBeenRemoved = 0
 
-        for (const item of aggregatedData) {
-            const { delta_t, count } = item
+        for (const subGroup of subGroups) {
+            // Phase 1: Unconditionally remove the smallest groups until the threshold is met.
+            if (hasBeenRemoved + subGroup.items.length < removalThreshold) {
+                hasBeenRemoved += subGroup.items.length
+                removedPairs[rating].add(subGroup.deltaT)
+                continue
+            }
 
-            if (has_been_removed + count >= removalThreshold) {
-                // Phase 2: After removing the first 5% / 20 items, remove conditionally.
-                const deltaTThreshold = ratingStr !== "4" ? 100 : 365
-                if (count < 6 || delta_t > deltaTThreshold) {
-                    deltaTsToRemove.add(delta_t)
-                    has_been_removed += count
-                }
-            } else {
-                // Phase 1: Unconditionally remove the rarest delta_t groups.
-                deltaTsToRemove.add(delta_t)
-                has_been_removed += count
+            // Phase 2: Conditionally keep or remove remaining groups.
+            const keep = subGroup.items.length >= 6 && subGroup.deltaT <= (rating !== 4 ? 100 : 365)
+            if (!keep) {
+                removedPairs[rating].add(subGroup.deltaT)
             }
         }
+    }
 
-        // d. Collect the IDs of all revlogs that belong to a removed delta_t group.
-        for (const revlog of group) {
-            if (deltaTsToRemove.has(revlog.delta_t)) {
-                excludedRevlogIds.add(revlog.id)
-            }
+    // Step 4: Identify all revlogs for cards whose first interval was flagged for removal.
+    const cardIdToPair = new Map<number, { firstRating: number; deltaT: number }>()
+    for (const item of secondReviewItems) {
+        cardIdToPair.set(item.cardId, { firstRating: item.firstRating, deltaT: item.deltaT })
+    }
+
+    const excludedRevlogIds = new Set<number>()
+    for (const revlog of revlogs) {
+        const pair = cardIdToPair.get(revlog.cid)
+        if (pair && removedPairs[pair.firstRating]?.has(pair.deltaT)) {
+            excludedRevlogIds.add(revlog.id)
+        }
+    }
+
+    // Remove non contiguous revlogs
+    const ignoredCids = new Set<number>()
+    for (const revlog of revlogs) {
+        if (ignoredCids.has(revlog.cid)) {
+            excludedRevlogIds.add(revlog.id)
+        }
+        if (excludedRevlogIds.has(revlog.id)) {
+            ignoredCids.add(revlog.cid)
         }
     }
 
@@ -153,7 +158,7 @@ export function getMemorisedDays(
     console.log(`ts-fsrs ${FSRSVersion}`)
 
     // Apply the new outlier filtering logic at the start.
-    const excludedRevlogIds = applyPythonOutlierFilter(revlogs)
+    const excludedRevlogIds = applyOutlierFilter(revlogs)
 
     let deckFsrs: Record<number, FSRS> = {}
     let fsrsCards: Record<number, Card> = {}
@@ -416,7 +421,7 @@ export function getMemorisedDays(
         fsrsCards[revlog.cid] = card
     }
 
-    // console.log(log)
+    console.log(log)
 
     let inaccurate_cids: any[] = []
     let accurate_cids: number[] = []
