@@ -277,6 +277,7 @@ export function getMemorisedDays(
     let day_medians: number[] = []
     let day_means: number[] = []
     let last_day = dayFromMs(revlogs[0].id)
+    // Todo: This can be optimised
     let probabilities = _.mapValues(
         _.groupBy(revlogs, (r) => r.cid),
         (_) => [1]
