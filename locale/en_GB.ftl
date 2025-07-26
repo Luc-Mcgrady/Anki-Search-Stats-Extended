@@ -374,15 +374,44 @@ forgotten-per-day = {$value} {$value ->
         *[many] {$n} days
     }
 
+# About section
+
+about = About
+translate = Translate
+
+translate-instructions-1 = Currently available translations/locales:
+translate-instructions-2 = For translation instructions, consult "readme.md" found in the locale folder.
+translate-current-locale = Your current locale code is: {$code}
+
+translate-open-locale-folder = Open Locale Folder
+translate-submit-to-github = Submit Translation on Github
+translate-edit-existing-translations = Edit Existing Translations on Github
+
+credits = Credits
+special-thanks = Special Thanks
+
+credits-llamas = 🦙 (siid): Security and other fixes
+credits-Ross-Brown = Ross Brown: {sxr-heatmap}
+credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} and more.
+credits-Huili-fox = Huili fox: Chinese localisation
+credits-Jarrett-Ye = Jarrett Ye: Memorised graph
+credits-Ishiko = Ishiko: Memorised graph
+
+support = Support the Addon
+like-on-ankiweb = Like on AnkiWeb 👍
+star-on-github = Star on Github ⭐
+sponsor-on-github = Sponsor me on Github ❤️
+buy-me-a-coffee = Buy me a coffee ☕
+
+# Graphs that are hidden by default, translate if you want to
+bad-graph = Bad Graphs
+
 # This tables description and help will most likely change or become a bad graph
 leech-detector = Lapse Odds (Experimental)
 leech-detector-help =
     A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention.
     The higher the value, the less likely the cards are to have that number of lapses.
     The formula for calculating this may change in the future.
-
-# Graphs that are hidden by default, translate if you want to
-bad-graph = Bad Graphs
 
 naive-sibling-similarity = Naive Sibling Similarity
 naive-sibling-similarity-help = 

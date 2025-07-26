@@ -110,6 +110,10 @@ export interface Revlog {
     type: number
 }
 
+export async function openLocaleFolder() {
+    await endpoint("openLocaleFolder")
+}
+
 export async function getCardData(cids: number[]) {
     return (await endpoint("cardData", JSON.stringify(cids))) as CardData[]
 }

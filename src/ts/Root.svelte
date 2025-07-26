@@ -35,6 +35,7 @@
     import { totalCalc } from "./barHelpers"
     import SRHeatmap from "./SRHeatmap.svelte"
     import { i18n } from "./i18n"
+    import About from "./About.svelte"
 
     const { width, height } = defaultGraphBounds()
 
@@ -196,6 +197,7 @@
             </div>
         </GraphCategory>
     {/if}
+    <About></About>
 </div>
 
 <div
