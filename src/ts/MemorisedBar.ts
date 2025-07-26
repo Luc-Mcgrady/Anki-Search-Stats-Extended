@@ -80,6 +80,10 @@ function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
     // Step 3: Apply the filtering logic to each rating group.
     for (const ratingStr in groups) {
         const rating = Number(ratingStr)
+        if (rating == 0) {
+            continue
+        }
+
         const deltaTGroups = groups[rating]
 
         let subGroups = Object.entries(deltaTGroups).map(([dt, items]) => ({
