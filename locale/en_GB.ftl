@@ -268,6 +268,7 @@ actual = Actual
 cards = Cards
 notes = Notes
 average-retrievability = Average Per Card
+stability = Stability
 retrievability = Retrievability
 retrievability-and-stability = Retrievability & Stability
 cards-and-stability = Stable cards
