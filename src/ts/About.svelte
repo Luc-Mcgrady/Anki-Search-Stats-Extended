@@ -21,7 +21,9 @@
     <GraphContainer>
         <h1>{i18n("translate")}</h1>
         {i18n("translate-instructions-1")}
-        <code>{SSEother.available_langs}</code>
+        <code>
+            {SSEother.available_langs || "None found. If you have recently updated, restart Anki."}
+        </code>
         {i18n("translate-instructions-2")}
         <LinkButton onClick={openLocaleFolder}>{i18n("translate-open-locale-folder")}</LinkButton>
         {i18n("translate-current-locale", {
