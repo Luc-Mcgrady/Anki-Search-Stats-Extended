@@ -50,12 +50,14 @@ function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
         const secondReview = cardRevlogs[1]
         const thirdReview = cardRevlogs[2]
 
-        secondReviewItems.push({
-            cardId: Number(cardId),
-            firstRating: firstReview.ease,
-            secondRating: secondReview.ease,
-            deltaT: dateDiffInDays(new Date(secondReview.id), new Date(thirdReview.id)),
-        })
+        if (firstReview && secondReview && thirdReview) {
+            secondReviewItems.push({
+                cardId: Number(cardId),
+                firstRating: firstReview.ease,
+                secondRating: secondReview.ease,
+                deltaT: dateDiffInDays(new Date(secondReview.id), new Date(thirdReview.id)),
+            })
+        }
     }
 
     // Step 2: Group items by first rating and then by delta_t.
