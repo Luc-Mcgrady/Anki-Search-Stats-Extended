@@ -13,9 +13,10 @@
             <li>{i18n("credits-llamas")}</li>
             <li>{i18n("credits-Ross-Brown")}</li>
             <li>{i18n("credits-Jonathan-Schoreels")}</li>
-            <li>{i18n("credits-Huili-fox")}</li>
             <li>{i18n("credits-Jarrett-Ye")}</li>
             <li>{i18n("credits-Ishiko")}</li>
+            <li>{i18n("credits-Huili-fox")}</li>
+            <li>{i18n("credits-Rener-Crisostomo")}</li>
         </ul>
     </GraphContainer>
     <GraphContainer>
