@@ -397,7 +397,7 @@ credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} a
 credits-Huili-fox = Huili fox: Chinese localisation
 credits-Jarrett-Ye = Jarrett Ye: Memorised graph
 credits-Ishiko = Ishiko: Memorised graph
-credits-Rener-Crisostomo = Renêr: Brazilian translation
+credits-Rener-Crisostomo = Renêr Crisostomo: Brazilian translation
 
 support = Support the Addon
 like-on-ankiweb = Like on AnkiWeb 👍
