@@ -6,8 +6,6 @@ Like the new anki stats screen? Want more? This is the addon for you.
      
 - **loadDelayMs**: The number of ms to delay before displaying the search stats, Increasing this can help if the search stats appear above the regular stats (Though even with 0ms this doesn't tend to happen)
 
-- **burdenNotLoad**: If true, replaces the word "Load" with "Burden" in many places to be consistent with SuperMemo https://supermemo.guru/wiki/Burden
-
 - **confirmExpensiveStats**: If true, graphs which itterate over every review for the cards in the selection will be hidden by default prompting the user to press a button to load them. 
 
 - **barWidth, barHeight**: Change the RESOLUTION at which the bar/candlestick charts are rendered. This can also be used to change their aspect ratio.
@@ -22,68 +20,56 @@ Like the new anki stats screen? Want more? This is the addon for you.
 
 - **trends**: If set to false, disables trend lines.
 
-- **badGraphs**: If sets to false hides the "sibling similarity" graph. In the future may hide other graphs which I add and find are misleading/hard to interpret.
+- **categories** Automatically set when you open and close a tab, can also be set to "removed" to omit the tab entirely
+
+- **forceLang** Allows you to force a specific language regardless of what Anki's language is set to.
 
 ## The Graphs
 
-### Future due types
+### Here are some examples:
 
-![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/84ccc66d-7e1d-4fb7-9c12-0ad231e44fdd)
+<img width="1244" height="555" alt="image" src="https://github.com/user-attachments/assets/7d678ff2-31e0-4d0c-917c-58a4668bd768" />
+<img width="500" height="451" alt="image" src="https://github.com/user-attachments/assets/0576aacd-12d2-446c-9355-d0e76f7f2eb8" />
+<img width="500" height="451" alt="image" src="https://github.com/user-attachments/assets/1781747b-8f69-42c8-8545-d93e99c9197d" />
+<img width="500" height="569" alt="image" src="https://github.com/user-attachments/assets/9191e1e4-fe37-4cea-bb25-857f1b58966c" />
+<img width="500" height="569" alt="image" src="https://github.com/user-attachments/assets/7034956f-9e2d-47b0-81d6-955461b87da1" />
+<img width="1244" height="556" alt="image" src="https://github.com/user-attachments/assets/c038c4db-f21a-4448-9190-e0751fd9cc91" />
 
-### Intra-Day Due 
+### And more:
 
-![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/fdab1f3f-c3bb-4a45-b8d4-f5544774d946)
-
-### Todays Retention
-
-![image](https://github.com/Luc-Mcgrady/Anki-New-Stats-Plus/assets/63685643/d34dd13e-32cc-49cc-ab46-871696f58c75)
-
-### Custom Pie
-
-![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/26d552b5-9707-4cc1-a4f0-c5c1fb1d3a14)
-
-### Interval Distribution/Load
-
-![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/dfe42518-5d5a-4d3e-92e9-8552ac753d64)
-
-### Lapse Load/Distribution/Total
-
-![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/8235d024-0bca-4856-bd6f-099e88da8c43)
-
-### Repetition Load/Distribution/Total
-
-![image](https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/assets/63685643/db56bfec-6fe1-47d0-987c-c0c79f5bf876)
-
-### Time Distribution/Total
-
-![image](https://github.com/user-attachments/assets/15e1e948-c869-4af9-b20f-6f55708d1a23)
-
-### Review Speed Trend
-
-![image](https://github.com/user-attachments/assets/02c08574-a100-48b6-9c75-3e3e8a5d3aec)
-
-### Introduced/Forgotten
-
-![image](https://github.com/user-attachments/assets/b8110b00-7c56-42e6-a163-03676c0e75f9)
-
-### Rating Graphs
-
-![image](https://github.com/user-attachments/assets/36bea17e-814a-477b-ac5d-ff4f4fad2ce1)
-![image](https://github.com/user-attachments/assets/901fe7bf-53bf-4e53-ba09-d512b8fee38d)
-![image](https://github.com/user-attachments/assets/2ed5646f-268a-419e-b0f0-4803bf453590)
-
-
-### Burden Trend
-
-![image](https://github.com/user-attachments/assets/38716099-591c-4945-9d31-8c6fb7b4e09b)
-
-### Card Count / Interval Time Machines
-
-![image](https://github.com/user-attachments/assets/a8804de9-c60e-412d-8bf0-7c04e1a2423c)
-
-## FSRS Memorised over time
-
-![image](https://github.com/user-attachments/assets/480aad12-7c32-402d-bdfc-30b1f019fc7e)
+- Future Due Types
+- Future Due Retention
+- Intra Day Due
+- Todays Retention
+- Custom pie
+- Review Speed Trend
+- SxR Heatmap
+- Interval Distribution
+- Interval Load
+- Lapse Load
+- Lapse Distribution
+- Lapse Total
+- Repetition Load
+- Repetition Distribution
+- Repetition Total
+- Time Distribution
+- Time Totals
+- Introduced
+- Forgotten
+- Introductory Rating
+- Ratings
+- Interval Ratings
+- Time Ratings
+- Load Trend
+- Learn Reviews per Card
+- Memorised
+- FSRS Calibration
+- Stability Time Machine
+- Difficulty Time Machine
+- Stability Over Time
+- Card Count Time Machine
+- Review Interval Time Machine
+- Daily Hourly Breakdown
 
 ## Development
 
