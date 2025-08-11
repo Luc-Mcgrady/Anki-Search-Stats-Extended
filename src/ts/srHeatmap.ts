@@ -1,7 +1,7 @@
 import { forgetting_curve } from "ts-fsrs"
 import { CardType } from "../../anki/ts/lib/tslib/cards"
 import type { HeatmapData, HeatmapDimension } from "./heatmap"
-import type { CardData, CardExtraData } from "./search"
+import { getDecay, type CardData, type CardExtraData } from "./search"
 
 export interface CardSRData {
     r: number
@@ -47,7 +47,7 @@ export function create_card_sr_dataset(
         const elapsed_days = collection_today_timestamp - last_review_timestamp
 
         const s = extra_data.s
-        const r = forgetting_curve(elapsed_days, s)
+        const r = forgetting_curve(getDecay(extra_data), elapsed_days, s)
 
         const card_sr_data = {
             s,

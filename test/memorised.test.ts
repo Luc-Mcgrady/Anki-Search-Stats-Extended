@@ -49,7 +49,7 @@ test("Day Timings", ()=>{
 // https://github.com/open-spaced-repetition/fsrs-rs/blob/a7aaa40498bae992e0be0a1e9a1380e4992aee60/src/inference.rs#L433-L465
 test("Stability", ()=>{
     const card = new RevlogBuilder()
-    const FSRS = fsrs()
+    const FSRS = fsrs({w: weights})
 
     const revlogs = [
         card.review(1, 1),
@@ -73,7 +73,7 @@ test("Stability", ()=>{
 
 test("Stability On Forget", ()=>{
     const card = new RevlogBuilder()
-    const FSRS = fsrs()
+    const FSRS = fsrs({w: weights})
 
     const revlogs = [
         card.review(1, 1),
@@ -112,7 +112,7 @@ test("Leech Detection", () =>{
         did: 2
     } as any],
     configs,
-    mappings, 1, 0).leech_probabilities
+    mappings, [], 1, 0).leech_probabilities
 
     expect(leech_probabilities[card.card().id]).toBeCloseTo(0.1)
 })

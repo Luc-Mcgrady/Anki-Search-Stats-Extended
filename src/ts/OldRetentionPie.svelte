@@ -7,6 +7,7 @@
     import { search as doSearch } from "./search"
     import { searchString } from "./stores"
     import { i18n } from "./i18n"
+    import { LEARN_COLOUR, RELEARN_COLOUR } from "./graph"
 
     $: passed_search = searchJoin($searchString, "rated:1 -rated:1:1 is:review")
     $: flunked_search = searchJoin($searchString, "rated:1 rated:1:1 is:review")
@@ -31,7 +32,7 @@
                   {
                       label: i18n("learning"),
                       value: learning.length,
-                      colour: "#fd8d3c",
+                      colour: LEARN_COLOUR,
                   },
               ]
             : []
@@ -45,7 +46,7 @@
             {
                 label: i18n("flunked"),
                 value: flunked.length,
-                colour: "#fb6a4a",
+                colour: RELEARN_COLOUR,
             },
             ...learning_data,
         ]

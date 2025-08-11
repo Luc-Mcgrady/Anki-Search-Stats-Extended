@@ -1,3 +1,4 @@
+import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import { realFetch } from "./root"
 
 export function catchErrors<Return>(func: () => Return): Return {
@@ -52,6 +53,7 @@ export interface CardData {
     mod: number
     usn: number
     type: number
+    // https://github.com/ankitects/anki/blob/main/pylib/anki/consts.py#L22-L29
     queue: number
     due: number
     ivl: number
@@ -70,6 +72,19 @@ export interface CardExtraData {
     dr?: number
     pos?: number
     s?: number
+    decay?: number
+}
+
+export function getExtraDataFromCard(card: CardData): CardExtraData {
+    return JSON.parse(card.data)
+}
+
+export function getCardDecay(card: CardData) {
+    return getDecay(getExtraDataFromCard(card))
+}
+
+export function getDecay(data: CardExtraData) {
+    return data.decay ?? FSRS5_DEFAULT_DECAY
 }
 
 export interface Revlog {
@@ -81,7 +96,22 @@ export interface Revlog {
     lastIvl: number
     factor: number
     time: number
+    /*
+    Learning = 0,
+    Review = 1,
+    Relearning = 2,
+    /// Old Anki versions called this "Cram" or "Early". It's assigned when
+    /// reviewing cards before they're due, or when rescheduling is
+    /// disabled.
+    Filtered = 3,
+    Manual = 4,
+    Rescheduled = 5,
+    */
     type: number
+}
+
+export async function openLocaleFolder() {
+    await endpoint("openLocaleFolder")
 }
 
 export async function getCardData(cids: number[]) {

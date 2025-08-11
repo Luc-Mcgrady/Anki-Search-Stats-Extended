@@ -255,6 +255,11 @@ memorised-help =
 memorised-truncated-warning =
     强烈建议使用“全部历史”。
     该图表重新模拟了您的复习历史，忽略开头部分会显著影响模拟结果。
+
+fsrs-calibration = FSRS Calibration
+fsrs-calibration-help = This compares the average retention FSRS predicts you should have on cards (Perfect/orange line) to the retention you actually have (Actual/blue line).
+
+actual = Actual
     
 retrievability-and-stability = 记忆可提取性和稳定期
 cards-and-stability = 卡片和稳定期

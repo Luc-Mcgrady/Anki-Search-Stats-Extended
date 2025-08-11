@@ -101,6 +101,9 @@ export function calculateRevlogStats(
     let last_siblings: (undefined | SiblingReview)[] = []
     let sibling_time_ease: number[][] = emptyArray(initialEase())
     let day_review_count: number[] = []
+    let last_forget = []
+
+    let learn_steps_per_card: Record<number, number> = {}
 
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
@@ -124,6 +127,10 @@ export function calculateRevlogStats(
                 day_review_hours[no_rollover_day] ??= Array(24).fill(0)
                 day_review_hours[no_rollover_day][hour] =
                     day_review_hours[no_rollover_day][hour] + 1
+
+                if (revlog.type == 0) {
+                    learn_steps_per_card[revlog.cid] = (learn_steps_per_card[revlog.cid] ?? 0) + 1
+                }
             }
             day_filtered_review_hours[no_rollover_day] ??= Array(24).fill(0)
             day_filtered_review_hours[no_rollover_day][hour] =
@@ -167,11 +174,13 @@ export function calculateRevlogStats(
             incrementEase(fatigue_ease.learn, day_review_count[day], ease)
             incrementEase(time_ease_seconds.learn, second, ease)
         }
-        if (revlog.ease == 0 && revlog.ivl == 0) {
+        if (revlog.factor == 0 && revlog.type == 4) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
+            last_forget[revlog.cid] = revlog.id
             if (revlog.lastIvl != 0) {
                 day_forgotten[day] = (day_forgotten[day] ?? 0) + 1
+                delete learn_steps_per_card[revlog.cid]
             }
         } else if (!introduced.has(revlog.cid) && revlog.ivl != 0) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
@@ -186,34 +195,39 @@ export function calculateRevlogStats(
             reintroduced.add(revlog.cid)
             forgotten.delete(revlog.cid)
         }
-        if (card) {
-            if (revlog.ivl >= 0 || card.ivl < 0) {
-                burden_revlogs.push(revlog)
-            }
-        }
     }
 
     // "reduceRight" Used here to iterate backwards, never returns true
-    burden_revlogs.reduceRight((_p, revlog) => {
+    revlogData.reduceRight((_p, revlog) => {
         const day = dayFromMs(revlog.id)
-        const current = id_card_data[revlog.cid]
+        const card = id_card_data[revlog.cid]
 
-        const after_review = last_cids[revlog.cid]
-
+        const next_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
-        let ivl = after_review ? revlog.ivl : current.ivl
-        ivl = ivl >= 0 ? ivl : 1
+        let ivl = next_review ? revlog.ivl : card.type != 3 && card.type != 1 ? card.ivl : 0
+        // Ignore "forgets"
+        if ((revlog.factor == 0 && revlog.type == 4) || (!next_review && card.queue == 0)) {
+            last_cids[revlog.cid] = revlog
+            return undefined
+        }
+        ivl = ivl > 0 ? ivl : 0
 
         // If the card is suspended
-        if (!after_review && current.queue == -1) {
+        if (!next_review && card.queue == -1) {
             ivl = -1
         }
 
-        let to = after_review ? dayFromMs(after_review.id) : end + 1
+        let to = next_review ? dayFromMs(next_review.id) : end + 1
 
         for (const intervalDay of _.range(day, to)) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
+            // -1 suspended
+            // -2 learn (0 still contains learn as well)
             intervals[intervalDay][ivl] = (intervals[intervalDay][ivl] ?? 0) + 1
+
+            if (ivl == 0 && (revlog.type == 0 || (!next_review && card.type == 1))) {
+                intervals[intervalDay][-2] = (intervals[intervalDay][-2] ?? 0) + 1
+            }
         }
 
         last_cids[revlog.cid] = revlog
@@ -225,8 +239,7 @@ export function calculateRevlogStats(
         if (!v) {
             return 0
         } else {
-            delete v[0]
-            return _.sum(v.map((val, ivl) => val / ivl)) ?? 0
+            return _.sum(v.map((val, ivl) => val / (ivl || 1))) ?? 0
         }
     })
 
@@ -254,6 +267,8 @@ export function calculateRevlogStats(
         intervals,
         day_review_hours,
         day_filtered_review_hours,
+        learn_steps_per_card: Object.values(learn_steps_per_card),
+        last_forget,
     }
 }
 

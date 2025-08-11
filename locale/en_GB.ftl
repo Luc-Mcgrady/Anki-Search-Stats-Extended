@@ -241,6 +241,9 @@ load-trend-help =
 x-change = Change: {$val}
 x-total = Total: {$val}
 
+learn-reviews-per-card = Learn Reviews per Card
+learn-reviews-per-card-help = The number of reviews it took before the card left the learning phase (graduated). Resets for cards which were forgotten.
+
 ratings = Ratings
 ratings-help = 
     The rating of every review you did that day, learning or otherwise. The ratio displays it as a percent of all cards reviewed that day. calculate (1-again)% to get your retention for that day (shown as " % Correct " in the tooltip).
@@ -257,6 +260,16 @@ memorised-truncated-warning =
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
+fsrs-calibration = FSRS Calibration
+fsrs-calibration-help = This compares the average retention FSRS predicts you should have on cards (Perfect/orange line) to the retention you actually have (Actual/blue line).
+
+actual = Actual
+
+cards = Cards
+notes = Notes
+average-retrievability = Average Per Card
+stability = Stability
+retrievability = Retrievability
 retrievability-and-stability = Retrievability & Stability
 cards-and-stability = Stable cards
 
@@ -294,6 +307,9 @@ card-count-time-machine-help =
     Shows your card type counts for a given date.
     
     New suspended cards count as new, not suspended.
+
+    Learn and re-learn count for the end of the day, and not for learning steps greater than 1 day.
+    e.g. You failed to finish the learning steps that day.
 
 starts-at = Starts at
 first-added = First Added
@@ -359,15 +375,45 @@ forgotten-per-day = {$value} {$value ->
         *[many] {$n} days
     }
 
+# About section
+
+about = About
+translate = Translate
+
+translate-instructions-1 = Currently available translations/locales:
+translate-instructions-2 = For translation instructions, consult "readme.md" found in the locale folder.
+translate-current-locale = Your current locale code is: {$code}
+
+translate-open-locale-folder = Open Locale Folder
+translate-submit-to-github = Submit Translation on Github
+translate-edit-existing-translations = Edit Existing Translations on Github
+
+credits = Credits
+special-thanks = Special Thanks
+
+credits-llamas = 🦙 (siid): Security and other fixes
+credits-Ross-Brown = Ross Brown: {sxr-heatmap}
+credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} and more.
+credits-Huili-fox = Huili fox: Chinese localisation
+credits-Jarrett-Ye = Jarrett Ye: Memorised graph
+credits-Ishiko = Ishiko: Memorised graph
+credits-Rener-Crisostomo = Renêr Crisostomo: Brazilian translation
+
+support = Support the Addon
+like-on-ankiweb = Like on AnkiWeb 👍
+star-on-github = Star on Github ⭐
+sponsor-on-github = Sponsor me on Github ❤️
+buy-me-a-coffee = Buy me a coffee ☕
+
+# Graphs that are hidden by default, translate if you want to
+bad-graph = Bad Graphs
+
 # This tables description and help will most likely change or become a bad graph
 leech-detector = Lapse Odds (Experimental)
 leech-detector-help =
     A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention.
     The higher the value, the less likely the cards are to have that number of lapses.
     The formula for calculating this may change in the future.
-
-# Graphs that are hidden by default, translate if you want to
-bad-graph = Bad Graphs
 
 naive-sibling-similarity = Naive Sibling Similarity
 naive-sibling-similarity-help = 
