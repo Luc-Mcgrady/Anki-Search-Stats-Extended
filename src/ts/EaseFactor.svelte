@@ -33,4 +33,4 @@
     }
 </script>
 
-<BarScrollable data={graph} left_aligned></BarScrollable>
+<BarScrollable data={graph} left_aligned offset={100} binSize={5}></BarScrollable>
