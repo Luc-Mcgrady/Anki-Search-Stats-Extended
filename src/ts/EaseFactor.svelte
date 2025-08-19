@@ -22,12 +22,13 @@
 
     let graph: BarChart
     $: graph = {
-        row_labels: [i18n("factor")],
+        row_labels: [i18n("cards")],
         row_colours: ["steelblue"],
         data: Array.from(data).map((a, i) => ({
             values: [a ?? 0],
-            label: i.toString(),
+            label: (i / 100).toFixed(0),
         })),
+        tick_spacing: 5,
     }
 </script>
 
