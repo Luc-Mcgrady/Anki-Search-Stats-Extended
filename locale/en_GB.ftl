@@ -146,6 +146,7 @@ sxr-heatmap-help =
 ease-factors = Stability Increase Factor
 ease-factors-help = 
     For each card, the percentage increase in stability that will occur on a good review.
+    An alternate measure of difficulty.
 
 enlarged = Enlarged
 logarithmic-s = Logarithmic s
