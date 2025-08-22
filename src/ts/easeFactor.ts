@@ -24,7 +24,8 @@ export function calculateEaseFactors(
             const fsrsCard = createEmptyCard()
             fsrsCard.difficulty = difficulty
             fsrsCard.stability = stability
-            const next = fsrs.next_state(fsrsCard, c.ivl, 3)
+            const interval = fsrs.next_interval(stability, 0)
+            const next = fsrs.next_state(fsrsCard, interval, 3)
             return next.stability / stability
         })
         .filter((a) => a !== undefined)
