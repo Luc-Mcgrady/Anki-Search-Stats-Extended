@@ -6,6 +6,7 @@
     import { i18n, i18n_pattern } from "./i18n"
     import { catchErrors } from "./search"
     import { card_data } from "./stores"
+    import * as d3 from "d3"
 
     $: easeFactors = catchErrors(() =>
         calculateEaseFactors($card_data ?? [], SSEother.deck_configs, SSEother.deck_config_ids)
@@ -33,7 +34,7 @@
         columnLabeler: barStringLabeler(i18n_pattern("factor-of")),
     }
 
-    $: max = (_.max(easeFactors) ?? 0) * 100
+    $: max = (d3.quantile(easeFactors, 0.99) ?? 1) * 100
     const bins = 30
     const offset = 100
     $: binSize = Math.ceil((max - 100) / bins)
