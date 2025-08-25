@@ -19,7 +19,6 @@
             const index = Math.floor(factor * 100)
             data[index] = (data[index] ?? 0) + 1
         }
-        console.log(easeFactors)
     }
 
     let graph: BarChart
