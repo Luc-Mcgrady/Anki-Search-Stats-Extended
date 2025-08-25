@@ -116,6 +116,7 @@ reset = Reset
 interval-of = Interval of {$value}
 difficulty-of = Difficulty of {$value}
 stability-of = Stability of {$value}
+factor-of = Increase of {$value}%
 x-seconds = {$value} Seconds
 # e.g 
 # x = Interval
@@ -141,6 +142,11 @@ average-second-per-day = {$value} {$value ->
 sxr-heatmap = SxR Heatmap
 sxr-heatmap-help =
     This graph shows the number of cards which have the given stability and retrievability. The redder the cell, the more cards are in that "bin".
+
+ease-factors = Stability Increase Factor
+ease-factors-help = 
+    For each card, the percentage increase in stability that will occur on a good review.
+    An alternate measure of difficulty.
 
 enlarged = Enlarged
 logarithmic-s = Logarithmic s

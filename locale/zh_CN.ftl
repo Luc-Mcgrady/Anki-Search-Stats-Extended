@@ -115,6 +115,7 @@ reset = 重置
 interval-of = {$value}天间隔
 difficulty-of = {$value}的难度
 stability-of = {$value}的稳定期
+factor-of = Increase of {$value}%
 x-seconds = {$value}秒
 # e.g 
 # x = Interval
@@ -140,6 +141,11 @@ average-second-per-day = 平均每{$n ->
 sxr-heatmap = SxR热力图
 sxr-heatmap-help =
     展示卡片稳定期(S)与可提取性(R)的分布情况。红色越深，该区域卡片数量越多。
+
+ease-factors = Stability Increase Factor
+ease-factors-help = 
+    For each card, the percentage increase in stability that will occur on a good review.
+    An alternate measure of difficulty.
 
 enlarged = 放大
 logarithmic-s = 对数化稳定期

@@ -152,6 +152,30 @@ function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
     return excludedRevlogIds
 }
 
+let deckFsrs: Record<number, FSRS> = {}
+export function getFsrs(config: DeckConfig) {
+    const id = config.id
+    if (!deckFsrs[id]) {
+        const configParams = [
+            config.fsrsParams6,
+            config.fsrsParams5,
+            config.fsrsParams4,
+            config.fsrsWeights,
+        ]
+
+        const params = configParams.find((arr) => Array.isArray(arr) && arr.length > 0) ?? default_w
+
+        deckFsrs[id] = Fsrs(
+            generatorParameters({
+                w: checkParameters(params),
+                enable_fuzz: false,
+                enable_short_term: true,
+            })
+        )
+    }
+    return deckFsrs[id]
+}
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -166,34 +190,8 @@ export function getMemorisedDays(
     // Apply the new outlier filtering logic at the start.
     const excludedRevlogIds = applyOutlierFilter(revlogs)
 
-    let deckFsrs: Record<number, FSRS> = {}
     let fsrsCards: Record<number, Card> = {}
-
     let cards_by_id = IDify(cards)
-
-    function getFsrs(config: DeckConfig) {
-        const id = config.id
-        if (!deckFsrs[id]) {
-            const configParams = [
-                config.fsrsParams6,
-                config.fsrsParams5,
-                config.fsrsParams4,
-                config.fsrsWeights,
-            ]
-
-            const params =
-                configParams.find((arr) => Array.isArray(arr) && arr.length > 0) ?? default_w
-
-            deckFsrs[id] = Fsrs(
-                generatorParameters({
-                    w: checkParameters(params),
-                    enable_fuzz: false,
-                    enable_short_term: true,
-                })
-            )
-        }
-        return deckFsrs[id]
-    }
 
     let retrievabilityDays: number[] = []
     let totalCards: number[] = []
