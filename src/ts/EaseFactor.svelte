@@ -1,4 +1,5 @@
 <script lang="ts">
+    import * as _ from "lodash"
     import { barStringLabeler, type BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
     import { calculateEaseFactors } from "./easeFactor"
@@ -31,6 +32,11 @@
         tick_spacing: 5,
         columnLabeler: barStringLabeler(i18n_pattern("factor-of")),
     }
+
+    $: max = (_.max(easeFactors) ?? 0) * 100
+    const bins = 30
+    const offset = 100
+    $: binSize = Math.ceil((max - 100) / bins)
 </script>
 
-<BarScrollable data={graph} left_aligned offset={100} binSize={5}></BarScrollable>
+<BarScrollable data={graph} left_aligned {offset} {bins} {binSize}></BarScrollable>
