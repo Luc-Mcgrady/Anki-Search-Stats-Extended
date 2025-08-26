@@ -211,7 +211,7 @@ export function getMemorisedDays(
         if (!card) {
             return undefined
         }
-        return configs[config_mapping[card.did]]
+        return configs[config_mapping[card.odid || card.did]]
     }
 
     let stability_day_bins: number[][] = []
