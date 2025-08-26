@@ -18,7 +18,7 @@ export function calculateEaseFactors(
             const stability = data.s
             const dr = data.dr
 
-            const fsrs = getFsrs(configs[config_mapping[c.did]])
+            const fsrs = getFsrs(configs[config_mapping[c.odid || c.did]])
             fsrs.parameters.request_retention = dr
 
             const fsrsCard = createEmptyCard()
