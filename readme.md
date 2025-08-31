@@ -85,6 +85,9 @@ git clone https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recurs
 
 ### Link the cloned repository to Anki's addons folder
 
+> [!NOTE]
+> This step can be skipped if you have cloned the repo directly into the addon folder.
+
 Once the repo has been cloned, you can add a symlink from this repo to Anki's addon folder so that the addon will be included next time you start Anki
 
 For Linux or MacOS:
