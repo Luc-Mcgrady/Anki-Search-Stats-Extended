@@ -83,7 +83,26 @@ To clone the repository along with its submodule (the Anki codebase), you should
 git clone https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended.git --recursive --shallow-submodules
 ```
 
-### Linux / Mac
+### Link the cloned repository to Anki's addons folder
+
+> [!NOTE]
+> This step can be skipped if you have cloned the repo directly into the addon folder.
+
+Once the repo has been cloned, you can add a symlink from this repo to Anki's addon folder so that the addon will be included next time you start Anki
+
+For Linux or MacOS:
+```bash
+ln -s PATH_TO_CLONED_REPO PATH_TO_ANKI_ADDONS_FOLDER/Anki-Search-Stats-Extended
+```
+
+For Windows:
+```cmd
+mklink /D "PATH_TO_ANKI_ADDONS_FOLDER\Anki-Search-Stats-Extended" "PATH_TO_CLONED_REPO"
+```
+
+### Build the addon
+
+#### Linux / Mac
 
 run make to setup source files
 ```
@@ -92,13 +111,13 @@ make
 
 Then every-time you make any changes run make again.
 
-### Mac Proto Issues
+#### Mac Proto Issues
 It is possible that you may run into issues with protoc on mac.
 
 https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/22#issue-2769153566
 
 
-### Windows
+#### Windows
 
 You need to make the file `src/ts/proto` and then generate the proto files by running
 
