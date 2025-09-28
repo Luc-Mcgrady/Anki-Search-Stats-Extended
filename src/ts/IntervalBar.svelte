@@ -9,8 +9,12 @@
     export let intervals: Record<number, number>
     export let pieInfo: IntervalPieInfo = {}
 
+    export let bins = 30
     export let binSize = 1
     export let offset = 0
+
+    export let average = false
+    export let cumulative = false
 
     let interval_array: number[] = []
     $: {
@@ -37,4 +41,5 @@
     }
 </script>
 
-<BarScrollable data={bar_data} bind:binSize bind:offset left_aligned></BarScrollable>
+<BarScrollable data={bar_data} bind:binSize {bins} bind:offset left_aligned {average} {cumulative}
+></BarScrollable>

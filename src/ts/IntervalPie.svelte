@@ -13,6 +13,8 @@
 
     export let pieInfo: IntervalPieInfo = {}
 
+    export let average = false
+
     $: ({
         legend_left = i18n("intervals"),
         legend_right = i18n("cards"),
@@ -70,6 +72,9 @@
             const filler_pie_slice = Object.entries(intervals)
                 .filter(([i, _]) => +i >= filler_start && +i <= filler_end)
                 .reduce((n, [_, v]) => n + v, 0)
+            if (average) {
+                //FIXME : handle the average parameters
+            }
 
             pie_data.push(
                 PieDatumFactory(filler_start, filler_end, filler_pie_slice, fillerColour ?? "gold")
@@ -80,6 +85,9 @@
         const infinite_pie_slice = Object.entries(intervals)
             .filter(([i, _]) => +i >= infinite_pie_start)
             .reduce((n, [_, v]) => n + v, 0)
+        if (average) {
+            //FIXME : handle the average parameters
+        }
 
         pie_data.push(
             PieDatumFactory(infinite_pie_start, i18n("infinity"), infinite_pie_slice, "grey")
