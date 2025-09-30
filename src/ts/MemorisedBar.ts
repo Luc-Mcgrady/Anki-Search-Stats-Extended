@@ -285,7 +285,7 @@ export function getMemorisedDays(
         (_) => [1]
     )
 
-    let log: any[] = []
+    // let log: any[] = []
     for (const revlog of revlogs) {
         const config = card_config(revlog.cid)
         if (!config) {
@@ -390,13 +390,13 @@ export function getMemorisedDays(
                             p,
                             y
                         )
-                        log.push({
+                        /* log.push({
                             d: card.difficulty,
                             s: card.stability,
                             id: revlog.id,
                             r: p,
                             y: 1,
-                        })
+                        }) */
                     }
                 }
 
@@ -426,7 +426,7 @@ export function getMemorisedDays(
         fsrsCards[revlog.cid] = card
     }
 
-    console.log(log)
+    // console.log(log)
 
     let inaccurate_cids: any[] = []
     let accurate_cids: number[] = []
