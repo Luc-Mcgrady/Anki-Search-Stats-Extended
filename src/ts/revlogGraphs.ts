@@ -11,7 +11,7 @@ export const day_ms = 1000 * 60 * 60 * 24
 const timezone_offset_mins = new Date().getTimezoneOffset()
 const timezone_offset_ms = timezone_offset_mins * 60 * 1000
 export function dayFromMs(ms: number) {
-    return Math.floor((ms - rollover_ms) / day_ms)
+    return Math.floor((ms - rollover_ms - timezone_offset_ms) / day_ms)
 }
 
 export const today = dayFromMs(Date.now())
