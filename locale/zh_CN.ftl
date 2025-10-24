@@ -271,11 +271,11 @@ forgetting-curve-help =
 forgetting-curve-no-data = 复习历史不足，暂无法绘制遗忘曲线。
 forgetting-curve-x-axis = 间隔（天）
 forgetting-curve-y-axis = 记忆率
-forgetting-curve-tooltip-rating = 首次评价：{$rating}
+forgetting-curve-tooltip-rating = 首次评分：{$rating}
 forgetting-curve-tooltip-interval = 间隔：{$days} 天
-forgetting-curve-tooltip-recall = 记忆率：{$value}%
-forgetting-curve-tooltip-count = 样本数：{$count}
-forgetting-curve-legend = {$rating}: 记忆稳定度={$stability} ({$count})
+forgetting-curve-tooltip-recall = 回忆率：{$value}%
+forgetting-curve-tooltip-count = 样本量：{$count}
+forgetting-curve-legend = {$rating}: 记忆稳定期={$stability} ({$count})
 forgetting-curve-legend-count = n={$count}
 
 actual = Actual
