@@ -268,6 +268,19 @@ memorised-truncated-warning =
 
 fsrs-calibration = FSRS Calibration
 fsrs-calibration-help = This compares the average retention FSRS predicts you should have on cards (Perfect/orange line) to the retention you actually have (Actual/blue line).
+forgetting-curve = First Long-term Forgetting Curve
+forgetting-curve-help =
+    Compares the observed rate of recall against fitted FSRS forgetting curves which are grouped by the card's first rating.
+    Same-day reviews are excluded, only one review per day is used and point size indicates the number of samples contributing to that interval.
+forgetting-curve-no-data = Not enough review history to draw a forgetting curve yet.
+forgetting-curve-x-axis = Interval (days)
+forgetting-curve-y-axis = Recall probability
+forgetting-curve-tooltip-rating = First rating: {$rating}
+forgetting-curve-tooltip-interval = Interval: {$days} d
+forgetting-curve-tooltip-recall = Recall: {$value}%
+forgetting-curve-tooltip-count = Samples: {$count}
+forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})
+forgetting-curve-legend-count = n={$count}
 
 actual = Actual
 

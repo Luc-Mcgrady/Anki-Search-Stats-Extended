@@ -1,6 +1,7 @@
 import _ from "lodash"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
+import { buildForgettingCurve, type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
 import type { CardData, Revlog } from "./search"
 
@@ -104,6 +105,10 @@ export function calculateRevlogStats(
     let last_forget = []
 
     let learn_steps_per_card: Record<number, number> = {}
+    let first_rating: Record<number, number | undefined> = {}
+    let first_rating_day: Record<number, number | undefined> = {}
+    let recorded_cards: Set<number> = new Set()
+    let forgetting_samples: ForgettingSample[] = []
 
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
@@ -195,6 +200,37 @@ export function calculateRevlogStats(
             reintroduced.add(revlog.cid)
             forgotten.delete(revlog.cid)
         }
+
+        const hasRating = revlog.ease > 0
+        const isResetEntry = !hasRating && revlog.factor === 0
+        const isCrammingEntry = hasRating && revlog.type === 3 && revlog.factor === 0
+
+        if (isResetEntry) {
+            forgetting_samples = forgetting_samples.filter((sample) => sample.cid !== revlog.cid)
+            delete first_rating[revlog.cid]
+            delete first_rating_day[revlog.cid]
+            recorded_cards.delete(revlog.cid)
+        }
+
+        if (hasRating && !isCrammingEntry) {
+            if (first_rating[revlog.cid] === undefined) {
+                first_rating[revlog.cid] = revlog.ease
+                first_rating_day[revlog.cid] = day
+            }
+            const first_day = first_rating_day[revlog.cid]
+            if (first_day !== undefined && !recorded_cards.has(revlog.cid)) {
+                const delta_t = day - first_day
+                if (delta_t > 0) {
+                    forgetting_samples.push({
+                        cid: revlog.cid,
+                        firstRating: first_rating[revlog.cid]!,
+                        delta: delta_t,
+                        recall: revlog.ease > 1 ? 1 : 0,
+                    })
+                    recorded_cards.add(revlog.cid)
+                }
+            }
+        }
     }
 
     // "reduceRight" Used here to iterate backwards, never returns true
@@ -249,6 +285,7 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
+    const forgetting_curve_series = buildForgettingCurve(forgetting_samples)
 
     return {
         day_initial_ease,
@@ -269,6 +306,7 @@ export function calculateRevlogStats(
         day_filtered_review_hours,
         learn_steps_per_card: Object.values(learn_steps_per_card),
         last_forget,
+        forgetting_curve: forgetting_curve_series,
     }
 }
 
