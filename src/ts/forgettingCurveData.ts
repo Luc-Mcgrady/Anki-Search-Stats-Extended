@@ -39,6 +39,46 @@ const MAX_STABILITY = 100
 const EPSILON = 1e-6
 const MAX_INTERVAL = 365
 
+function filterOutliers(rating: number, entries: AggregatedSample[]): AggregatedSample[] {
+    if (!entries.length) {
+        return []
+    }
+
+    const sorted = [...entries].sort((a, b) => {
+        if (a.count !== b.count) {
+            return a.count - b.count
+        }
+        return b.delta - a.delta
+    })
+
+    const total = sorted.reduce((sum, entry) => sum + entry.count, 0)
+    if (total < 20) {
+        return entries.sort((a, b) => a.delta - b.delta)
+    }
+    const threshold = Math.max(total * 0.05, 20)
+    let removed = 0
+    const removedDeltas = new Set<number>()
+    const deltaLimit = rating === 4 ? 365 : 100
+
+    for (const entry of sorted) {
+        const { count, delta } = entry
+        if (removed + count < threshold) {
+            removedDeltas.add(delta)
+            removed += count
+            continue
+        }
+
+        if (count < 6 || delta > deltaLimit) {
+            removedDeltas.add(delta)
+            removed += count
+        }
+    }
+
+    return entries
+        .filter((entry) => !removedDeltas.has(entry.delta))
+        .sort((a, b) => a.delta - b.delta)
+}
+
 export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCurveSeries[] {
     if (samples.length === 0) {
         return []
@@ -79,7 +119,7 @@ export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCur
 
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
-        const aggregated = Array.from(bucket.values()).sort((a, b) => a.delta - b.delta)
+        const aggregated = filterOutliers(rating, Array.from(bucket.values()))
 
         if (!aggregated.length) {
             series.push({
