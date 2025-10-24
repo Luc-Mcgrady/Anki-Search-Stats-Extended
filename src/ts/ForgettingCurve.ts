@@ -67,7 +67,7 @@ export function renderForgettingCurve(
         .attr("opacity", 0.5)
         .call(d3.axisBottom(x).ticks(6))
 
-    container.append("g").call(d3.axisLeft(y).ticks(5))
+    container.append("g").attr("opacity", 0.5).call(d3.axisLeft(y).ticks(5))
 
     container
         .append("text")
