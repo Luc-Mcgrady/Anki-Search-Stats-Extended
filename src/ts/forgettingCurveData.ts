@@ -1,6 +1,7 @@
 import { default_w, forgetting_curve, FSRS6_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
 
 export type ForgettingSample = {
+    cid: number
     firstRating: number
     delta: number
     recall: number
