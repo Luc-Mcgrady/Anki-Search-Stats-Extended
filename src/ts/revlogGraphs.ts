@@ -206,9 +206,7 @@ export function calculateRevlogStats(
         const isCrammingEntry = hasRating && revlog.type === 3 && revlog.factor === 0
 
         if (isResetEntry) {
-            forgetting_samples = forgetting_samples.filter(
-                (sample) => sample.cid !== revlog.cid
-            )
+            forgetting_samples = forgetting_samples.filter((sample) => sample.cid !== revlog.cid)
             delete first_rating[revlog.cid]
             delete first_rating_day[revlog.cid]
             recorded_cards.delete(revlog.cid)
@@ -220,10 +218,7 @@ export function calculateRevlogStats(
                 first_rating_day[revlog.cid] = day
             }
             const first_day = first_rating_day[revlog.cid]
-            if (
-                first_day !== undefined &&
-                !recorded_cards.has(revlog.cid)
-            ) {
+            if (first_day !== undefined && !recorded_cards.has(revlog.cid)) {
                 const delta_t = day - first_day
                 if (delta_t > 0) {
                     forgetting_samples.push({
