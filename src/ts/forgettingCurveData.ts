@@ -1,4 +1,4 @@
-import { default_w, forgetting_curve, FSRS5_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
+import { default_w, forgetting_curve, FSRS6_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
 
 export type ForgettingSample = {
     firstRating: number
@@ -129,7 +129,7 @@ function fitStability(
         let total = 0
         for (const entry of aggregated) {
             const prediction = clampProbability(
-                forgetting_curve(FSRS5_DEFAULT_DECAY, entry.delta, stability)
+                forgetting_curve(FSRS6_DEFAULT_DECAY, entry.delta, stability)
             )
             const smoothed = (entry.success + averageRecall) / (entry.count + 1)
             total +=
@@ -183,7 +183,7 @@ function computeRmse(aggregated: AggregatedSample[], stability: number): number 
     }
 
     const squaredError = aggregated.reduce((p, entry) => {
-        const prediction = forgetting_curve(FSRS5_DEFAULT_DECAY, entry.delta, stability)
+        const prediction = forgetting_curve(FSRS6_DEFAULT_DECAY, entry.delta, stability)
         const meanRecall = entry.success / entry.count
         return p + (meanRecall - prediction) ** 2 * entry.count
     }, 0)
@@ -204,7 +204,7 @@ function buildPredictionSeries(
     for (let delta = 0; delta <= maxDelta; delta++) {
         series.push({
             delta,
-            recall: forgetting_curve(FSRS5_DEFAULT_DECAY, delta, stability),
+            recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, stability),
         })
     }
     return series
