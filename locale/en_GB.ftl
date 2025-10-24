@@ -271,7 +271,7 @@ fsrs-calibration-help = This compares the average retention FSRS predicts you sh
 forgetting-curve = First Long-term Forgetting Curve
 forgetting-curve-help =
     Compare observed recall against the fitted FSRS forgetting curve, grouped by the card's first rating.
-    Only the first long-term review for each card is counted and point size indicates the number of samples contributing to that interval.
+    Same-day reviews are excluded, only one review per day is used and point size indicates the number of samples contributing to that interval.
 forgetting-curve-no-data = Not enough review history to draw a forgetting curve yet.
 forgetting-curve-x-axis = Interval (days)
 forgetting-curve-y-axis = Recall probability
@@ -279,9 +279,8 @@ forgetting-curve-tooltip-rating = First rating: {$rating}
 forgetting-curve-tooltip-interval = Interval: {$days} d
 forgetting-curve-tooltip-recall = Recall: {$value}%
 forgetting-curve-tooltip-count = Samples: {$count}
-forgetting-curve-legend = {$rating}: s={$stability} ({$count}{$rmse})
+forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})
 forgetting-curve-legend-count = n={$count}
-forgetting-curve-legend-rmse = , RMSE={$value}
 
 actual = Actual
 

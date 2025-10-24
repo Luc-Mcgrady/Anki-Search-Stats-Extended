@@ -60,18 +60,11 @@
         const countText = i18n("forgetting-curve-legend-count", {
             count: entry.sampleSize.toLocaleString(),
         })
-        const rmseText =
-            entry.rmse !== null
-                ? i18n("forgetting-curve-legend-rmse", {
-                      value: entry.rmse.toFixed(3),
-                  })
-                : ""
 
         return i18n("forgetting-curve-legend", {
             rating: labelForRating(entry.rating),
             stability,
             count: countText,
-            rmse: rmseText,
         }).trim()
     }
 </script>
