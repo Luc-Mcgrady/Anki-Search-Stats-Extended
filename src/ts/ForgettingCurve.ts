@@ -64,6 +64,7 @@ export function renderForgettingCurve(
     container
         .append("g")
         .attr("transform", `translate(0, ${innerHeight})`)
+        .attr("opacity", 0.5)
         .call(d3.axisBottom(x).ticks(6))
 
     container.append("g").call(d3.axisLeft(y).ticks(5))
