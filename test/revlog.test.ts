@@ -45,3 +45,20 @@ test("learn_step_count", ()=>{
     console.log(burden_revlogs)
     expect(learn_steps_per_card).toContain(2)
 })
+
+test("Forgetting curve aggregates recall data", () => {
+    const builder = new RevlogBuilder()
+    const revlogs = [
+        builder.review(1, 3),
+        builder.wait(1 * day_ms),
+        builder.review(1, 3),
+        builder.wait(2 * day_ms),
+        builder.review(1, 1),
+    ].filter(Boolean) as Revlog[]
+
+    const stats = calculateRevlogStats(revlogs, [builder.card()] as any, builder.last_review + 5)
+    const series = stats.forgetting_curve.find((entry) => entry.rating === 3)
+
+    expect(series?.points.length).toBeGreaterThan(0)
+    expect(series?.stability).not.toBeNull()
+})

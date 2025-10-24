@@ -27,6 +27,7 @@
         today,
         type RevlogBuckets,
     } from "./revlogGraphs"
+    import type { ForgettingCurveSeries } from "./forgettingCurveData"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
@@ -41,6 +42,7 @@
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
     import TimeMachineScroll from "./TimeMachineScroll.svelte"
     import FsrsCalibration from "./FSRSCalibration.svelte"
+    import ForgettingCurve from "./ForgettingCurve.svelte"
 
     export let revlogData: Revlog[]
     export let cardData: CardData[]
@@ -64,10 +66,14 @@
         day_review_hours,
         day_filtered_review_hours,
         learn_steps_per_card,
+        forgetting_curve,
         last_forget: local_last_forget,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
+    let forgetting_curve_series: ForgettingCurveSeries[] = []
+
     $: $last_forget = local_last_forget
+    $: forgetting_curve_series = forgetting_curve ?? []
     $: realScroll = -Math.abs($scroll)
     const bins = 30
     $: start = today - bins * $binSize + realScroll
@@ -540,6 +546,11 @@
         <p>
             {i18n("fsrs-calibration-help")}
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("forgetting-curve")}</h1>
+        <ForgettingCurve series={forgetting_curve_series} />
+        <p>{i18n("forgetting-curve-help")}</p>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("stability-time-machine")}</h1>
