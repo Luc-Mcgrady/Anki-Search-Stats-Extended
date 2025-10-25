@@ -8,6 +8,12 @@
     } from "./ForgettingCurve"
 
     export let series: ForgettingCurveSeries[] = []
+    export let xLabel: string | null = null
+    export let yLabel: string | null = null
+    export let formatInterval: (delta: number) => string = (delta) =>
+        i18n("forgetting-curve-tooltip-interval", {
+            days: delta.toFixed(0),
+        })
 
     let svg: SVGSVGElement | null = null
 
@@ -26,9 +32,7 @@
         count,
     }) => [
         i18n("forgetting-curve-tooltip-rating", { rating: labelForRating(rating) }),
-        i18n("forgetting-curve-tooltip-interval", {
-            days: delta.toFixed(0),
-        }),
+        formatInterval(delta),
         i18n("forgetting-curve-tooltip-recall", {
             value: (recall * 100).toFixed(1),
         }),
@@ -44,8 +48,8 @@
             renderForgettingCurve(svg, series, {
                 labelForRating,
                 formatTooltip,
-                xLabel: i18n("forgetting-curve-x-axis"),
-                yLabel: i18n("forgetting-curve-y-axis"),
+                xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
+                yLabel: yLabel ?? i18n("forgetting-curve-y-axis"),
             })
         } else if (svg) {
             svg.innerHTML = ""

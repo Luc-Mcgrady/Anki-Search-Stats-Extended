@@ -272,11 +272,16 @@ forgetting-curve = First Long-term Forgetting Curve
 forgetting-curve-help =
     Compares the observed rate of recall against fitted FSRS forgetting curves which are grouped by the card's first rating.
     Same-day reviews are excluded, only one review per day is used and point size indicates the number of samples contributing to that interval.
+first-short-term-forgetting-curve = First Short-term Forgetting Curve
+first-short-term-forgetting-curve-help =
+    Visualises recall for same-day reviews. Same-day reviews are grouped by the minutes since the first rating, with at most one sample per card per day. Memory stability values are expressed in minutes.
 forgetting-curve-no-data = Not enough review history to draw a forgetting curve yet.
 forgetting-curve-x-axis = Interval (days)
+forgetting-curve-x-axis-minutes = Interval (minutes)
 forgetting-curve-y-axis = Recall probability
 forgetting-curve-tooltip-rating = First rating: {$rating}
 forgetting-curve-tooltip-interval = Interval: {$days} d
+forgetting-curve-tooltip-interval-minutes = Interval: {$minutes} min
 forgetting-curve-tooltip-recall = Recall: {$value}%
 forgetting-curve-tooltip-count = Samples: {$count}
 forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})

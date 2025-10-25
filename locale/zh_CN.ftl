@@ -268,11 +268,16 @@ forgetting-curve = 首次长期复习遗忘曲线
 forgetting-curve-help =
     按照卡片的首次评价分组，对比实际记忆率与拟合得到的 FSRS 遗忘曲线。
     同日复习会被排除，每天仅使用一次复习；点的大小表示该间隔下参与计算的样本数量。
+first-short-term-forgetting-curve = 首次短期复习遗忘曲线
+first-short-term-forgetting-curve-help =
+    展示首次答题后的短期记忆表现。同一天的复习按距离首次评分的分钟数分组，每张卡每天最多贡献一条样本；记忆稳定度以分钟为单位显示。
 forgetting-curve-no-data = 复习历史不足，暂无法绘制遗忘曲线。
 forgetting-curve-x-axis = 间隔（天）
+forgetting-curve-x-axis-minutes = 间隔（分钟）
 forgetting-curve-y-axis = 记忆率
 forgetting-curve-tooltip-rating = 首次评分：{$rating}
 forgetting-curve-tooltip-interval = 间隔：{$days} 天
+forgetting-curve-tooltip-interval-minutes = 间隔：{$minutes} 分钟
 forgetting-curve-tooltip-recall = 回忆率：{$value}%
 forgetting-curve-tooltip-count = 样本量：{$count}
 forgetting-curve-legend = {$rating}: 记忆稳定期={$stability} ({$count})
