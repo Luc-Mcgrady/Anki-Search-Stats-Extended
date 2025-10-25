@@ -115,11 +115,33 @@ export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCur
 
     const averageRecall = totalSuccess / totalCount
 
-    const series: ForgettingCurveSeries[] = []
+    const aggregatedByRating: Record<number, AggregatedSample[]> = {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+    }
 
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
-        const aggregated = filterOutliers(rating, Array.from(bucket.values()))
+        aggregatedByRating[rating] = filterOutliers(rating, Array.from(bucket.values()))
+    }
+
+    let maxPredictionDelta = 30
+    for (const rating of [1, 2, 3, 4]) {
+        const aggregated = aggregatedByRating[rating]
+        if (aggregated.length) {
+            const ratingMax = aggregated.reduce((p, entry) => Math.max(p, entry.delta), 0)
+            maxPredictionDelta = Math.min(MAX_INTERVAL, Math.max(maxPredictionDelta, ratingMax))
+        }
+    }
+
+    const sharedPredictionRange = Math.ceil(maxPredictionDelta)
+
+    const series: ForgettingCurveSeries[] = []
+
+    for (const rating of [1, 2, 3, 4]) {
+        const aggregated = aggregatedByRating[rating]
 
         if (!aggregated.length) {
             series.push({
@@ -134,7 +156,7 @@ export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCur
         }
 
         const stability = fitStability(aggregated, averageRecall, RATING_DEFAULT_STABILITY[rating])
-        const predicted = stability ? buildPredictionSeries(aggregated, stability) : []
+        const predicted = stability ? buildPredictionSeries(stability, sharedPredictionRange) : []
         const rmse = stability ? computeRmse(aggregated, stability) : null
         const points: ForgettingCurvePoint[] = aggregated.map((entry) => ({
             delta: entry.delta,
@@ -233,16 +255,12 @@ function computeRmse(aggregated: AggregatedSample[], stability: number): number 
 }
 
 function buildPredictionSeries(
-    aggregated: AggregatedSample[],
-    stability: number
+    stability: number,
+    maxDelta: number
 ): { delta: number; recall: number }[] {
-    const maxDelta = Math.max(
-        30,
-        aggregated.reduce((p, entry) => Math.max(p, entry.delta), 0)
-    )
-
+    const cappedMaxDelta = Math.max(30, Math.min(MAX_INTERVAL, Math.ceil(maxDelta)))
     const series: { delta: number; recall: number }[] = []
-    for (let delta = 0; delta <= maxDelta; delta++) {
+    for (let delta = 0; delta <= cappedMaxDelta; delta++) {
         series.push({
             delta,
             recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, stability),
