@@ -17,6 +17,44 @@
         })
 
     let svg: SVGSVGElement | null = null
+    let xAxisMax: number = -1 // Use -1 as uninitialized marker
+    let dataMinDelta: number = 1
+    let dataMaxDelta: number = 1
+
+    // Calculate the minimum and maximum delta from actual data points only
+    $: {
+        let minDelta = Infinity
+        let maxDelta = 0
+
+        for (const entry of series) {
+            // Only use actual data points, not predicted curve
+            for (const point of entry.points) {
+                minDelta = Math.min(minDelta, point.delta)
+                maxDelta = Math.max(maxDelta, point.delta)
+            }
+        }
+
+        // Ensure we have valid values
+        if (minDelta === Infinity) minDelta = isShortTerm ? 0.1 : 1
+        if (maxDelta === 0) maxDelta = isShortTerm ? 10 : 30
+
+        dataMinDelta = minDelta
+        dataMaxDelta = maxDelta
+    }
+
+    // Initialize xAxisMax to dataMaxDelta when first loaded
+    $: if (xAxisMax < 0 && dataMaxDelta > dataMinDelta) {
+        xAxisMax = dataMaxDelta
+    }
+
+    // Clamp xAxisMax to valid range
+    $: if (xAxisMax >= 0) {
+        if (xAxisMax < dataMinDelta) {
+            xAxisMax = dataMinDelta
+        } else if (xAxisMax > dataMaxDelta) {
+            xAxisMax = dataMaxDelta
+        }
+    }
 
     const labelForRating = (rating: number) =>
         ({
@@ -45,12 +83,13 @@
     $: hasData = series?.some((entry) => entry.points.length)
 
     $: {
-        if (svg && hasData) {
+        if (svg && hasData && xAxisMax >= 0) {
             renderForgettingCurve(svg, series, {
                 labelForRating,
                 formatTooltip,
                 xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
                 yLabel: yLabel ?? i18n("forgetting-curve-y-axis"),
+                maxX: xAxisMax,
             })
         } else if (svg) {
             svg.innerHTML = ""
@@ -79,6 +118,25 @@
 
 {#if hasData}
     <svg bind:this={svg}></svg>
+    <label class="x-axis-control">
+        <span>
+            {isShortTerm
+                ? i18n("forgetting-curve-x-axis-minutes")
+                : i18n("forgetting-curve-x-axis")}:
+        </span>
+        <span class="range-container">
+            {dataMinDelta.toFixed(isShortTerm ? 1 : 0)}
+            <input
+                type="range"
+                min={dataMinDelta}
+                max={dataMaxDelta}
+                step={isShortTerm ? "0.1" : "1"}
+                bind:value={xAxisMax}
+            />
+            {(xAxisMax >= 0 ? xAxisMax : dataMaxDelta).toFixed(isShortTerm ? 1 : 0)}
+            {isShortTerm ? "min" : "d"}
+        </span>
+    </label>
     <div class="legend">
         {#each series as entry (entry.rating)}
             {#if entry.points.length}
@@ -100,6 +158,21 @@
     svg {
         width: 100%;
         height: 100%;
+    }
+
+    label.x-axis-control {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.5em 1em;
+        align-items: baseline;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .range-container {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.5em 1em;
     }
 
     .legend {

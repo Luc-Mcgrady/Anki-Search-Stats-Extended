@@ -23,6 +23,7 @@ export interface ForgettingCurveRenderOptions {
     formatTooltip: (payload: TooltipPayload) => string[]
     xLabel: string
     yLabel: string
+    maxX?: number
 }
 
 export function renderForgettingCurve(
@@ -49,8 +50,9 @@ export function renderForgettingCurve(
         entry.predicted.forEach((prediction) => deltaValues.push(prediction.delta))
     }
     const maxDelta = deltaValues.length ? d3.max(deltaValues)! : 1
+    const xMax = options.maxX ?? maxDelta
 
-    const x = d3.scaleLinear().domain([0, maxDelta]).range([0, innerWidth]).nice()
+    const x = d3.scaleLinear().domain([0, xMax]).range([0, innerWidth]).nice()
     const y = d3.scaleLinear().domain([0, 1]).range([innerHeight, 0]).nice()
 
     const maxCount = d3.max(series, (s) => d3.max(s.points, (p) => p.count)) ?? 1

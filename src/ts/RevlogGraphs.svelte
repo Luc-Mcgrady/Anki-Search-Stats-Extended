@@ -558,7 +558,7 @@
             isShortTerm={true}
             formatInterval={(delta) =>
                 i18n("forgetting-curve-tooltip-interval-minutes", {
-                    minutes: delta.toFixed(0),
+                    minutes: delta.toFixed(2),
                 })}
         />
         <p>{i18n("first-short-term-forgetting-curve-help")}</p>
