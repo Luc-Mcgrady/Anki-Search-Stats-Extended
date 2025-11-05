@@ -43,7 +43,6 @@ export interface ForgettingCurveOptions {
     deltaLimitByRating?: (rating: number) => number
     minStability?: number
     maxStability?: number
-    maxInterval?: number
     disableOutlierFiltering?: boolean
     adaptiveBinning?: {
         enabled: boolean
@@ -238,18 +237,6 @@ export function buildForgettingCurve(
     const deltaLimitByRating =
         options.deltaLimitByRating ?? ((rating: number) => (rating === 4 ? 365 : 100))
 
-    // Record original max delta before binning for prediction range
-    const maxIntervalLimit = options.maxInterval ?? MAX_INTERVAL
-    let originalMaxDelta = 30
-    for (const rating of [1, 2, 3, 4]) {
-        const bucket = ratingBuckets[rating]!
-        const bucketValues = Array.from(bucket.values())
-        if (bucketValues.length) {
-            const ratingMax = bucketValues.reduce((p, entry) => Math.max(p, entry.delta), 0)
-            originalMaxDelta = Math.max(originalMaxDelta, ratingMax)
-        }
-    }
-
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
         let aggregated = options.disableOutlierFiltering
@@ -267,8 +254,6 @@ export function buildForgettingCurve(
 
         aggregatedByRating[rating] = aggregated
     }
-
-    const sharedPredictionRange = Math.min(maxIntervalLimit, Math.ceil(originalMaxDelta))
 
     const series: ForgettingCurveSeries[] = []
 
@@ -294,9 +279,8 @@ export function buildForgettingCurve(
             options.minStability,
             options.maxStability
         )
-        const predicted = stability
-            ? buildPredictionSeries(stability, sharedPredictionRange, maxIntervalLimit)
-            : []
+        // Prediction curves are now generated dynamically during rendering
+        const predicted: { delta: number; recall: number }[] = []
         const rmse = stability ? computeRmse(aggregated, stability) : null
         const points: ForgettingCurvePoint[] = aggregated.map((entry) => ({
             delta: entry.delta,
@@ -394,28 +378,6 @@ function computeRmse(aggregated: AggregatedSample[], stability: number): number 
     }, 0)
 
     return Math.sqrt(squaredError / totalCount)
-}
-
-function buildPredictionSeries(
-    stability: number,
-    maxDelta: number,
-    maxIntervalLimit: number = MAX_INTERVAL
-): { delta: number; recall: number }[] {
-    const cappedMaxDelta = Math.max(30, Math.min(maxIntervalLimit, Math.ceil(maxDelta)))
-    const series: { delta: number; recall: number }[] = []
-
-    // Use finer step size for smooth curves, especially important for short-term curves
-    const numPoints = 500
-    const step = cappedMaxDelta / numPoints
-
-    for (let i = 0; i <= numPoints; i++) {
-        const delta = i * step
-        series.push({
-            delta,
-            recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, stability),
-        })
-    }
-    return series
 }
 
 function clamp(value: number, min: number, max: number) {

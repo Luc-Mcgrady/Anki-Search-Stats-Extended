@@ -1,4 +1,5 @@
 import * as d3 from "d3"
+import { forgetting_curve, FSRS6_DEFAULT_DECAY } from "ts-fsrs"
 import type { ForgettingCurveSeries } from "./forgettingCurveData"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
@@ -47,7 +48,6 @@ export function renderForgettingCurve(
     const deltaValues: number[] = []
     for (const entry of series) {
         entry.points.forEach((point) => deltaValues.push(point.delta))
-        entry.predicted.forEach((prediction) => deltaValues.push(prediction.delta))
     }
     const maxDelta = deltaValues.length ? d3.max(deltaValues)! : 1
     const xMax = options.maxX ?? maxDelta
@@ -95,15 +95,30 @@ export function renderForgettingCurve(
     for (const seriesEntry of series) {
         const colour = RATING_COLOURS[seriesEntry.rating] ?? "#888"
 
-        container
-            .append("path")
-            .datum(seriesEntry.predicted)
-            .attr("fill", "none")
-            .attr("stroke", colour)
-            .attr("stroke-width", 1.5)
-            .attr("opacity", 0.9)
-            .style("pointer-events", "none")
-            .attr("d", line)
+        // Generate prediction curve dynamically based on current X-axis range
+        if (seriesEntry.stability !== null) {
+            const numPoints = 500
+            const step = xMax / numPoints
+            const predicted: { delta: number; recall: number }[] = []
+
+            for (let i = 0; i <= numPoints; i++) {
+                const delta = i * step
+                predicted.push({
+                    delta,
+                    recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, seriesEntry.stability),
+                })
+            }
+
+            container
+                .append("path")
+                .datum(predicted)
+                .attr("fill", "none")
+                .attr("stroke", colour)
+                .attr("stroke-width", 1.5)
+                .attr("opacity", 0.9)
+                .style("pointer-events", "none")
+                .attr("d", line)
+        }
 
         container
             .append("g")
