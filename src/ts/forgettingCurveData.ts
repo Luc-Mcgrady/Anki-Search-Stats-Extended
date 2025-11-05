@@ -43,6 +43,7 @@ export interface ForgettingCurveOptions {
     deltaLimitByRating?: (rating: number) => number
     minStability?: number
     maxStability?: number
+    maxInterval?: number
     disableOutlierFiltering?: boolean
     adaptiveBinning?: {
         enabled: boolean
@@ -237,6 +238,18 @@ export function buildForgettingCurve(
     const deltaLimitByRating =
         options.deltaLimitByRating ?? ((rating: number) => (rating === 4 ? 365 : 100))
 
+    // Record original max delta before binning for prediction range
+    const maxIntervalLimit = options.maxInterval ?? MAX_INTERVAL
+    let originalMaxDelta = 30
+    for (const rating of [1, 2, 3, 4]) {
+        const bucket = ratingBuckets[rating]!
+        const bucketValues = Array.from(bucket.values())
+        if (bucketValues.length) {
+            const ratingMax = bucketValues.reduce((p, entry) => Math.max(p, entry.delta), 0)
+            originalMaxDelta = Math.max(originalMaxDelta, ratingMax)
+        }
+    }
+
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
         let aggregated = options.disableOutlierFiltering
@@ -255,16 +268,7 @@ export function buildForgettingCurve(
         aggregatedByRating[rating] = aggregated
     }
 
-    let maxPredictionDelta = 30
-    for (const rating of [1, 2, 3, 4]) {
-        const aggregated = aggregatedByRating[rating]
-        if (aggregated.length) {
-            const ratingMax = aggregated.reduce((p, entry) => Math.max(p, entry.delta), 0)
-            maxPredictionDelta = Math.min(MAX_INTERVAL, Math.max(maxPredictionDelta, ratingMax))
-        }
-    }
-
-    const sharedPredictionRange = Math.ceil(maxPredictionDelta)
+    const sharedPredictionRange = Math.min(maxIntervalLimit, Math.ceil(originalMaxDelta))
 
     const series: ForgettingCurveSeries[] = []
 
@@ -290,7 +294,9 @@ export function buildForgettingCurve(
             options.minStability,
             options.maxStability
         )
-        const predicted = stability ? buildPredictionSeries(stability, sharedPredictionRange) : []
+        const predicted = stability
+            ? buildPredictionSeries(stability, sharedPredictionRange, maxIntervalLimit)
+            : []
         const rmse = stability ? computeRmse(aggregated, stability) : null
         const points: ForgettingCurvePoint[] = aggregated.map((entry) => ({
             delta: entry.delta,
@@ -392,9 +398,10 @@ function computeRmse(aggregated: AggregatedSample[], stability: number): number 
 
 function buildPredictionSeries(
     stability: number,
-    maxDelta: number
+    maxDelta: number,
+    maxIntervalLimit: number = MAX_INTERVAL
 ): { delta: number; recall: number }[] {
-    const cappedMaxDelta = Math.max(30, Math.min(MAX_INTERVAL, Math.ceil(maxDelta)))
+    const cappedMaxDelta = Math.max(30, Math.min(maxIntervalLimit, Math.ceil(maxDelta)))
     const series: { delta: number; recall: number }[] = []
     for (let delta = 0; delta <= cappedMaxDelta; delta++) {
         series.push({

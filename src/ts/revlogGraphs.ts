@@ -322,6 +322,7 @@ export function calculateRevlogStats(
         deltaLimitByRating: (_rating: number) => 720,
         minStability: 1e-6,
         maxStability: 1440,
+        maxInterval: 1440,
         disableOutlierFiltering: true,
         adaptiveBinning: {
             enabled: true,
