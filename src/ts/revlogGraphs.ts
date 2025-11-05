@@ -231,7 +231,7 @@ export function calculateRevlogStats(
             if (
                 first_time !== undefined &&
                 first_rating[revlog.cid] &&
-                first_rating[revlog.cid] !== 4 &&  // Exclude Easy rating for short-term curve
+                first_rating[revlog.cid] !== 4 && // Exclude Easy rating for short-term curve
                 !short_term_recorded_cards.has(revlog.cid)
             ) {
                 const delta_ms = revlog.id - first_time
