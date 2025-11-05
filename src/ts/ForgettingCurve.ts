@@ -1,4 +1,6 @@
 import * as d3 from "d3"
+import * as _ from "lodash"
+import { forgetting_curve, FSRS6_DEFAULT_DECAY } from "ts-fsrs"
 import type { ForgettingCurveSeries } from "./forgettingCurveData"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
@@ -23,6 +25,7 @@ export interface ForgettingCurveRenderOptions {
     formatTooltip: (payload: TooltipPayload) => string[]
     xLabel: string
     yLabel: string
+    maxX?: number
 }
 
 export function renderForgettingCurve(
@@ -46,11 +49,11 @@ export function renderForgettingCurve(
     const deltaValues: number[] = []
     for (const entry of series) {
         entry.points.forEach((point) => deltaValues.push(point.delta))
-        entry.predicted.forEach((prediction) => deltaValues.push(prediction.delta))
     }
     const maxDelta = deltaValues.length ? d3.max(deltaValues)! : 1
+    const xMax = options.maxX ?? maxDelta
 
-    const x = d3.scaleLinear().domain([0, maxDelta]).range([0, innerWidth]).nice()
+    const x = d3.scaleLinear().domain([0, xMax]).range([0, innerWidth]).nice()
     const y = d3.scaleLinear().domain([0, 1]).range([innerHeight, 0]).nice()
 
     const maxCount = d3.max(series, (s) => d3.max(s.points, (p) => p.count)) ?? 1
@@ -93,15 +96,27 @@ export function renderForgettingCurve(
     for (const seriesEntry of series) {
         const colour = RATING_COLOURS[seriesEntry.rating] ?? "#888"
 
-        container
-            .append("path")
-            .datum(seriesEntry.predicted)
-            .attr("fill", "none")
-            .attr("stroke", colour)
-            .attr("stroke-width", 1.5)
-            .attr("opacity", 0.9)
-            .style("pointer-events", "none")
-            .attr("d", line)
+        // Generate prediction curve dynamically based on current X-axis range
+        if (seriesEntry.stability !== null) {
+            const numPoints = 500
+            const rightmost = x.domain()[1]
+            const step = rightmost / numPoints
+
+            const predicted = _.range(0, rightmost, step).map((delta) => ({
+                delta,
+                recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, seriesEntry.stability!),
+            }))
+
+            container
+                .append("path")
+                .datum(predicted)
+                .attr("fill", "none")
+                .attr("stroke", colour)
+                .attr("stroke-width", 1.5)
+                .attr("opacity", 0.9)
+                .style("pointer-events", "none")
+                .attr("d", line)
+        }
 
         container
             .append("g")

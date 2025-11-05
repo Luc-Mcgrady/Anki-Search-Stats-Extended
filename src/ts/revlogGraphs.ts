@@ -107,8 +107,11 @@ export function calculateRevlogStats(
     let learn_steps_per_card: Record<number, number> = {}
     let first_rating: Record<number, number | undefined> = {}
     let first_rating_day: Record<number, number | undefined> = {}
+    let first_rating_time: Record<number, number | undefined> = {}
     let recorded_cards: Set<number> = new Set()
+    let short_term_recorded_cards: Set<number> = new Set()
     let forgetting_samples: ForgettingSample[] = []
+    let forgetting_samples_short: ForgettingSample[] = []
 
     function incrementEase(ease_array: number[][], day: number, ease: number) {
         // Doesn't check for negative ease (manual reschedule)
@@ -207,16 +210,45 @@ export function calculateRevlogStats(
 
         if (isResetEntry) {
             forgetting_samples = forgetting_samples.filter((sample) => sample.cid !== revlog.cid)
+            forgetting_samples_short = forgetting_samples_short.filter(
+                (sample) => sample.cid !== revlog.cid
+            )
             delete first_rating[revlog.cid]
             delete first_rating_day[revlog.cid]
+            delete first_rating_time[revlog.cid]
             recorded_cards.delete(revlog.cid)
+            short_term_recorded_cards.delete(revlog.cid)
         }
 
         if (hasRating && !isCrammingEntry) {
             if (first_rating[revlog.cid] === undefined) {
                 first_rating[revlog.cid] = revlog.ease
                 first_rating_day[revlog.cid] = day
+                first_rating_time[revlog.cid] = revlog.id
             }
+
+            const first_time = first_rating_time[revlog.cid]
+            if (
+                first_time !== undefined &&
+                first_rating[revlog.cid] &&
+                first_rating[revlog.cid] !== 4 && // Exclude Easy rating for short-term curve
+                !short_term_recorded_cards.has(revlog.cid)
+            ) {
+                const delta_ms = revlog.id - first_time
+                if (delta_ms > 0 && delta_ms < day_ms) {
+                    const delta_minutes = delta_ms / (60 * 1000)
+                    if (delta_minutes > 0) {
+                        forgetting_samples_short.push({
+                            cid: revlog.cid,
+                            firstRating: first_rating[revlog.cid]!,
+                            delta: delta_minutes,
+                            recall: revlog.ease > 1 ? 1 : 0,
+                        })
+                        short_term_recorded_cards.add(revlog.cid)
+                    }
+                }
+            }
+
             const first_day = first_rating_day[revlog.cid]
             if (first_day !== undefined && !recorded_cards.has(revlog.cid)) {
                 const delta_t = day - first_day
@@ -286,6 +318,17 @@ export function calculateRevlogStats(
 
     const remaining_forgotten = forgotten.size
     const forgetting_curve_series = buildForgettingCurve(forgetting_samples)
+    const forgetting_curve_short_series = buildForgettingCurve(forgetting_samples_short, {
+        deltaLimitByRating: (_rating: number) => 720,
+        minStability: 1e-6,
+        maxStability: 1440,
+        disableOutlierFiltering: true,
+        adaptiveBinning: {
+            enabled: true,
+            maxBins: 20,
+            minSamplesPerBin: 50,
+        },
+    })
 
     return {
         day_initial_ease,
@@ -307,6 +350,7 @@ export function calculateRevlogStats(
         learn_steps_per_card: Object.values(learn_steps_per_card),
         last_forget,
         forgetting_curve: forgetting_curve_series,
+        short_term_forgetting_curve: forgetting_curve_short_series,
     }
 }
 

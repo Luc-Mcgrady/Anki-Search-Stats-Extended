@@ -39,7 +39,23 @@ const MAX_STABILITY = 100
 const EPSILON = 1e-6
 const MAX_INTERVAL = 365
 
-function filterOutliers(rating: number, entries: AggregatedSample[]): AggregatedSample[] {
+export interface ForgettingCurveOptions {
+    deltaLimitByRating?: (rating: number) => number
+    minStability?: number
+    maxStability?: number
+    disableOutlierFiltering?: boolean
+    adaptiveBinning?: {
+        enabled: boolean
+        maxBins: number
+        minSamplesPerBin: number
+    }
+}
+
+function filterOutliers(
+    rating: number,
+    entries: AggregatedSample[],
+    deltaLimitByRating: (rating: number) => number
+): AggregatedSample[] {
     if (!entries.length) {
         return []
     }
@@ -58,7 +74,7 @@ function filterOutliers(rating: number, entries: AggregatedSample[]): Aggregated
     const threshold = Math.max(total * 0.05, 20)
     let removed = 0
     const removedDeltas = new Set<number>()
-    const deltaLimit = rating === 4 ? 365 : 100
+    const deltaLimit = deltaLimitByRating(rating)
 
     for (const entry of sorted) {
         const { count, delta } = entry
@@ -79,7 +95,103 @@ function filterOutliers(rating: number, entries: AggregatedSample[]): Aggregated
         .sort((a, b) => a.delta - b.delta)
 }
 
-export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCurveSeries[] {
+function applyAdaptiveBinning(
+    entries: AggregatedSample[],
+    maxBins: number,
+    minSamplesPerBin: number
+): AggregatedSample[] {
+    if (!entries.length) {
+        return []
+    }
+
+    // Sort by delta (time) first
+    const sorted = [...entries].sort((a, b) => a.delta - b.delta)
+
+    // Calculate total samples
+    const totalSamples = sorted.reduce((sum, entry) => sum + entry.count, 0)
+
+    // If total samples less than minimum, return single bin
+    if (totalSamples < minSamplesPerBin) {
+        const merged: AggregatedSample = {
+            delta: sorted.reduce((sum, e) => sum + e.delta * e.count, 0) / totalSamples,
+            success: sorted.reduce((sum, e) => sum + e.success, 0),
+            count: totalSamples,
+        }
+        return [merged]
+    }
+
+    // First pass: merge to meet minimum samples per bin
+    const bins: AggregatedSample[] = []
+    let currentBin: AggregatedSample | null = null
+
+    for (const entry of sorted) {
+        if (!currentBin) {
+            currentBin = { ...entry }
+        } else {
+            // Weighted average of delta
+            const totalCount = currentBin.count + entry.count
+            currentBin.delta =
+                (currentBin.delta * currentBin.count + entry.delta * entry.count) / totalCount
+            currentBin.success += entry.success
+            currentBin.count = totalCount
+        }
+
+        // If current bin meets minimum samples, finalize it
+        if (currentBin.count >= minSamplesPerBin) {
+            bins.push(currentBin)
+            currentBin = null
+        }
+    }
+
+    // Add remaining bin if exists
+    if (currentBin) {
+        if (bins.length > 0) {
+            // Merge with last bin to avoid a small final bin
+            const lastBin = bins[bins.length - 1]
+            const totalCount = lastBin.count + currentBin.count
+            lastBin.delta =
+                (lastBin.delta * lastBin.count + currentBin.delta * currentBin.count) / totalCount
+            lastBin.success += currentBin.success
+            lastBin.count = totalCount
+        } else {
+            bins.push(currentBin)
+        }
+    }
+
+    // Second pass: if still too many bins, merge adjacent bins
+    while (bins.length > maxBins) {
+        // Find the pair of adjacent bins with smallest combined time span
+        let minSpanIndex = 0
+        let minSpan = Number.POSITIVE_INFINITY
+
+        for (let i = 0; i < bins.length - 1; i++) {
+            const span = bins[i + 1].delta - bins[i].delta
+            if (span < minSpan) {
+                minSpan = span
+                minSpanIndex = i
+            }
+        }
+
+        // Merge the pair
+        const bin1 = bins[minSpanIndex]
+        const bin2 = bins[minSpanIndex + 1]
+        const totalCount = bin1.count + bin2.count
+        const mergedBin: AggregatedSample = {
+            delta: (bin1.delta * bin1.count + bin2.delta * bin2.count) / totalCount,
+            success: bin1.success + bin2.success,
+            count: totalCount,
+        }
+
+        bins.splice(minSpanIndex, 2, mergedBin)
+    }
+
+    return bins
+}
+
+export function buildForgettingCurve(
+    samples: ForgettingSample[],
+    options: ForgettingCurveOptions = {}
+): ForgettingCurveSeries[] {
     if (samples.length === 0) {
         return []
     }
@@ -122,21 +234,26 @@ export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCur
         4: [],
     }
 
+    const deltaLimitByRating =
+        options.deltaLimitByRating ?? ((rating: number) => (rating === 4 ? 365 : 100))
+
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
-        aggregatedByRating[rating] = filterOutliers(rating, Array.from(bucket.values()))
-    }
+        let aggregated = options.disableOutlierFiltering
+            ? Array.from(bucket.values()).sort((a, b) => a.delta - b.delta)
+            : filterOutliers(rating, Array.from(bucket.values()), deltaLimitByRating)
 
-    let maxPredictionDelta = 30
-    for (const rating of [1, 2, 3, 4]) {
-        const aggregated = aggregatedByRating[rating]
-        if (aggregated.length) {
-            const ratingMax = aggregated.reduce((p, entry) => Math.max(p, entry.delta), 0)
-            maxPredictionDelta = Math.min(MAX_INTERVAL, Math.max(maxPredictionDelta, ratingMax))
+        // Apply adaptive binning if enabled
+        if (options.adaptiveBinning?.enabled) {
+            aggregated = applyAdaptiveBinning(
+                aggregated,
+                options.adaptiveBinning.maxBins,
+                options.adaptiveBinning.minSamplesPerBin
+            )
         }
-    }
 
-    const sharedPredictionRange = Math.ceil(maxPredictionDelta)
+        aggregatedByRating[rating] = aggregated
+    }
 
     const series: ForgettingCurveSeries[] = []
 
@@ -155,8 +272,15 @@ export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCur
             continue
         }
 
-        const stability = fitStability(aggregated, averageRecall, RATING_DEFAULT_STABILITY[rating])
-        const predicted = stability ? buildPredictionSeries(stability, sharedPredictionRange) : []
+        const stability = fitStability(
+            aggregated,
+            averageRecall,
+            RATING_DEFAULT_STABILITY[rating],
+            options.minStability,
+            options.maxStability
+        )
+        // Prediction curves are now generated dynamically during rendering
+        const predicted: { delta: number; recall: number }[] = []
         const rmse = stability ? computeRmse(aggregated, stability) : null
         const points: ForgettingCurvePoint[] = aggregated.map((entry) => ({
             delta: entry.delta,
@@ -182,7 +306,9 @@ export function buildForgettingCurve(samples: ForgettingSample[]): ForgettingCur
 function fitStability(
     aggregated: AggregatedSample[],
     averageRecall: number,
-    initial: number
+    initial: number,
+    minStability: number = S_MIN,
+    maxStability: number = MAX_STABILITY
 ): number | null {
     if (!aggregated.length) {
         return null
@@ -203,8 +329,8 @@ function fitStability(
         return total
     }
 
-    let left = Math.max(S_MIN, Math.min(initial, MAX_STABILITY) / 4)
-    let right = MAX_STABILITY
+    let left = minStability
+    let right = maxStability
     let best = initial
     let bestLoss = Number.POSITIVE_INFINITY
 
@@ -228,7 +354,7 @@ function fitStability(
         initial * 0.5,
         initial * 1.5,
     ]) {
-        const clamped = clamp(candidate, S_MIN, MAX_STABILITY)
+        const clamped = clamp(candidate, minStability, maxStability)
         const candidateLoss = loss(clamped)
         if (candidateLoss < bestLoss) {
             bestLoss = candidateLoss
@@ -252,21 +378,6 @@ function computeRmse(aggregated: AggregatedSample[], stability: number): number 
     }, 0)
 
     return Math.sqrt(squaredError / totalCount)
-}
-
-function buildPredictionSeries(
-    stability: number,
-    maxDelta: number
-): { delta: number; recall: number }[] {
-    const cappedMaxDelta = Math.max(30, Math.min(MAX_INTERVAL, Math.ceil(maxDelta)))
-    const series: { delta: number; recall: number }[] = []
-    for (let delta = 0; delta <= cappedMaxDelta; delta++) {
-        series.push({
-            delta,
-            recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, stability),
-        })
-    }
-    return series
 }
 
 function clamp(value: number, min: number, max: number) {

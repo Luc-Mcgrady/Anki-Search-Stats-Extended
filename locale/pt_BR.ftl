@@ -266,14 +266,20 @@ forgetting-curve = Curva de esquecimento da primeira revisão de longo prazo
 forgetting-curve-help =
     Compare a recordação observada com a curva de esquecimento ajustada do FSRS, agrupada pela primeira avaliação do cartão.
     Revisões no mesmo dia são excluídas; apenas uma revisão por dia é utilizada e o tamanho dos pontos indica o número de amostras em cada intervalo.
+first-short-term-forgetting-curve = Primeira curva de esquecimento de curto prazo
+first-short-term-forgetting-curve-help =
+    Mostra a recordação em revisões do mesmo dia dentro de 12 horas da primeira avaliação. Usa agrupamento adaptativo para agrupar revisões de forma inteligente (até 20 grupos, mínimo 50 amostras por grupo) enquanto preserva o tempo preciso. Os valores de estabilidade de memória são exibidos em minutos e podem variar até 24 horas.
 forgetting-curve-no-data = Não há histórico de revisão suficiente para traçar a curva de esquecimento.
 forgetting-curve-x-axis = Intervalo (dias)
+forgetting-curve-x-axis-minutes = Intervalo (minutos)
 forgetting-curve-y-axis = Probabilidade de recordação
 forgetting-curve-tooltip-rating = Primeira avaliação: {$rating}
 forgetting-curve-tooltip-interval = Intervalo: {$days} d
+forgetting-curve-tooltip-interval-minutes = Intervalo: {$minutes} min
 forgetting-curve-tooltip-recall = Recordação: {$value}%
 forgetting-curve-tooltip-count = Amostras: {$count}
 forgetting-curve-legend = {$rating}: Estabilidade de memória={$stability} ({$count})
+forgetting-curve-legend-short-term = {$rating}: Estabilidade de memória={$stability} minutos ({$count})
 forgetting-curve-legend-count = n={$count}
 
 actual = Real

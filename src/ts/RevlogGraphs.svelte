@@ -67,13 +67,16 @@
         day_filtered_review_hours,
         learn_steps_per_card,
         forgetting_curve,
+        short_term_forgetting_curve,
         last_forget: local_last_forget,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
     let forgetting_curve_series: ForgettingCurveSeries[] = []
+    let forgetting_curve_short_series: ForgettingCurveSeries[] = []
 
     $: $last_forget = local_last_forget
     $: forgetting_curve_series = forgetting_curve ?? []
+    $: forgetting_curve_short_series = short_term_forgetting_curve ?? []
     $: realScroll = -Math.abs($scroll)
     const bins = 30
     $: start = today - bins * $binSize + realScroll
@@ -546,6 +549,19 @@
         <p>
             {i18n("fsrs-calibration-help")}
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("first-short-term-forgetting-curve")}</h1>
+        <ForgettingCurve
+            series={forgetting_curve_short_series}
+            xLabel={i18n("forgetting-curve-x-axis-minutes")}
+            isShortTerm={true}
+            formatInterval={(delta) =>
+                i18n("forgetting-curve-tooltip-interval-minutes", {
+                    minutes: delta.toFixed(2),
+                })}
+        />
+        <p>{i18n("first-short-term-forgetting-curve-help")}</p>
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("forgetting-curve")}</h1>
