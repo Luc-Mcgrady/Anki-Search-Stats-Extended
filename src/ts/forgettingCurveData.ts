@@ -42,6 +42,8 @@ const MAX_INTERVAL = 365
 export interface ForgettingCurveOptions {
     deltaLimitByRating?: (rating: number) => number
     minStability?: number
+    maxStability?: number
+    disableOutlierFiltering?: boolean
     adaptiveBinning?: {
         enabled: boolean
         maxBins: number
@@ -237,7 +239,9 @@ export function buildForgettingCurve(
 
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
-        let aggregated = filterOutliers(rating, Array.from(bucket.values()), deltaLimitByRating)
+        let aggregated = options.disableOutlierFiltering
+            ? Array.from(bucket.values()).sort((a, b) => a.delta - b.delta)
+            : filterOutliers(rating, Array.from(bucket.values()), deltaLimitByRating)
 
         // Apply adaptive binning if enabled
         if (options.adaptiveBinning?.enabled) {
@@ -283,7 +287,8 @@ export function buildForgettingCurve(
             aggregated,
             averageRecall,
             RATING_DEFAULT_STABILITY[rating],
-            options.minStability
+            options.minStability,
+            options.maxStability
         )
         const predicted = stability ? buildPredictionSeries(stability, sharedPredictionRange) : []
         const rmse = stability ? computeRmse(aggregated, stability) : null
@@ -312,7 +317,8 @@ function fitStability(
     aggregated: AggregatedSample[],
     averageRecall: number,
     initial: number,
-    minStability: number = S_MIN
+    minStability: number = S_MIN,
+    maxStability: number = MAX_STABILITY
 ): number | null {
     if (!aggregated.length) {
         return null
@@ -334,7 +340,7 @@ function fitStability(
     }
 
     let left = minStability
-    let right = MAX_STABILITY
+    let right = maxStability
     let best = initial
     let bestLoss = Number.POSITIVE_INFINITY
 
@@ -358,7 +364,7 @@ function fitStability(
         initial * 0.5,
         initial * 1.5,
     ]) {
-        const clamped = clamp(candidate, minStability, MAX_STABILITY)
+        const clamped = clamp(candidate, minStability, maxStability)
         const candidateLoss = loss(clamped)
         if (candidateLoss < bestLoss) {
             bestLoss = candidateLoss

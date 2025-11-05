@@ -235,7 +235,7 @@ export function calculateRevlogStats(
             ) {
                 const delta_ms = revlog.id - first_time
                 if (delta_ms > 0 && delta_ms < day_ms) {
-                    const delta_minutes = Math.round(delta_ms / (60 * 1000))
+                    const delta_minutes = delta_ms / (60 * 1000)
                     if (delta_minutes > 0) {
                         forgetting_samples_short.push({
                             cid: revlog.cid,
@@ -320,6 +320,8 @@ export function calculateRevlogStats(
     const forgetting_curve_short_series = buildForgettingCurve(forgetting_samples_short, {
         deltaLimitByRating: (_rating: number) => 720,
         minStability: 1e-6,
+        maxStability: 1440,
+        disableOutlierFiltering: true,
         adaptiveBinning: {
             enabled: true,
             maxBins: 20,
