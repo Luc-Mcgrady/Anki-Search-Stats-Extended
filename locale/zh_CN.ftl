@@ -270,7 +270,7 @@ forgetting-curve-help =
     同日复习会被排除，每天仅使用一次复习；点的大小表示该间隔下参与计算的样本数量。
 first-short-term-forgetting-curve = 首次短期复习遗忘曲线
 first-short-term-forgetting-curve-help =
-    展示首次答题后的短期记忆表现。同一天的复习按距离首次评分的分钟数分组，每张卡每天最多贡献一条样本；记忆稳定度以分钟为单位显示。
+    展示首次评分后12小时内的同日复习记忆表现。采用自适应分箱算法智能分组（最多20个箱，每箱至少50个样本），同时保留精确的时间信息。记忆稳定度以分钟为单位显示，范围可达24小时。
 forgetting-curve-no-data = 复习历史不足，暂无法绘制遗忘曲线。
 forgetting-curve-x-axis = 间隔（天）
 forgetting-curve-x-axis-minutes = 间隔（分钟）

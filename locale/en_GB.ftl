@@ -274,7 +274,7 @@ forgetting-curve-help =
     Same-day reviews are excluded, only one review per day is used and point size indicates the number of samples contributing to that interval.
 first-short-term-forgetting-curve = First Short-term Forgetting Curve
 first-short-term-forgetting-curve-help =
-    Visualises recall for same-day reviews. Same-day reviews are grouped by the minutes since the first rating, with at most one sample per card per day. Memory stability values are expressed in minutes.
+    Visualises recall for same-day reviews within 12 hours of the first rating. Uses adaptive binning to intelligently group reviews (up to 20 bins, minimum 50 samples per bin) while preserving precise timing. Memory stability values are expressed in minutes and can range up to 24 hours.
 forgetting-curve-no-data = Not enough review history to draw a forgetting curve yet.
 forgetting-curve-x-axis = Interval (days)
 forgetting-curve-x-axis-minutes = Interval (minutes)

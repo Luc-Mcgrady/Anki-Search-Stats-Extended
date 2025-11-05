@@ -268,7 +268,7 @@ forgetting-curve-help =
     Revisões no mesmo dia são excluídas; apenas uma revisão por dia é utilizada e o tamanho dos pontos indica o número de amostras em cada intervalo.
 first-short-term-forgetting-curve = Primeira curva de esquecimento de curto prazo
 first-short-term-forgetting-curve-help =
-    Mostra a recordação logo após a primeira avaliação. Revisões no mesmo dia são agrupadas pelos minutos desde a primeira resposta, com no máximo uma amostra por cartão por dia. A estabilidade da memória é exibida em minutos.
+    Mostra a recordação em revisões do mesmo dia dentro de 12 horas da primeira avaliação. Usa agrupamento adaptativo para agrupar revisões de forma inteligente (até 20 grupos, mínimo 50 amostras por grupo) enquanto preserva o tempo preciso. Os valores de estabilidade de memória são exibidos em minutos e podem variar até 24 horas.
 forgetting-curve-no-data = Não há histórico de revisão suficiente para traçar a curva de esquecimento.
 forgetting-curve-x-axis = Intervalo (dias)
 forgetting-curve-x-axis-minutes = Intervalo (minutos)
