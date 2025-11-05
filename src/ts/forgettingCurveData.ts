@@ -41,6 +41,12 @@ const MAX_INTERVAL = 365
 
 export interface ForgettingCurveOptions {
     deltaLimitByRating?: (rating: number) => number
+    minStability?: number
+    adaptiveBinning?: {
+        enabled: boolean
+        maxBins: number
+        minSamplesPerBin: number
+    }
 }
 
 function filterOutliers(
@@ -85,6 +91,99 @@ function filterOutliers(
     return entries
         .filter((entry) => !removedDeltas.has(entry.delta))
         .sort((a, b) => a.delta - b.delta)
+}
+
+function applyAdaptiveBinning(
+    entries: AggregatedSample[],
+    maxBins: number,
+    minSamplesPerBin: number
+): AggregatedSample[] {
+    if (!entries.length) {
+        return []
+    }
+
+    // Sort by delta (time) first
+    const sorted = [...entries].sort((a, b) => a.delta - b.delta)
+
+    // Calculate total samples
+    const totalSamples = sorted.reduce((sum, entry) => sum + entry.count, 0)
+
+    // If total samples less than minimum, return single bin
+    if (totalSamples < minSamplesPerBin) {
+        const merged: AggregatedSample = {
+            delta: sorted.reduce((sum, e) => sum + e.delta * e.count, 0) / totalSamples,
+            success: sorted.reduce((sum, e) => sum + e.success, 0),
+            count: totalSamples,
+        }
+        return [merged]
+    }
+
+    // First pass: merge to meet minimum samples per bin
+    const bins: AggregatedSample[] = []
+    let currentBin: AggregatedSample | null = null
+
+    for (const entry of sorted) {
+        if (!currentBin) {
+            currentBin = { ...entry }
+        } else {
+            // Weighted average of delta
+            const totalCount = currentBin.count + entry.count
+            currentBin.delta =
+                (currentBin.delta * currentBin.count + entry.delta * entry.count) / totalCount
+            currentBin.success += entry.success
+            currentBin.count = totalCount
+        }
+
+        // If current bin meets minimum samples, finalize it
+        if (currentBin.count >= minSamplesPerBin) {
+            bins.push(currentBin)
+            currentBin = null
+        }
+    }
+
+    // Add remaining bin if exists
+    if (currentBin) {
+        if (bins.length > 0) {
+            // Merge with last bin to avoid a small final bin
+            const lastBin = bins[bins.length - 1]
+            const totalCount = lastBin.count + currentBin.count
+            lastBin.delta =
+                (lastBin.delta * lastBin.count + currentBin.delta * currentBin.count) / totalCount
+            lastBin.success += currentBin.success
+            lastBin.count = totalCount
+        } else {
+            bins.push(currentBin)
+        }
+    }
+
+    // Second pass: if still too many bins, merge adjacent bins
+    while (bins.length > maxBins) {
+        // Find the pair of adjacent bins with smallest combined time span
+        let minSpanIndex = 0
+        let minSpan = Number.POSITIVE_INFINITY
+
+        for (let i = 0; i < bins.length - 1; i++) {
+            const span = bins[i + 1].delta - bins[i].delta
+            if (span < minSpan) {
+                minSpan = span
+                minSpanIndex = i
+            }
+        }
+
+        // Merge the pair
+        const bin1 = bins[minSpanIndex]
+        const bin2 = bins[minSpanIndex + 1]
+        const totalCount = bin1.count + bin2.count
+        const mergedBin: AggregatedSample = {
+            delta: (bin1.delta * bin1.count + bin2.delta * bin2.count) / totalCount,
+            success: bin1.success + bin2.success,
+            count: totalCount,
+        }
+
+        bins.splice(minSpanIndex, 2, mergedBin)
+    }
+
+    return bins
 }
 
 export function buildForgettingCurve(
@@ -138,11 +237,18 @@ export function buildForgettingCurve(
 
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
-        aggregatedByRating[rating] = filterOutliers(
-            rating,
-            Array.from(bucket.values()),
-            deltaLimitByRating
-        )
+        let aggregated = filterOutliers(rating, Array.from(bucket.values()), deltaLimitByRating)
+
+        // Apply adaptive binning if enabled
+        if (options.adaptiveBinning?.enabled) {
+            aggregated = applyAdaptiveBinning(
+                aggregated,
+                options.adaptiveBinning.maxBins,
+                options.adaptiveBinning.minSamplesPerBin
+            )
+        }
+
+        aggregatedByRating[rating] = aggregated
     }
 
     let maxPredictionDelta = 30
@@ -173,7 +279,12 @@ export function buildForgettingCurve(
             continue
         }
 
-        const stability = fitStability(aggregated, averageRecall, RATING_DEFAULT_STABILITY[rating])
+        const stability = fitStability(
+            aggregated,
+            averageRecall,
+            RATING_DEFAULT_STABILITY[rating],
+            options.minStability
+        )
         const predicted = stability ? buildPredictionSeries(stability, sharedPredictionRange) : []
         const rmse = stability ? computeRmse(aggregated, stability) : null
         const points: ForgettingCurvePoint[] = aggregated.map((entry) => ({
@@ -200,7 +311,8 @@ export function buildForgettingCurve(
 function fitStability(
     aggregated: AggregatedSample[],
     averageRecall: number,
-    initial: number
+    initial: number,
+    minStability: number = S_MIN
 ): number | null {
     if (!aggregated.length) {
         return null
@@ -221,7 +333,7 @@ function fitStability(
         return total
     }
 
-    let left = Math.max(S_MIN, Math.min(initial, MAX_STABILITY) / 4)
+    let left = minStability
     let right = MAX_STABILITY
     let best = initial
     let bestLoss = Number.POSITIVE_INFINITY
@@ -246,7 +358,7 @@ function fitStability(
         initial * 0.5,
         initial * 1.5,
     ]) {
-        const clamped = clamp(candidate, S_MIN, MAX_STABILITY)
+        const clamped = clamp(candidate, minStability, MAX_STABILITY)
         const candidateLoss = loss(clamped)
         if (candidateLoss < bestLoss) {
             bestLoss = candidateLoss

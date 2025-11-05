@@ -318,7 +318,13 @@ export function calculateRevlogStats(
     const remaining_forgotten = forgotten.size
     const forgetting_curve_series = buildForgettingCurve(forgetting_samples)
     const forgetting_curve_short_series = buildForgettingCurve(forgetting_samples_short, {
-        deltaLimitByRating: (rating: number) => (rating === 4 ? 1440 : 720),
+        deltaLimitByRating: (_rating: number) => 720,
+        minStability: 1e-6,
+        adaptiveBinning: {
+            enabled: true,
+            maxBins: 20,
+            minSamplesPerBin: 50,
+        },
     })
 
     return {
