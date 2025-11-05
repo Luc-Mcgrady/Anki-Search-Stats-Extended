@@ -1,4 +1,5 @@
 import * as d3 from "d3"
+import * as _ from "lodash"
 import { forgetting_curve, FSRS6_DEFAULT_DECAY } from "ts-fsrs"
 import type { ForgettingCurveSeries } from "./forgettingCurveData"
 import { defaultGraphBounds } from "./graph"
@@ -98,16 +99,13 @@ export function renderForgettingCurve(
         // Generate prediction curve dynamically based on current X-axis range
         if (seriesEntry.stability !== null) {
             const numPoints = 500
-            const step = xMax / numPoints
-            const predicted: { delta: number; recall: number }[] = []
+            const rightmost = x.domain()[1]
+            const step = rightmost / numPoints
 
-            for (let i = 0; i <= numPoints; i++) {
-                const delta = i * step
-                predicted.push({
-                    delta,
-                    recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, seriesEntry.stability),
-                })
-            }
+            const predicted = _.range(0, rightmost, step).map((delta) => ({
+                delta,
+                recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, seriesEntry.stability!),
+            }))
 
             container
                 .append("path")
