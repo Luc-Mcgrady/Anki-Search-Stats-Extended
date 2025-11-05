@@ -403,7 +403,13 @@ function buildPredictionSeries(
 ): { delta: number; recall: number }[] {
     const cappedMaxDelta = Math.max(30, Math.min(maxIntervalLimit, Math.ceil(maxDelta)))
     const series: { delta: number; recall: number }[] = []
-    for (let delta = 0; delta <= cappedMaxDelta; delta++) {
+
+    // Use finer step size for smooth curves, especially important for short-term curves
+    const numPoints = 500
+    const step = cappedMaxDelta / numPoints
+
+    for (let i = 0; i <= numPoints; i++) {
+        const delta = i * step
         series.push({
             delta,
             recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, stability),
