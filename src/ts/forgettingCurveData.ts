@@ -138,7 +138,11 @@ export function buildForgettingCurve(
 
     for (const rating of [1, 2, 3, 4]) {
         const bucket = ratingBuckets[rating]!
-        aggregatedByRating[rating] = filterOutliers(rating, Array.from(bucket.values()), deltaLimitByRating)
+        aggregatedByRating[rating] = filterOutliers(
+            rating,
+            Array.from(bucket.values()),
+            deltaLimitByRating
+        )
     }
 
     let maxPredictionDelta = 30

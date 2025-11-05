@@ -555,6 +555,7 @@
         <ForgettingCurve
             series={forgetting_curve_short_series}
             xLabel={i18n("forgetting-curve-x-axis-minutes")}
+            isShortTerm={true}
             formatInterval={(delta) =>
                 i18n("forgetting-curve-tooltip-interval-minutes", {
                     minutes: delta.toFixed(0),

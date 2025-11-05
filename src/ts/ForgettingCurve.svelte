@@ -10,6 +10,7 @@
     export let series: ForgettingCurveSeries[] = []
     export let xLabel: string | null = null
     export let yLabel: string | null = null
+    export let isShortTerm: boolean = false
     export let formatInterval: (delta: number) => string = (delta) =>
         i18n("forgetting-curve-tooltip-interval", {
             days: delta.toFixed(0),
@@ -65,7 +66,10 @@
             count: entry.sampleSize.toLocaleString(),
         })
 
-        return i18n("forgetting-curve-legend", {
+        const legendKey = isShortTerm
+            ? "forgetting-curve-legend-short-term"
+            : "forgetting-curve-legend"
+        return i18n(legendKey, {
             rating: labelForRating(entry.rating),
             stability,
             count: countText,

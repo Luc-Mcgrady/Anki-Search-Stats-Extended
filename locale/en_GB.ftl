@@ -285,6 +285,7 @@ forgetting-curve-tooltip-interval-minutes = Interval: {$minutes} min
 forgetting-curve-tooltip-recall = Recall: {$value}%
 forgetting-curve-tooltip-count = Samples: {$count}
 forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})
+forgetting-curve-legend-short-term = {$rating}: Memory stability={$stability} minutes ({$count})
 forgetting-curve-legend-count = n={$count}
 
 actual = Actual

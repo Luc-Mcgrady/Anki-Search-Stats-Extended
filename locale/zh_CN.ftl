@@ -281,6 +281,7 @@ forgetting-curve-tooltip-interval-minutes = 间隔：{$minutes} 分钟
 forgetting-curve-tooltip-recall = 回忆率：{$value}%
 forgetting-curve-tooltip-count = 样本量：{$count}
 forgetting-curve-legend = {$rating}: 记忆稳定期={$stability} ({$count})
+forgetting-curve-legend-short-term = {$rating}: 记忆稳定期={$stability} 分钟 ({$count})
 forgetting-curve-legend-count = n={$count}
 
 actual = Actual
