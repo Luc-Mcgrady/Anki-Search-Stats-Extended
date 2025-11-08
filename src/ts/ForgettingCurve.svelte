@@ -23,6 +23,7 @@
     let svg: SVGSVGElement | null = null
     let xAxisMax: number = -1 // Use -1 as uninitialized marker
     let maxBins: number = 20
+    let outlierFiltering = false
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
     let series: ForgettingCurveSeries[] = []
@@ -43,6 +44,7 @@
             })
         } else {
             series = buildForgettingCurve(data, {
+                disableOutlierFiltering: !outlierFiltering,
                 adaptiveBinning: {
                     enabled: true,
                     maxBins: maxBins,
@@ -150,6 +152,12 @@
 {#if hasData}
     <svg bind:this={svg}></svg>
     <label class="x-axis-control">
+        {#if !isShortTerm}
+            <span>
+                {i18n("forgetting-curve-outlier-filtering")}:
+            </span>
+            <input type="checkbox" bind:checked={outlierFiltering} />
+        {/if}
         <span>
             {isShortTerm
                 ? i18n("forgetting-curve-x-axis-minutes")
@@ -207,6 +215,14 @@
         align-items: baseline;
         width: 100%;
         margin-top: 0.5rem;
+    }
+
+    label.x-axis-control > :nth-child(odd) {
+        justify-self: end;
+    }
+
+    label.x-axis-control input[type="checkbox"] {
+        justify-self: start;
     }
 
     .range-container {
