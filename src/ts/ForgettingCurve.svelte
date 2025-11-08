@@ -1,13 +1,17 @@
 <script lang="ts">
     import { i18n } from "./i18n"
-    import type { ForgettingCurveSeries } from "./forgettingCurveData"
+    import {
+        buildForgettingCurve,
+        type ForgettingCurveSeries,
+        type ForgettingSample,
+    } from "./forgettingCurveData"
     import {
         RATING_COLOURS,
         renderForgettingCurve,
         type ForgettingCurveRenderOptions,
     } from "./ForgettingCurve"
 
-    export let series: ForgettingCurveSeries[] = []
+    export let data: ForgettingSample[] = []
     export let xLabel: string | null = null
     export let yLabel: string | null = null
     export let isShortTerm: boolean = false
@@ -18,8 +22,35 @@
 
     let svg: SVGSVGElement | null = null
     let xAxisMax: number = -1 // Use -1 as uninitialized marker
+    let maxBins: number = 20
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
+    let series: ForgettingCurveSeries[] = []
+
+    // Process data into series for each rating
+    $: {
+        if (isShortTerm) {
+            series = buildForgettingCurve(data, {
+                deltaLimitByRating: (_rating: number) => 720,
+                minStability: 1e-6,
+                maxStability: 1440,
+                disableOutlierFiltering: true,
+                adaptiveBinning: {
+                    enabled: true,
+                    maxBins: maxBins,
+                    minSamplesPerBin: 1,
+                },
+            })
+        } else {
+            series = buildForgettingCurve(data, {
+                adaptiveBinning: {
+                    enabled: true,
+                    maxBins: maxBins,
+                    minSamplesPerBin: 1,
+                },
+            })
+        }
+    }
 
     // Calculate the minimum and maximum delta from actual data points only
     $: {
@@ -135,6 +166,15 @@
             />
             {(xAxisMax >= 0 ? xAxisMax : dataMaxDelta).toFixed(isShortTerm ? 1 : 0)}
             {isShortTerm ? "min" : "d"}
+        </span>
+        <span>
+            {i18n("forgetting-curve-bins-selector")}:
+        </span>
+        <span class="range-container">
+            {1}
+            <input type="range" min={1} max={50} step={1} bind:value={maxBins} />
+            {maxBins}
+            {"bins"}
         </span>
     </label>
     <div class="legend">

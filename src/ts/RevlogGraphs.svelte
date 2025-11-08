@@ -27,7 +27,6 @@
         today,
         type RevlogBuckets,
     } from "./revlogGraphs"
-    import type { ForgettingCurveSeries } from "./forgettingCurveData"
     import GraphCategory from "./GraphCategory.svelte"
     import Warning from "./Warning.svelte"
     import MatureFilterSelector from "./MatureFilterSelector.svelte"
@@ -66,20 +65,14 @@
         day_review_hours,
         day_filtered_review_hours,
         learn_steps_per_card,
-        forgetting_curve,
-        short_term_forgetting_curve,
+        forgetting_samples,
+        forgetting_samples_short,
         last_forget: local_last_forget,
     } = catchErrors(() => calculateRevlogStats(revlogData, cardData)))
 
-    let forgetting_curve_series: ForgettingCurveSeries[] = []
-    let forgetting_curve_short_series: ForgettingCurveSeries[] = []
-
     $: $last_forget = local_last_forget
-    $: forgetting_curve_series = forgetting_curve ?? []
-    $: forgetting_curve_short_series = short_term_forgetting_curve ?? []
     $: realScroll = -Math.abs($scroll)
     const bins = 30
-    $: start = today - bins * $binSize + realScroll
 
     function barLabel(i: number) {
         return (i - today).toString()
@@ -553,7 +546,7 @@
     <GraphContainer>
         <h1>{i18n("first-short-term-forgetting-curve")}</h1>
         <ForgettingCurve
-            series={forgetting_curve_short_series}
+            data={forgetting_samples_short}
             xLabel={i18n("forgetting-curve-x-axis-minutes")}
             isShortTerm={true}
             formatInterval={(delta) =>
@@ -565,7 +558,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("forgetting-curve")}</h1>
-        <ForgettingCurve series={forgetting_curve_series} />
+        <ForgettingCurve data={forgetting_samples} />
         <p>{i18n("forgetting-curve-help")}</p>
     </GraphContainer>
     <GraphContainer>

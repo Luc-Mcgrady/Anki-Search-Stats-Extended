@@ -287,6 +287,7 @@ forgetting-curve-tooltip-count = Samples: {$count}
 forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})
 forgetting-curve-legend-short-term = {$rating}: Memory stability={$stability} minutes ({$count})
 forgetting-curve-legend-count = n={$count}
+forgetting-curve-bins-selector = Maximum number of Buckets
 
 actual = Actual
 
