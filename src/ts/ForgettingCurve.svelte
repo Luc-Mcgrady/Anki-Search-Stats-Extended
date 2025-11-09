@@ -151,39 +151,45 @@
 
 {#if hasData}
     <svg bind:this={svg}></svg>
-    <label class="x-axis-control">
-        {#if !isShortTerm}
+    {#if !isShortTerm}
+        <label>
             <span>
                 {i18n("forgetting-curve-outlier-filtering")}:
             </span>
             <input type="checkbox" bind:checked={outlierFiltering} />
-        {/if}
-        <span>
-            {isShortTerm
-                ? i18n("forgetting-curve-x-axis-minutes")
-                : i18n("forgetting-curve-x-axis")}:
-        </span>
-        <span class="range-container">
-            {dataMinDelta.toFixed(isShortTerm ? 1 : 0)}
-            <input
-                type="range"
-                min={dataMinDelta}
-                max={dataMaxDelta}
-                step={isShortTerm ? "0.1" : "1"}
-                bind:value={xAxisMax}
-            />
-            {(xAxisMax >= 0 ? xAxisMax : dataMaxDelta).toFixed(isShortTerm ? 1 : 0)}
-            {isShortTerm ? "min" : "d"}
-        </span>
-        <span>
-            {i18n("forgetting-curve-bins-selector")}:
-        </span>
-        <span class="range-container">
-            {1}
-            <input type="range" min={1} max={50} step={1} bind:value={maxBins} />
-            {i18n("forgetting-curve-bin-count", { count: maxBins })}
-        </span>
-    </label>
+        </label>
+    {/if}
+    <div class="control-grid">
+        <label>
+            <span>
+                {isShortTerm
+                    ? i18n("forgetting-curve-x-axis-minutes")
+                    : i18n("forgetting-curve-x-axis")}:
+            </span>
+            <span class="range-container">
+                {dataMinDelta.toFixed(isShortTerm ? 1 : 0)}
+                <input
+                    type="range"
+                    min={dataMinDelta}
+                    max={dataMaxDelta}
+                    step={isShortTerm ? "0.1" : "1"}
+                    bind:value={xAxisMax}
+                />
+                {(xAxisMax >= 0 ? xAxisMax : dataMaxDelta).toFixed(isShortTerm ? 1 : 0)}
+                {isShortTerm ? "min" : "d"}
+            </span>
+        </label>
+        <label>
+            <span>
+                {i18n("forgetting-curve-bins-selector")}:
+            </span>
+            <span class="range-container">
+                {1}
+                <input type="range" min={1} max={50} step={1} bind:value={maxBins} />
+                {i18n("forgetting-curve-bin-count", { count: maxBins })}
+            </span>
+        </label>
+    </div>
     <div class="legend">
         {#each series as entry (entry.rating)}
             {#if entry.points.length}
@@ -207,21 +213,13 @@
         height: 100%;
     }
 
-    label.x-axis-control {
+    .control-grid {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 1.5fr 1fr;
         gap: 0.5em 1em;
         align-items: baseline;
         width: 100%;
         margin-top: 0.5rem;
-    }
-
-    label.x-axis-control > :nth-child(odd) {
-        justify-self: end;
-    }
-
-    label.x-axis-control input[type="checkbox"] {
-        justify-self: start;
     }
 
     .range-container {
