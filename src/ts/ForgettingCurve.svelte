@@ -181,8 +181,7 @@
         <span class="range-container">
             {1}
             <input type="range" min={1} max={50} step={1} bind:value={maxBins} />
-            {maxBins}
-            {"bins"}
+            {i18n("forgetting-curve-bin-count", { count: maxBins })}
         </span>
     </label>
     <div class="legend">
