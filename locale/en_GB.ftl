@@ -418,7 +418,7 @@ special-thanks = Special Thanks
 
 credits-llamas = 🦙 (siid): Security and other fixes
 credits-Ross-Brown = Ross Brown: {sxr-heatmap}
-credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} and more.
+credits-Jonathan-Schoreels = Jonathan Schoreels: {average-stability-over-time} and more
 credits-Huili-fox = Huili fox: Chinese localisation
 credits-Jarrett-Ye = Jarrett Ye: {memorised}, {forgetting-curve} and {first-short-term-forgetting-curve} graphs
 credits-Ishiko = Ishiko: {memorised} graph
