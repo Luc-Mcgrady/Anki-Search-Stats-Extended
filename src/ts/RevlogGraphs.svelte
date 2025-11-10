@@ -565,7 +565,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("forgetting-curve")}</h1>
-        {#if $memorised_stats}
+        {#if !truncated || $memorised_stats}
             <ForgettingCurve data={forgetting_samples} />
             <p>{i18n("forgetting-curve-help")}</p>
             {#if truncated}
