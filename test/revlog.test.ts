@@ -50,6 +50,7 @@ test("learn_step_count", ()=>{
 test("Forgetting curve aggregates recall data", () => {
     const builder = new RevlogBuilder()
     const revlogs = [
+        builder.review(0, 3),
         builder.review(1, 3),
         builder.wait(1 * day_ms),
         builder.review(1, 3),
