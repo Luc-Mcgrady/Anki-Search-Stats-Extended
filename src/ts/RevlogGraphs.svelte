@@ -545,7 +545,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("first-short-term-forgetting-curve")}</h1>
-        {#if $memorised_stats}
+        {#if !truncated || $memorised_stats}
             <ForgettingCurve
                 data={forgetting_samples_short}
                 xLabel={i18n("forgetting-curve-x-axis-minutes")}
