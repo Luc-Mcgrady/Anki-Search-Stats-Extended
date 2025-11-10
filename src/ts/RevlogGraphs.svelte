@@ -545,21 +545,35 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("first-short-term-forgetting-curve")}</h1>
-        <ForgettingCurve
-            data={forgetting_samples_short}
-            xLabel={i18n("forgetting-curve-x-axis-minutes")}
-            isShortTerm={true}
-            formatInterval={(delta) =>
-                i18n("forgetting-curve-tooltip-interval-minutes", {
-                    minutes: delta.toFixed(2),
-                })}
-        />
-        <p>{i18n("first-short-term-forgetting-curve-help")}</p>
+        {#if $memorised_stats}
+            <ForgettingCurve
+                data={forgetting_samples_short}
+                xLabel={i18n("forgetting-curve-x-axis-minutes")}
+                isShortTerm={true}
+                formatInterval={(delta) =>
+                    i18n("forgetting-curve-tooltip-interval-minutes", {
+                        minutes: delta.toFixed(2),
+                    })}
+            />
+            <p>{i18n("first-short-term-forgetting-curve-help")}</p>
+            {#if truncated}
+                <Warning>{i18n("generic-truncated-warning")}</Warning>
+            {/if}
+        {:else}
+            <MemorisedCalculator />
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("forgetting-curve")}</h1>
-        <ForgettingCurve data={forgetting_samples} />
-        <p>{i18n("forgetting-curve-help")}</p>
+        {#if $memorised_stats}
+            <ForgettingCurve data={forgetting_samples} />
+            <p>{i18n("forgetting-curve-help")}</p>
+            {#if truncated}
+                <Warning>{i18n("generic-truncated-warning")}</Warning>
+            {/if}
+        {:else}
+            <MemorisedCalculator />
+        {/if}
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("stability-time-machine")}</h1>

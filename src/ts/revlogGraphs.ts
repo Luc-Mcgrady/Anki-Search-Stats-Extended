@@ -221,7 +221,7 @@ export function calculateRevlogStats(
         }
 
         if (hasRating && !isCrammingEntry) {
-            if (first_rating[revlog.cid] === undefined) {
+            if (first_rating[revlog.cid] === undefined && revlog.type == 0) {
                 first_rating[revlog.cid] = revlog.ease
                 first_rating_day[revlog.cid] = day
                 first_rating_time[revlog.cid] = revlog.id
