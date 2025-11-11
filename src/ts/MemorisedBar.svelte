@@ -29,7 +29,9 @@
     $: retrievabilityDays = Array.from($memorised_stats?.retrievabilityDays || [])
     $: stable_retrievability_days = Array.from($memorised_stats?.stable_retrievability_days || [])
 
-    $: cardsByBurdenByDays = retrievabilityDays.map((retrievability, i) => (retrievability ?? 0) / (burden[i] ?? 1))
+    $: cardsByBurdenByDays = retrievabilityDays.map(
+        (retrievability, i) => (retrievability ?? 0) / (burden[i] ?? 1)
+    )
 
     $: bw_matrix = Object.fromEntries(
         Object.entries($memorised_stats?.bw_matrix || {}).map(([r_bin, row]) => {
