@@ -287,6 +287,12 @@ forgetting-curve-tooltip-count = Samples: {$count}
 forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})
 forgetting-curve-legend-short-term = {$rating}: Memory stability={$stability} minutes ({$count})
 forgetting-curve-legend-count = n={$count}
+forgetting-curve-bins-selector = Max Bin Count
+forgetting-curve-bin-count = {$count} {$count ->
+        [one] bin
+        *[many] bins
+    }
+forgetting-curve-outlier-filtering = Outlier Filtering
 
 actual = Actual
 

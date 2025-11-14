@@ -1,7 +1,7 @@
 import _ from "lodash"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
-import { buildForgettingCurve, type ForgettingSample } from "./forgettingCurveData"
+import { type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
 import type { CardData, Revlog } from "./search"
 
@@ -221,7 +221,7 @@ export function calculateRevlogStats(
         }
 
         if (hasRating && !isCrammingEntry) {
-            if (first_rating[revlog.cid] === undefined) {
+            if (first_rating[revlog.cid] === undefined && revlog.type == 0) {
                 first_rating[revlog.cid] = revlog.ease
                 first_rating_day[revlog.cid] = day
                 first_rating_time[revlog.cid] = revlog.id
@@ -317,18 +317,6 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
-    const forgetting_curve_series = buildForgettingCurve(forgetting_samples)
-    const forgetting_curve_short_series = buildForgettingCurve(forgetting_samples_short, {
-        deltaLimitByRating: (_rating: number) => 720,
-        minStability: 1e-6,
-        maxStability: 1440,
-        disableOutlierFiltering: true,
-        adaptiveBinning: {
-            enabled: true,
-            maxBins: 20,
-            minSamplesPerBin: 50,
-        },
-    })
 
     return {
         day_initial_ease,
@@ -349,8 +337,8 @@ export function calculateRevlogStats(
         day_filtered_review_hours,
         learn_steps_per_card: Object.values(learn_steps_per_card),
         last_forget,
-        forgetting_curve: forgetting_curve_series,
-        short_term_forgetting_curve: forgetting_curve_short_series,
+        forgetting_samples,
+        forgetting_samples_short,
     }
 }
 

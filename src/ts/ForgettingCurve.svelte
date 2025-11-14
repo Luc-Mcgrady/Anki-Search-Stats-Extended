@@ -1,6 +1,10 @@
 <script lang="ts">
     import { i18n } from "./i18n"
-    import type { ForgettingCurveSeries } from "./forgettingCurveData"
+    import {
+        buildForgettingCurve,
+        type ForgettingCurveSeries,
+        type ForgettingSample,
+    } from "./forgettingCurveData"
     import {
         RATING_COLOURS,
         renderForgettingCurve,
@@ -8,7 +12,7 @@
     } from "./ForgettingCurve"
     import NoGraph from "./NoGraph.svelte"
 
-    export let series: ForgettingCurveSeries[] = []
+    export let data: ForgettingSample[] = []
     export let xLabel: string | null = null
     export let yLabel: string | null = null
     export let isShortTerm: boolean = false
@@ -19,8 +23,37 @@
 
     let svg: SVGSVGElement | null = null
     let xAxisMax: number = -1 // Use -1 as uninitialized marker
+    let maxBins: number = 20
+    let outlierFiltering = false
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
+    let series: ForgettingCurveSeries[] = []
+
+    // Process data into series for each rating
+    $: {
+        if (isShortTerm) {
+            series = buildForgettingCurve(data, {
+                deltaLimitByRating: (_rating: number) => 720,
+                minStability: 1e-6,
+                maxStability: 1440,
+                disableOutlierFiltering: true,
+                adaptiveBinning: {
+                    enabled: true,
+                    maxBins: maxBins,
+                    minSamplesPerBin: 1,
+                },
+            })
+        } else {
+            series = buildForgettingCurve(data, {
+                disableOutlierFiltering: !outlierFiltering,
+                adaptiveBinning: {
+                    enabled: true,
+                    maxBins: maxBins,
+                    minSamplesPerBin: 1,
+                },
+            })
+        }
+    }
 
     // Calculate the minimum and maximum delta from actual data points only
     $: {
@@ -119,25 +152,45 @@
 
 {#if hasData}
     <svg bind:this={svg}></svg>
-    <label class="x-axis-control">
-        <span>
-            {isShortTerm
-                ? i18n("forgetting-curve-x-axis-minutes")
-                : i18n("forgetting-curve-x-axis")}:
-        </span>
-        <span class="range-container">
-            {dataMinDelta.toFixed(isShortTerm ? 1 : 0)}
-            <input
-                type="range"
-                min={dataMinDelta}
-                max={dataMaxDelta}
-                step={isShortTerm ? "0.1" : "1"}
-                bind:value={xAxisMax}
-            />
-            {(xAxisMax >= 0 ? xAxisMax : dataMaxDelta).toFixed(isShortTerm ? 1 : 0)}
-            {isShortTerm ? "min" : "d"}
-        </span>
-    </label>
+    {#if !isShortTerm}
+        <label>
+            <span>
+                {i18n("forgetting-curve-outlier-filtering")}:
+            </span>
+            <input type="checkbox" bind:checked={outlierFiltering} />
+        </label>
+    {/if}
+    <div class="control-grid">
+        <label>
+            <span>
+                {isShortTerm
+                    ? i18n("forgetting-curve-x-axis-minutes")
+                    : i18n("forgetting-curve-x-axis")}:
+            </span>
+            <span class="range-container">
+                {dataMinDelta.toFixed(isShortTerm ? 1 : 0)}
+                <input
+                    type="range"
+                    min={dataMinDelta}
+                    max={dataMaxDelta}
+                    step={isShortTerm ? "0.1" : "1"}
+                    bind:value={xAxisMax}
+                />
+                {(xAxisMax >= 0 ? xAxisMax : dataMaxDelta).toFixed(isShortTerm ? 1 : 0)}
+                {isShortTerm ? "min" : "d"}
+            </span>
+        </label>
+        <label>
+            <span>
+                {i18n("forgetting-curve-bins-selector")}:
+            </span>
+            <span class="range-container">
+                {1}
+                <input type="range" min={1} max={50} step={1} bind:value={maxBins} />
+                {i18n("forgetting-curve-bin-count", { count: maxBins })}
+            </span>
+        </label>
+    </div>
     <div class="legend">
         {#each series as entry (entry.rating)}
             {#if entry.points.length}
@@ -163,9 +216,9 @@
         height: 100%;
     }
 
-    label.x-axis-control {
+    .control-grid {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 1.5fr 1fr;
         gap: 0.5em 1em;
         align-items: baseline;
         width: 100%;

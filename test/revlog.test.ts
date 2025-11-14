@@ -2,6 +2,7 @@ import { DeltaIfy } from "../src/ts/Candlestick"
 import { calculateRevlogStats, day_ms } from "../src/ts/revlogGraphs"
 import type { Revlog } from "../src/ts/search"
 import { RevlogBuilder } from "./revlogBuilder"
+import { buildForgettingCurve } from "../src/ts/forgettingCurveData"
 
 const burden_revlog_builder1 = new RevlogBuilder()
 const burden_revlog_builder2 = new RevlogBuilder()
@@ -49,6 +50,7 @@ test("learn_step_count", ()=>{
 test("Forgetting curve aggregates recall data", () => {
     const builder = new RevlogBuilder()
     const revlogs = [
+        builder.review(0, 3),
         builder.review(1, 3),
         builder.wait(1 * day_ms),
         builder.review(1, 3),
@@ -57,7 +59,8 @@ test("Forgetting curve aggregates recall data", () => {
     ].filter(Boolean) as Revlog[]
 
     const stats = calculateRevlogStats(revlogs, [builder.card()] as any, builder.last_review + 5)
-    const series = stats.forgetting_curve.find((entry) => entry.rating === 3)
+    const series_raw = buildForgettingCurve(stats.forgetting_samples)
+    const series = series_raw.find((entry) => entry.rating === 3)
 
     expect(series?.points.length).toBeGreaterThan(0)
     expect(series?.stability).not.toBeNull()
