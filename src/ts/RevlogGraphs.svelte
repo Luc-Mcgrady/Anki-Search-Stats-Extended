@@ -102,6 +102,14 @@
         columnLabeler: barDateLabeler,
     }
 
+    let running_count = 0
+    let running_real = 0
+    $: observed_retention_fatigue = $memorised_stats?.fatigue_bins.not_learn.map((bin, i) => {
+        running_count += bin.count
+        running_real += bin.real
+        return running_real / running_count
+    })
+
     $: forgotten_bar = {
         row_colours: ["#330900"],
         row_labels: [i18n("forgotten")],
@@ -830,6 +838,15 @@
         <p>
             {i18n("fsrs-loss-by-fatigue-help")}
         </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>Observed fatigue</h1>
+        {#if $memorised_stats && observed_retention_fatigue}
+            <LineOrCandlestick data={observed_retention_fatigue} trend_data={undefined}
+            ></LineOrCandlestick>
+        {:else}
+            <MemorisedCalculator />
+        {/if}
     </GraphContainer>
 </GraphCategory>
 

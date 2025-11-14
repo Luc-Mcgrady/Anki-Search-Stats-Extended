@@ -480,6 +480,7 @@ export function getMemorisedDays(
         noteRetrievabilityDays,
         stable_retrievability_days,
         fatigueRMSE,
+        fatigue_bins,
         bw_matrix: bw_matrix_count,
         stability_bins_days: stability_day_bins,
         day_medians,

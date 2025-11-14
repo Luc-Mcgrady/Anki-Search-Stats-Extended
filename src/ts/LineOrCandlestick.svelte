@@ -35,7 +35,7 @@
             down_colour,
         }
 
-    export let trend_data: TrendLine | undefined
+    export let trend_data: TrendLine | undefined = undefined
 </script>
 
 <GraphTypeSelector>
