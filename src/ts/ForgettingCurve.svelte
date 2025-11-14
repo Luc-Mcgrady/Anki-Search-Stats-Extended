@@ -6,6 +6,7 @@
         renderForgettingCurve,
         type ForgettingCurveRenderOptions,
     } from "./ForgettingCurve"
+    import NoGraph from "./NoGraph.svelte"
 
     export let series: ForgettingCurveSeries[] = []
     export let xLabel: string | null = null
@@ -151,7 +152,9 @@
         {/each}
     </div>
 {:else}
-    <div class="no-data">{i18n("forgetting-curve-no-data")}</div>
+    <NoGraph>
+        {i18n("forgetting-curve-no-data")}
+    </NoGraph>
 {/if}
 
 <style>
@@ -194,12 +197,6 @@
         border-radius: 2px;
         display: inline-block;
         border: 1px solid rgba(0, 0, 0, 0.2);
-    }
-
-    .no-data {
-        padding: 0.5rem;
-        text-align: center;
-        opacity: 0.7;
     }
 
     :global(.axis-label) {
