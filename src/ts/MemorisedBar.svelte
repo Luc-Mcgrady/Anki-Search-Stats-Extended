@@ -9,21 +9,29 @@
     import { i18n, i18n_pattern } from "./i18n"
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
 
+    export let burden: number[] = []
+
     let retrievabilityDays: number[] | undefined = undefined
     let stable_retrievability_days: number[] | undefined = undefined
     let bw_matrix: Record<string, (number | undefined)[]> | undefined = undefined
+    let cardsByBurdenByDays: number[] = []
 
     enum MemorisedType {
         RETRIEVABILITY,
         NOTES,
         STABLE_RETRIEVABILITY,
         AVERAGE,
+        CARDS_BY_BURDEN,
     }
 
     let memorised_type: MemorisedType = MemorisedType.RETRIEVABILITY
 
     $: retrievabilityDays = Array.from($memorised_stats?.retrievabilityDays || [])
     $: stable_retrievability_days = Array.from($memorised_stats?.stable_retrievability_days || [])
+
+    $: cardsByBurdenByDays = retrievabilityDays.map(
+        (retrievability, i) => (retrievability ?? 0) / (burden[i] ?? 1)
+    )
 
     $: bw_matrix = Object.fromEntries(
         Object.entries($memorised_stats?.bw_matrix || {}).map(([r_bin, row]) => {
@@ -88,6 +96,12 @@
         />
     {:else if memorised_type == MemorisedType.RETRIEVABILITY}
         <LineOrCandlestick data={retrievabilityDays} label={i18n("cards")} bind:trend_data />
+    {:else if memorised_type == MemorisedType.CARDS_BY_BURDEN}
+        <LineOrCandlestick
+            data={cardsByBurdenByDays}
+            label={i18n("cards-by-burden")}
+            bind:trend_data
+        />
     {:else}
         <LineOrCandlestick data={average_r} label={i18n("retrievability")} bind:trend_data />
     {/if}
@@ -100,6 +114,10 @@
         <label>
             <input type="radio" value={MemorisedType.NOTES} bind:group={memorised_type} />
             {i18n("notes")}
+        </label>
+        <label>
+            <input type="radio" value={MemorisedType.CARDS_BY_BURDEN} bind:group={memorised_type} />
+            {i18n("cards-by-burden")}
         </label>
         <label>
             <input type="radio" value={MemorisedType.AVERAGE} bind:group={memorised_type} />
