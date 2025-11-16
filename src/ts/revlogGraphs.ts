@@ -153,6 +153,7 @@ export function calculateRevlogStats(
                 day_filtered_review_hours[no_rollover_day][hour] + 1
 
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
+            incrementAllEase("all")
         }
 
         incrementEase(interval_ease, revlog.lastIvl < 0 ? 0 : revlog.lastIvl, ease)
