@@ -89,6 +89,7 @@ export function calculateRevlogStats(
     let day_filtered_review_hours = emptyArray(Array(24).fill(0))
 
     let day_ease = emptyRevlogBuckets()
+    let day_ease_time = emptyRevlogBuckets()
     let fatigue_ease = emptyRevlogBuckets()
     let time_ease_seconds = emptyRevlogBuckets()
 
@@ -116,7 +117,7 @@ export function calculateRevlogStats(
     function incrementEase(ease_array: number[][], day: number, ease: number, amount = 1) {
         // Doesn't check for negative ease (manual reschedule)
         ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
-        ease_array[day][ease] += 1
+        ease_array[day][ease] += amount
     }
 
     for (const revlog of revlogData) {
@@ -130,6 +131,7 @@ export function calculateRevlogStats(
         function incrementAllEase(bin: keyof RevlogBuckets) {
             incrementEase(fatigue_ease[bin], day_review_count[day], ease)
             incrementEase(day_ease[bin], day, ease)
+            incrementEase(day_ease_time[bin], day, ease, revlog.time / (60 * 1000))
             incrementEase(day_ease[bin], second, ease)
         }
 
@@ -317,6 +319,7 @@ export function calculateRevlogStats(
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
+        day_ease_time,
         fatigue_ease,
         time_ease_seconds,
         sibling_time_ease,
