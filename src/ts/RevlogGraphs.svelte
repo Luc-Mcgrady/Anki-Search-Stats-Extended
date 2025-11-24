@@ -370,32 +370,6 @@
         {/if}
     </GraphContainer>
     <GraphContainer>
-        <h1>{i18n("introduced-load")}</h1>
-        <LineOrCandlestick
-            data={introduced_load_by_day}
-            label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
-            bind:trend_data={introduced_load_trend}
-            cumulative={introduced_load_cumulative_mode}
-        />
-        <label>
-            <input type="checkbox" bind:checked={introduced_load_cumulative_mode} />
-            {i18n("cumulative-mode")}
-        </label>
-        <p>
-            {i18n("introduced-load-help")}
-        </p>
-        <TrendValue
-            trend={introduced_load_trend}
-            n={$binSize}
-            info={{ pattern: i18n_pattern("introduced-load-per-day") }}
-        />
-        {#if truncated}
-            <Warning>
-                {i18n("introduced-load-truncated-warning")}
-            </Warning>
-        {/if}
-    </GraphContainer>
-    <GraphContainer>
         <h1>{i18n("forgotten")}</h1>
         <BarScrollable
             data={forgotten_bar}
@@ -532,6 +506,32 @@
         />
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("introduced-load")}</h1>
+        <LineOrCandlestick
+            data={introduced_load_by_day}
+            label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
+            bind:trend_data={introduced_load_trend}
+            cumulative={introduced_load_cumulative_mode}
+        />
+        <label>
+            <input type="checkbox" bind:checked={introduced_load_cumulative_mode} />
+            {i18n("cumulative-mode")}
+        </label>
+        <p>
+            {i18n("introduced-load-help")}
+        </p>
+        <TrendValue
+            trend={introduced_load_trend}
+            n={$binSize}
+            info={{ pattern: i18n_pattern("introduced-load-per-day") }}
+        />
+        {#if truncated}
+            <Warning>
+                {i18n("introduced-load-truncated-warning")}
+            </Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>
