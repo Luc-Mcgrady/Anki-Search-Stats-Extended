@@ -227,8 +227,16 @@ introduced = Introduced
 re-introduced = Re-Introduced
 introduced-help =
     A card is introduced when it is shown to you for the first time. A card is re-introduced when it is shown to you for the first time after being forgotten.
-introduced-truncated-warning = 
+introduced-truncated-warning =
     Re-introduced does not work for cards introduced before the cutoff date.
+
+introduced-load = Load by Introduction Day
+cumulative-load = Cumulative Load
+cumulative-mode = Cumulative Mode
+introduced-load-help =
+    This graph shows the total current load (sum of 1 / current interval) for cards grouped by when they were introduced. For example, if 10 cards were introduced 1 year ago and now have a 10-day interval each, they contribute 10×(1/10) = 1.0 load to the 1-year-ago data point. This helps identify which cohorts of introduced cards are currently contributing most to your review burden. In cumulative mode, each day shows the total accumulated load from all cards introduced from the beginning up to that day.
+introduced-load-truncated-warning =
+    Introduced load does not work for cards introduced before the cutoff date.
 
 forgotten = Forgotten
 forgotten-help = You "forget" a card when you manually mark it as new.

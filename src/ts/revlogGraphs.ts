@@ -77,6 +77,7 @@ export function calculateRevlogStats(
 
     let revlog_times: number[] = emptyArray(0)
     let introduced_day_count: number[] = emptyArray(0)
+    let introduced_load_by_day: number[] = emptyArray(0)
     let reintroduced_day_count: number[] = emptyArray(0)
     let day_forgotten: number[] = emptyArray(0)
 
@@ -96,6 +97,7 @@ export function calculateRevlogStats(
     let card_times: Record<number, number> = {}
     let introduced = new Set<number>()
     let reintroduced = new Set<number>()
+    let card_introduction_day: Record<number, number> = {}
     let last_cids: Record<number, Revlog> = {}
     let burden_revlogs: Revlog[] = []
 
@@ -192,6 +194,9 @@ export function calculateRevlogStats(
             }
         } else if (!introduced.has(revlog.cid) && revlog.ivl != 0) {
             introduced_day_count[day] = (introduced_day_count[day] ?? 0) + 1
+
+            // Track the day this card was introduced
+            card_introduction_day[revlog.cid] = day
 
             incrementEase(day_initial_reintroduced_ease, day, ease)
             if (reintroduced.has(revlog.cid)) {
@@ -311,6 +316,15 @@ export function calculateRevlogStats(
         }
     })
 
+    // Calculate current load by introduction day
+    for (const card of cardData) {
+        const intro_day = card_introduction_day[card.id]
+        if (intro_day !== undefined && card.ivl > 0) {
+            const load = 1 / card.ivl
+            introduced_load_by_day[intro_day] = (introduced_load_by_day[intro_day] ?? 0) + load
+        }
+    }
+
     for (const card_time of Object.values(card_times)) {
         const key = Math.floor(card_time / 1000)
         revlog_times[key] = (revlog_times[key] ?? 0) + 1
@@ -328,6 +342,7 @@ export function calculateRevlogStats(
         interval_ease,
         revlog_times,
         introduced_day_count,
+        introduced_load_by_day,
         reintroduced_day_count,
         burden,
         day_forgotten,

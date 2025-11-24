@@ -17,16 +17,30 @@
     export let label = "value"
     export let up_colour = CANDLESTICK_GREEN
     export let down_colour = CANDLESTICK_RED
+    export let cumulative = false
 
     let bins = 30
 
     $: limit = -1 - $searchLimit
 
+    // Compute cumulative data if cumulative mode is enabled
+    $: processed_data = cumulative
+        ? (() => {
+              let sum = 0
+              return data.map((value) => {
+                  sum += value ?? 0
+                  return sum
+              })
+          })()
+        : data
+
     let candlestick_data: CandlestickGraph
-    $: if (data)
+    $: if (processed_data)
         candlestick_data = {
-            start: data[data.length - bins * $binSize - Math.abs($scroll) - 1] || 0,
-            data: Array.from(DeltaIfy(data)).map((delta, i) => ({
+            start:
+                processed_data[processed_data.length - bins * $binSize - Math.abs($scroll) - 1] ||
+                0,
+            data: Array.from(DeltaIfy(processed_data)).map((delta, i) => ({
                 label: i.toString(),
                 delta,
             })),
@@ -50,7 +64,7 @@
 </GraphTypeSelector>
 
 {#if type == "total"}
-    <LineGraph {data} {label} />
+    <LineGraph data={processed_data} {label} />
 {:else}
     <Candlestick
         data={candlestick_data}

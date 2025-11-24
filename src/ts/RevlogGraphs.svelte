@@ -56,6 +56,7 @@
         time_ease_seconds,
         sibling_time_ease,
         introduced_day_count,
+        introduced_load_by_day,
         reintroduced_day_count,
         burden,
         day_forgotten,
@@ -101,6 +102,8 @@
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }
+
+    let introduced_load_cumulative_mode = false
 
     $: forgotten_bar = {
         row_colours: ["#330900"],
@@ -277,6 +280,7 @@
 
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
+    let introduced_load_trend: TrendLine
 
     let granularity_power = 1
     const domain: [number, number] = [0.05, 1]
@@ -362,6 +366,27 @@
         {#if truncated}
             <Warning>
                 {i18n("introduced-truncated-warning")}
+            </Warning>
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("introduced-load")}</h1>
+        <LineOrCandlestick
+            data={introduced_load_by_day}
+            label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
+            bind:trend_data={introduced_load_trend}
+            cumulative={introduced_load_cumulative_mode}
+        />
+        <label>
+            <input type="checkbox" bind:checked={introduced_load_cumulative_mode} />
+            {i18n("cumulative-mode")}
+        </label>
+        <p>
+            {i18n("introduced-load-help")}
+        </p>
+        {#if truncated}
+            <Warning>
+                {i18n("introduced-load-truncated-warning")}
             </Warning>
         {/if}
     </GraphContainer>
