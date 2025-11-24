@@ -384,6 +384,11 @@
         <p>
             {i18n("introduced-load-help")}
         </p>
+        <TrendValue
+            trend={introduced_load_trend}
+            n={$binSize}
+            info={{ pattern: i18n_pattern("introduced-load-per-day") }}
+        />
         {#if truncated}
             <Warning>
                 {i18n("introduced-load-truncated-warning")}

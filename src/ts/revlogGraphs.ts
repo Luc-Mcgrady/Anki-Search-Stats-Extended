@@ -99,7 +99,6 @@ export function calculateRevlogStats(
     let reintroduced = new Set<number>()
     let card_introduction_day: Record<number, number> = {}
     let last_cids: Record<number, Revlog> = {}
-    let burden_revlogs: Revlog[] = []
 
     let last_siblings: (undefined | SiblingReview)[] = []
     let sibling_time_ease: number[][] = emptyArray(initialEase())

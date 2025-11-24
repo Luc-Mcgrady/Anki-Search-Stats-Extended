@@ -368,6 +368,10 @@ burden-per-day = {$value} de carga por {$n ->
         [one] dia
         *[many] {$n} dias
     }
+introduced-load-per-day = {$value} de carga introduzida por {$n ->
+        [one] dia
+        *[many] {$n} dias
+    }
 stability-per-day = {$value} de estabilidade por {$n ->
         [one] dia
         *[many] {$n} dias

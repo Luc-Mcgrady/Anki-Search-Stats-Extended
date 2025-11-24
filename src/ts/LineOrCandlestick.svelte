@@ -24,10 +24,12 @@
     $: limit = -1 - $searchLimit
 
     // Compute cumulative data if cumulative mode is enabled
+    // IMPORTANT: Use Array.from() to convert sparse arrays to dense arrays
+    // Otherwise map() will skip empty slots, creating incorrect cumulative sums
     $: processed_data = cumulative
         ? (() => {
               let sum = 0
-              return data.map((value) => {
+              return Array.from(data).map((value) => {
                   sum += value ?? 0
                   return sum
               })

@@ -355,6 +355,10 @@ burden-per-day = 每{$n ->
         [one] 天工作量
         *[many] {$n}天工作量
     } {$value}
+introduced-load-per-day = 每{$n ->
+        [one] 天引入负载
+        *[many] {$n}天引入负载
+    } {$value}
 stability-per-day = 每{$n ->
         [one] 天稳定期
         *[many] {$n}天稳定期
