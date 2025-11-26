@@ -318,7 +318,7 @@ export function calculateRevlogStats(
     // Calculate current load by introduction day
     for (const card of cardData) {
         const intro_day = card_introduction_day[card.id]
-        if (intro_day !== undefined && card.ivl > 0) {
+        if (intro_day !== undefined && card.ivl > 0 && card.queue !== -1) {
             const load = 1 / card.ivl
             introduced_load_by_day[intro_day] = (introduced_load_by_day[intro_day] ?? 0) + load
         }

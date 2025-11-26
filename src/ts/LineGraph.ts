@@ -4,13 +4,26 @@ import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
 
-export function renderLineChart(svg: SVGElement, values: number[], label = "Value") {
+export function renderLineChart(
+    svg: SVGElement,
+    values: number[],
+    label = "Value",
+    filter_zeros = true
+) {
     const { width, height } = defaultGraphBounds()
 
     type Point = { value: number; date: Date }
-    const date_values = values
-        .map((v, i) => ({ value: v, date: new Date(i * day_ms) }))
-        .filter((a) => a.value)
+
+    const first_non_zero_index = values.findIndex((v) => v)
+    const start_index = first_non_zero_index === -1 ? 0 : first_non_zero_index
+
+    const date_values = Array.from(values)
+        .slice(start_index)
+        .map((v, i) => ({
+            value: v ?? 0,
+            date: new Date((start_index + i) * day_ms),
+        }))
+        .filter((a) => (filter_zeros ? a.value : true))
 
     const xMin = d3.min(date_values.map((d) => d.date))!
     const xMax = d3.max(date_values.map((d) => d.date))!

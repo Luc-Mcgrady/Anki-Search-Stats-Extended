@@ -515,6 +515,7 @@
             label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
             bind:trend_data={introduced_load_trend}
             cumulative={introduced_load_cumulative_mode}
+            filter_zeros={false}
         />
         <label>
             <input type="checkbox" bind:checked={introduced_load_cumulative_mode} />

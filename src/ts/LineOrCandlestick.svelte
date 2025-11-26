@@ -18,23 +18,24 @@
     export let up_colour = CANDLESTICK_GREEN
     export let down_colour = CANDLESTICK_RED
     export let cumulative = false
+    export let filter_zeros = true
 
     let bins = 30
 
     $: limit = -1 - $searchLimit
 
-    // Compute cumulative data if cumulative mode is enabled
-    // IMPORTANT: Use Array.from() to convert sparse arrays to dense arrays
-    // Otherwise map() will skip empty slots, creating incorrect cumulative sums
-    $: processed_data = cumulative
-        ? (() => {
-              let sum = 0
-              return Array.from(data).map((value) => {
-                  sum += value ?? 0
-                  return sum
-              })
-          })()
-        : data
+    function mapIndividualToCumulativeData(data: number[]): number[] {
+        let sum = 0
+        return data.map((value) => {
+            sum += value ?? 0
+            return sum
+        })
+    }
+
+    // Array.from(data) to make sparse array dense
+    data = Array.from(data)
+
+    $: processed_data = cumulative ? mapIndividualToCumulativeData(data) : data
 
     let candlestick_data: CandlestickGraph
     $: if (processed_data)
@@ -65,8 +66,8 @@
     </label>
 </GraphTypeSelector>
 
-{#if type == "total"}
-    <LineGraph data={processed_data} {label} />
+{#if type === "total"}
+    <LineGraph data={processed_data} {label} {filter_zeros} />
 {:else}
     <Candlestick
         data={candlestick_data}
