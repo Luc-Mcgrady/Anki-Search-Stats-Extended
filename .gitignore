@@ -8,3 +8,7 @@ node_modules
 proto
 sass
 coverage
+
+.DS_Store
+
+.idea
