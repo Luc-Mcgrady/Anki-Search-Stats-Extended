@@ -63,7 +63,7 @@
     $effect(() => {
         // When the dataset changes reset the s_bin_width to something sensible
         if (sr_dataset !== null) {
-            s_bin_width_linear.value = (sr_dataset.max_s - sr_dataset.min_r) / 20
+            s_bin_width_linear.value = (sr_dataset.max_s - sr_dataset.min_s) / 20
         }
     })
 
