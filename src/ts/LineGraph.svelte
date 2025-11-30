@@ -1,6 +1,6 @@
 <script lang="ts">
     import { renderLineChart } from "./LineGraph"
-    import * as d3 from "d3"
+    import { clearChart } from "./graph"
 
     let svg: SVGElement | undefined
 
@@ -9,7 +9,7 @@
     export let filter_zeros = true
 
     $: if (svg) {
-        d3.select(svg).selectAll("*").remove()
+        clearChart(svg)
         renderLineChart(svg, data, label, filter_zeros)
     }
 </script>
