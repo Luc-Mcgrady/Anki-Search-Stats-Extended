@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { defaultGraphBounds } from "./graph"
+import { clearChart, defaultGraphBounds } from "./graph"
 import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
@@ -10,6 +10,9 @@ export function renderLineChart(
     label = "Value",
     filter_zeros = true
 ) {
+    if (svg) {
+        clearChart(svg)
+    }
     const { width, height } = defaultGraphBounds()
 
     type Point = { value: number; date: Date }
