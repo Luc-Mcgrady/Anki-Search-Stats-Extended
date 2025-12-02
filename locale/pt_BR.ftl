@@ -219,8 +219,16 @@ introduced = Introduzidos
 re-introduced = Reintroduzidos
 introduced-help =
     Um cartão é introduzido quando é mostrado a você pela primeira vez. Um cartão é reintroduzido quando é mostrado a você pela primeira vez após ser esquecido.
-introduced-truncated-warning = 
+introduced-truncated-warning =
     Reintroduzidos não funciona para cartões introduzidos antes da data de corte.
+
+introduced-load = Carga por Dia de Introdução
+cumulative-load = Carga Cumulativa
+cumulative-mode = Modo Cumulativo
+introduced-load-help =
+    Este gráfico mostra a carga atual total (soma de 1 / intervalo atual) para cartões agrupados por quando foram introduzidos. Por exemplo, se 10 cartões foram introduzidos há 1 ano e agora têm um intervalo de 10 dias cada, eles contribuem 10×(1/10) = 1.0 de carga ao ponto de dados de 1 ano atrás. Isso ajuda a identificar quais coortes de cartões introduzidos estão contribuindo mais para sua carga de revisão. No modo cumulativo, cada dia mostra a carga acumulada total de todos os cartões introduzidos desde o início até aquele dia.
+introduced-load-truncated-warning =
+    A carga introduzida não funciona para cartões introduzidos antes da data de corte.
 
 forgotten = Esquecidos
 forgotten-help = Você "esquece" um cartão quando o marca manualmente como novo.
@@ -357,6 +365,10 @@ days = Dias
 today = Hoje
 
 burden-per-day = {$value} de carga por {$n ->
+        [one] dia
+        *[many] {$n} dias
+    }
+introduced-load-per-day = {$value} de carga introduzida por {$n ->
         [one] dia
         *[many] {$n} dias
     }

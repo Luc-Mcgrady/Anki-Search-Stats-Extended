@@ -17,16 +17,33 @@
     export let label = "value"
     export let up_colour = CANDLESTICK_GREEN
     export let down_colour = CANDLESTICK_RED
+    export let cumulative = false
+    export let filter_zeros = true
 
     let bins = 30
 
     $: limit = -1 - $searchLimit
 
+    function mapIndividualToCumulativeData(data: number[]): number[] {
+        let sum = 0
+        return data.map((value) => {
+            sum += value ?? 0
+            return sum
+        })
+    }
+
+    // Array.from(data) to make sparse array dense
+    data = Array.from(data)
+
+    $: processed_data = cumulative ? mapIndividualToCumulativeData(data) : data
+
     let candlestick_data: CandlestickGraph
-    $: if (data)
+    $: if (processed_data)
         candlestick_data = {
-            start: data[data.length - bins * $binSize - Math.abs($scroll) - 1] || 0,
-            data: Array.from(DeltaIfy(data)).map((delta, i) => ({
+            start:
+                processed_data[processed_data.length - bins * $binSize - Math.abs($scroll) - 1] ||
+                0,
+            data: Array.from(DeltaIfy(processed_data)).map((delta, i) => ({
                 label: i.toString(),
                 delta,
             })),
@@ -49,8 +66,8 @@
     </label>
 </GraphTypeSelector>
 
-{#if type == "total"}
-    <LineGraph {data} {label} />
+{#if type === "total"}
+    <LineGraph data={processed_data} {label} {filter_zeros} />
 {:else}
     <Candlestick
         data={candlestick_data}
