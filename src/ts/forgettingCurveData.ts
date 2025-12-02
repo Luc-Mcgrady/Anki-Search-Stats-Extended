@@ -37,7 +37,6 @@ const RATING_DEFAULT_STABILITY: Record<number, number> = {
 
 const MAX_STABILITY = 100
 const EPSILON = 1e-6
-const MAX_INTERVAL = 365
 
 export interface ForgettingCurveOptions {
     deltaLimitByRating?: (rating: number) => number
@@ -225,8 +224,6 @@ export function buildForgettingCurve(
         return []
     }
 
-    const averageRecall = totalSuccess / totalCount
-
     const aggregatedByRating: Record<number, AggregatedSample[]> = {
         1: [],
         2: [],
@@ -272,16 +269,8 @@ export function buildForgettingCurve(
             continue
         }
 
-        const stability = fitStability(
-            aggregated,
-            averageRecall,
-            RATING_DEFAULT_STABILITY[rating],
-            options.minStability,
-            options.maxStability
-        )
         // Prediction curves are now generated dynamically during rendering
         const predicted: { delta: number; recall: number }[] = []
-        const rmse = stability ? computeRmse(aggregated, stability) : null
         const points: ForgettingCurvePoint[] = aggregated.map((entry) => ({
             delta: entry.delta,
             recall: entry.success / entry.count,
@@ -292,8 +281,8 @@ export function buildForgettingCurve(
 
         series.push({
             rating,
-            stability,
-            rmse,
+            stability: null,
+            rmse: null,
             sampleSize,
             points,
             predicted,
@@ -303,27 +292,24 @@ export function buildForgettingCurve(
     return series
 }
 
-function fitStability(
-    aggregated: AggregatedSample[],
-    averageRecall: number,
+export function fitStability(
+    samples: ForgettingSample[],
     initial: number,
     minStability: number = S_MIN,
     maxStability: number = MAX_STABILITY
 ): number | null {
-    if (!aggregated.length) {
+    if (!samples.length) {
         return null
     }
 
     const loss = (stability: number) => {
         let total = 0
-        for (const entry of aggregated) {
+        for (const sample of samples) {
             const prediction = clampProbability(
-                forgetting_curve(FSRS6_DEFAULT_DECAY, entry.delta, stability)
+                forgetting_curve(FSRS6_DEFAULT_DECAY, sample.delta, stability)
             )
-            const smoothed = (entry.success + averageRecall) / (entry.count + 1)
-            total +=
-                -(smoothed * Math.log(prediction) + (1 - smoothed) * Math.log(1 - prediction)) *
-                entry.count
+            const recall = sample.recall
+            total += -(recall * Math.log(prediction) + (1 - recall) * Math.log(1 - prediction))
         }
         total += Math.abs(stability - initial) / 16
         return total
@@ -365,7 +351,7 @@ function fitStability(
     return best
 }
 
-function computeRmse(aggregated: AggregatedSample[], stability: number): number | null {
+export function computeRmse(aggregated: AggregatedSample[], stability: number): number | null {
     const totalCount = aggregated.reduce((p, entry) => p + entry.count, 0)
     if (!totalCount) {
         return null
@@ -378,6 +364,43 @@ function computeRmse(aggregated: AggregatedSample[], stability: number): number 
     }, 0)
 
     return Math.sqrt(squaredError / totalCount)
+}
+
+export function computeStabilityForSeries(
+    series: ForgettingCurveSeries[],
+    samples: ForgettingSample[],
+    options: ForgettingCurveOptions = {}
+): ForgettingCurveSeries[] {
+    return series.map((entry) => {
+        if (!entry.points.length) {
+            return entry
+        }
+
+        // Filter original samples by rating
+        const ratingSamples = samples.filter((s) => s.firstRating === entry.rating)
+
+        const stability = fitStability(
+            ratingSamples,
+            RATING_DEFAULT_STABILITY[entry.rating],
+            options.minStability,
+            options.maxStability
+        )
+
+        // Reconstruct aggregated data from points for RMSE calculation
+        const aggregated: AggregatedSample[] = entry.points.map((point) => ({
+            delta: point.delta,
+            success: point.recall * point.count,
+            count: point.count,
+        }))
+
+        const rmse = stability ? computeRmse(aggregated, stability) : null
+
+        return {
+            ...entry,
+            stability,
+            rmse,
+        }
+    })
 }
 
 function clamp(value: number, min: number, max: number) {
