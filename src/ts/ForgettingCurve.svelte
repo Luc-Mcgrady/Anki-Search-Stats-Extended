@@ -2,6 +2,7 @@
     import { i18n } from "./i18n"
     import {
         buildForgettingCurve,
+        computeStabilityForSeries,
         type ForgettingCurveSeries,
         type ForgettingSample,
     } from "./forgettingCurveData"
@@ -28,14 +29,13 @@
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
     let series: ForgettingCurveSeries[] = []
+    let seriesWithStability: ForgettingCurveSeries[] = []
 
-    // Process data into series for each rating
+    // Process data into series for each rating (without stability calculation)
     $: {
         if (isShortTerm) {
             series = buildForgettingCurve(data, {
                 deltaLimitByRating: (_rating: number) => 720,
-                minStability: 1e-6,
-                maxStability: 1440,
                 disableOutlierFiltering: true,
                 adaptiveBinning: {
                     enabled: true,
@@ -55,12 +55,24 @@
         }
     }
 
+    // Compute stability separately (only when data changes, not when maxBins changes)
+    $: {
+        if (isShortTerm) {
+            seriesWithStability = computeStabilityForSeries(series, data, {
+                minStability: 0.01,
+                maxStability: 1440,
+            })
+        } else {
+            seriesWithStability = computeStabilityForSeries(series, data, {})
+        }
+    }
+
     // Calculate the minimum and maximum delta from actual data points only
     $: {
         let minDelta = Infinity
         let maxDelta = 0
 
-        for (const entry of series) {
+        for (const entry of seriesWithStability) {
             // Only use actual data points, not predicted curve
             for (const point of entry.points) {
                 minDelta = Math.min(minDelta, point.delta)
@@ -114,11 +126,11 @@
         }),
     ]
 
-    $: hasData = series?.some((entry) => entry.points.length)
+    $: hasData = seriesWithStability?.some((entry) => entry.points.length)
 
     $: {
         if (svg && hasData && xAxisMax >= 0) {
-            renderForgettingCurve(svg, series, {
+            renderForgettingCurve(svg, seriesWithStability, {
                 labelForRating,
                 formatTooltip,
                 xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
@@ -192,7 +204,7 @@
         </label>
     </div>
     <div class="legend">
-        {#each series as entry (entry.rating)}
+        {#each seriesWithStability as entry (entry.rating)}
             {#if entry.points.length}
                 <div class="legend-row">
                     <span
