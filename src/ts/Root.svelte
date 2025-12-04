@@ -57,10 +57,13 @@
         row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
         row_labels: [i18n("pass"), i18n("fail")],
         reverse_legend: true,
-        data: target_R_day_values.map((values, label) => ({
-            values: normalize ? values.map((a) => a / _.sum(values)) : values,
-            label: label.toString(),
-        })),
+        data: target_R_day_values.map((values, label) => {
+            const sum = _.sum(values)
+            return {
+                values: normalize && sum !== 0 ? values.map((a) => a / sum) : values,
+                label: label.toString(),
+            }
+        }),
         extraStats: normalize
             ? (bar: BarDatum) => [bar.values[0] ? formatRetention(bar.values[0]) : "No data"]
             : totalCalc,

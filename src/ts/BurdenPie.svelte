@@ -11,7 +11,9 @@
     $: {
         burdens = { ...intervals }
         Object.entries(burdens).forEach(([key, val]) => {
-            burdens[+key] = val / +key
+            const interval = +key
+            // Treat interval 0 as interval 1 for load calculation (cards still need to be reviewed)
+            burdens[interval] = val / Math.max(interval, 1)
         })
     }
 </script>

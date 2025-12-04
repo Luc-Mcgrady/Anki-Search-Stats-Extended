@@ -160,18 +160,65 @@ export function hoverBars<T extends { label: string }>(
         .attr("y", 0)
 }
 
+function sanitizeBarData(data: BarDatum[], rowLabels: string[]): BarDatum[] {
+    const invalidData: any[] = []
+
+    const sanitized = data.map((datum, idx) => {
+        const invalid = datum.values
+            .map((v, i) => ({ index: i, value: v, isValid: Number.isFinite(v) }))
+            .filter((item) => !item.isValid)
+
+        if (invalid.length > 0) {
+            invalidData.push({
+                datumIndex: idx,
+                label: datum.label,
+                invalidValues: invalid,
+                originalValues: datum.values,
+            })
+        }
+
+        return {
+            ...datum,
+            values: datum.values.map((v) => (Number.isFinite(v) ? v : 0)),
+        }
+    })
+
+    if (invalidData.length > 0) {
+        console.warn("NaN/Infinity values found in bar chart data:", {
+            count: invalidData.length,
+            invalidData,
+            chartRowLabels: rowLabels,
+        })
+    }
+
+    return sanitized
+}
+
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
-    const maxValue = _.sum(Object.values(max?.values ?? []))
+    let maxValue = _.sum(Object.values(max?.values ?? []))
+
+    if (!Number.isFinite(maxValue) || maxValue < 0) {
+        if (!Number.isFinite(maxValue)) {
+            console.warn("Invalid maxValue detected in bar chart:", {
+                maxValue,
+                maxDatum: max,
+                chartRowLabels: chart.row_labels,
+            })
+        }
+        maxValue = 0
+    }
 
     const x = defaultX(chart.data.map((datum) => datum.label))
     const y = defaultY(0, maxValue)
     const axis = createAxis(svg, chart.tick_spacing, x, y)
 
+    const sanitizedData = sanitizeBarData(chart.data, chart.row_labels)
+
     const stack = d3
         .stack<BarDatum, number>()
         .keys(_.range(0, chart.row_labels.length))
-        .value((obj, key) => obj.values[key])(chart.data)
+        .value((obj, key) => obj.values[key])(sanitizedData)
 
     const {
         columnLabeler = (a) => `"${a}"`,
@@ -193,7 +240,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
-    hoverBars(axis, x, chart.data)
+    hoverBars(axis, x, sanitizedData)
         .on("mouseover", function (e: MouseEvent, d) {
             const columnString = columnLabeler(d.label, chart.barWidth)
             const columnCounts = column_counts
