@@ -432,7 +432,7 @@
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>{i18n("rating-time")}</h1>
+        <h1>{i18n("ratings-by-duration")}</h1>
         <BarScrollable
             data={easeBarChart(day_ease_time[mature_filter], today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
@@ -449,7 +449,7 @@
         </label>
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
-            {i18n("ratings-time-help")}
+            {i18n("ratings-by-duration-help")}
         </p>
     </GraphContainer>
     <GraphContainer>
