@@ -90,6 +90,7 @@ export function calculateRevlogStats(
     let day_filtered_review_hours = emptyArray(Array(24).fill(0))
 
     let day_ease = emptyRevlogBuckets()
+    let day_ease_time = emptyRevlogBuckets()
     let fatigue_ease = emptyRevlogBuckets()
     let time_ease_seconds = emptyRevlogBuckets()
 
@@ -114,10 +115,10 @@ export function calculateRevlogStats(
     let forgetting_samples: ForgettingSample[] = []
     let forgetting_samples_short: ForgettingSample[] = []
 
-    function incrementEase(ease_array: number[][], day: number, ease: number) {
+    function incrementEase(ease_array: number[][], day: number, ease: number, amount = 1) {
         // Doesn't check for negative ease (manual reschedule)
         ease_array[day] = ease_array[day] ? ease_array[day] : initialEase()
-        ease_array[day][ease] += 1
+        ease_array[day][ease] += amount
     }
 
     for (const revlog of revlogData) {
@@ -127,6 +128,13 @@ export function calculateRevlogStats(
         const ease = revlog.ease - 1
         const second = Math.round(revlog.time / 1000)
         const card = id_card_data[revlog.cid]
+
+        function incrementAllEase(bin: keyof RevlogBuckets) {
+            incrementEase(fatigue_ease[bin], day_review_count[day], ease)
+            incrementEase(day_ease[bin], day, ease)
+            incrementEase(day_ease_time[bin], day, ease, revlog.time / (60 * 1000))
+            incrementEase(time_ease_seconds[bin], second, ease)
+        }
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
 
@@ -146,20 +154,14 @@ export function calculateRevlogStats(
                 day_filtered_review_hours[no_rollover_day][hour] + 1
 
             day_review_count[day] = (day_review_count[day] ?? -1) + 1
-            incrementEase(fatigue_ease.all, day_review_count[day], ease)
-            incrementEase(day_ease.all, day, ease)
-            incrementEase(time_ease_seconds.all, second, ease)
+            incrementAllEase("all")
         }
 
         incrementEase(interval_ease, revlog.lastIvl < 0 ? 0 : revlog.lastIvl, ease)
         if (revlog.lastIvl > 0) {
-            incrementEase(day_ease.not_learn, day, ease)
-            incrementEase(fatigue_ease.not_learn, day_review_count[day], ease)
-            incrementEase(time_ease_seconds.not_learn, second, ease)
+            incrementAllEase("not_learn")
             if (revlog.lastIvl >= 21) {
-                incrementEase(day_ease.mature, day, ease)
-                incrementEase(fatigue_ease.mature, day_review_count[day], ease)
-                incrementEase(time_ease_seconds.mature, second, ease)
+                incrementAllEase("mature")
                 if (card) {
                     const last_sibling = last_siblings[card.nid]
                     if (last_sibling !== undefined && last_sibling.cid != revlog.cid) {
@@ -171,17 +173,13 @@ export function calculateRevlogStats(
                     }
                 }
             } else {
-                incrementEase(day_ease.young, day, ease)
-                incrementEase(fatigue_ease.young, day_review_count[day], ease)
-                incrementEase(time_ease_seconds.young, second, ease)
+                incrementAllEase("young")
                 if (card) {
                     last_siblings[card.nid] = undefined
                 }
             }
         } else {
-            incrementEase(day_ease.learn, day, ease)
-            incrementEase(fatigue_ease.learn, day_review_count[day], ease)
-            incrementEase(time_ease_seconds.learn, second, ease)
+            incrementAllEase("learn")
         }
         if (revlog.factor == 0 && revlog.type == 4) {
             introduced.delete(revlog.cid)
@@ -335,6 +333,7 @@ export function calculateRevlogStats(
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
+        day_ease_time,
         fatigue_ease,
         time_ease_seconds,
         sibling_time_ease,
