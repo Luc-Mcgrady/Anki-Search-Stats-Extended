@@ -132,7 +132,7 @@ export function calculateRevlogStats(
             incrementEase(fatigue_ease[bin], day_review_count[day], ease)
             incrementEase(day_ease[bin], day, ease)
             incrementEase(day_ease_time[bin], day, ease, revlog.time / (60 * 1000))
-            incrementEase(day_ease[bin], second, ease)
+            incrementEase(time_ease_seconds[bin], second, ease)
         }
 
         card_times[revlog.cid] = (card_times[revlog.cid] ?? 0) + revlog.time
