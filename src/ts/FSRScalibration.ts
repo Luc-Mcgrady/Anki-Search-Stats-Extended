@@ -6,6 +6,8 @@ import type { LossBin } from "./MemorisedBar"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
 
+const percentify = (d: any) => `${(+d * 100).toFixed(0)}%`
+
 export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     const { width, height } = defaultGraphBounds()
     const xTicks = 10
@@ -34,7 +36,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("viewBox", `-40 -10 ${width + 50 + Math.log(max_bin) * 10} ${height + 50}`)
         .append("g")
 
-    axis.append("g").call(d3.axisLeft(y)).attr("opacity", 0.5)
+    axis.append("g").call(d3.axisLeft(y).tickFormat(percentify)).attr("opacity", 0.5)
     axis.append("g")
         .attr("transform", `translate(${width}, 0)`)
         .attr("opacity", 0.5)
@@ -43,7 +45,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     axis.append("g")
         .attr("transform", `translate(0, ${height})`)
         .attr("opacity", 0.5)
-        .call(d3.axisBottom(x).ticks(xTicks))
+        .call(d3.axisBottom(x).tickFormat(percentify).ticks(xTicks))
 
     let data = bins.map(
         (d, i) =>
