@@ -1,8 +1,38 @@
 import * as d3 from "d3"
-import { clearChart, defaultGraphBounds } from "./graph"
+import { defaultGraphBounds } from "./graph"
 import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
+
+export function gridLines(
+    svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+    xTicks: number[],
+    yTicks: number[]
+) {
+    const { width, height } = defaultGraphBounds()
+
+    svg.append("g")
+        .selectAll("line")
+        .data(xTicks)
+        .join("line")
+        .attr("x1", (d) => d)
+        .attr("x2", (d) => d)
+        .attr("y1", 0)
+        .attr("y2", height)
+        .style("stroke", "currentColor")
+        .style("opacity", 0.05)
+
+    svg.append("g")
+        .selectAll("line")
+        .data(yTicks)
+        .join("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", (d) => d)
+        .attr("y2", (d) => d)
+        .attr("stroke", "currentColor")
+        .style("opacity", 0.05)
+}
 
 export function renderLineChart(
     svg: SVGElement,
@@ -10,8 +40,8 @@ export function renderLineChart(
     label = "Value",
     filter_zeros = true
 ) {
-    if (svg) {
-        clearChart(svg)
+    if (!svg) {
+        return
     }
     const { width, height } = defaultGraphBounds()
 
@@ -41,6 +71,8 @@ export function renderLineChart(
         .select(svg)
         .attr("viewBox", `-40 -10 ${width + 50} ${height + 50}`)
         .append("g")
+
+    gridLines(axis, x.ticks(7).map(x), y.ticks().map(y))
 
     axis.append("g").call(d3.axisLeft(y)).attr("opacity", 0.5)
 
