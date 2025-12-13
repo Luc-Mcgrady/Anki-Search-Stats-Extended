@@ -1,6 +1,7 @@
 import * as d3 from "d3"
 import { defaultGraphBounds } from "./graph"
 import { i18n } from "./i18n"
+import { gridLines } from "./LineGraph"
 import type { LossBin } from "./MemorisedBar"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
@@ -125,4 +126,6 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     axis.on("mouseover", () => tooltipShown.set(true)).on("mouseleave", () =>
         tooltipShown.set(false)
     )
+
+    gridLines(axis, x.ticks(7).map(x), y.ticks().map(y))
 }
