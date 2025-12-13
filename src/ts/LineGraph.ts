@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { defaultGraphBounds } from "./graph"
+import { clearChart, defaultGraphBounds } from "./graph"
 import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
@@ -43,6 +43,8 @@ export function renderLineChart(
     if (!svg) {
         return
     }
+    // This is a hacky fix and I should probably fix the d3 calls below instead
+    clearChart(svg)
     const { width, height } = defaultGraphBounds()
 
     type Point = { value: number; date: Date }
