@@ -8,6 +8,7 @@ import { tooltipX } from "./tooltip"
 
 export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     const { width, height } = defaultGraphBounds()
+    const xTicks = 10
 
     interface CalibrationBinData {
         bin: LossBin
@@ -42,7 +43,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
     axis.append("g")
         .attr("transform", `translate(0, ${height})`)
         .attr("opacity", 0.5)
-        .call(d3.axisBottom(x).ticks(7))
+        .call(d3.axisBottom(x).ticks(xTicks))
 
     let data = bins.map(
         (d, i) =>
@@ -127,5 +128,5 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         tooltipShown.set(false)
     )
 
-    gridLines(axis, x.ticks(7).map(x), y.ticks().map(y))
+    gridLines(axis, x.ticks(xTicks).map(x), y.ticks().map(y))
 }
