@@ -18,36 +18,6 @@ export interface CardSRDataset {
     card_sr_data: CardSRData[]
 }
 
-function isValidCardSR(
-    r: number,
-    s: number,
-    cardId: number,
-    elapsed_days: number,
-    decay: number,
-    due: number,
-    due_days: number,
-    ivl: number,
-    last_review_days: number,
-    collection_today: number
-): boolean {
-    if (!Number.isFinite(r) || !Number.isFinite(s) || r < 0 || r > 1 || s <= 0) {
-        console.warn("Skipping card with invalid r or s:", {
-            card_id: cardId,
-            r,
-            s,
-            elapsed_days,
-            decay,
-            due,
-            due_days,
-            ivl,
-            last_review_days,
-            collection_today,
-        })
-        return false
-    }
-    return true
-}
-
 export function create_card_sr_dataset(
     card_data: CardData[] | null,
     collection_today_timestamp: number
@@ -84,20 +54,19 @@ export function create_card_sr_dataset(
         const s = extra_data.s
         const r = forgetting_curve(getDecay(extra_data), elapsed_days, s)
 
-        if (
-            !isValidCardSR(
+        if (!Number.isFinite(r) || !Number.isFinite(s) || r < 0 || r > 1 || s <= 0) {
+            console.warn("Skipping card with invalid r or s:", {
+                card_id: card_data_entry.id,
                 r,
                 s,
-                card_data_entry.id,
                 elapsed_days,
-                getDecay(extra_data),
-                card_data_entry.due,
+                decay: getDecay(extra_data),
+                due: card_data_entry.due,
                 due_days,
-                card_data_entry.ivl,
+                ivl: card_data_entry.ivl,
                 last_review_days,
-                collection_today_timestamp
-            )
-        ) {
+                collection_today: collection_today_timestamp,
+            })
             continue
         }
 
@@ -164,19 +133,6 @@ function create_dimension(
     }
 }
 
-function areDimensionsValid(r_dim: HeatmapDimension, s_dim: HeatmapDimension): boolean {
-    if (
-        !Number.isFinite(r_dim.start_value) ||
-        !Number.isFinite(r_dim.end_value) ||
-        !Number.isFinite(s_dim.start_value) ||
-        !Number.isFinite(s_dim.end_value)
-    ) {
-        console.error("Invalid dimension values detected:", { r_dim, s_dim })
-        return false
-    }
-    return true
-}
-
 export function calculate_sr_heatmap_data(
     dataset: CardSRDataset | null,
     r_bin_width: number,
@@ -190,7 +146,13 @@ export function calculate_sr_heatmap_data(
     const r_dim = create_dimension(dataset.min_r, dataset.max_r, r_bin_width, false)
     const s_dim = create_dimension(dataset.min_s, dataset.max_s, s_bin_width, s_is_logarithmic)
 
-    if (!areDimensionsValid(r_dim, s_dim)) {
+    if (
+        !Number.isFinite(r_dim.start_value) ||
+        !Number.isFinite(r_dim.end_value) ||
+        !Number.isFinite(s_dim.start_value) ||
+        !Number.isFinite(s_dim.end_value)
+    ) {
+        console.error("Invalid dimension values detected:", { r_dim, s_dim })
         return null
     }
 
