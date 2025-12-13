@@ -4,15 +4,47 @@ import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipX } from "./tooltip"
 
+export function gridLines(
+    svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+    xTicks: number[],
+    yTicks: number[]
+) {
+    const { width, height } = defaultGraphBounds()
+
+    svg.append("g")
+        .selectAll("line")
+        .data(xTicks)
+        .join("line")
+        .attr("x1", (d) => d)
+        .attr("x2", (d) => d)
+        .attr("y1", 0)
+        .attr("y2", height)
+        .style("stroke", "currentColor")
+        .style("opacity", 0.05)
+
+    svg.append("g")
+        .selectAll("line")
+        .data(yTicks)
+        .join("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", (d) => d)
+        .attr("y2", (d) => d)
+        .attr("stroke", "currentColor")
+        .style("opacity", 0.05)
+}
+
 export function renderLineChart(
     svg: SVGElement,
     values: number[],
     label = "Value",
     filter_zeros = true
 ) {
-    if (svg) {
-        clearChart(svg)
+    if (!svg) {
+        return
     }
+    // This is a hacky fix and I should probably fix the d3 calls below instead
+    clearChart(svg)
     const { width, height } = defaultGraphBounds()
 
     type Point = { value: number; date: Date }
@@ -41,6 +73,8 @@ export function renderLineChart(
         .select(svg)
         .attr("viewBox", `-40 -10 ${width + 50} ${height + 50}`)
         .append("g")
+
+    gridLines(axis, x.ticks(7).map(x), y.ticks().map(y))
 
     axis.append("g").call(d3.axisLeft(y)).attr("opacity", 0.5)
 
