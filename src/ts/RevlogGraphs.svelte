@@ -51,11 +51,13 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
+        day_ease_time,
         fatigue_ease,
         revlog_times,
         time_ease_seconds,
         sibling_time_ease,
         introduced_day_count,
+        introduced_load_by_day,
         reintroduced_day_count,
         burden,
         day_forgotten,
@@ -101,6 +103,8 @@
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }
+
+    let introduced_load_cumulative_mode = false
 
     $: forgotten_bar = {
         row_colours: ["#330900"],
@@ -277,6 +281,7 @@
 
     let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
     let burden_trend: TrendLine
+    let introduced_load_trend: TrendLine
 
     let granularity_power = 1
     const domain: [number, number] = [0.05, 1]
@@ -431,6 +436,27 @@
         </p>
     </GraphContainer>
     <GraphContainer>
+        <h1>{i18n("ratings-by-duration")}</h1>
+        <BarScrollable
+            data={easeBarChart(day_ease_time[mature_filter], today, normalize_ease, barDateLabeler)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            average={normalize_ease}
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
+            {limit}
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            {i18n("as-ratio")}
+        </label>
+        <MatureFilterSelector bind:group={mature_filter} />
+        <p>
+            {i18n("ratings-by-duration-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
         <h1>{i18n("interval-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
@@ -502,6 +528,33 @@
         />
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
+        {/if}
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("introduced-load")}</h1>
+        <LineOrCandlestick
+            data={introduced_load_by_day}
+            label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
+            bind:trend_data={introduced_load_trend}
+            cumulative={introduced_load_cumulative_mode}
+            filter_zeros={false}
+        />
+        <label>
+            <input type="checkbox" bind:checked={introduced_load_cumulative_mode} />
+            {i18n("cumulative-mode")}
+        </label>
+        <p>
+            {i18n("introduced-load-help")}
+        </p>
+        <TrendValue
+            trend={introduced_load_trend}
+            n={$binSize}
+            info={{ pattern: i18n_pattern("introduced-load-per-day") }}
+        />
+        {#if truncated}
+            <Warning>
+                {i18n("introduced-load-truncated-warning")}
+            </Warning>
         {/if}
     </GraphContainer>
     <GraphContainer>

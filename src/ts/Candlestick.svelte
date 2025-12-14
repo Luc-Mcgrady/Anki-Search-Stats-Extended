@@ -19,7 +19,7 @@
 
     $: leftmost = -(bins * binSize) + realOffset
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
+    $: separate_bars = data.data.slice(leftmost, realOffset == 0 ? undefined : realOffset)
 
     let bars: CandlestickDatum[]
     $: {
@@ -28,7 +28,7 @@
             delta: 0,
         }))
 
-        for (const [i, bar] of seperate_bars.entries()) {
+        for (const [i, bar] of separate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
             bars[newIndex].delta += bar.delta || 0
         }

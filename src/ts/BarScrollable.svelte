@@ -32,7 +32,7 @@
     $: leftmost = realOffset - bins * binSize
 
     $: binSize = binSize > 0 ? binSize : 1
-    $: seperate_bars = data.data.slice(
+    $: separate_bars = data.data.slice(
         leftmost,
         realOffset == 0 || realOffset >= data.data.length ? undefined : realOffset
     )
@@ -63,7 +63,7 @@
             values: loss ? [0, 0] : data.row_labels.map((_) => 0),
         }))
 
-        for (const [i, bar] of seperate_bars.entries()) {
+        for (const [i, bar] of separate_bars.entries()) {
             const newIndex = Math.floor(i / binSize)
 
             bars[newIndex].values = bars[newIndex].values.map(
@@ -73,7 +73,7 @@
 
         if (average) {
             bars.map((bar, i) => {
-                const count = seperate_bars
+                const count = separate_bars
                     .slice(i * binSize, (i + 1) * binSize)
                     .reduce((p, n) => p + (_.sum(n.values) > 0 ? 1 : 0), 0)
 

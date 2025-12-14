@@ -227,8 +227,16 @@ introduced = Introduced
 re-introduced = Re-Introduced
 introduced-help =
     A card is introduced when it is shown to you for the first time. A card is re-introduced when it is shown to you for the first time after being forgotten.
-introduced-truncated-warning = 
+introduced-truncated-warning =
     Re-introduced does not work for cards introduced before the cutoff date.
+
+introduced-load = Load by Introduction Day
+cumulative-load = Cumulative Load
+cumulative-mode = Cumulative Mode
+introduced-load-help =
+    This graph shows the total current load (sum of 1 / current interval) for cards grouped by when they were introduced. For example, if 10 cards were introduced 1 year ago and now have a 10-day interval each, they contribute 10×(1/10) = 1.0 load to the 1-year-ago data point. This helps identify which cohorts of introduced cards are currently contributing most to your review burden. In cumulative mode, each day shows the total accumulated load from all cards introduced from the beginning up to that day.
+introduced-load-truncated-warning =
+    Introduced load does not work for cards introduced before the cutoff date.
 
 forgotten = Forgotten
 forgotten-help = You "forget" a card when you manually mark it as new.
@@ -330,9 +338,14 @@ mean = Mean
 interval-ratings = Interval Ratings
 interval-ratings-help = Ratings plotted by the interval they had before you rated them.
 
-time-ratings = Time Ratings
+time-ratings = Rating by Time Spent
 time-ratings-help = 
     Ratings plotted by how long you spent looking at a card before rating it. Respects the deck presets "Maximum answer seconds" of the moment the answer was reviewed.
+
+ratings-by-duration = Ratings (Duration)
+ratings-by-duration-help = 
+    Same as the {ratings} graph but with the duration you spent on cards reviews you gave that rating on that day.
+    Values are in minutes.
 
 card-count-time-machine = Card Count Time Machine
 card-count-time-machine-help = 
@@ -373,6 +386,10 @@ days = Days
 today = Today
 
 burden-per-day = {$value} burden per {$n ->
+        [one] day
+        *[many] {$n} days
+    }
+introduced-load-per-day = {$value} introduced load per {$n ->
         [one] day
         *[many] {$n} days
     }

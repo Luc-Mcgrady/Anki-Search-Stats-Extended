@@ -1,3 +1,5 @@
+import * as d3 from "d3"
+
 export function defaultGraphBounds() {
     return {
         width: SSEconfig.barWidth ?? 600,
@@ -7,6 +9,10 @@ export function defaultGraphBounds() {
         marginTop: 20,
         marginBottom: 25,
     }
+}
+
+export function clearChart(svg: SVGElement) {
+    d3.select(svg).selectAll("*").remove()
 }
 
 export const MATURE_COLOUR = "#31a354"

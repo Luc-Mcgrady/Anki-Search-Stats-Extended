@@ -229,8 +229,16 @@ introduced = 新学习
 re-introduced = 重新学习
 introduced-help =
     新学：首次学习；重新学习：遗忘后再次学习
-introduced-truncated-warning = 
+introduced-truncated-warning =
     截止日期前的重新学习不生效。
+
+introduced-load = 按学习日期的工作量
+cumulative-load = 累积工作量
+cumulative-mode = 累积模式
+introduced-load-help =
+    此图显示按学习日期分组的卡片当前总工作量（1/当前间隔的总和）。例如，如果10张卡片在1年前学习，现在每张卡片的间隔为10天，它们对1年前数据点贡献10×(1/10)=1.0的工作量。这有助于识别哪些学习批次的卡片目前对您的复习负担贡献最大。在累积模式下，每天显示从开始到该天所有学习卡片的累积总工作量。
+introduced-load-truncated-warning =
+    截止日期前学习的卡片工作量不生效。
 
 forgotten = 已遗忘
 forgotten-help = 手动标记为“新卡片”即视为遗忘。
@@ -283,8 +291,6 @@ forgetting-curve-tooltip-count = 样本量：{$count}
 forgetting-curve-legend = {$rating}: 记忆稳定期={$stability} ({$count})
 forgetting-curve-legend-short-term = {$rating}: 记忆稳定期={$stability} 分钟 ({$count})
 forgetting-curve-legend-count = n={$count}
-
-actual = Actual
     
 retrievability-and-stability = 记忆可提取性和稳定期
 cards-and-stability = 卡片和稳定期
@@ -346,6 +352,10 @@ today = 今日
 burden-per-day = 每{$n ->
         [one] 天工作量
         *[many] {$n}天工作量
+    } {$value}
+introduced-load-per-day = 每{$n ->
+        [one] 天引入负载
+        *[many] {$n}天引入负载
     } {$value}
 stability-per-day = 每{$n ->
         [one] 天稳定期
