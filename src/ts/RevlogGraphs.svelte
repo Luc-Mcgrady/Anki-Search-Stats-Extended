@@ -51,6 +51,7 @@
         day_initial_ease,
         day_initial_reintroduced_ease,
         day_ease,
+        day_ease_time,
         fatigue_ease,
         revlog_times,
         time_ease_seconds,
@@ -432,6 +433,27 @@
         <MatureFilterSelector bind:group={mature_filter} />
         <p>
             {i18n("ratings-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("ratings-by-duration")}</h1>
+        <BarScrollable
+            data={easeBarChart(day_ease_time[mature_filter], today, normalize_ease, barDateLabeler)}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            average={normalize_ease}
+            trend={normalize_ease}
+            trend_by={retention_trend}
+            trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
+            {limit}
+        />
+        <label>
+            <input type="checkbox" bind:checked={normalize_ease} />
+            {i18n("as-ratio")}
+        </label>
+        <MatureFilterSelector bind:group={mature_filter} />
+        <p>
+            {i18n("ratings-by-duration-help")}
         </p>
     </GraphContainer>
     <GraphContainer>
