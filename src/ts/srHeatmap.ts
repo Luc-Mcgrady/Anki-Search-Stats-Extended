@@ -45,9 +45,10 @@ export function create_card_sr_dataset(
 
         // N.B. This is a bit of a fudge. Manual rescheduling can make this wrong.
         //      It is how native Anki does it too though.
+        // For filtered cards, use odue (original due) instead of due
+        const real_due = card_data_entry.odue === 0 ? card_data_entry.due : card_data_entry.odue
         // Handle both day numbers and Unix timestamps for 'due' field
-        const due_days =
-            card_data_entry.due < 365_000 ? card_data_entry.due : card_data_entry.due / day_ms
+        const due_days = real_due < 365_000 ? real_due : real_due / day_ms
         const last_review_days = due_days - card_data_entry.ivl
         const elapsed_days = collection_today_timestamp - last_review_days
 
