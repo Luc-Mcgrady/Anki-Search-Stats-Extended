@@ -48,7 +48,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("y", -31)
         .attr("text-anchor", "middle")
         .style("stroke", "currentColor")
-        .text("Actual")
+        .text(i18n("actual"))
 
     const rightAxis = axis
         .append("g")
@@ -63,7 +63,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("y", -40)
         .attr("text-anchor", "middle")
         .style("stroke", "currentColor")
-        .text("Count")
+        .text(i18n("count"))
 
     const bottomAxis = axis
         .append("g")
@@ -77,7 +77,7 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("y", 30)
         .attr("text-anchor", "middle")
         .style("stroke", "currentColor")
-        .text("Predicted")
+        .text(i18n("predicted"))
 
     let data = bins.map(
         (d, i) =>

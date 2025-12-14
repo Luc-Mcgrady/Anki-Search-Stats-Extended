@@ -291,8 +291,6 @@ forgetting-curve-tooltip-count = 样本量：{$count}
 forgetting-curve-legend = {$rating}: 记忆稳定期={$stability} ({$count})
 forgetting-curve-legend-short-term = {$rating}: 记忆稳定期={$stability} 分钟 ({$count})
 forgetting-curve-legend-count = n={$count}
-
-actual = Actual
     
 retrievability-and-stability = 记忆可提取性和稳定期
 cards-and-stability = 卡片和稳定期
