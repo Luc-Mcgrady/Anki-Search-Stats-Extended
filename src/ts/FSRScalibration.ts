@@ -36,16 +36,48 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("viewBox", `-40 -10 ${width + 50 + Math.log(max_bin) * 10} ${height + 50}`)
         .append("g")
 
-    axis.append("g").call(d3.axisLeft(y).tickFormat(percentify)).attr("opacity", 0.5)
-    axis.append("g")
+    const leftAxis = axis
+        .append("g")
+        .call(d3.axisLeft(y).tickFormat(percentify))
+        .attr("opacity", 0.5)
+
+    leftAxis
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -31)
+        .attr("text-anchor", "middle")
+        .style("stroke", "currentColor")
+        .text("Actual")
+
+    const rightAxis = axis
+        .append("g")
         .attr("transform", `translate(${width}, 0)`)
         .attr("opacity", 0.5)
         .call(d3.axisRight(count_y))
 
-    axis.append("g")
+    rightAxis
+        .append("text")
+        .attr("transform", "rotate(90)")
+        .attr("x", height / 2)
+        .attr("y", -40)
+        .attr("text-anchor", "middle")
+        .style("stroke", "currentColor")
+        .text("Count")
+
+    const bottomAxis = axis
+        .append("g")
         .attr("transform", `translate(0, ${height})`)
         .attr("opacity", 0.5)
         .call(d3.axisBottom(x).tickFormat(percentify).ticks(xTicks))
+
+    bottomAxis
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 30)
+        .attr("text-anchor", "middle")
+        .style("stroke", "currentColor")
+        .text("Predicted")
 
     let data = bins.map(
         (d, i) =>
