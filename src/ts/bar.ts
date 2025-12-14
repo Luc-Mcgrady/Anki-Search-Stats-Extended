@@ -160,31 +160,6 @@ export function hoverBars<T extends { label: string }>(
         .attr("y", 0)
 }
 
-function sanitizeBarData(data: BarDatum[], rowLabels: string[]): BarDatum[] {
-    return data.map((datum, idx) => {
-        const invalid = datum.values
-            .map((v, i) => ({ index: i, value: v, isValid: Number.isFinite(v) }))
-            .filter((item) => {
-                if (!item.isValid) {
-                    console.warn("NaN/Infinity value found in bar chart data:", {
-                        datumIndex: idx,
-                        label: datum.label,
-                        valueIndex: item.index,
-                        value: item.value,
-                        chartRowLabels: rowLabels,
-                    })
-                    return true
-                }
-                return false
-            })
-
-        return {
-            ...datum,
-            values: datum.values.map((v) => (Number.isFinite(v) ? v : 0)),
-        }
-    })
-}
-
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
     let maxValue = _.sum(Object.values(max?.values ?? []))
@@ -202,12 +177,10 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const y = defaultY(0, maxValue)
     const axis = createAxis(svg, chart.tick_spacing, x, y)
 
-    const sanitizedData = sanitizeBarData(chart.data, chart.row_labels)
-
     const stack = d3
         .stack<BarDatum, number>()
         .keys(_.range(0, chart.row_labels.length))
-        .value((obj, key) => obj.values[key])(sanitizedData)
+        .value((obj, key) => obj.values[key])(chart.data)
 
     const {
         columnLabeler = (a) => `"${a}"`,
@@ -229,7 +202,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
-    hoverBars(axis, x, sanitizedData)
+    hoverBars(axis, x, chart.data)
         .on("mouseover", function (e: MouseEvent, d) {
             const columnString = columnLabeler(d.label, chart.barWidth)
             const columnCounts = column_counts
