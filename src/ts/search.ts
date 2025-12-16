@@ -38,6 +38,10 @@ ${await resp.text()}`)
     }
 
     const blob = await resp.text()
+    // Handle empty responses (e.g., from writeConfig endpoint)
+    if (blob === "") {
+        return null
+    }
     return JSON.parse(blob)
 }
 

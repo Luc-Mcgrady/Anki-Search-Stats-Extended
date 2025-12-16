@@ -27,6 +27,8 @@ export function create_card_sr_dataset(
         return null
     }
 
+    const day_ms = 1000 * 60 * 60 * 24
+
     let dataset: CardSRDataset | null = null
     for (const card_data_entry of card_data) {
         if (card_data_entry.type !== CardType.Review) {
@@ -43,11 +45,31 @@ export function create_card_sr_dataset(
 
         // N.B. This is a bit of a fudge. Manual rescheduling can make this wrong.
         //      It is how native Anki does it too though.
-        const last_review_timestamp = card_data_entry.due - card_data_entry.ivl
-        const elapsed_days = collection_today_timestamp - last_review_timestamp
+        // For filtered cards, use odue (original due) instead of due
+        const real_due = card_data_entry.odue === 0 ? card_data_entry.due : card_data_entry.odue
+        // Handle both day numbers and Unix timestamps for 'due' field
+        const due_days = real_due < 365_000 ? real_due : real_due / day_ms
+        const last_review_days = due_days - card_data_entry.ivl
+        const elapsed_days = collection_today_timestamp - last_review_days
 
         const s = extra_data.s
         const r = forgetting_curve(getDecay(extra_data), elapsed_days, s)
+
+        if (!Number.isFinite(r) || !Number.isFinite(s) || r < 0 || r > 1 || s <= 0) {
+            console.warn("Skipping card with invalid r or s:", {
+                card_id: card_data_entry.id,
+                r,
+                s,
+                elapsed_days,
+                decay: getDecay(extra_data),
+                due: card_data_entry.due,
+                due_days,
+                ivl: card_data_entry.ivl,
+                last_review_days,
+                collection_today: collection_today_timestamp,
+            })
+            continue
+        }
 
         const card_sr_data = {
             s,
@@ -125,16 +147,36 @@ export function calculate_sr_heatmap_data(
     const r_dim = create_dimension(dataset.min_r, dataset.max_r, r_bin_width, false)
     const s_dim = create_dimension(dataset.min_s, dataset.max_s, s_bin_width, s_is_logarithmic)
 
+    if (
+        !Number.isFinite(r_dim.start_value) ||
+        !Number.isFinite(r_dim.end_value) ||
+        !Number.isFinite(s_dim.start_value) ||
+        !Number.isFinite(s_dim.end_value)
+    ) {
+        console.error("Invalid dimension values detected:", { r_dim, s_dim })
+        return null
+    }
+
     const total_bins = r_dim.bin_count * s_dim.bin_count
+
+    if (!Number.isFinite(total_bins) || total_bins < 0 || total_bins > 2 ** 32 - 1) {
+        console.error("INVALID total_bins value detected!", total_bins)
+        return null
+    }
+
     const raw_data = new Array(total_bins)
 
     // Put counts in bins
-    for (const card of dataset.card_sr_data) {
+    for (let i = 0; i < dataset.card_sr_data.length; i++) {
+        const card = dataset.card_sr_data[i]
+
         const raw_r_idx = (card.r - r_dim.start_value) / r_bin_width
 
         let raw_s_idx
         if (s_is_logarithmic) {
-            raw_s_idx = (Math.log10(card.s) - Math.log10(s_dim.start_value)) / s_bin_width
+            const log_s = Math.log10(card.s)
+            const log_s_start = Math.log10(s_dim.start_value)
+            raw_s_idx = (log_s - log_s_start) / s_bin_width
         } else {
             raw_s_idx = (card.s - s_dim.start_value) / s_bin_width
         }

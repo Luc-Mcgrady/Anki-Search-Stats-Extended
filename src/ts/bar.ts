@@ -162,7 +162,16 @@ export function hoverBars<T extends { label: string }>(
 
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
-    const maxValue = _.sum(Object.values(max?.values ?? []))
+    let maxValue = _.sum(Object.values(max?.values ?? []))
+
+    if (!Number.isFinite(maxValue) || maxValue < 0) {
+        console.warn("Invalid maxValue detected in bar chart:", {
+            maxValue,
+            maxDatum: max,
+            chartRowLabels: chart.row_labels,
+        })
+        maxValue = 0
+    }
 
     const x = defaultX(chart.data.map((datum) => datum.label))
     const y = defaultY(0, maxValue)
