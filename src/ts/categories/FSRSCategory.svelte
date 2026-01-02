@@ -5,7 +5,7 @@
     import GraphCategory from "../GraphCategory.svelte"
     import Warning from "../Warning.svelte"
     import MemorisedBar from "../MemorisedBar.svelte"
-    import MemorisedCalculator from "../MemorisedCalculator.svelte"
+    import MemorisedGraphContainer from "../MemorisedGraphContainer.svelte"
     import FsrsCalibration from "../FSRSCalibration.svelte"
     import ForgettingCurve from "../ForgettingCurve.svelte"
     import TimeMachineScroll from "../TimeMachineScroll.svelte"
@@ -90,17 +90,16 @@
             {i18n("memorised-help")}
         </p>
     </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("fsrs-calibration")}</h1>
-        {#if $memorised_stats}
-            <FsrsCalibration data={$memorised_stats.calibration} />
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-        <p>
-            {i18n("fsrs-calibration-help")}
-        </p>
-    </GraphContainer>
+    <MemorisedGraphContainer>
+        <h1 slot="title">{i18n("fsrs-calibration")}</h1>
+        <GraphContainer>
+            <h1>{i18n("fsrs-calibration")}</h1>
+            <FsrsCalibration data={$memorised_stats!.calibration} />
+            <p>
+                {i18n("fsrs-calibration-help")}
+            </p>
+        </GraphContainer>
+    </MemorisedGraphContainer>
     <GraphContainer>
         <h1>{i18n("first-short-term-forgetting-curve")}</h1>
         <ForgettingCurve
@@ -125,22 +124,22 @@
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("stability-time-machine")}</h1>
-        {#if $memorised_stats}
+    <MemorisedGraphContainer>
+        <h1 slot="title">{i18n("stability-time-machine")}</h1>
+        <GraphContainer>
+            <h1>{i18n("stability-time-machine")}</h1>
             <BarScrollable data={stability_time_machine_bar} left_aligned />
             <TimeMachineScroll min={time_machine_min} />
             <p>{i18n("stability-time-machine-help")}</p>
             {#if truncated}
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("difficulty-time-machine")}</h1>
-        {#if $memorised_stats}
+        </GraphContainer>
+    </MemorisedGraphContainer>
+    <MemorisedGraphContainer>
+        <h1 slot="title">{i18n("difficulty-time-machine")}</h1>
+        <GraphContainer>
+            <h1>{i18n("difficulty-time-machine")}</h1>
             <label class="scroll">
                 {i18n("zoom")}
                 <input type="range" bind:value={granularity} min={1} max={100} />
@@ -156,24 +155,23 @@
             {#if truncated}
                 <Warning>{i18n("generic-truncated-warning")}</Warning>
             {/if}
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("average-stability-over-time")}</h1>
-        {#if $memorised_stats}
+        </GraphContainer>
+    </MemorisedGraphContainer>
+    <MemorisedGraphContainer>
+        <h1 slot="title">{i18n("average-stability-over-time")}</h1>
+        <GraphContainer>
+            <h1>{i18n("average-stability-over-time")}</h1>
             <BarScrollable
                 bind:binSize={interval_bin_size}
                 data={{
                     row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
                     row_labels: [i18n("young"), i18n("mature")],
                     data: (average_type == Average.MEAN
-                        ? $memorised_stats.day_means
-                        : $memorised_stats.day_medians
+                        ? $memorised_stats!.day_means
+                        : $memorised_stats!.day_medians
                     ).map((day, i) => {
-                        const young = _.sum($memorised_stats.stability_bins_days[i]?.slice(0, 21))
-                        const total = _.sum($memorised_stats.stability_bins_days[i])
+                        const young = _.sum($memorised_stats!.stability_bins_days[i]?.slice(0, 21))
+                        const total = _.sum($memorised_stats!.stability_bins_days[i])
                         const young_ratio = young / total
                         return {
                             values: [day * young_ratio, day * (1 - young_ratio)],
@@ -199,10 +197,8 @@
                     {i18n("mean")}
                 </label>
             </div>
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-    </GraphContainer>
+        </GraphContainer>
+    </MemorisedGraphContainer>
 </GraphCategory>
 
 <style lang="scss">

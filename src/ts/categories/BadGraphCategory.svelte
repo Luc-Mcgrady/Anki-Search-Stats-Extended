@@ -4,7 +4,7 @@
     import Bar from "../Bar.svelte"
     import GraphCategory from "../GraphCategory.svelte"
     import MatureFilterSelector from "../MatureFilterSelector.svelte"
-    import MemorisedCalculator from "../MemorisedCalculator.svelte"
+    import MemorisedGraphContainer from "../MemorisedGraphContainer.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "../i18n"
     import { barStringLabeler, type BarChart } from "../bar"
     import { memorised_stats, searchLimit, revlogStats } from "../stores"
@@ -49,9 +49,10 @@
 </script>
 
 <GraphCategory hidden_title={i18n("bad-graph")} config_name="bad">
-    <GraphContainer>
-        <h1>{i18n("leech-detector")}</h1>
-        {#if $memorised_stats}
+    <MemorisedGraphContainer>
+        <h1 slot="title">{i18n("leech-detector")}</h1>
+        <GraphContainer>
+            <h1>{i18n("leech-detector")}</h1>
             <label>
                 {i18n("zoom")}
                 <input type="range" min={1} max={6} bind:value={granularity_power} />
@@ -63,10 +64,8 @@
                     Forum discussion link
                 </a>
             </p>
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-    </GraphContainer>
+        </GraphContainer>
+    </MemorisedGraphContainer>
     <GraphContainer>
         <h1>{i18n("naive-sibling-similarity")}</h1>
         <BarScrollable
@@ -124,15 +123,16 @@
             {i18n("rating-fatigue-help")}
         </p>
     </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
-        {#if $memorised_stats}
+    <MemorisedGraphContainer>
+        <h1 slot="title">{i18n("fsrs-loss-by-fatigue")}</h1>
+        <GraphContainer>
+            <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
             <BarScrollable
                 bind:binSize={fatigue_bin_size}
                 data={{
                     row_colours: ["red"],
                     row_labels: ["RMSE"],
-                    data: $memorised_stats.fatigueRMSE[mature_filter].map((v, i) => ({
+                    data: $memorised_stats!.fatigueRMSE[mature_filter].map((v, i) => ({
                         label: i.toString(),
                         values: v,
                     })),
@@ -144,11 +144,9 @@
                 trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
             ></BarScrollable>
             <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
-        {:else}
-            <MemorisedCalculator />
-        {/if}
-        <p>
-            {i18n("fsrs-loss-by-fatigue-help")}
-        </p>
-    </GraphContainer>
+            <p>
+                {i18n("fsrs-loss-by-fatigue-help")}
+            </p>
+        </GraphContainer>
+    </MemorisedGraphContainer>
 </GraphCategory>
