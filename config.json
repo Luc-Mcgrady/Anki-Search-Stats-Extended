@@ -1,8 +1,8 @@
 {
     "loadDelayMs": 100,
-    "burdenNotLoad": false,
     "autoMemorisedStats": false,
     "autoRevlogStats": false,
+    "confirmExpensiveStats": true,
     "barWidth": 600,
     "barHeight": 250,
     "piePercentages": false,
