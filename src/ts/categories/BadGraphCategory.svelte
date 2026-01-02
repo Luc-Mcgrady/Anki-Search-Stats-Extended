@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GraphContainer from "../GraphContainer.svelte"
+    import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import BarScrollable from "../BarScrollable.svelte"
     import Bar from "../Bar.svelte"
     import GraphCategory from "../GraphCategory.svelte"
@@ -51,8 +51,6 @@
 <GraphCategory hidden_title={i18n("bad-graph")} config_name="bad">
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("leech-detector")}</h1>
-
-        <h1>{i18n("leech-detector")}</h1>
         <label>
             {i18n("zoom")}
             <input type="range" min={1} max={6} bind:value={granularity_power} />
@@ -65,8 +63,8 @@
             </a>
         </p>
     </MemorisedGraphContainer>
-    <GraphContainer>
-        <h1>{i18n("naive-sibling-similarity")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("naive-sibling-similarity")}</h1>
         <BarScrollable
             data={easeBarChart(
                 $revlogStats?.sibling_time_ease ?? [],
@@ -92,9 +90,9 @@
         <p>
             {i18n("naive-sibling-similarity-help")}
         </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("rating-fatigue")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("rating-fatigue")}</h1>
         <BarScrollable
             data={easeBarChart(
                 ($revlogStats?.fatigue_ease ?? {})[mature_filter] ?? [],
@@ -121,11 +119,9 @@
         <p>
             {i18n("rating-fatigue-help")}
         </p>
-    </GraphContainer>
+    </RevlogGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-loss-by-fatigue")}</h1>
-
-        <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
         <BarScrollable
             bind:binSize={fatigue_bin_size}
             data={{

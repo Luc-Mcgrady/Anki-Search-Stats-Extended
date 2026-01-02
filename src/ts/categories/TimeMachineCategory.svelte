@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GraphContainer from "../GraphContainer.svelte"
+    import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import BarScrollable from "../BarScrollable.svelte"
     import Bar from "../Bar.svelte"
     import Pie from "../Pie.svelte"
@@ -125,8 +125,8 @@
 </script>
 
 <GraphCategory hidden_title={i18n("card-count-time-machine")} config_name="timeMachine">
-    <GraphContainer>
-        <h1>{i18n("card-count-time-machine")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("card-count-time-machine")}</h1>
         <Pie
             data={time_machine_pie}
             legend_left={i18n("card-type")}
@@ -167,9 +167,9 @@
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("review-interval-time-machine")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("review-interval-time-machine")}</h1>
         <BarScrollable data={time_machine_bar} left_aligned />
         <TimeMachineScroll min={time_machine_min} />
         <span>{i18n("x-total-cards", { val: total_intervals })}</span>
@@ -180,9 +180,9 @@
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("daily-hourly-breakdown")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("daily-hourly-breakdown")}</h1>
         <div class="options">
             <label>
                 {i18n("days")}
@@ -204,7 +204,7 @@
         </label>
         <TimeMachineScroll min={time_machine_min} />
         <p>{i18n("daily-hourly-breakdown-help")}</p>
-    </GraphContainer>
+    </RevlogGraphContainer>
 </GraphCategory>
 
 <style lang="scss">

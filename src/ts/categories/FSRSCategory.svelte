@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GraphContainer from "../GraphContainer.svelte"
+    import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import BarScrollable from "../BarScrollable.svelte"
     import Bar from "../Bar.svelte"
     import GraphCategory from "../GraphCategory.svelte"
@@ -80,8 +80,8 @@
 </script>
 
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
-    <GraphContainer>
-        <h1>{i18n("memorised")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("memorised")}</h1>
         <MemorisedBar burden={$revlogStats?.burden ?? []} />
         {#if truncated}
             <Warning>{i18n("memorised-truncated-warning")}</Warning>
@@ -89,7 +89,7 @@
         <p>
             {i18n("memorised-help")}
         </p>
-    </GraphContainer>
+    </RevlogGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-calibration")}</h1>
         <FsrsCalibration data={$memorised_stats!.calibration} />
@@ -97,8 +97,8 @@
             {i18n("fsrs-calibration-help")}
         </p>
     </MemorisedGraphContainer>
-    <GraphContainer>
-        <h1>{i18n("first-short-term-forgetting-curve")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("first-short-term-forgetting-curve")}</h1>
         <ForgettingCurve
             data={$revlogStats?.forgetting_samples_short ?? []}
             xLabel={i18n("forgetting-curve-x-axis-minutes")}
@@ -112,15 +112,15 @@
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("forgetting-curve")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("forgetting-curve")}</h1>
         <ForgettingCurve data={$revlogStats?.forgetting_samples ?? []} />
         <p>{i18n("forgetting-curve-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
-    </GraphContainer>
+    </RevlogGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("stability-time-machine")}</h1>
         <BarScrollable data={stability_time_machine_bar} left_aligned />
@@ -150,7 +150,6 @@
     </MemorisedGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("average-stability-over-time")}</h1>
-        <h1>{i18n("average-stability-over-time")}</h1>
         <BarScrollable
             bind:binSize={interval_bin_size}
             data={{

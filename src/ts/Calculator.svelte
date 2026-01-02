@@ -2,7 +2,7 @@
     import { SetDateInfinite } from "./bar"
     import { i18n } from "./i18n"
     import NoGraph from "./NoGraph.svelte"
-    import { memorised_stats, searchLimit } from "./stores"
+    import { searchLimit } from "./stores"
 
     export let badIfTruncated = false
     export let shown: boolean
@@ -20,7 +20,7 @@
             <button on:click={calculate}>{i18n("show-question")}</button>
         {/if}
     </NoGraph>
-{:else if !memorised_stats}
+{:else}
     <NoGraph>{i18n("loading")}</NoGraph>
 {/if}
 

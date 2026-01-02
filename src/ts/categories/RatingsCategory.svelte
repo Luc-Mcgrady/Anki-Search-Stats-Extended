@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GraphContainer from "../GraphContainer.svelte"
+    import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import BarScrollable from "../BarScrollable.svelte"
     import GraphCategory from "../GraphCategory.svelte"
     import MatureFilterSelector from "../MatureFilterSelector.svelte"
@@ -19,8 +19,8 @@
 </script>
 
 <GraphCategory hidden_title={i18n("ratings")} config_name="rating">
-    <GraphContainer>
-        <h1>{i18n("ratings")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 ($revlogStats?.day_ease ?? {})[mature_filter] ?? [],
@@ -44,9 +44,9 @@
         <p>
             {i18n("ratings-help")}
         </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("ratings-by-duration")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("ratings-by-duration")}</h1>
         <BarScrollable
             data={easeBarChart(
                 ($revlogStats?.day_ease_time ?? {})[mature_filter] ?? [],
@@ -70,9 +70,9 @@
         <p>
             {i18n("ratings-by-duration-help")}
         </p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("interval-ratings")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("interval-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 $revlogStats?.interval_ease ?? [],
@@ -96,9 +96,9 @@
             {i18n("as-ratio")}
         </label>
         <p>{i18n("interval-ratings-help")}</p>
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("time-ratings")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("time-ratings")}</h1>
         <BarScrollable
             data={easeBarChart(
                 ($revlogStats?.time_ease_seconds ?? {})[mature_filter] ?? [],
@@ -121,5 +121,5 @@
         <p>
             {i18n("time-ratings-help")}
         </p>
-    </GraphContainer>
+    </RevlogGraphContainer>
 </GraphCategory>

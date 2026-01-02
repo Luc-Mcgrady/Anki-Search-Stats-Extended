@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GraphContainer from "../GraphContainer.svelte"
+    import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import IntervalGraph from "../IntervalGraph.svelte"
     import GraphCategory from "../GraphCategory.svelte"
     import Warning from "../Warning.svelte"
@@ -27,8 +27,8 @@
 </script>
 
 <GraphCategory hidden_title={i18n("load-trend")} config_name="load">
-    <GraphContainer>
-        <h1>{i18n("load-trend")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("load-trend")}</h1>
         <LineOrCandlestick
             data={$revlogStats?.burden ?? []}
             label={i18n("load")}
@@ -47,9 +47,9 @@
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("introduced-load")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("introduced-load")}</h1>
         <LineOrCandlestick
             data={$revlogStats?.introduced_load_by_day ?? []}
             label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
@@ -74,9 +74,9 @@
                 {i18n("introduced-load-truncated-warning")}
             </Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("learn-reviews-per-card")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("learn-reviews-per-card")}</h1>
         <IntervalGraph
             intervals={learn_repetitions}
             pieInfo={{
@@ -92,5 +92,5 @@
         </span>
         <span>{i18n("median")} = {d3.quantile($revlogStats?.learn_steps_per_card ?? [], 0.5)}</span>
         <p>{i18n("learn-reviews-per-card-help")}</p>
-    </GraphContainer>
+    </RevlogGraphContainer>
 </GraphCategory>

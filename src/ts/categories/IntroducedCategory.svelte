@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GraphContainer from "../GraphContainer.svelte"
+    import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import BarScrollable from "../BarScrollable.svelte"
     import GraphCategory from "../GraphCategory.svelte"
     import Warning from "../Warning.svelte"
@@ -55,8 +55,8 @@
 </script>
 
 <GraphCategory hidden_title={i18n("introduced")} config_name="introduced">
-    <GraphContainer>
-        <h1>{i18n("introduced")}</h1>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("introduced")}</h1>
         <BarScrollable
             data={introduced_bar}
             {bins}
@@ -72,9 +72,9 @@
                 {i18n("introduced-truncated-warning")}
             </Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("forgotten")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("forgotten")}</h1>
         <BarScrollable
             data={forgotten_bar}
             {bins}
@@ -92,9 +92,9 @@
         {#if truncated}
             <Warning>{i18n("forgotten-truncated-warning")}</Warning>
         {/if}
-    </GraphContainer>
-    <GraphContainer>
-        <h1>{i18n("introductory-rating")}</h1>
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("introductory-rating")}</h1>
         <BarScrollable
             data={easeBarChart(introduced_ease, today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
@@ -114,5 +114,5 @@
             {i18n("as-ratio")}
         </label>
         <p>{i18n("introductory-rating-help")}</p>
-    </GraphContainer>
+    </RevlogGraphContainer>
 </GraphCategory>

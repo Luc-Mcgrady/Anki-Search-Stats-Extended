@@ -13,12 +13,10 @@
     $: $last_forget = $revlogStats?.last_forget ?? null
 </script>
 
-{#if $revlogStats}
-    <TimeDistributionCategory />
-    <IntroducedCategory />
-    <RatingsCategory />
-    <LoadTrendCategory />
-    <FSRSCategory />
-    <TimeMachineCategory {addedCards} />
-    <BadGraphCategory />
-{/if}
+<TimeDistributionCategory />
+<IntroducedCategory />
+<RatingsCategory />
+<LoadTrendCategory />
+<FSRSCategory />
+<TimeMachineCategory {addedCards} />
+<BadGraphCategory />

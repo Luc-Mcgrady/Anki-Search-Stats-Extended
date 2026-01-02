@@ -178,31 +178,10 @@
         </GraphContainer>
     </GraphCategory>
     <CardDataPies cardData={$card_data} />
-    {#if $showRevlogStats}
-        {#if $revlogs && $card_data && $data?.added}
-            <RevlogGraphs addedCards={$data.added.added} />
-        {:else}
-            <h1 class="header">{i18n("preparing-review-stats")}</h1>
-        {/if}
+    {#if $data?.added}
+        <RevlogGraphs addedCards={$data.added.added} />
     {:else}
-        <GraphCategory>
-            <div style:grid-column="1/-1">
-                <GraphContainer>
-                    <div class="loadOption">
-                        <Warning always>
-                            <h1>{i18n("review-graphs-warning-title")}</h1>
-                            {i18n("review-graphs-warning")}
-                        </Warning>
-                        <button on:click={() => ($showRevlogStats = true)}>
-                            {i18n("review-graphs-prepare-graphs")}
-                        </button>
-                        <span>
-                            {i18n("review-graphs-config-hint")}
-                        </span>
-                    </div>
-                </GraphContainer>
-            </div>
-        </GraphCategory>
+        <h1 class="header">{i18n("preparing-review-stats")}</h1>
     {/if}
     <About></About>
 </div>
