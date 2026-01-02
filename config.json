@@ -1,6 +1,5 @@
 {
     "loadDelayMs": 100,
-    "burdenNotLoad": false,
     "confirmExpensiveStats": true,
     "barWidth": 600,
     "barHeight": 250,
