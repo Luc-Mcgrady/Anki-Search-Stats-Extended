@@ -3,6 +3,7 @@
     import GraphCategory from "./GraphCategory.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
+    import { shownCategories } from "./stores"
 
     let category_order = Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[]
     let current_hover = -1
@@ -16,6 +17,10 @@
 
         console.log(category_order)
     }
+
+    function toggle_hidden(id: string) {
+        $shownCategories[id] = $shownCategories[id] == "removed" ? true : "removed"
+    }
 </script>
 
 <GraphCategory hidden_title={i18n("graph-order")}>
@@ -24,6 +29,7 @@
         <div class="list">
             {#each category_order as category_id, i}
                 {@const { title } = CATEGORIES[category_id]}
+                {@const removed = $shownCategories[category_id] == "removed"}
                 <div
                     role="listitem"
                     class="item"
@@ -39,7 +45,9 @@
                         {i18n(title)}
                     </div>
                     <div>
-                        <button>{i18n("hide")}</button>
+                        <button on:click={() => toggle_hidden(category_id)}>
+                            {i18n(removed ? "show" : "hide")}
+                        </button>
                     </div>
                 </div>
             {/each}
