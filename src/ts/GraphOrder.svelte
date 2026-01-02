@@ -45,18 +45,26 @@
             {/each}
         </div>
     </GraphContainer>
+    {i18n("graph-order-help")}
 </GraphCategory>
 
-<style>
+<style lang="scss">
     .item {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        cursor: move;
+        padding: 0.25em;
+
+        &:hover {
+            background-color: var(--highlight-bg);
+        }
     }
 
     .list {
         display: flex;
         flex-direction: column;
-        gap: 1em;
+        padding: 0.25em;
+        background-color: var(--canvas-inset);
     }
 </style>
