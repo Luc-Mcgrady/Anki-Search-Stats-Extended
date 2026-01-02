@@ -2,7 +2,8 @@ import { derived, get, writable } from "svelte/store"
 import type { SSEconfig, SSEother } from "./config"
 import type { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-import { getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
+import { calculateRevlogStats } from "./revlogGraphs"
+import { catchErrors, getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
 
 // Data related
@@ -78,3 +79,11 @@ config.subscribe(($config) =>
     graph_mode.set($config?.graphMode?.toLowerCase() == "bar" ? "Bar" : "Pie")
 )
 revlogs.subscribe(() => memorised_stats.set(undefined))
+
+// Revlog stats store
+export const revlogStats = derived([revlogs, card_data], ([$revlogs, $card_data]) => {
+    if (!$revlogs || !$card_data) {
+        return null
+    }
+    return catchErrors(() => calculateRevlogStats($revlogs, $card_data))
+})

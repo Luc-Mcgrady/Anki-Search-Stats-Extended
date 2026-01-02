@@ -180,11 +180,7 @@
     <CardDataPies cardData={$card_data} />
     {#if $showRevlogStats}
         {#if $revlogs && $card_data && $data?.added}
-            <RevlogGraphs
-                revlogData={$revlogs}
-                cardData={$card_data}
-                addedCards={$data.added.added}
-            />
+            <RevlogGraphs addedCards={$data.added.added} />
         {:else}
             <h1 class="header">{i18n("preparing-review-stats")}</h1>
         {/if}
