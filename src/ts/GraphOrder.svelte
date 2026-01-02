@@ -31,7 +31,7 @@
                 {@const removed = $shownCategories[category_id] == "removed"}
                 <div
                     role="listitem"
-                    class="item"
+                    class={"item" + (removed ? " removed" : "")}
                     draggable="true"
                     on:dragend={() => {
                         swap(i, current_hover)
@@ -43,11 +43,9 @@
                     <div>
                         {i18n(title)}
                     </div>
-                    <div>
-                        <button on:click={() => toggle_hidden(category_id)}>
-                            {i18n(removed ? "show" : "hide")}
-                        </button>
-                    </div>
+                    <button on:click={() => toggle_hidden(category_id)}>
+                        {i18n(removed ? "show" : "hide")}
+                    </button>
                 </div>
             {/each}
         </div>
@@ -73,5 +71,9 @@
         flex-direction: column;
         padding: 0.25em;
         background-color: var(--canvas-inset);
+    }
+
+    .removed {
+        color: var(--fg-disabled);
     }
 </style>
