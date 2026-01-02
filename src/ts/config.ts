@@ -1,3 +1,5 @@
+import type { CATEGORIES } from "./categories"
+
 export type SSEconfig = Partial<{
     loadDelayMs: number
     burdenNotLoad: boolean
@@ -9,6 +11,7 @@ export type SSEconfig = Partial<{
     trends: boolean
     graphMode: "Bar" | "Pie"
     categories: Record<string, boolean | "removed">
+    categoryOrder: (keyof typeof CATEGORIES)[]
 }>
 
 export type DeckConfig = {

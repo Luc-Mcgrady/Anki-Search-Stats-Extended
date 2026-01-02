@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { category_order, tooltip, tooltipShown } from "./stores"
+    import { categoryOrder, tooltip, tooltipShown } from "./stores"
     import { defaultGraphBounds } from "./graph"
     import { i18n } from "./i18n"
     import About from "./About.svelte"
@@ -14,7 +14,7 @@
     <hr />
     <h1 class="header">{i18n("title-search-stats-extended")}</h1>
     <GraphOrder />
-    {#each $category_order as category}
+    {#each $categoryOrder as category}
         {@const { component } = CATEGORIES[category]}
         <svelte:component this={component} />
     {/each}

@@ -32,11 +32,22 @@ export let graph_mode = writable<"Bar" | "Pie">("Pie")
 // Config related stats
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
-export let showRevlogStats = writable(false)
 export let shownCategories = writable(SSEconfig.categories ?? {})
-export let category_order = writable(Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
+export let confirmExpensiveStats = writable(SSEconfig.confirmExpensiveStats ?? true)
+export let confirmMemorisedStats = writable(SSEconfig.confirmExpensiveStats ?? true)
+export let categoryOrder = writable([
+    ...new Set([...(SSEconfig.categoryOrder ?? []), ...Object.keys(CATEGORIES)]),
+] as (keyof typeof CATEGORIES)[])
+export let showRevlogStats = writable(get(confirmExpensiveStats))
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
+confirmExpensiveStats.subscribe(($confirmExpensiveStats) =>
+    saveConfigValue("confirmExpensiveStats", $confirmExpensiveStats)
+)
+confirmMemorisedStats.subscribe(($confirmMemorisedStats) =>
+    saveConfigValue("confirmMemorisedStats", $confirmMemorisedStats)
+)
+categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
 
 // Revlog graph specific stores
 export let pieLast = writable(59)
@@ -67,7 +78,7 @@ const updateRevlogs = () => {
     }
 }
 
-searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats || false))
+searchString.subscribe(() => showRevlogStats.set(get(confirmExpensiveStats) || false))
 cids.subscribe(updateRevlogs)
 showRevlogStats.subscribe(updateRevlogs)
 tooltipShown.subscribe(() =>
