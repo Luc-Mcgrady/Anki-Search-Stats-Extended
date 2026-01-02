@@ -51,20 +51,19 @@
 <GraphCategory hidden_title={i18n("bad-graph")} config_name="bad">
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("leech-detector")}</h1>
-        <GraphContainer>
-            <h1>{i18n("leech-detector")}</h1>
-            <label>
-                {i18n("zoom")}
-                <input type="range" min={1} max={6} bind:value={granularity_power} />
-            </label>
-            <Bar data={leech_detection_bar}></Bar>
-            <p>
-                {i18n("leech-detector-help")}
-                <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
-                    Forum discussion link
-                </a>
-            </p>
-        </GraphContainer>
+
+        <h1>{i18n("leech-detector")}</h1>
+        <label>
+            {i18n("zoom")}
+            <input type="range" min={1} max={6} bind:value={granularity_power} />
+        </label>
+        <Bar data={leech_detection_bar}></Bar>
+        <p>
+            {i18n("leech-detector-help")}
+            <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
+                Forum discussion link
+            </a>
+        </p>
     </MemorisedGraphContainer>
     <GraphContainer>
         <h1>{i18n("naive-sibling-similarity")}</h1>
@@ -125,28 +124,27 @@
     </GraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-loss-by-fatigue")}</h1>
-        <GraphContainer>
-            <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
-            <BarScrollable
-                bind:binSize={fatigue_bin_size}
-                data={{
-                    row_colours: ["red"],
-                    row_labels: ["RMSE"],
-                    data: $memorised_stats!.fatigueRMSE[mature_filter].map((v, i) => ({
-                        label: i.toString(),
-                        values: v,
-                    })),
-                }}
-                left_aligned
-                average
-                loss
-                trend
-                trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
-            ></BarScrollable>
-            <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
-            <p>
-                {i18n("fsrs-loss-by-fatigue-help")}
-            </p>
-        </GraphContainer>
+
+        <h1>{i18n("fsrs-loss-by-fatigue")}</h1>
+        <BarScrollable
+            bind:binSize={fatigue_bin_size}
+            data={{
+                row_colours: ["red"],
+                row_labels: ["RMSE"],
+                data: $memorised_stats!.fatigueRMSE[mature_filter].map((v, i) => ({
+                    label: i.toString(),
+                    values: v,
+                })),
+            }}
+            left_aligned
+            average
+            loss
+            trend
+            trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
+        ></BarScrollable>
+        <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>
+        <p>
+            {i18n("fsrs-loss-by-fatigue-help")}
+        </p>
     </MemorisedGraphContainer>
 </GraphCategory>

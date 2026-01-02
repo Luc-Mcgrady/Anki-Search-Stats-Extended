@@ -92,13 +92,10 @@
     </GraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-calibration")}</h1>
-        <GraphContainer>
-            <h1>{i18n("fsrs-calibration")}</h1>
-            <FsrsCalibration data={$memorised_stats!.calibration} />
-            <p>
-                {i18n("fsrs-calibration-help")}
-            </p>
-        </GraphContainer>
+        <FsrsCalibration data={$memorised_stats!.calibration} />
+        <p>
+            {i18n("fsrs-calibration-help")}
+        </p>
     </MemorisedGraphContainer>
     <GraphContainer>
         <h1>{i18n("first-short-term-forgetting-curve")}</h1>
@@ -126,78 +123,70 @@
     </GraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("stability-time-machine")}</h1>
-        <GraphContainer>
-            <h1>{i18n("stability-time-machine")}</h1>
-            <BarScrollable data={stability_time_machine_bar} left_aligned />
-            <TimeMachineScroll min={time_machine_min} />
-            <p>{i18n("stability-time-machine-help")}</p>
-            {#if truncated}
-                <Warning>{i18n("generic-truncated-warning")}</Warning>
-            {/if}
-        </GraphContainer>
+        <BarScrollable data={stability_time_machine_bar} left_aligned />
+        <TimeMachineScroll min={time_machine_min} />
+        <p>{i18n("stability-time-machine-help")}</p>
+        {#if truncated}
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
+        {/if}
     </MemorisedGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("difficulty-time-machine")}</h1>
-        <GraphContainer>
-            <h1>{i18n("difficulty-time-machine")}</h1>
-            <label class="scroll">
-                {i18n("zoom")}
-                <input type="range" bind:value={granularity} min={1} max={100} />
-            </label>
-            <Bar data={difficulty_time_machine_bar} />
-            <label class="scroll">
-                <span>
-                    {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
-                </span>
-                <TimeMachineScroll min={time_machine_min} />
-            </label>
-            <p>{i18n("difficulty-time-machine-help")}</p>
-            {#if truncated}
-                <Warning>{i18n("generic-truncated-warning")}</Warning>
-            {/if}
-        </GraphContainer>
+        <label class="scroll">
+            {i18n("zoom")}
+            <input type="range" bind:value={granularity} min={1} max={100} />
+        </label>
+        <Bar data={difficulty_time_machine_bar} />
+        <label class="scroll">
+            <span>
+                {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
+            </span>
+            <TimeMachineScroll min={time_machine_min} />
+        </label>
+        <p>{i18n("difficulty-time-machine-help")}</p>
+        {#if truncated}
+            <Warning>{i18n("generic-truncated-warning")}</Warning>
+        {/if}
     </MemorisedGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("average-stability-over-time")}</h1>
-        <GraphContainer>
-            <h1>{i18n("average-stability-over-time")}</h1>
-            <BarScrollable
-                bind:binSize={interval_bin_size}
-                data={{
-                    row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
-                    row_labels: [i18n("young"), i18n("mature")],
-                    data: (average_type == Average.MEAN
-                        ? $memorised_stats!.day_means
-                        : $memorised_stats!.day_medians
-                    ).map((day, i) => {
-                        const young = _.sum($memorised_stats!.stability_bins_days[i]?.slice(0, 21))
-                        const total = _.sum($memorised_stats!.stability_bins_days[i])
-                        const young_ratio = young / total
-                        return {
-                            values: [day * young_ratio, day * (1 - young_ratio)],
-                            label: barLabel(i),
-                        }
-                    }),
-                    columnLabeler: barDateLabeler,
-                }}
-                average
-                trend
-                trend_info={{ pattern: i18n_pattern("stability-per-day") }}
-            />
-            <p>
-                {i18n("average-stability-over-time-help")}
-            </p>
-            <div>
-                <label>
-                    <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
-                    {i18n("median")}
-                </label>
-                <label>
-                    <input type="radio" value={Average.MEAN} bind:group={average_type} />
-                    {i18n("mean")}
-                </label>
-            </div>
-        </GraphContainer>
+        <h1>{i18n("average-stability-over-time")}</h1>
+        <BarScrollable
+            bind:binSize={interval_bin_size}
+            data={{
+                row_colours: [YOUNG_COLOUR, MATURE_COLOUR],
+                row_labels: [i18n("young"), i18n("mature")],
+                data: (average_type == Average.MEAN
+                    ? $memorised_stats!.day_means
+                    : $memorised_stats!.day_medians
+                ).map((day, i) => {
+                    const young = _.sum($memorised_stats!.stability_bins_days[i]?.slice(0, 21))
+                    const total = _.sum($memorised_stats!.stability_bins_days[i])
+                    const young_ratio = young / total
+                    return {
+                        values: [day * young_ratio, day * (1 - young_ratio)],
+                        label: barLabel(i),
+                    }
+                }),
+                columnLabeler: barDateLabeler,
+            }}
+            average
+            trend
+            trend_info={{ pattern: i18n_pattern("stability-per-day") }}
+        />
+        <p>
+            {i18n("average-stability-over-time-help")}
+        </p>
+        <div>
+            <label>
+                <input type="radio" value={Average.MEDIAN} bind:group={average_type} />
+                {i18n("median")}
+            </label>
+            <label>
+                <input type="radio" value={Average.MEAN} bind:group={average_type} />
+                {i18n("mean")}
+            </label>
+        </div>
     </MemorisedGraphContainer>
 </GraphCategory>
 
