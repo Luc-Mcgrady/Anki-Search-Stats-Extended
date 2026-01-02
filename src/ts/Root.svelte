@@ -1,13 +1,16 @@
 <script lang="ts">
-    import { categoryOrder, tooltip, tooltipShown } from "./stores"
+    import { card_data, categoryOrder, tooltip, tooltipShown } from "./stores"
     import { defaultGraphBounds } from "./graph"
     import { i18n } from "./i18n"
     import About from "./About.svelte"
     import GraphOrder from "./GraphOrder.svelte"
 
     import { CATEGORIES } from "./categories"
+    import { catchErrors } from "./search"
+    import { calculateCardDataPies } from "./CardDataPies"
 
     const { width, height } = defaultGraphBounds()
+    catchErrors(() => calculateCardDataPies($card_data ?? [], true, true))
 </script>
 
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>
