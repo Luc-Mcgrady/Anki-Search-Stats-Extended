@@ -8,7 +8,7 @@
     let hidden = !SSEconfig?.categories?.[config_name]
 </script>
 
-{#if SSEconfig?.categories?.[config_name] !== "removed"}
+{#if $shownCategories[config_name] !== "removed"}
     <label>
         <div class={`separator ${hidden ? "hidden" : ""}`}>
             {#if hidden_title}
