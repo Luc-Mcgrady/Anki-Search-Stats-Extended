@@ -52,8 +52,8 @@
                 </div>
             {/each}
         </div>
+        {i18n("graph-order-help")}
     </GraphContainer>
-    {i18n("graph-order-help")}
 </GraphCategory>
 
 <style lang="scss">
