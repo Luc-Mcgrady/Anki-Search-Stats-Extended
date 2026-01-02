@@ -3,19 +3,18 @@
     import GraphCategory from "./GraphCategory.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
-    import { shownCategories } from "./stores"
+    import { category_order, shownCategories } from "./stores"
 
-    let category_order = Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[]
     let current_hover = -1
 
     function swap(index1: number, index2: number) {
-        category_order = [...category_order]
-        ;[category_order[index2], category_order[index1]] = [
-            category_order[index1],
-            category_order[index2],
+        $category_order = [...$category_order]
+        ;[$category_order[index2], $category_order[index1]] = [
+            $category_order[index1],
+            $category_order[index2],
         ]
 
-        console.log(category_order)
+        console.log($category_order)
     }
 
     function toggle_hidden(id: string) {
@@ -27,7 +26,7 @@
     <GraphContainer>
         <h1>{i18n("graph-order")}</h1>
         <div class="list">
-            {#each category_order as category_id, i}
+            {#each $category_order as category_id, i}
                 {@const { title } = CATEGORIES[category_id]}
                 {@const removed = $shownCategories[category_id] == "removed"}
                 <div

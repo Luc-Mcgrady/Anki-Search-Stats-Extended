@@ -1,4 +1,5 @@
 import { derived, get, writable } from "svelte/store"
+import { CATEGORIES } from "./categories"
 import type { SSEconfig, SSEother } from "./config"
 import type { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
@@ -33,6 +34,7 @@ export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let showRevlogStats = writable(false)
 export let shownCategories = writable(SSEconfig.categories ?? {})
+export let category_order = writable(Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[])
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
 
