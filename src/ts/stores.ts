@@ -38,6 +38,7 @@ export let confirmMemorisedStats = writable(SSEconfig.confirmExpensiveStats ?? t
 export let categoryOrder = writable([
     ...new Set([...(SSEconfig.categoryOrder ?? []), ...Object.keys(CATEGORIES)]),
 ] as (keyof typeof CATEGORIES)[])
+export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
 export let showRevlogStats = writable(get(confirmExpensiveStats))
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
@@ -48,6 +49,9 @@ confirmMemorisedStats.subscribe(($confirmMemorisedStats) =>
     saveConfigValue("confirmMemorisedStats", $confirmMemorisedStats)
 )
 categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
+autoMemorisedStats.subscribe(($autoMemorisedStats) =>
+    saveConfigValue("autoMemorisedStats", $autoMemorisedStats)
+)
 
 // Revlog graph specific stores
 export let pieLast = writable(59)

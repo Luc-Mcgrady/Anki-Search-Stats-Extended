@@ -3,7 +3,12 @@
     import GraphCategory from "./GraphCategory.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
-    import { categoryOrder, confirmExpensiveStats, shownCategories } from "./stores"
+    import {
+        autoMemorisedStats,
+        categoryOrder,
+        confirmExpensiveStats,
+        shownCategories,
+    } from "./stores"
     import Warning from "./Warning.svelte"
 
     let current_hover = -1
@@ -67,12 +72,12 @@
         </div>
         <div>
             <label>
-                <input type="checkbox" />
+                <input type="checkbox" bind:checked={$autoMemorisedStats} />
                 {i18n("auto-load-memorised")}
             </label>
             {#if autoExpensiveStats}
                 <Warning>
-                    {i18n("auto-load-revlogs-warning")}
+                    {i18n("auto-load-memorised-warning")}
                 </Warning>
             {/if}
         </div>

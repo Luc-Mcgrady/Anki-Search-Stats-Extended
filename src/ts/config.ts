@@ -12,6 +12,7 @@ export type SSEconfig = Partial<{
     graphMode: "Bar" | "Pie"
     categories: Record<string, boolean | "removed">
     categoryOrder: (keyof typeof CATEGORIES)[]
+    autoMemorisedStats: boolean
 }>
 
 export type DeckConfig = {
