@@ -9,12 +9,12 @@
     import { i18n, i18n_bundle } from "../i18n"
     import { barStringLabeler, barHourLabeler, type BarChart } from "../bar"
     import type { PieDatum } from "../pie"
-    import { scroll, searchLimit, revlogStats } from "../stores"
-    import { today, day_ms, no_rollover_today } from "../revlogGraphs"
+    import { scroll, searchLimit, revlogStats, data } from "../stores"
+    import { today, no_rollover_today } from "../revlogGraphs"
     import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "../graph"
     import _ from "lodash"
 
-    export let addedCards: Record<number, number>
+    let addedCards = $data?.added?.added ?? {}
 
     $: truncated = $searchLimit !== 0
     $: realScroll = -Math.abs($scroll)

@@ -4,10 +4,10 @@
     import GraphCategory from "../GraphCategory.svelte"
     import { i18n } from "../i18n"
     import { catchErrors, type CardData } from "../search"
-    import { include_suspended, graph_mode, zero_inclusive } from "../stores"
+    import { include_suspended, graph_mode, zero_inclusive, card_data } from "../stores"
     import { calculateCardDataPies } from "../CardDataPies"
 
-    export let cardData: CardData[] | null
+    let cardData: CardData[] | null = $card_data
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
     $: ({ repetitions, repetitions_burden } = catchErrors(() =>

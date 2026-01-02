@@ -8,15 +8,5 @@
     import TimeMachineCategory from "./categories/TimeMachineCategory.svelte"
     import BadGraphCategory from "./categories/BadGraphCategory.svelte"
 
-    export let addedCards: Record<number, number>
-
     $: $last_forget = $revlogStats?.last_forget ?? null
 </script>
-
-<TimeDistributionCategory />
-<IntroducedCategory />
-<RatingsCategory />
-<LoadTrendCategory />
-<FSRSCategory />
-<TimeMachineCategory {addedCards} />
-<BadGraphCategory />

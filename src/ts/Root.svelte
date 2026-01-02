@@ -1,14 +1,11 @@
 <script lang="ts">
-    import { data, tooltip, tooltipShown, card_data } from "./stores"
-    import CardDataPies from "./CardDataPies.svelte"
-    import RevlogGraphs from "./RevlogGraphs.svelte"
+    import { category_order, tooltip, tooltipShown } from "./stores"
     import { defaultGraphBounds } from "./graph"
     import { i18n } from "./i18n"
     import About from "./About.svelte"
-    import FutureDueCategory from "./categories/FutureDueCategory.svelte"
-    import MiscCategory from "./categories/MiscCategory.svelte"
-    import IntervalDistributionCategory from "./categories/IntervalDistributionCategory.svelte"
     import GraphOrder from "./GraphOrder.svelte"
+
+    import { CATEGORIES } from "./categories"
 
     const { width, height } = defaultGraphBounds()
 </script>
@@ -17,15 +14,10 @@
     <hr />
     <h1 class="header">{i18n("title-search-stats-extended")}</h1>
     <GraphOrder />
-    <FutureDueCategory />
-    <MiscCategory />
-    <IntervalDistributionCategory />
-    <CardDataPies cardData={$card_data} />
-    {#if $data?.added}
-        <RevlogGraphs addedCards={$data.added.added} />
-    {:else}
-        <h1 class="header">{i18n("preparing-review-stats")}</h1>
-    {/if}
+    {#each $category_order as category}
+        {@const { component } = CATEGORIES[category]}
+        <svelte:component this={component} />
+    {/each}
     <About></About>
 </div>
 
