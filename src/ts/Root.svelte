@@ -8,6 +8,7 @@
     import FutureDueCategory from "./categories/FutureDueCategory.svelte"
     import MiscCategory from "./categories/MiscCategory.svelte"
     import IntervalDistributionCategory from "./categories/IntervalDistributionCategory.svelte"
+    import GraphOrder from "./GraphOrder.svelte"
 
     const { width, height } = defaultGraphBounds()
 </script>
@@ -15,6 +16,7 @@
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>
     <hr />
     <h1 class="header">{i18n("title-search-stats-extended")}</h1>
+    <GraphOrder />
     <FutureDueCategory />
     <MiscCategory />
     <IntervalDistributionCategory />
