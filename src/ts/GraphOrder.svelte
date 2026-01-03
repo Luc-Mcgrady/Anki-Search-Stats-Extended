@@ -51,27 +51,30 @@
             {/each}
         </div>
         {i18n("graph-order-help")}
+
+        <label>
+            <input type="checkbox" bind:checked={$autoRevlogStats} />
+            {i18n("auto-load-revlogs")}
+        </label>
         <div>
-            <label>
-                <input type="checkbox" bind:checked={$autoRevlogStats} />
-                {i18n("auto-load-revlogs")}
-            </label>
             {#if $autoRevlogStats}
                 <Warning>
                     {i18n("auto-load-revlogs-warning")}
                 </Warning>
             {/if}
+            &nbsp;
         </div>
+        <label>
+            <input type="checkbox" bind:checked={$autoMemorisedStats} />
+            {i18n("auto-load-memorised")}
+        </label>
         <div>
-            <label>
-                <input type="checkbox" bind:checked={$autoMemorisedStats} />
-                {i18n("auto-load-memorised")}
-            </label>
             {#if $autoMemorisedStats}
                 <Warning>
                     {i18n("auto-load-memorised-warning")}
                 </Warning>
             {/if}
+            &nbsp;
         </div>
     </GraphContainer>
 </GraphCategory>

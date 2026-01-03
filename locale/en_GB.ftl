@@ -60,6 +60,13 @@ trend = Trend
 
 percent-correct = {$percentage}% Correct
 
+graph-order = Reorder
+graph-order-help = Drag and drop to re-order the graphs
+auto-load-revlogs = Load slow graphs without confirmation
+auto-load-revlogs-warning = This can cause the stats menu to hang on startup
+auto-load-memorised = Load FSRS graphs without confirmation
+auto-load-memorised-warning = This will load even without "all history" being selected
+
 future-due-types = Future Due Types
 future-due-types-help = 
     This graph is the same as the Future Due above except it delineates between types of cards.
