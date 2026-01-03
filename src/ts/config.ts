@@ -3,7 +3,6 @@ import type { CATEGORIES } from "./categories"
 export type SSEconfig = Partial<{
     loadDelayMs: number
     burdenNotLoad: boolean
-    confirmExpensiveStats: boolean
     barWidth: number
     barHeight: number
     piePercentages: boolean
@@ -12,6 +11,7 @@ export type SSEconfig = Partial<{
     graphMode: "Bar" | "Pie"
     categories: Record<string, boolean | "removed">
     categoryOrder: (keyof typeof CATEGORIES)[]
+    autoRevlogStats: boolean
     autoMemorisedStats: boolean
 }>
 

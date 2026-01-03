@@ -201,8 +201,6 @@ preparing-review-stats = Preparing Review Stats...
 review-graphs-warning-title = Review Graphs
 review-graphs-prepare-graphs = Prepare Graphs
 review-graphs-warning = These statistics can take time to prepare.
-review-graphs-config-hint = 
-    To load these graphs by default, set "confirmExpensiveStats" to false in the addon config.
 
 generic-truncated-warning = 
     May be inaccurate while "all history" is not selected.
@@ -494,3 +492,7 @@ loss-per-prior-review-that-day = {$value} loss per {$n ->
         [one] prior review
         *[many] {$n} prior reviews
     }
+
+# Unused
+review-graphs-config-hint = 
+    To load these graphs by default, set "confirmExpensiveStats" to false in the addon config.

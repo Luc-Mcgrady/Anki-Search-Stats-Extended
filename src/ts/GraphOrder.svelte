@@ -3,12 +3,7 @@
     import GraphCategory from "./GraphCategory.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
-    import {
-        autoMemorisedStats,
-        categoryOrder,
-        confirmExpensiveStats,
-        shownCategories,
-    } from "./stores"
+    import { autoMemorisedStats, autoRevlogStats, categoryOrder, shownCategories } from "./stores"
     import Warning from "./Warning.svelte"
 
     let current_hover = -1
@@ -26,9 +21,6 @@
     function toggle_hidden(id: string) {
         $shownCategories[id] = $shownCategories[id] == "removed" ? true : "removed"
     }
-
-    let autoExpensiveStats = !SSEconfig.confirmExpensiveStats
-    $: $confirmExpensiveStats = !autoExpensiveStats
 </script>
 
 <GraphCategory hidden_title={i18n("graph-order")}>
@@ -61,10 +53,10 @@
         {i18n("graph-order-help")}
         <div>
             <label>
-                <input type="checkbox" bind:checked={autoExpensiveStats} />
+                <input type="checkbox" bind:checked={$autoRevlogStats} />
                 {i18n("auto-load-revlogs")}
             </label>
-            {#if autoExpensiveStats}
+            {#if $autoRevlogStats}
                 <Warning>
                     {i18n("auto-load-revlogs-warning")}
                 </Warning>

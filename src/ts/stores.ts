@@ -33,21 +33,18 @@ export let graph_mode = writable<"Bar" | "Pie">("Pie")
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
 export let shownCategories = writable(SSEconfig.categories ?? {})
-export let confirmExpensiveStats = writable(SSEconfig.confirmExpensiveStats ?? true)
-export let confirmMemorisedStats = writable(SSEconfig.confirmExpensiveStats ?? true)
+export let autoRevlogStats = writable(SSEconfig.autoRevlogStats ?? false)
+export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
 export let categoryOrder = writable([
     ...new Set([...(SSEconfig.categoryOrder ?? []), ...Object.keys(CATEGORIES)]),
 ] as (keyof typeof CATEGORIES)[])
-export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
-export let showRevlogStats = writable(get(confirmExpensiveStats))
+export let showRevlogStats = writable(false)
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
-confirmExpensiveStats.subscribe(($confirmExpensiveStats) =>
-    saveConfigValue("confirmExpensiveStats", $confirmExpensiveStats)
-)
-confirmMemorisedStats.subscribe(($confirmMemorisedStats) =>
-    saveConfigValue("confirmMemorisedStats", $confirmMemorisedStats)
-)
+autoRevlogStats.subscribe(($autoRevlogStats) => {
+    saveConfigValue("autoRevlogStats", $autoRevlogStats)
+    showRevlogStats.set($autoRevlogStats)
+})
 categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
 autoMemorisedStats.subscribe(($autoMemorisedStats) =>
     saveConfigValue("autoMemorisedStats", $autoMemorisedStats)
@@ -82,7 +79,7 @@ const updateRevlogs = () => {
     }
 }
 
-searchString.subscribe(() => showRevlogStats.set(get(confirmExpensiveStats) || false))
+searchString.subscribe(() => showRevlogStats.set(get(autoRevlogStats) || false))
 cids.subscribe(updateRevlogs)
 showRevlogStats.subscribe(updateRevlogs)
 tooltipShown.subscribe(() =>
