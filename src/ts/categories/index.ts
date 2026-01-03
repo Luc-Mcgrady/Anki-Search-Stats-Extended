@@ -1,4 +1,5 @@
 import BadGraphCategory from "./BadGraphCategory.svelte"
+import ForgettingCurveCategory from "./ForgettingCurveCategory.svelte"
 import FSRSCategory from "./FSRSCategory.svelte"
 import FutureDueCategory from "./FutureDueCategory.svelte"
 import IntervalDistributionCategory from "./IntervalDistributionCategory.svelte"
@@ -59,5 +60,9 @@ export const CATEGORIES = {
     timeMachine: {
         component: TimeMachineCategory,
         title: "card-count-time-machine",
+    },
+    ForgettingCurve: {
+        component: ForgettingCurveCategory,
+        title: "forgetting-curve",
     },
 } as const

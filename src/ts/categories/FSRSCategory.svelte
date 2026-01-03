@@ -97,30 +97,6 @@
             {i18n("fsrs-calibration-help")}
         </p>
     </MemorisedGraphContainer>
-    <RevlogGraphContainer>
-        <h1 slot="title">{i18n("first-short-term-forgetting-curve")}</h1>
-        <ForgettingCurve
-            data={$revlogStats?.forgetting_samples_short ?? []}
-            xLabel={i18n("forgetting-curve-x-axis-minutes")}
-            isShortTerm={true}
-            formatInterval={(delta) =>
-                i18n("forgetting-curve-tooltip-interval-minutes", {
-                    minutes: delta.toFixed(2),
-                })}
-        />
-        <p>{i18n("first-short-term-forgetting-curve-help")}</p>
-        {#if truncated}
-            <Warning>{i18n("generic-truncated-warning")}</Warning>
-        {/if}
-    </RevlogGraphContainer>
-    <RevlogGraphContainer>
-        <h1 slot="title">{i18n("forgetting-curve")}</h1>
-        <ForgettingCurve data={$revlogStats?.forgetting_samples ?? []} />
-        <p>{i18n("forgetting-curve-help")}</p>
-        {#if truncated}
-            <Warning>{i18n("generic-truncated-warning")}</Warning>
-        {/if}
-    </RevlogGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("stability-time-machine")}</h1>
         <BarScrollable data={stability_time_machine_bar} left_aligned />
