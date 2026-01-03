@@ -61,7 +61,7 @@ export const CATEGORIES = {
         component: TimeMachineCategory,
         title: "card-count-time-machine",
     },
-    ForgettingCurve: {
+    forgettingCurve: {
         component: ForgettingCurveCategory,
         title: "forgetting-curve",
     },
