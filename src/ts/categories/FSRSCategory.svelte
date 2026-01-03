@@ -80,7 +80,7 @@
 </script>
 
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
-    <RevlogGraphContainer>
+    <MemorisedGraphContainer>
         <h1 slot="title">{i18n("memorised")}</h1>
         <MemorisedBar burden={$revlogStats?.burden ?? []} />
         {#if truncated}
@@ -89,7 +89,7 @@
         <p>
             {i18n("memorised-help")}
         </p>
-    </RevlogGraphContainer>
+    </MemorisedGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-calibration")}</h1>
         <FsrsCalibration data={$memorised_stats!.calibration} />
