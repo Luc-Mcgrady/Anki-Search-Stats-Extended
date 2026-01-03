@@ -25,4 +25,4 @@
     }
 </script>
 
-<Calculator {calculate} shown={!!$memorised_stats}></Calculator>
+<Calculator {calculate} shown={!!$memorised_stats} badIfTruncated></Calculator>
