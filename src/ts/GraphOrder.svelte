@@ -27,8 +27,8 @@
         $shownCategories[id] = $shownCategories[id] == "removed" ? true : "removed"
     }
 
-    let autoExpensiveStats = !$confirmExpensiveStats
-    $: $confirmExpensiveStats = autoExpensiveStats
+    let autoExpensiveStats = !SSEconfig.confirmExpensiveStats
+    $: $confirmExpensiveStats = !autoExpensiveStats
 </script>
 
 <GraphCategory hidden_title={i18n("graph-order")}>
@@ -75,7 +75,7 @@
                 <input type="checkbox" bind:checked={$autoMemorisedStats} />
                 {i18n("auto-load-memorised")}
             </label>
-            {#if autoExpensiveStats}
+            {#if $autoMemorisedStats}
                 <Warning>
                     {i18n("auto-load-memorised-warning")}
                 </Warning>
