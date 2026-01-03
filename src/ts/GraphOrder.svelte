@@ -23,7 +23,7 @@
     }
 </script>
 
-<GraphCategory hidden_title={i18n("graph-order")}>
+<GraphCategory hidden_title={i18n("graph-order")} config_name="graphOrder">
     <GraphContainer>
         <h1>{i18n("graph-order")}</h1>
         <div class="list">

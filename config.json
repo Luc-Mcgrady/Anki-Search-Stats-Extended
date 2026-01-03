@@ -11,6 +11,7 @@
     "forceLang": null,
     "graphMode": "Pie",
     "categories": {
+        "graphOrder": true,
         "about": true,
         "due": true,
         "misc": true,
