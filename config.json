@@ -24,5 +24,20 @@
         "introduced": true,
         "timeMachine": true,
         "bad": "removed"
-    } 
+    },
+    "categoryOrder": [
+        "due",
+        "misc",
+        "rating",
+        "load",
+        "timeMachine",
+        "fsrs",
+        "ForgettingCurve",
+        "introduced",
+        "interval",
+        "repetition",
+        "time",
+        "lapse",
+        "bad"
+    ]
 }
