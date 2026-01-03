@@ -43,7 +43,9 @@ export let showRevlogStats = writable(false)
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
 autoRevlogStats.subscribe(($autoRevlogStats) => {
     saveConfigValue("autoRevlogStats", $autoRevlogStats)
-    showRevlogStats.set($autoRevlogStats)
+    if ($autoRevlogStats) {
+        showRevlogStats.set($autoRevlogStats)
+    }
 })
 categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
 autoMemorisedStats.subscribe(($autoMemorisedStats) =>
