@@ -1,6 +1,5 @@
 import { derived, get, writable } from "svelte/store"
-import { CATEGORIES } from "./categories"
-import type { SSEconfig, SSEother } from "./config"
+import { DEFAULT_ORDER, type SSEconfig, type SSEother } from "./config"
 import type { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { calculateRevlogStats } from "./revlogGraphs"
@@ -36,8 +35,8 @@ export let shownCategories = writable(SSEconfig.categories ?? {})
 export let autoRevlogStats = writable(SSEconfig.autoRevlogStats ?? false)
 export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
 export let categoryOrder = writable([
-    ...new Set([...(SSEconfig.categoryOrder ?? []), ...Object.keys(CATEGORIES)]),
-] as (keyof typeof CATEGORIES)[])
+    ...new Set([...(SSEconfig.categoryOrder ?? []), ...DEFAULT_ORDER]),
+])
 export let showRevlogStats = writable(false)
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))

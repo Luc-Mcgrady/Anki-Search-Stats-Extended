@@ -87,3 +87,19 @@ export interface SSEother {
     lang_ftl: string
     fallback_ftl: string
 }
+
+export const DEFAULT_ORDER = [
+    "due",
+    "misc",
+    "rating",
+    "load",
+    "timeMachine",
+    "fsrs",
+    "forgettingCurve",
+    "introduced",
+    "interval",
+    "repetition",
+    "time",
+    "lapse",
+    "bad",
+] as const
