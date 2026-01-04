@@ -70,7 +70,7 @@ export let tooltip = writable<Tooltip>({
 })
 export let tooltipShown = writable(false)
 
-const updateRevlogs = () => {
+export const updateRevlogs = () => {
     const $cids = get(cids)
     const $showRevlogStats = get(showRevlogStats)
     const $date_range = get(searchLimit)

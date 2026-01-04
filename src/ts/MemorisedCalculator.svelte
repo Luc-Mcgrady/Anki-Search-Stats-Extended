@@ -2,9 +2,21 @@
     import Calculator from "./Calculator.svelte"
     import { getMemorisedDays } from "./MemorisedBar"
     import { catchErrors } from "./search"
-    import { autoMemorisedStats, card_data, last_forget, memorised_stats, revlogs } from "./stores"
+    import {
+        autoMemorisedStats,
+        card_data,
+        last_forget,
+        memorised_stats,
+        revlogs,
+        showRevlogStats,
+    } from "./stores"
 
+    let shown = false
     export let calculate = () => {
+        shown = true
+        if (!$revlogs) {
+            $showRevlogStats = true
+        }
         if ($revlogs && $card_data) {
             $memorised_stats = catchErrors(() =>
                 getMemorisedDays(
@@ -20,7 +32,7 @@
         }
     }
 
-    $: if ($card_data && $revlogs && $autoMemorisedStats) {
+    $: if ($card_data && $revlogs && ($autoMemorisedStats || shown)) {
         calculate()
     }
 </script>
