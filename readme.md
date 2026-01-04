@@ -6,7 +6,7 @@ Like the new anki stats screen? Want more? This is the addon for you.
      
 - **loadDelayMs**: The number of ms to delay before displaying the search stats, Increasing this can help if the search stats appear above the regular stats (Though even with 0ms this doesn't tend to happen)
 
-- **confirmExpensiveStats**: If true, graphs which itterate over every review for the cards in the selection will be hidden by default prompting the user to press a button to load them. 
+- **autoRevlogStats**: If false, graphs which itterate over every review for the cards in the selection will be hidden by default prompting the user to press a button to load them. 
 
 - **barWidth, barHeight**: Change the RESOLUTION at which the bar/candlestick charts are rendered. This can also be used to change their aspect ratio.
 

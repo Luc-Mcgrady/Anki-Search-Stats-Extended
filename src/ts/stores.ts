@@ -1,8 +1,9 @@
 import { derived, get, writable } from "svelte/store"
-import type { SSEconfig, SSEother } from "./config"
+import { DEFAULT_ORDER, type SSEconfig, type SSEother } from "./config"
 import type { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-import { getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
+import { calculateRevlogStats } from "./revlogGraphs"
+import { catchErrors, getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
 
 // Data related
@@ -30,10 +31,25 @@ export let graph_mode = writable<"Bar" | "Pie">("Pie")
 // Config related stats
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
-export let showRevlogStats = writable(false)
 export let shownCategories = writable(SSEconfig.categories ?? {})
+export let autoRevlogStats = writable(SSEconfig.autoRevlogStats ?? false)
+export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
+export let categoryOrder = writable([
+    ...new Set([...(SSEconfig.categoryOrder ?? []), ...DEFAULT_ORDER]),
+])
+export let showRevlogStats = writable(false)
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
+autoRevlogStats.subscribe(($autoRevlogStats) => {
+    saveConfigValue("autoRevlogStats", $autoRevlogStats)
+    if ($autoRevlogStats) {
+        showRevlogStats.set($autoRevlogStats)
+    }
+})
+categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
+autoMemorisedStats.subscribe(($autoMemorisedStats) =>
+    saveConfigValue("autoMemorisedStats", $autoMemorisedStats)
+)
 
 // Revlog graph specific stores
 export let pieLast = writable(59)
@@ -53,7 +69,7 @@ export let tooltip = writable<Tooltip>({
 })
 export let tooltipShown = writable(false)
 
-const updateRevlogs = () => {
+export const updateRevlogs = () => {
     const $cids = get(cids)
     const $showRevlogStats = get(showRevlogStats)
     const $date_range = get(searchLimit)
@@ -64,7 +80,7 @@ const updateRevlogs = () => {
     }
 }
 
-searchString.subscribe(() => showRevlogStats.set(!get(config)?.confirmExpensiveStats || false))
+searchString.subscribe(() => showRevlogStats.set(get(autoRevlogStats) || false))
 cids.subscribe(updateRevlogs)
 showRevlogStats.subscribe(updateRevlogs)
 tooltipShown.subscribe(() =>
@@ -78,3 +94,11 @@ config.subscribe(($config) =>
     graph_mode.set($config?.graphMode?.toLowerCase() == "bar" ? "Bar" : "Pie")
 )
 revlogs.subscribe(() => memorised_stats.set(undefined))
+
+// Revlog stats store
+export const revlogStats = derived([revlogs, card_data], ([$revlogs, $card_data]) => {
+    if (!$revlogs || !$card_data) {
+        return null
+    }
+    return catchErrors(() => calculateRevlogStats($revlogs, $card_data))
+})
