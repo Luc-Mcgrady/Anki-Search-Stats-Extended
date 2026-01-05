@@ -88,6 +88,9 @@
         {/if}
         <p>
             {i18n("memorised-help")}
+            <br />
+            <br />
+            {i18n("memorised-help2")}
         </p>
     </MemorisedGraphContainer>
     <MemorisedGraphContainer>
