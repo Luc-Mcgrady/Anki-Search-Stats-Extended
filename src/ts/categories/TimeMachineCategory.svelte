@@ -14,7 +14,7 @@
     import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "../graph"
     import _ from "lodash"
 
-    let addedCards = $data?.added?.added ?? {}
+    $: addedCards = $data?.added?.added ?? {}
 
     $: truncated = $searchLimit !== 0
     $: realScroll = -Math.abs($scroll)
