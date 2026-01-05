@@ -6,11 +6,8 @@
     import GraphOrder from "./GraphOrder.svelte"
 
     import { CATEGORIES } from "./categories"
-    import { catchErrors } from "./search"
-    import { calculateCardDataPies } from "./CardDataPies"
 
     const { width, height } = defaultGraphBounds()
-    catchErrors(() => calculateCardDataPies($card_data ?? [], true, true))
 </script>
 
 <div style:--graph-width={`${width}px`} style:--graph-height={`${height}px`}>

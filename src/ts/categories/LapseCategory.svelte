@@ -4,15 +4,12 @@
     import GraphCategory from "../GraphCategory.svelte"
     import { i18n } from "../i18n"
     import { catchErrors, type CardData } from "../search"
-    import { include_suspended, graph_mode, zero_inclusive, card_data } from "../stores"
-    import { calculateCardDataPies } from "../CardDataPies"
+    import { graph_mode, zero_inclusive, card_data, cardDataStats } from "../stores"
 
     let cardData: CardData[] | null = $card_data
 
     $: true_zero_inclusive = $zero_inclusive || $graph_mode == "Bar"
-    $: ({ lapses, lapses_burden } = catchErrors(() =>
-        calculateCardDataPies(cardData ?? [], $include_suspended, true_zero_inclusive)
-    ))
+    $: ({ lapses, lapses_burden } = $cardDataStats)
 
     let lapse_last = 7
     let lapse_steps = 7

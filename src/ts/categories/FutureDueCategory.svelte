@@ -6,14 +6,15 @@
     import IntraDayDueBar from "../IntraDayDueBar.svelte"
     import NoGraph from "../NoGraph.svelte"
     import { i18n } from "../i18n"
-    import { data, learn_data, mature_data, relearn_data, target_R_days } from "../stores"
+    import { cardDataStats, data, learn_data, mature_data, relearn_data } from "../stores"
     import { EASE_COLOURS, formatRetention } from "../revlogGraphs"
     import { barDateLabeler, type BarDatum } from "../bar"
     import { totalCalc } from "../barHelpers"
     import _ from "lodash"
 
     let normalize = true
-    $: target_R_day_values = $target_R_days.map((v, i) => [
+    $: target_R_days = $cardDataStats.target_R_days
+    $: target_R_day_values = target_R_days.map((v, i) => [
         v,
         ($data?.futureDue?.futureDue[i] || 0) - ($learn_data?.futureDue?.futureDue[i] || 0) - v,
     ])
@@ -56,7 +57,7 @@
     </GraphContainer>
     <GraphContainer>
         <h1>{i18n("future-due-retention")}</h1>
-        {#if _.sum($target_R_days) > 0}
+        {#if _.sum(target_R_days) > 0}
             <BarScrollable data={target_R_days_bar} left_aligned average={normalize}
             ></BarScrollable>
         {:else}

@@ -1,10 +1,17 @@
 import { derived, get, writable } from "svelte/store"
+import { calculateCardDataPies } from "./CardDataPies"
 import { DEFAULT_ORDER, type SSEconfig, type SSEother } from "./config"
 import { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { calculateRevlogStats } from "./revlogGraphs"
 import { catchErrors, getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
 import type { Tooltip } from "./tooltip"
+
+// Pie chart related
+export let include_suspended = writable(false)
+export let zero_inclusive = writable(false)
+export let custom_pie_mode = writable("Count")
+export let graph_mode = writable<"Bar" | "Pie">("Pie")
 
 // Data related
 export let data = writable<null | GraphsResponse>(null)
@@ -17,14 +24,9 @@ export let graphsRequest = writable<null | GraphsRequest>(null)
 export let searchString = derived(graphsRequest, (searchRequest) => searchRequest?.search ?? null)
 export let searchLimit = derived(graphsRequest, (searchRequest) => searchRequest?.days ?? 0)
 export let cids = writable<null | number[]>(null)
+
 export let card_data = writable<null | CardData[]>(null)
 export let revlogs = writable<null | Revlog[]>(null)
-
-// Pie chart related
-export let include_suspended = writable(false)
-export let zero_inclusive = writable(false)
-export let custom_pie_mode = writable("Count")
-export let graph_mode = writable<"Bar" | "Pie">("Pie")
 
 // Config related stats
 export let other = writable<SSEother>()
@@ -58,9 +60,6 @@ export let pieLast = writable(59)
 export let pieSteps = writable(10)
 export let scroll = writable(0)
 export let binSize = writable(1)
-
-// Graphs which are displayed in sections other than the one in which they are processed
-export let target_R_days = writable<number[]>([])
 
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({
@@ -96,6 +95,11 @@ config.subscribe(($config) =>
 )
 
 // Stats Data Stores
+export let cardDataStats = derived(
+    [card_data, include_suspended, zero_inclusive],
+    ([$card_data, $include_suspended, $zero_inclusive]) =>
+        calculateCardDataPies($card_data ?? [], $include_suspended, $zero_inclusive)
+)
 export const revlogStats = derived([revlogs, card_data], ([$revlogs, $card_data]) => {
     if (!$revlogs || !$card_data) {
         return null
