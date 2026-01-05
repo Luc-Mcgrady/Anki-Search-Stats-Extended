@@ -11,7 +11,14 @@
     import type { PieDatum } from "../pie"
     import { scroll, searchLimit, revlogStats, data } from "../stores"
     import { today, no_rollover_today } from "../revlogGraphs"
-    import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "../graph"
+    import {
+        LEARN_COLOUR,
+        MATURE_COLOUR,
+        NEW_COLOUR,
+        RELEARN_COLOUR,
+        SUSPENDED_COLOUR,
+        YOUNG_COLOUR,
+    } from "../graph"
     import _ from "lodash"
 
     $: addedCards = $data?.added?.added ?? {}
@@ -76,7 +83,7 @@
         {
             label: i18n("suspended"),
             value: time_machine_suspended,
-            colour: "yellow",
+            colour: SUSPENDED_COLOUR,
         },
         {
             label: i18n("new-count"),
@@ -86,7 +93,7 @@
                 time_machine_mature -
                 time_machine_intra_day -
                 time_machine_suspended,
-            colour: "#6baed6",
+            colour: NEW_COLOUR,
         },
     ]
 
