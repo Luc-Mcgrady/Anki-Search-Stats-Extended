@@ -2,7 +2,6 @@
     "loadDelayMs": 100,
     "autoMemorisedStats": false,
     "autoRevlogStats": false,
-    "confirmExpensiveStats": true,
     "barWidth": 600,
     "barHeight": 250,
     "piePercentages": false,

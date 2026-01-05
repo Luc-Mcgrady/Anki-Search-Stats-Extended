@@ -203,12 +203,6 @@ repetition-total = Repetition Total
 repetition-total-help = 
     This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a repetitions per card of 3, the repetition total for 3 would be 6.
 
-preparing-review-stats = Preparing Review Stats...
-
-review-graphs-warning-title = Review Graphs
-review-graphs-prepare-graphs = Prepare Graphs
-review-graphs-warning = These statistics can take time to prepare.
-
 generic-truncated-warning = 
     May be inaccurate while "all history" is not selected.
 
@@ -503,3 +497,9 @@ loss-per-prior-review-that-day = {$value} loss per {$n ->
 # Unused
 review-graphs-config-hint = 
     To load these graphs by default, set "confirmExpensiveStats" to false in the addon config.
+
+preparing-review-stats = Preparing Review Stats...
+
+review-graphs-warning-title = Review Graphs
+review-graphs-prepare-graphs = Prepare Graphs
+review-graphs-warning = These statistics can take time to prepare.
