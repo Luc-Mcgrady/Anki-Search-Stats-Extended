@@ -82,7 +82,7 @@
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("memorised")}</h1>
-        <MemorisedBar burden={$revlogStats?.burden ?? []} />
+        <MemorisedBar slot="graph" burden={$revlogStats?.burden ?? []} />
         {#if truncated}
             <Warning>{i18n("memorised-truncated-warning")}</Warning>
         {/if}
@@ -92,14 +92,14 @@
     </MemorisedGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-calibration")}</h1>
-        <FsrsCalibration data={$memorised_stats!.calibration} />
+        <FsrsCalibration slot="graph" data={$memorised_stats!.calibration} />
         <p>
             {i18n("fsrs-calibration-help")}
         </p>
     </MemorisedGraphContainer>
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("stability-time-machine")}</h1>
-        <BarScrollable data={stability_time_machine_bar} left_aligned />
+        <BarScrollable slot="graph" data={stability_time_machine_bar} left_aligned />
         <TimeMachineScroll min={time_machine_min} />
         <p>{i18n("stability-time-machine-help")}</p>
         {#if truncated}
@@ -112,7 +112,7 @@
             {i18n("zoom")}
             <input type="range" bind:value={granularity} min={1} max={100} />
         </label>
-        <Bar data={difficulty_time_machine_bar} />
+        <Bar slot="graph" data={difficulty_time_machine_bar} />
         <label class="scroll">
             <span>
                 {new Date(Date.now() + $scroll * day_ms).toLocaleDateString()}:
@@ -127,6 +127,7 @@
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("average-stability-over-time")}</h1>
         <BarScrollable
+            slot="graph"
             bind:binSize={interval_bin_size}
             data={{
                 row_colours: [YOUNG_COLOUR, MATURE_COLOUR],

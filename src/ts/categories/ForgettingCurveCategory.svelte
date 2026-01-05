@@ -13,7 +13,7 @@
 <GraphCategory hidden_title={i18n("forgetting-curve")} config_name="forgettingCurve">
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("forgetting-curve")}</h1>
-        <ForgettingCurve data={$revlogStats?.forgetting_samples ?? []} />
+        <ForgettingCurve slot="graph" data={$revlogStats?.forgetting_samples ?? []} />
         <p>{i18n("forgetting-curve-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -22,6 +22,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("first-short-term-forgetting-curve")}</h1>
         <ForgettingCurve
+            slot="graph"
             data={$revlogStats?.forgetting_samples_short ?? []}
             xLabel={i18n("forgetting-curve-x-axis-minutes")}
             isShortTerm={true}

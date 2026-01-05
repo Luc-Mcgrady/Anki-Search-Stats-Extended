@@ -7,8 +7,9 @@
 <GraphContainer>
     <slot name="title"></slot>
     {#if $memorised_stats}
-        <slot></slot>
+        <slot name="graph"></slot>
     {:else}
         <MemorisedCalculator></MemorisedCalculator>
     {/if}
+    <slot></slot>
 </GraphContainer>

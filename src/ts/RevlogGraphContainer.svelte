@@ -7,8 +7,9 @@
 <GraphContainer>
     <slot name="title"></slot>
     {#if $revlogStats}
-        <slot></slot>
+        <slot name="graph"></slot>
     {:else}
         <RevlogCalculator></RevlogCalculator>
     {/if}
+    <slot></slot>
 </GraphContainer>

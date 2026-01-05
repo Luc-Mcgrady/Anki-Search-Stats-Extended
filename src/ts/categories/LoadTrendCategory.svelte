@@ -30,6 +30,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("load-trend")}</h1>
         <LineOrCandlestick
+            slot="graph"
             data={$revlogStats?.burden ?? []}
             label={i18n("load")}
             bind:trend_data={burden_trend}
@@ -51,6 +52,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("introduced-load")}</h1>
         <LineOrCandlestick
+            slot="graph"
             data={$revlogStats?.introduced_load_by_day ?? []}
             label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
             bind:trend_data={introduced_load_trend}
@@ -78,6 +80,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("learn-reviews-per-card")}</h1>
         <IntervalGraph
+            slot="graph"
             intervals={learn_repetitions}
             pieInfo={{
                 countDescriptor: i18n("highest-repetition-count"),

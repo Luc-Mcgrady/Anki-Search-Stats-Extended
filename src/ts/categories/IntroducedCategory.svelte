@@ -58,6 +58,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("introduced")}</h1>
         <BarScrollable
+            slot="graph"
             data={introduced_bar}
             {bins}
             bind:binSize={$binSize}
@@ -76,6 +77,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("forgotten")}</h1>
         <BarScrollable
+            slot="graph"
             data={forgotten_bar}
             {bins}
             bind:binSize={$binSize}
@@ -96,6 +98,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("introductory-rating")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(introduced_ease, today, normalize_ease, barDateLabeler)}
             bind:binSize={$binSize}
             bind:offset={$scroll}

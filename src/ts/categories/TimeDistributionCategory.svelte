@@ -10,6 +10,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("time-distribution")}</h1>
         <IntervalGraph
+            slot="graph"
             intervals={$revlogStats?.revlog_times ?? []}
             bind:last={$pieLast}
             bind:steps={$pieSteps}
@@ -30,6 +31,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("time-totals")}</h1>
         <IntervalGraph
+            slot="graph"
             intervals={($revlogStats?.revlog_times ?? []).map((i, a) => i * a)}
             bind:last={$pieLast}
             bind:steps={$pieSteps}

@@ -55,7 +55,7 @@
             {i18n("zoom")}
             <input type="range" min={1} max={6} bind:value={granularity_power} />
         </label>
-        <Bar data={leech_detection_bar}></Bar>
+        <Bar slot="graph" data={leech_detection_bar}></Bar>
         <p>
             {i18n("leech-detector-help")}
             <a href="https://forums.ankiweb.net/t/automated-leech-detection/56887">
@@ -66,6 +66,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("naive-sibling-similarity")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(
                 $revlogStats?.sibling_time_ease ?? [],
                 1,
@@ -94,6 +95,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("rating-fatigue")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(
                 ($revlogStats?.fatigue_ease ?? {})[mature_filter] ?? [],
                 0,
@@ -123,6 +125,7 @@
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-loss-by-fatigue")}</h1>
         <BarScrollable
+            slot="graph"
             bind:binSize={fatigue_bin_size}
             data={{
                 row_colours: ["red"],

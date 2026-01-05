@@ -128,6 +128,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("card-count-time-machine")}</h1>
         <Pie
+            slot="graph"
             data={time_machine_pie}
             legend_left={i18n("card-type")}
             legend_right={i18n("amount")}
@@ -170,7 +171,7 @@
     </RevlogGraphContainer>
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("review-interval-time-machine")}</h1>
-        <BarScrollable data={time_machine_bar} left_aligned />
+        <BarScrollable slot="graph" data={time_machine_bar} left_aligned />
         <TimeMachineScroll min={time_machine_min} />
         <span>{i18n("x-total-cards", { val: total_intervals })}</span>
         <p>{i18n("review-interval-time-machine-help")}</p>

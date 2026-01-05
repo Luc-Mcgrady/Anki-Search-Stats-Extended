@@ -22,6 +22,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("ratings")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(
                 ($revlogStats?.day_ease ?? {})[mature_filter] ?? [],
                 today,
@@ -48,6 +49,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("ratings-by-duration")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(
                 ($revlogStats?.day_ease_time ?? {})[mature_filter] ?? [],
                 today,
@@ -74,6 +76,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("interval-ratings")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(
                 $revlogStats?.interval_ease ?? [],
                 1,
@@ -100,6 +103,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("time-ratings")}</h1>
         <BarScrollable
+            slot="graph"
             data={easeBarChart(
                 ($revlogStats?.time_ease_seconds ?? {})[mature_filter] ?? [],
                 0,
