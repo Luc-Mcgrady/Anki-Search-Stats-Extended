@@ -7,4 +7,4 @@
     }
 </script>
 
-<Calculator {calculate} shown={!!$revlogStats}></Calculator>
+<Calculator {calculate} shown={$showRevlogStats}></Calculator>

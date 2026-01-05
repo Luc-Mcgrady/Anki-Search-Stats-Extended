@@ -1,6 +1,6 @@
 import { derived, get, writable } from "svelte/store"
 import { DEFAULT_ORDER, type SSEconfig, type SSEother } from "./config"
-import type { getMemorisedDays } from "./MemorisedBar"
+import { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { calculateRevlogStats } from "./revlogGraphs"
 import { catchErrors, getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
@@ -20,8 +20,6 @@ export let cids = writable<null | number[]>(null)
 export let card_data = writable<null | CardData[]>(null)
 export let revlogs = writable<null | Revlog[]>(null)
 
-export let last_forget = writable<null | number[]>(null)
-
 // Pie chart related
 export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
@@ -38,6 +36,7 @@ export let categoryOrder = writable([
     ...new Set([...(SSEconfig.categoryOrder ?? []), ...DEFAULT_ORDER]),
 ])
 export let showRevlogStats = writable(false)
+export let showFsrsStats = writable(SSEconfig.autoMemorisedStats)
 
 shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
 autoRevlogStats.subscribe(($autoRevlogStats) => {
@@ -47,9 +46,12 @@ autoRevlogStats.subscribe(($autoRevlogStats) => {
     }
 })
 categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
-autoMemorisedStats.subscribe(($autoMemorisedStats) =>
-    saveConfigValue("autoMemorisedStats", $autoMemorisedStats)
-)
+autoRevlogStats.subscribe(($autoRevlogStats) => {
+    saveConfigValue("autoMemorisedStats", $autoRevlogStats)
+    if ($autoRevlogStats) {
+        showRevlogStats.set($autoRevlogStats)
+    }
+})
 
 // Revlog graph specific stores
 export let pieLast = writable(59)
@@ -59,7 +61,6 @@ export let binSize = writable(1)
 
 // Graphs which are displayed in sections other than the one in which they are processed
 export let target_R_days = writable<number[]>([])
-export let memorised_stats = writable<undefined | ReturnType<typeof getMemorisedDays>>(undefined)
 
 //Tooltip related stores
 export let tooltip = writable<Tooltip>({
@@ -93,12 +94,30 @@ tooltipShown.subscribe(() =>
 config.subscribe(($config) =>
     graph_mode.set($config?.graphMode?.toLowerCase() == "bar" ? "Bar" : "Pie")
 )
-revlogs.subscribe(() => memorised_stats.set(undefined))
 
-// Revlog stats store
+// Stats Data Stores
 export const revlogStats = derived([revlogs, card_data], ([$revlogs, $card_data]) => {
     if (!$revlogs || !$card_data) {
         return null
     }
     return catchErrors(() => calculateRevlogStats($revlogs, $card_data))
 })
+export let last_forget = derived([revlogStats], ([$revlogStats]) => $revlogStats?.last_forget)
+export let memorised_stats = derived(
+    [card_data, revlogs, showFsrsStats, last_forget],
+    ([$card_data, $revlogs, $showFsrsStats, $last_forget]) => {
+        if ($revlogs && $card_data && $showFsrsStats && $last_forget) {
+            return catchErrors(() =>
+                getMemorisedDays(
+                    $revlogs,
+                    $card_data,
+                    SSEother.deck_configs,
+                    SSEother.deck_config_ids,
+                    $last_forget,
+                    2,
+                    2
+                )
+            )
+        }
+    }
+)
