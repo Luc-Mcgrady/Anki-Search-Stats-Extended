@@ -1,6 +1,5 @@
 <script lang="ts">
     import _ from "lodash"
-    import { defaultGraphBounds } from "./graph"
     import { renderPie, type PieDatum } from "./pie"
     import { config } from "./stores"
     import NoGraph from "./NoGraph.svelte"
@@ -19,7 +18,7 @@
     $: renderPie(data, svg as any, diameter / 2)
 </script>
 
-{#if _.sumBy(data, (d) => d.value)}
+{#if total}
     <div class="root">
         <svg width={diameter} height={diameter}>
             <g transform={`translate(${diameter / 2},${diameter / 2})`} bind:this={svg}></g>

@@ -1,6 +1,7 @@
 {
     "loadDelayMs": 100,
-    "confirmExpensiveStats": true,
+    "autoMemorisedStats": false,
+    "autoRevlogStats": false,
     "barWidth": 600,
     "barHeight": 250,
     "piePercentages": false,
@@ -9,6 +10,7 @@
     "forceLang": null,
     "graphMode": "Pie",
     "categories": {
+        "graphOrder": true,
         "about": true,
         "due": true,
         "misc": true,
@@ -22,5 +24,20 @@
         "introduced": true,
         "timeMachine": true,
         "bad": "removed"
-    } 
+    },
+    "categoryOrder": [
+        "due",
+        "misc",
+        "rating",
+        "load",
+        "timeMachine",
+        "fsrs",
+        "forgettingCurve",
+        "introduced",
+        "interval",
+        "repetition",
+        "time",
+        "lapse",
+        "bad"
+    ]
 }

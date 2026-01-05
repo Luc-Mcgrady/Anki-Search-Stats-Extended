@@ -60,6 +60,13 @@ trend = Trend
 
 percent-correct = {$percentage}% Correct
 
+graph-order = Reorder
+graph-order-help = Drag and drop to re-order the graphs
+auto-load-revlogs = Load slow graphs without confirmation
+auto-load-revlogs-warning = This can cause the stats menu to hang on startup
+auto-load-memorised = Load FSRS graphs without confirmation
+auto-load-memorised-warning = This will load even without "all history" being selected
+
 future-due-types = Future Due Types
 future-due-types-help = 
     This graph is the same as the Future Due above except it delineates between types of cards.
@@ -195,14 +202,6 @@ repetition-distribution-help =
 repetition-total = Repetition Total
 repetition-total-help = 
     This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a repetitions per card of 3, the repetition total for 3 would be 6.
-
-preparing-review-stats = Preparing Review Stats...
-
-review-graphs-warning-title = Review Graphs
-review-graphs-prepare-graphs = Prepare Graphs
-review-graphs-warning = These statistics can take time to prepare.
-review-graphs-config-hint = 
-    To load these graphs by default, set "confirmExpensiveStats" to false in the addon config.
 
 generic-truncated-warning = 
     May be inaccurate while "all history" is not selected.
@@ -494,3 +493,13 @@ loss-per-prior-review-that-day = {$value} loss per {$n ->
         [one] prior review
         *[many] {$n} prior reviews
     }
+
+# Unused
+review-graphs-config-hint = 
+    To load these graphs by default, set "confirmExpensiveStats" to false in the addon config.
+
+preparing-review-stats = Preparing Review Stats...
+
+review-graphs-warning-title = Review Graphs
+review-graphs-prepare-graphs = Prepare Graphs
+review-graphs-warning = These statistics can take time to prepare.
