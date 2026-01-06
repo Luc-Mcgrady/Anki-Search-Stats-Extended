@@ -1,7 +1,6 @@
 import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
-import { getCardData, search } from "./search"
+import { search } from "./search"
 import {
-    card_data,
     cids,
     data,
     graphsRequest,
@@ -74,8 +73,6 @@ export function patchFetch() {
             graphsRequest.set(search_request)
 
             const cidSearch = search(search_request?.search)
-
-            cidSearch.then(getCardData).then(card_data.set)
             cidSearch.then(cids.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set)

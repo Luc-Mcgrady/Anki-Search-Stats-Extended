@@ -1,10 +1,17 @@
-import { derived, get, writable } from "svelte/store"
+import { derived, get, writable, type Readable } from "svelte/store"
 import { calculateCardDataPies } from "./CardDataPies"
 import { DEFAULT_ORDER, type SSEconfig, type SSEother } from "./config"
 import { getMemorisedDays } from "./MemorisedBar"
 import type { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { calculateRevlogStats } from "./revlogGraphs"
-import { catchErrors, getRevlogs, saveConfigValue, type CardData, type Revlog } from "./search"
+import {
+    catchErrors,
+    getCardData,
+    getRevlogs,
+    saveConfigValue,
+    type CardData,
+    type Revlog,
+} from "./search"
 import type { Tooltip } from "./tooltip"
 
 // Pie chart related
@@ -24,9 +31,6 @@ export let graphsRequest = writable<null | GraphsRequest>(null)
 export let searchString = derived(graphsRequest, (searchRequest) => searchRequest?.search ?? null)
 export let searchLimit = derived(graphsRequest, (searchRequest) => searchRequest?.days ?? 0)
 export let cids = writable<null | number[]>(null)
-
-export let card_data = writable<null | CardData[]>(null)
-export let revlogs = writable<null | Revlog[]>(null)
 
 // Config related stats
 export let other = writable<SSEother>()
@@ -69,20 +73,7 @@ export let tooltip = writable<Tooltip>({
 })
 export let tooltipShown = writable(false)
 
-export const updateRevlogs = () => {
-    const $cids = get(cids)
-    const $showRevlogStats = get(showRevlogStats)
-    const $date_range = get(searchLimit)
-
-    revlogs.set(null)
-    if ($showRevlogStats && $cids) {
-        return getRevlogs($cids, $date_range).then(revlogs.set)
-    }
-}
-
-searchString.subscribe(() => showRevlogStats.set(get(autoRevlogStats) || false))
-cids.subscribe(updateRevlogs)
-showRevlogStats.subscribe(updateRevlogs)
+cids.subscribe(() => showRevlogStats.set(get(autoRevlogStats) || false))
 tooltipShown.subscribe(() =>
     setTimeout(() => {
         if (!get(tooltipShown)) {
@@ -95,6 +86,24 @@ config.subscribe(($config) =>
 )
 
 // Stats Data Stores
+export let card_data: Readable<CardData[] | null> = derived([cids], ([$cids], set) => {
+    set(null)
+    if ($cids) {
+        catchErrors(() => getCardData($cids ?? [])).then(set)
+    }
+})
+
+export let revlogs: Readable<Revlog[] | null> = derived(
+    [cids, showRevlogStats, searchLimit],
+    ([$cids, $showRevlogStats, $searchLimit], set) => {
+        set(null)
+        if ($cids && $showRevlogStats) {
+            catchErrors(() => getRevlogs($cids, $searchLimit)).then(set)
+        }
+    }
+)
+revlogs.subscribe(console.log)
+
 export let cardDataStats = derived(
     [card_data, include_suspended, zero_inclusive],
     ([$card_data, $include_suspended, $zero_inclusive]) =>
