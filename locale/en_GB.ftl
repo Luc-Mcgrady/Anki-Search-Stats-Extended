@@ -267,7 +267,7 @@ memorised-help =
     This graph will not work properly with an incomplete review history and will not respect "ignore reviews before".
 
     In FSRS, each card has a percentage chance of being recalled known as retrievability. This is a sum of those percentages over time.
-memorised-help2 = Retrievability & Stability multiplies the retrievability of the card by a value derrived from its stability (1-e^(-((8/365)*stability))). The intention is to see how much knowledge you can maintain in the long term, for example, if you've stopped doing reviews.
+memorised-help2 = Retrievability & Stability multiplies the retrievability of the card by (1-e^(-((8/365)*stability))). The intention here is to see how much knowledge you can maintain in the long term, for example, if you've stopped doing reviews.
 memorised-truncated-warning =
     It is heavily advised you use "All history" for this graph
         
