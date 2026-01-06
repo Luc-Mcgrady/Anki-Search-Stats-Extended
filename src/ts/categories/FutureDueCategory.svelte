@@ -35,6 +35,7 @@
         columnLabeler: barDateLabeler,
         column_counts: !normalize,
         precision: normalize ? 2 : 0,
+        inverseFade: true,
     }
 </script>
 

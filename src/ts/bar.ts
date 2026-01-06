@@ -25,6 +25,7 @@ export type BarChart = {
     reverse_legend?: boolean
     column_counts?: boolean
     precision?: number
+    inverseFade?: boolean
 
     extraStats?: (data: BarDatum) => string[]
     columnLabeler?: (thing: string, width?: number) => string
@@ -189,19 +190,25 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         precision = 2,
     } = chart
 
+    const colourDegree = 0.1
     axis.append("g")
         .selectAll("g")
         .data(stack)
         .join("g")
         .selectAll("rect")
         .data((d, i) =>
-            d.map((p, i2) => ({
-                ...p,
-                color: d3.color(chart.row_colours[i])!.brighter(0.5 - i2 / chart.data.length),
-            }))
+            d.map((p, i2) => {
+                const fade = (colourDegree * i2) / d.length
+                return {
+                    ...p,
+                    color: d3.interpolateRgbBasis(["white", chart.row_colours[i]])(
+                        chart.inverseFade ? 1 - fade : fade + (1 - colourDegree)
+                    ),
+                }
+            })
         )
         .join("rect")
-        .attr("fill", (d, i) => d.color.formatHex())
+        .attr("fill", (d, i) => d.color)
         .attr("x", (d) => x(d.data.label)!)
         .attr("y", (d) => y(d[1]))
         .attr("height", (d) => y(d[0]) - y(d[1]))
