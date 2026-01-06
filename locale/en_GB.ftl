@@ -342,7 +342,7 @@ time-ratings = Rating by Time Spent
 time-ratings-help = 
     Ratings plotted by how long you spent looking at a card before rating it. Respects the deck presets "Maximum answer seconds" of the moment the answer was reviewed.
 
-ratings-by-duration = Ratings (Duration)
+ratings-by-duration = {ratings} (Duration)
 ratings-by-duration-help = 
     Same as the {ratings} graph but with the duration you spent on cards reviews you gave that rating on that day.
     Values are in minutes.
