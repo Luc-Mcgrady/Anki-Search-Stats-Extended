@@ -118,19 +118,25 @@ export const revlogStats = derived([revlogs, card_data], ([$revlogs, $card_data]
     return catchErrors(() => calculateRevlogStats($revlogs, $card_data))
 })
 export let last_forget = derived([revlogStats], ([$revlogStats]) => $revlogStats?.last_forget)
-export let memorised_stats = derived(
+export let memorised_stats: Readable<ReturnType<typeof getMemorisedDays> | null> = derived(
     [card_data, revlogs, showFsrsStats, last_forget],
-    ([$card_data, $revlogs, $showFsrsStats, $last_forget]) => {
+    ([$card_data, $revlogs, $showFsrsStats, $last_forget], set) => {
+        set(null)
         if ($revlogs && $card_data && $showFsrsStats && $last_forget) {
-            return catchErrors(() =>
-                getMemorisedDays(
-                    $revlogs,
-                    $card_data,
-                    SSEother.deck_configs,
-                    SSEother.deck_config_ids,
-                    $last_forget
+            // So "Loading" displays
+            setTimeout(() => {
+                set(
+                    catchErrors(() =>
+                        getMemorisedDays(
+                            $revlogs,
+                            $card_data,
+                            SSEother.deck_configs,
+                            SSEother.deck_config_ids,
+                            $last_forget
+                        )
+                    )
                 )
-            )
+            }, 0)
         }
     }
 )
