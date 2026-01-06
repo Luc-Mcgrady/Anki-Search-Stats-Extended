@@ -193,10 +193,15 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .selectAll("g")
         .data(stack)
         .join("g")
-        .attr("fill", (d) => chart.row_colours[d.key])
         .selectAll("rect")
-        .data((d) => d)
+        .data((d, i) =>
+            d.map((p, i2) => ({
+                ...p,
+                color: d3.color(chart.row_colours[i])!.brighter(0.5 - i2 / chart.data.length),
+            }))
+        )
         .join("rect")
+        .attr("fill", (d, i) => d.color.formatHex())
         .attr("x", (d) => x(d.data.label)!)
         .attr("y", (d) => y(d[1]))
         .attr("height", (d) => y(d[0]) - y(d[1]))
