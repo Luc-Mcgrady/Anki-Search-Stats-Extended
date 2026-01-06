@@ -182,8 +182,8 @@ export function getMemorisedDays(
     configs: typeof SSEother.deck_configs,
     config_mapping: typeof SSEother.deck_config_ids,
     last_forget: number[] = [],
-    leech_elapsed_threshold = 10,
-    leech_min_reviews = 5
+    leech_elapsed_threshold = 2,
+    leech_min_reviews = 2
 ) {
     console.log(`ts-fsrs ${FSRSVersion}`)
 

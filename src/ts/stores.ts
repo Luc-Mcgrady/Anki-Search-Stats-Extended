@@ -128,9 +128,7 @@ export let memorised_stats = derived(
                     $card_data,
                     SSEother.deck_configs,
                     SSEother.deck_config_ids,
-                    $last_forget,
-                    2,
-                    2
+                    $last_forget
                 )
             )
         }
