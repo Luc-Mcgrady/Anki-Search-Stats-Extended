@@ -51,7 +51,9 @@ autoRevlogStats.subscribe(($autoRevlogStats) => {
         showRevlogStats.set($autoRevlogStats)
     }
 })
-categoryOrder.subscribe(($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
+categoryOrder.subscribe(($categoryOrder) => {
+    saveConfigValue("categoryOrder", $categoryOrder)
+})
 autoRevlogStats.subscribe(($autoRevlogStats) => {
     saveConfigValue("autoMemorisedStats", $autoRevlogStats)
     if ($autoRevlogStats) {

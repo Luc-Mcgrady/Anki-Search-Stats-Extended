@@ -9,13 +9,9 @@
     let current_hover = -1
 
     function swap(index1: number, index2: number) {
-        $categoryOrder = [...$categoryOrder]
-        ;[$categoryOrder[index2], $categoryOrder[index1]] = [
-            $categoryOrder[index1],
-            $categoryOrder[index2],
-        ]
-
-        console.log($categoryOrder)
+        let new_order = [...$categoryOrder]
+        ;[new_order[index2], new_order[index1]] = [new_order[index1], new_order[index2]]
+        $categoryOrder = new_order
     }
 
     function toggle_hidden(id: string) {
