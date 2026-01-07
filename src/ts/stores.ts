@@ -56,8 +56,8 @@ categoryOrder.subscribe(($categoryOrder) => {
 })
 autoMemorisedStats.subscribe(($autoMemorisedStats) => {
     saveConfigValue("autoMemorisedStats", $autoMemorisedStats)
-    if ($autoMemorisedStats) {
-        autoMemorisedStats.set($autoMemorisedStats)
+    if ($autoMemorisedStats || !get(showRevlogStats)) {
+        showFsrsStats.set($autoMemorisedStats)
     }
 })
 
