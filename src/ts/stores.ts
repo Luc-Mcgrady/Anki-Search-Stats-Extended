@@ -39,22 +39,37 @@ export let shownCategories = writable(SSEconfig.categories ?? {})
 export let autoRevlogStats = writable(SSEconfig.autoRevlogStats ?? false)
 export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
 export let categoryOrder = writable([
-    ...new Set([...(SSEconfig.categoryOrder ?? []), ...DEFAULT_ORDER]),
+    ...(SSEconfig.categoryOrder ?? []).filter((c) => DEFAULT_ORDER.includes(c)),
+    ...DEFAULT_ORDER.filter((c) => !(SSEconfig.categoryOrder ?? []).includes(c)),
 ])
 export let showRevlogStats = writable(false)
 export let showFsrsStats = writable(SSEconfig.autoMemorisedStats)
 
-shownCategories.subscribe(($shownCategories) => saveConfigValue("categories", $shownCategories))
-autoRevlogStats.subscribe(($autoRevlogStats) => {
+function configSubscribe<T>(store: Readable<T>, run: (value: T) => void) {
+    let first = true
+    return store.subscribe((value) => {
+        if (first) {
+            first = false
+        } else {
+            run(value)
+        }
+    })
+}
+
+configSubscribe(shownCategories, ($shownCategories) =>
+    saveConfigValue("categories", $shownCategories)
+)
+
+configSubscribe(autoRevlogStats, ($autoRevlogStats) => {
     saveConfigValue("autoRevlogStats", $autoRevlogStats)
     if ($autoRevlogStats) {
         showRevlogStats.set($autoRevlogStats)
     }
 })
-categoryOrder.subscribe(($categoryOrder) => {
-    saveConfigValue("categoryOrder", $categoryOrder)
-})
-autoMemorisedStats.subscribe(($autoMemorisedStats) => {
+
+configSubscribe(categoryOrder, ($categoryOrder) => saveConfigValue("categoryOrder", $categoryOrder))
+
+configSubscribe(autoMemorisedStats, ($autoMemorisedStats) => {
     saveConfigValue("autoMemorisedStats", $autoMemorisedStats)
     if ($autoMemorisedStats || !get(showRevlogStats)) {
         showFsrsStats.set($autoMemorisedStats)
