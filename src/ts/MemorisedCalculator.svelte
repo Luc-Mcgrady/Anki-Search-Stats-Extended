@@ -8,4 +8,4 @@
     }
 </script>
 
-<Calculator {calculate} shown={$showFsrsStats} badIfTruncated></Calculator>
+<Calculator {calculate} shown={$showFsrsStats && $showRevlogStats} badIfTruncated></Calculator>
