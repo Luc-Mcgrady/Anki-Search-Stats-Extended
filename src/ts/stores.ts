@@ -125,12 +125,13 @@ export let cardDataStats = derived(
     ([$card_data, $include_suspended, $zero_inclusive]) =>
         calculateCardDataPies($card_data ?? [], $include_suspended, $zero_inclusive)
 )
-export const revlogStats = derived([revlogs, card_data], ([$revlogs, $card_data]) => {
+export const revlogStats = writable<ReturnType<typeof calculateRevlogStats> | null>(null)
+derived([revlogs, card_data], ([$revlogs, $card_data]) => {
     if (!$revlogs || !$card_data) {
         return null
     }
     return catchErrors(() => calculateRevlogStats($revlogs, $card_data))
-})
+}).subscribe(revlogStats.set)
 export let last_forget = derived([revlogStats], ([$revlogStats]) => $revlogStats?.last_forget)
 export let memorised_stats = writable<ReturnType<typeof getMemorisedDays> | null>()
 derived(
