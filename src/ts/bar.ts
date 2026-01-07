@@ -190,7 +190,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         precision = 2,
     } = chart
 
-    const colourDegree = 0.1
+    const colourDegree = 0.15
     axis.append("g")
         .selectAll("g")
         .data(stack)
@@ -201,9 +201,10 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
                 const fade = (colourDegree * i2) / d.length
                 return {
                     ...p,
-                    color: d3.interpolateRgbBasis(["white", chart.row_colours[i]])(
-                        chart.inverseFade ? 1 - fade : fade + (1 - colourDegree)
-                    ),
+                    color: d3.interpolateHcl(
+                        "white",
+                        chart.row_colours[i]
+                    )(chart.inverseFade ? 1 - fade : fade + (1 - colourDegree)),
                 }
             })
         )
