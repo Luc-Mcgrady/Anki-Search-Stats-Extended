@@ -47,6 +47,7 @@
             i18n("learning-count"),
         ],
         data: bars,
+        inverseFade: true,
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
     }}

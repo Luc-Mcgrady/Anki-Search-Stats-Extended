@@ -117,6 +117,7 @@
                 row_labels: [i18n("relearning-count"), i18n("learning-count")],
                 row_colours: [RELEARN_COLOUR, LEARN_COLOUR],
                 data,
+                inverseFade: true,
                 columnLabeler: barHourLabeler,
             }}
             {extraRender}
