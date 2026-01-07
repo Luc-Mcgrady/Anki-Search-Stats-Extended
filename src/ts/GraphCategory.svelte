@@ -6,7 +6,7 @@
     export let hidden_title = ""
     export let config_name: keyof typeof CATEGORIES | "graphOrder"
 
-    let hidden = !SSEconfig?.categories?.[config_name]
+    let hidden = !SSEconfig?.categories?.[config_name] === false
 </script>
 
 {#if $shownCategories[config_name] !== "removed"}
