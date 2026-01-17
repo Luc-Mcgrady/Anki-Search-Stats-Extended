@@ -128,8 +128,13 @@ export async function saveConfigValue(key: string, value: any) {
 
 export async function getRevlogs(cids: number[], day_range: number) {
     const response = (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as {
-        columns: string[]
-        data: any[][]
+        columns?: string[]
+        data?: any[][]
+    }
+
+    if (!response.columns || !response.data) {
+        alert("Search Stats Extended has been updated. Please restart Anki.")
+        return null
     }
 
     // Build column index map once for efficient lookups
