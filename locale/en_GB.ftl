@@ -22,7 +22,7 @@ young-count = {young}
 learning-count = Learning
 relearning-count = Relearning
 new-count = New
-suspended = Suspended 
+suspended = Suspended
 
 learn = Learn
 mature = Mature
@@ -68,21 +68,21 @@ auto-load-memorised = Load FSRS graphs without confirmation
 auto-load-memorised-warning = This will load even without "all history" being selected
 
 future-due-types = Future Due Types
-future-due-types-help = 
+future-due-types-help =
     This graph is the same as the Future Due above except it delineates between types of cards.
     Very useful if you have learning steps greater than one day.
 
 future-due-retention = Future Due Retention
-future-due-retention-help = 
+future-due-retention-help =
     As a ratio this graph shows the retention FSRS predicts you will have on that day (Check "target{"\u00A0"}R" in the card browser if you have the fsrs helper addon). As not a ratio it instead shows how many cards FSRS predicts you will get that day.
-    
+
     Does not account for overdue-ness.
 
 pass = Pass
 fail = Fail
 
 intra-day-due = Intra Day Due
-intra-day-due-help =                 
+intra-day-due-help =
     This graph shows you which hours todays cards are/were due in.
     Useful if you use FSRS-5 with automatic learning steps or have long intra-day learning intervals.
 next-card-at = Next card is in{ $hours ->
@@ -96,7 +96,7 @@ next-card-at = Next card is in{ $hours ->
     } at {$time}
 
 todays-retention = Todays Retention
-todays-retention-help = 
+todays-retention-help =
     Retention is used to compare how many cards you got right and wrong on first
     looking.
 
@@ -108,8 +108,8 @@ flunked = Flunked
 learning = Learning
 
 custom-pie = Custom pie
-custom-pie-help = 
-    This pie will show you the sum of the requested value for cards which match 
+custom-pie-help =
+    This pie will show you the sum of the requested value for cards which match
     "Search"
     for each search
 
@@ -125,7 +125,7 @@ difficulty-of = Difficulty of {$value}
 stability-of = Stability of {$value}
 factor-of = Increase of {$value}%
 x-seconds = {$value} Seconds
-# e.g 
+# e.g
 # x = Interval
 # range = 10-20
 x-in-range = {$x} of {$range}
@@ -151,7 +151,7 @@ sxr-heatmap-help =
     This graph shows the number of cards which have the given stability and retrievability. The redder the cell, the more cards are in that "bin".
 
 ease-factors = Stability Increase Factor
-ease-factors-help = 
+ease-factors-help =
     For each card, the percentage increase in stability that will occur on a good review.
     An alternate measure of difficulty.
 
@@ -173,18 +173,18 @@ interval-load-help =
     Load is 1/interval for each card and is used to estimate how many cards you see in a day. As an example if a card has an interval of 1 it has a load of 1 because you see it every day. If a card has an interval of 2 it has a load of 0.5 et cetera.
 
 highest-lapse-count = Highest Lapse Count
-lapse-count = Lapse Count 
+lapse-count = Lapse Count
 
 lapse-load = Lapse Load
-lapse-load-help = 
+lapse-load-help =
     This graph shows the sum of "1 / interval" for cards which have the given number of lapses. If you plan to suspend cards based on their number of lapses, this can help you find a good threshold if you compare it with the count graph to the left to see how many cards are giving you how much Load
 
 lapse-distribution = Lapse Distribution
-lapse-distribution-help = 
+lapse-distribution-help =
     A card increases its lapse count whenever it is reviewed "again" while not in the learning state. Lapses are used to monitor which cards become "leeches". By default, whenever the card reaches 7 lapses it becomes tagged as a leech. This value can be modified under leech threshold in the deck settings.
 
 lapse-total = Lapse Total
-lapse-total-help = 
+lapse-total-help =
     This graph shows the number of lapses, total, for each card. E.g if exactly 2 cards have 3 lapses per card, the lapse total for 3 would be 6.
 
 highest-repetition-count = Most Repetitions
@@ -192,18 +192,18 @@ repetition-count = Repetitions
 total-repetitions = Total Repetitions
 
 repetition-load = Repetition Load
-repetition-load-help = 
+repetition-load-help =
     This graph shows the sum of "1 / interval" for all cards which have the given number of repetitions.
 
 repetition-distribution = Repetition Distribution
-repetition-distribution-help = 
+repetition-distribution-help =
     A card gains a repetition (commonly called a review) whenever you review it.
 
 repetition-total = Repetition Total
-repetition-total-help = 
+repetition-total-help =
     This graph shows the number of repetitions for each card. E.g if exactly 2 cards have a repetitions per card of 3, the repetition total for 3 would be 6.
 
-generic-truncated-warning = 
+generic-truncated-warning =
     May be inaccurate while "all history" is not selected.
 
 time-distribution = Time Distribution
@@ -215,11 +215,11 @@ seconds = Seconds
 total-seconds = Total (s)
 seconds-per-card = Per card (s)
 
-suspended-cards-warning = 
+suspended-cards-warning =
     In order to exclude suspended cards from this or the following graphs, you will need to manually add "-is:suspended" to your search. Please consider that this may cause inconsistencies if you leave it off for the above graphs.
 
 time-totals = Time Totals
-time-totals-help = 
+time-totals-help =
     The quantity of time that has been spent on cards which have taken the given amount of time to answer over every review
 
 introduced = Introduced
@@ -243,12 +243,12 @@ forgotten-truncated-warning = Does not work for cards introduced before the cuto
 forgotten-cards-not-yet-reintroduced = Forgotten cards not yet re-introduced: {$number}
 
 introductory-rating = Introductory Rating
-introductory-rating-help = 
+introductory-rating-help =
     The first review you gave a newly introduced card. Important for FSRS.
 
 load-trend = Load Trend
 load-trend-help =
-    This shows the change in load over time. 
+    This shows the change in load over time.
     For the trend candlestick bar, A green bar shows a decrease in load for that period of time (improvement) while a red bar shows an increase.
 
 x-change = Change: {$val}
@@ -258,11 +258,11 @@ learn-reviews-per-card = Learn Reviews per Card
 learn-reviews-per-card-help = The number of reviews it took before the card left the learning phase (graduated). Resets for cards which were forgotten.
 
 ratings = Ratings
-ratings-help = 
+ratings-help =
     The rating of every review you did that day, learning or otherwise. The ratio displays it as a percent of all cards reviewed that day. calculate (1-again)% to get your retention for that day (shown as " % Correct " in the tooltip).
 
 memorised = Memorised
-memorised-help = 
+memorised-help =
     An FSRS estimate of how many cards you knew at that given time. This depends on FSRS's current parameters and will use the defaults if none are found (Even if you are using SM-2).
     This graph will not work properly with an incomplete review history and will not respect "ignore reviews before".
 
@@ -270,7 +270,7 @@ memorised-help =
 memorised-help2 = Retrievability & Stability multiplies the retrievability of the card by (1-e^(-((8/365)*stability))). The intention here is to see how much knowledge you can maintain in the long term, for example, if you've stopped doing reviews.
 memorised-truncated-warning =
     It is heavily advised you use "All history" for this graph
-        
+
     This graph re-simulates your review history, leaving the beginning out can greatly
     affect the results.
 
@@ -339,18 +339,18 @@ interval-ratings = Interval Ratings
 interval-ratings-help = Ratings plotted by the interval they had before you rated them.
 
 time-ratings = Rating by Time Spent
-time-ratings-help = 
+time-ratings-help =
     Ratings plotted by how long you spent looking at a card before rating it. Respects the deck presets "Maximum answer seconds" of the moment the answer was reviewed.
 
 ratings-by-duration = {ratings} (Duration)
-ratings-by-duration-help = 
+ratings-by-duration-help =
     Same as the {ratings} graph but with the duration you spent on cards reviews you gave that rating on that day.
     Values are in minutes.
 
 card-count-time-machine = Card Count Time Machine
-card-count-time-machine-help = 
+card-count-time-machine-help =
     Shows your card type counts for a given date.
-    
+
     New suspended cards count as new, not suspended.
 
     Learn and re-learn count for the end of the day, and not for learning steps greater than 1 day.
@@ -378,7 +378,7 @@ difficulty-time-machine-help = Shows your card difficulties for a given date
 zoom = Zoom
 
 daily-hourly-breakdown = Daily Hourly Breakdown
-daily-hourly-breakdown-help = 
+daily-hourly-breakdown-help =
     Shows when you did reviews hour by hour on days in the range X days before the specified date.
     The in-built Anki graph does not include filtered reviews.
 
@@ -447,6 +447,7 @@ credits-Huili-fox = Huili fox: Chinese localisation
 credits-Jarrett-Ye = Jarrett Ye: {memorised}, {forgetting-curve} and {first-short-term-forgetting-curve} graphs
 credits-Ishiko = Ishiko: {memorised} graph
 credits-Rener-Crisostomo = Renêr Crisostomo: Brazilian translation
+credits-user1823 = user1823: Performance improvements
 
 support = Support the Addon
 like-on-ankiweb = Like on AnkiWeb 👍
@@ -465,7 +466,7 @@ leech-detector-help =
     The formula for calculating this may change in the future.
 
 naive-sibling-similarity = Naive Sibling Similarity
-naive-sibling-similarity-help = 
+naive-sibling-similarity-help =
     The rating you gave cards plotted by the number of days since you reviewed a sibling of that card (card originating from the same note). Reviews from the same card or cards where either card are not mature are not counted. Please consider the "interval ratings" graph as you interpret this one.
 
 rating-fatigue = Rating Fatigue
@@ -496,7 +497,7 @@ loss-per-prior-review-that-day = {$value} loss per {$n ->
     }
 
 # Unused
-review-graphs-config-hint = 
+review-graphs-config-hint =
     To load these graphs by default, set "confirmExpensiveStats" to false in the addon config.
 
 preparing-review-stats = Preparing Review Stats...
