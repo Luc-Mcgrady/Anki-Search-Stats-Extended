@@ -132,7 +132,7 @@ def revlogs() -> bytes:
     else:
         lower_limit = 0
 
-    revlogs = mw.col.db.all(f"""
+    revlog_entries = mw.col.db.all(f"""
     SELECT
         {",".join(REVLOG_COLUMNS)}
     FROM revlog
@@ -141,11 +141,10 @@ def revlogs() -> bytes:
         AND revlog.id > ({lower_limit})
     ORDER BY revlog.id
     """)
-    revlogs = [
-        {k.replace("revlog.", ""): v for k, v in zip(REVLOG_COLUMNS, a)}
-        for a in revlogs
-    ]
-    return Response(orjson.dumps(revlogs))
+
+    result = {"columns": REVLOG_COLUMNS, "data": revlog_entries}
+
+    return Response(orjson.dumps(result))
 
 
 post_handlers["revlogs"] = revlogs

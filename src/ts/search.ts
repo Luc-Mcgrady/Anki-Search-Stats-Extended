@@ -127,7 +127,33 @@ export async function saveConfigValue(key: string, value: any) {
 }
 
 export async function getRevlogs(cids: number[], day_range: number) {
-    return (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as Revlog[]
+    const response = (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as {
+        columns: string[]
+        data: any[][]
+    }
+
+    // Build column index map once for efficient lookups
+    const idx: Record<string, number> = {}
+    response.columns.forEach((col, i) => (idx[col] = i))
+
+    // Convert array-of-arrays to array-of-objects
+    // Preallocate array for better performance
+    const revlogs = new Array<Revlog>(response.data.length)
+    for (let i = 0; i < response.data.length; i++) {
+        const row = response.data[i]
+        revlogs[i] = {
+            id: row[idx.id],
+            cid: row[idx.cid],
+            ease: row[idx.ease] as 0 | 1 | 2 | 3 | 4,
+            ivl: row[idx.ivl],
+            lastIvl: row[idx.lastIvl],
+            time: row[idx.time],
+            factor: row[idx.factor],
+            type: row[idx.type],
+        }
+    }
+
+    return revlogs
 }
 
 export function browserSearch(search: string) {
