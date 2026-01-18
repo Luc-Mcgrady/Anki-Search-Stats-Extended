@@ -86,6 +86,7 @@ export interface SSEother {
     lang: string
     lang_ftl: string
     fallback_ftl: string
+    addon_id: string
 }
 
 export const DEFAULT_ORDER = [

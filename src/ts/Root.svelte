@@ -6,6 +6,14 @@
     import GraphOrder from "./GraphOrder.svelte"
 
     import { CATEGORIES } from "./categories"
+    import init, * as wasm from "../rs/pkg"
+
+    async function initWasm() {
+        await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)
+        console.log(await wasm.stats())
+    }
+
+    setTimeout(initWasm, 2000)
 
     const { width, height } = defaultGraphBounds()
 </script>
