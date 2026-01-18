@@ -1,4 +1,4 @@
-WASM = stats.wasm
+WASM = stats_bg.wasm
 INCLUDED = __init__.py stats.min.js stats.min.css developers.md manifest.json config.json LICENSE ${wildcard locale/*.ftl} ${WASM}
 OUT = searchStatsExtended.ankiaddon
 
@@ -28,5 +28,5 @@ node_modules:
 
 ${WASM}: ${wildcard src/rs/src/*.rs}
 	cargo install wasm-pack
-	wasm-pack build src/rs -t web
+	wasm-pack build src/rs -t web --debug
 	cp src/rs/pkg/search_stats_extended_bg.wasm ${WASM} -f
