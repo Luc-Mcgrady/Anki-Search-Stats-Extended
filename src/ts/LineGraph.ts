@@ -34,12 +34,7 @@ export function gridLines(
         .style("opacity", 0.05)
 }
 
-export function renderLineChart(
-    svg: SVGElement,
-    values: number[],
-    label = "Value",
-    filter_zeros = true
-) {
+export function renderLineChart(svg: SVGElement, values: number[], label = "Value") {
     if (!svg) {
         return
     }
@@ -58,7 +53,6 @@ export function renderLineChart(
             value: v ?? 0,
             date: new Date((start_index + i) * day_ms),
         }))
-        .filter((a) => (filter_zeros ? a.value : true))
 
     const xMin = d3.min(date_values.map((d) => d.date))!
     const xMax = d3.max(date_values.map((d) => d.date))!

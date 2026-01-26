@@ -18,7 +18,6 @@
     export let up_colour = CANDLESTICK_GREEN
     export let down_colour = CANDLESTICK_RED
     export let cumulative = false
-    export let filter_zeros = true
 
     let bins = 30
 
@@ -67,7 +66,7 @@
 </GraphTypeSelector>
 
 {#if type === "total"}
-    <LineGraph data={processed_data} {label} {filter_zeros} />
+    <LineGraph data={processed_data} {label} />
 {:else}
     <Candlestick
         data={candlestick_data}

@@ -5,10 +5,9 @@
 
     export let label: string
     export let data: number[]
-    export let filter_zeros = true
 
     $: if (svg) {
-        renderLineChart(svg, data, label, filter_zeros)
+        renderLineChart(svg, data, label)
     }
 </script>
 
