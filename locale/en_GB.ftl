@@ -225,7 +225,7 @@ time-totals-help =
 introduced = Introduced
 re-introduced = Re-Introduced
 introduced-help =
-    A card is introduced when it is shown to you for the first time. A card is re-introduced when it is shown to you for the first time after being forgotten.
+    A card is introduced when it is shown to you for the first time. A card is re-introduced when it is shown to you for the first time after being reset.
 introduced-truncated-warning =
     Re-introduced does not work for cards introduced before the cutoff date.
 
@@ -237,10 +237,10 @@ introduced-load-help =
 introduced-load-truncated-warning =
     Introduced load does not work for cards introduced before the cutoff date.
 
-forgotten = Forgotten
-forgotten-help = You "forget" a card when you manually mark it as new.
+forgotten = Reset
+forgotten-help = You "reset" a card when you manually mark it as new.
 forgotten-truncated-warning = Does not work for cards introduced before the cutoff date.
-forgotten-cards-not-yet-reintroduced = Forgotten cards not yet re-introduced: {$number}
+forgotten-cards-not-yet-reintroduced = Reset cards not yet re-introduced: {$number}
 
 introductory-rating = Introductory Rating
 introductory-rating-help =
@@ -255,7 +255,7 @@ x-change = Change: {$val}
 x-total = Total: {$val}
 
 learn-reviews-per-card = Learn Reviews per Card
-learn-reviews-per-card-help = The number of reviews it took before the card left the learning phase (graduated). Resets for cards which were forgotten.
+learn-reviews-per-card-help = The number of reviews it took before the card left the learning phase (graduated). Doesn't count reviews before a card reset.
 
 ratings = Ratings
 ratings-help =
