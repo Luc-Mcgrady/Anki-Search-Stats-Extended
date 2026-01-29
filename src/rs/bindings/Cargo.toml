@@ -1,5 +1,5 @@
 [package]
-name = "search-stats-extended"
+name = "search-stats-extended-wasm-bindings"
 version = "0.1.0"
 authors = ["Luc Mcgrady <lucmcgrady@gmail.com>"]
 edition = "2018"
@@ -21,6 +21,9 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 web-sys = { version = "0.3.85", features = ["Headers", "Request", "RequestInit", "RequestMode", "Response", "Window"] }
 anyhow = "1.0.100"
 wasm-bindgen-futures = "0.4.58"
+
+[dependencies.search-stats-extended]
+path="../lib"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.34"

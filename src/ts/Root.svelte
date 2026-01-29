@@ -6,7 +6,7 @@
     import GraphOrder from "./GraphOrder.svelte"
 
     import { CATEGORIES } from "./categories"
-    import init, * as wasm from "../rs/pkg"
+    import init, * as wasm from "../rs/bindings/pkg"
 
     async function initWasm() {
         await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)

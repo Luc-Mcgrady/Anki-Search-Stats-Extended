@@ -26,7 +26,7 @@ src/ts/proto/: node_modules
 node_modules:
 	npm i
 
-${WASM}: ${wildcard src/rs/src/*.rs}
+${WASM}: ${wildcard src/rs/**/*.rs src/rs/**/*.toml}
 	cargo install wasm-pack
-	wasm-pack build src/rs -t web --debug
-	cp src/rs/pkg/search_stats_extended_bg.wasm ${WASM} -f
+	wasm-pack build src/rs/bindings -t web --debug
+	cp src/rs/bindings/pkg/search_stats_extended_wasm_bindings_bg.wasm ${WASM} -f

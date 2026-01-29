@@ -6,6 +6,7 @@
         "anki"
     ],
     "rust-analyzer.linkedProjects": [
-        "src/rs/Cargo.toml"
+        "src/rs/bindings/Cargo.toml",
+        "src/rs/crate/Cargo.toml"
     ]
 }
