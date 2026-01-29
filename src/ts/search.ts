@@ -141,7 +141,7 @@ export async function getRevlogs(cids: number[], day_range: number) {
 
     await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)
     try {
-        console.log(await wasm.stats(response.data))
+        console.log(await wasm.stats(new BigUint64Array(cids.map(BigInt))))
     } catch (e: any) {
         console.error(e)
     }

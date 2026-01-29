@@ -21,6 +21,9 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 web-sys = { version = "0.3.85", features = ["Headers", "Request", "RequestInit", "RequestMode", "Response", "Window"] }
 anyhow = "1.0.100"
 wasm-bindgen-futures = "0.4.58"
+json = "0.12.4"
+serde_json = "1.0.149"
+serde = { version = "1.0.228", features = ["derive"] }
 
 [dependencies.search-stats-extended]
 path="../lib"
