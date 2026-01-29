@@ -1,19 +1,11 @@
 <script lang="ts">
-    import { card_data, categoryOrder, tooltip, tooltipShown } from "./stores"
+    import { card_data, categoryOrder, revlogs, tooltip, tooltipShown } from "./stores"
     import { defaultGraphBounds } from "./graph"
     import { i18n } from "./i18n"
     import About from "./About.svelte"
     import GraphOrder from "./GraphOrder.svelte"
 
     import { CATEGORIES } from "./categories"
-    import init, * as wasm from "../rs/bindings/pkg"
-
-    async function initWasm() {
-        await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)
-        console.log(await wasm.stats())
-    }
-
-    setTimeout(initWasm, 2000)
 
     const { width, height } = defaultGraphBounds()
 </script>

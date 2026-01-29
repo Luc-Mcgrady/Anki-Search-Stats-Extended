@@ -126,6 +126,8 @@ export async function saveConfigValue(key: string, value: any) {
     await endpoint("writeConfig", JSON.stringify({ key, value }))
 }
 
+import init, * as wasm from "../rs/bindings/pkg"
+
 export async function getRevlogs(cids: number[], day_range: number) {
     const response = (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as {
         columns?: string[]
@@ -135,6 +137,13 @@ export async function getRevlogs(cids: number[], day_range: number) {
     if (!response.columns || !response.data) {
         alert("Search Stats Extended has been updated. Please restart Anki.")
         return null
+    }
+
+    await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)
+    try {
+        console.log(await wasm.stats(response.data))
+    } catch (e: any) {
+        console.error(e)
     }
 
     // Build column index map once for efficient lookups
