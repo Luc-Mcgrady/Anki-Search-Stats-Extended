@@ -2,8 +2,8 @@ mod utils;
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{Headers, Request, RequestInit, Response, js_sys::{Array, Object, Reflect}};
-use search_stats_extended::{time_total, Revlog};
+use web_sys::{Headers, Request, RequestInit, Response};
+use search_stats_extended::Revlog;
 use serde::Deserialize;
 
 #[wasm_bindgen]
@@ -44,14 +44,14 @@ struct RevlogsResponse {
 }
 
 #[wasm_bindgen(js_name = "stats")]
-pub async fn stats_async(cids: Vec<u64>) -> Result<u64, JsValue> {
+pub async fn stats_async(cids: Vec<u64>, day_range: u32, day_offset_ms: u32) -> Result<String, JsValue> {
     utils::set_panic_hook();
 
     let opts = RequestInit::new();
     opts.set_method("POST");
 
     let cids: Vec<String> = cids.into_iter().map(|x| x.to_string()).collect::<Vec<String>>();
-    opts.set_body(&format!("{{\"cids\": [{}], \"day_range\": 365}}", cids.join(",")).into());
+    opts.set_body(&format!("{{\"cids\": [{}], \"day_range\": {day_range}}}", cids.join(",")).into());
     
     let headers = Headers::new()?;
     headers.set("Content-Type", "application/binary")?;
@@ -67,12 +67,14 @@ pub async fn stats_async(cids: Vec<u64>) -> Result<u64, JsValue> {
     let revlogs: RevlogsResponse = serde_json::from_str(&revlogs).unwrap();
     let revlogs: Vec<Revlog> = revlogs.data.into_iter().map(Into::into).collect();
     
-    let time = time_total(&revlogs);
+    let context = search_stats_extended::GraphContext {
+        revlogs,
+        day_offset_ms: day_offset_ms as u64
+    };
 
-    //let revlogs: Result<Vec<Revlog>, _> = revlogs.into_iter().map(revlog_into).collect();
-    //let revlogs = revlogs?;
+    // let time = time_total(&context);
+    let introduced = context.introduced();
+    let introduced = serde_json::to_string(&introduced).unwrap();
 
-    // let time = time_total(&revlogs);
-
-    return Ok(time)
+    return Ok(introduced)
 }

@@ -127,6 +127,7 @@ export async function saveConfigValue(key: string, value: any) {
 }
 
 import init, * as wasm from "../rs/bindings/pkg"
+import { rollover_ms, timezone_offset_ms } from "./revlogGraphs"
 
 export async function getRevlogs(cids: number[], day_range: number) {
     const response = (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as {
@@ -141,7 +142,15 @@ export async function getRevlogs(cids: number[], day_range: number) {
 
     await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)
     try {
-        console.log(await wasm.stats(new BigUint64Array(cids.map(BigInt))))
+        console.log(
+            JSON.parse(
+                await wasm.stats(
+                    new BigUint64Array(cids.map(BigInt)),
+                    day_range,
+                    rollover_ms + timezone_offset_ms
+                )
+            )
+        )
     } catch (e: any) {
         console.error(e)
     }
