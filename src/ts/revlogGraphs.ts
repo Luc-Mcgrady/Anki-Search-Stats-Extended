@@ -56,6 +56,7 @@ export function calculateRevlogStats(
     cardData: CardData[],
     end: number = today
 ) {
+    console.time("js calculate")
     let id_card_data = IDify(cardData)
 
     function emptyArray<T>(init: T): T[] {
@@ -328,7 +329,7 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
-
+    console.timeEnd("js calculate")
     return {
         day_initial_ease,
         day_initial_reintroduced_ease,

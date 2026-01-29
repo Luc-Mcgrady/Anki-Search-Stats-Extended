@@ -130,6 +130,7 @@ import init, * as wasm from "../rs/bindings/pkg"
 import { rollover_ms, timezone_offset_ms } from "./revlogGraphs"
 
 export async function getRevlogs(cids: number[], day_range: number) {
+    console.time("fetch")
     const response = (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as {
         columns?: string[]
         data?: any[][]
@@ -139,8 +140,10 @@ export async function getRevlogs(cids: number[], day_range: number) {
         alert("Search Stats Extended has been updated. Please restart Anki.")
         return null
     }
+    console.timeEnd("fetch")
 
     await init(`/_addons/${SSEother.addon_id}/stats_bg.wasm`)
+    console.time("wasm + fetch")
     try {
         console.log(
             JSON.parse(
@@ -154,6 +157,7 @@ export async function getRevlogs(cids: number[], day_range: number) {
     } catch (e: any) {
         console.error(e)
     }
+    console.timeEnd("wasm + fetch")
 
     // Build column index map once for efficient lookups
     const idx: Record<string, number> = {}
