@@ -102,9 +102,10 @@ export function renderForgettingCurve(
             const rightmost = x.domain()[1]
             const step = rightmost / numPoints
 
+            const decay = seriesEntry.decay ?? FSRS6_DEFAULT_DECAY
             const predicted = _.range(0, rightmost, step).map((delta) => ({
                 delta,
-                recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, seriesEntry.stability!),
+                recall: forgetting_curve(decay, delta, seriesEntry.stability!),
             }))
 
             container

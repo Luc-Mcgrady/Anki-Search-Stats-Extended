@@ -5,6 +5,7 @@ export type ForgettingSample = {
     firstRating: number
     delta: number
     recall: number
+    decay: number | null
 }
 
 type AggregatedSample = {
@@ -26,6 +27,7 @@ export interface ForgettingCurveSeries {
     sampleSize: number
     points: ForgettingCurvePoint[]
     predicted: { delta: number; recall: number }[]
+    decay: number | null
 }
 
 const RATING_DEFAULT_STABILITY: Record<number, number> = {
@@ -201,6 +203,12 @@ export function buildForgettingCurve(
         3: new Map(),
         4: new Map(),
     }
+    const decayBuckets: Record<number, number[]> = {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+    }
 
     let totalCount = 0
     let totalSuccess = 0
@@ -215,6 +223,10 @@ export function buildForgettingCurve(
         existing.success += sample.recall
         existing.count += 1
         bucket.set(sample.delta, existing)
+
+        if (sample.decay !== null && !Number.isNaN(sample.decay)) {
+            decayBuckets[sample.firstRating]!.push(sample.decay)
+        }
 
         totalSuccess += sample.recall
         totalCount += 1
@@ -256,6 +268,7 @@ export function buildForgettingCurve(
 
     for (const rating of [1, 2, 3, 4]) {
         const aggregated = aggregatedByRating[rating]
+        const decay = median(decayBuckets[rating]!)
 
         if (!aggregated.length) {
             series.push({
@@ -265,6 +278,7 @@ export function buildForgettingCurve(
                 sampleSize: 0,
                 points: [],
                 predicted: [],
+                decay,
             })
             continue
         }
@@ -286,6 +300,7 @@ export function buildForgettingCurve(
             sampleSize,
             points,
             predicted,
+            decay,
         })
     }
 
@@ -409,4 +424,16 @@ function clamp(value: number, min: number, max: number) {
 
 function clampProbability(value: number) {
     return Math.min(1 - EPSILON, Math.max(EPSILON, value))
+}
+
+function median(values: number[]): number | null {
+    if (!values.length) {
+        return null
+    }
+    const sorted = [...values].sort((a, b) => a - b)
+    const mid = Math.floor(sorted.length / 2)
+    if (sorted.length % 2 === 1) {
+        return sorted[mid]!
+    }
+    return (sorted[mid - 1]! + sorted[mid]!) / 2
 }
