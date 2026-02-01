@@ -145,13 +145,13 @@ export function fsrsCalibrationGraph(svg: SVGElement, bins: LossBin[]) {
         .attr("x", (d) => binWidth(d.index)[0])
         .attr("y", 0)
         .on("mouseover", (e: MouseEvent, d) => {
-            const value_string = (d.bin.real * 100).toPrecision(5)
+            const value_string = (d.bin.real * 100).toFixed(1)
             tooltip.set({
                 x: tooltipX(e),
                 y: e.pageY,
                 // Todo: i18n
                 text: [
-                    `${i18n("predicted")} ${(d.bin.predicted * 100).toFixed(0)}%:`,
+                    `${i18n("predicted")} ${(d.bin.predicted * 100).toFixed(1)}%:`,
                     `${i18n("actual")}: ${value_string}%`,
                     `${i18n("count")}: ${d.bin.count}`,
                 ],
