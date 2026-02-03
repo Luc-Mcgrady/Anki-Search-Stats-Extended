@@ -1,9 +1,9 @@
 import _ from "lodash"
+import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
-import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import { getCardDecay, type CardData, type Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
