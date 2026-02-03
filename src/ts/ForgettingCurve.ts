@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import * as _ from "lodash"
-import { forgetting_curve, FSRS5_DEFAULT_DECAY } from "ts-fsrs"
+import { forgetting_curve } from "ts-fsrs"
 import type { ForgettingCurveSeries } from "./forgettingCurveData"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
@@ -102,7 +102,7 @@ export function renderForgettingCurve(
             const rightmost = x.domain()[1]
             const step = rightmost / numPoints
 
-            const decay = seriesEntry.decay ?? FSRS5_DEFAULT_DECAY
+            const decay = seriesEntry.decay
             const predicted = _.range(0, rightmost, step).map((delta) => ({
                 delta,
                 recall: forgetting_curve(decay, delta, seriesEntry.stability!),

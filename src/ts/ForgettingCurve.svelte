@@ -147,7 +147,7 @@
             return ""
         }
         const stability = entry.stability !== null ? entry.stability.toFixed(2) : "—"
-        const decay = entry.decay !== null ? entry.decay.toFixed(2) : "—"
+        const decay = entry.decay.toFixed(2)
         const countText = i18n("forgetting-curve-legend-count", {
             count: entry.sampleSize.toLocaleString(),
         })

@@ -3,6 +3,7 @@ import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
+import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import { getCardDecay, type CardData, type Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
@@ -245,7 +246,7 @@ export function calculateRevlogStats(
                             firstRating: first_rating[revlog.cid]!,
                             delta: delta_minutes,
                             recall: revlog.ease > 1 ? 1 : 0,
-                            decay: card ? getCardDecay(card) : null,
+                            decay: card ? getCardDecay(card) : FSRS5_DEFAULT_DECAY,
                         })
                         short_term_recorded_cards.add(revlog.cid)
                     }
@@ -261,7 +262,7 @@ export function calculateRevlogStats(
                         firstRating: first_rating[revlog.cid]!,
                         delta: delta_t,
                         recall: revlog.ease > 1 ? 1 : 0,
-                        decay: card ? getCardDecay(card) : null,
+                        decay: card ? getCardDecay(card) : FSRS5_DEFAULT_DECAY,
                     })
                     recorded_cards.add(revlog.cid)
                 }
