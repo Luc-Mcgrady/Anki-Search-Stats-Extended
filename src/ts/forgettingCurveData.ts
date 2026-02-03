@@ -1,5 +1,10 @@
-import { mean } from "d3-array"
-import { default_w, forgetting_curve, FSRS5_DEFAULT_DECAY, FSRS6_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
+import {
+    default_w,
+    forgetting_curve,
+    FSRS5_DEFAULT_DECAY,
+    FSRS6_DEFAULT_DECAY,
+    S_MIN,
+} from "ts-fsrs"
 
 export type ForgettingSample = {
     cid: number
@@ -204,7 +209,8 @@ export function buildForgettingCurve(
         3: new Map(),
         4: new Map(),
     }
-    const decays: number[] = []
+    let decaySum = 0
+    let decayCount = 0
 
     let totalCount = 0
     let totalSuccess = 0
@@ -221,7 +227,8 @@ export function buildForgettingCurve(
         bucket.set(sample.delta, existing)
 
         if (sample.decay !== null && !Number.isNaN(sample.decay)) {
-            decays.push(sample.decay)
+            decaySum += sample.decay
+            decayCount += 1
         }
 
         totalSuccess += sample.recall
@@ -263,7 +270,7 @@ export function buildForgettingCurve(
     const series: ForgettingCurveSeries[] = []
 
     // Fall back to FSRS5 default: no per-card decay means the collection likely isn't on FSRS6.
-    const decay = mean(decays) ?? FSRS5_DEFAULT_DECAY
+    const decay = decayCount ? decaySum / decayCount : FSRS5_DEFAULT_DECAY
 
     for (const rating of [1, 2, 3, 4]) {
         const aggregated = aggregatedByRating[rating]
