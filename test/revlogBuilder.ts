@@ -47,7 +47,8 @@ export class RevlogBuilder {
         return {
             id: this.state.cid,
             ivl: this.state.ivl,
-            did: 1
+            did: 1,
+            data: "{}"
         }
     }
 }

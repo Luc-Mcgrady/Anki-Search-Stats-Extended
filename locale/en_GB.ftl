@@ -292,8 +292,8 @@ forgetting-curve-tooltip-interval = Interval: {$days} d
 forgetting-curve-tooltip-interval-minutes = Interval: {$minutes} min
 forgetting-curve-tooltip-recall = Recall: {$value}%
 forgetting-curve-tooltip-count = Samples: {$count}
-forgetting-curve-legend = {$rating}: Memory stability={$stability} ({$count})
-forgetting-curve-legend-short-term = {$rating}: Memory stability={$stability} minutes ({$count})
+forgetting-curve-legend = {$rating}: Memory stability={$stability}, decay={$decay} ({$count})
+forgetting-curve-legend-short-term = {$rating}: Memory stability={$stability} minutes, decay={$decay} ({$count})
 forgetting-curve-legend-count = n={$count}
 forgetting-curve-bins-selector = Max Bin Count
 forgetting-curve-bin-count = {$count} {$count ->
