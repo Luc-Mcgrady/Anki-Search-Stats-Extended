@@ -5,7 +5,8 @@ export type ForgettingSample = {
     firstRating: number
     delta: number
     recall: number
-    decay: number
+    decay: number | null
+    initialStability: number | null
 }
 
 type AggregatedSample = {
@@ -220,7 +221,7 @@ export function buildForgettingCurve(
         existing.count += 1
         bucket.set(sample.delta, existing)
 
-        if (!Number.isNaN(sample.decay)) {
+        if (sample.decay !== null && !Number.isNaN(sample.decay)) {
             decaySum += sample.decay
             decayCount += 1
         }
@@ -309,6 +310,7 @@ export function buildForgettingCurve(
 export function fitStability(
     samples: ForgettingSample[],
     initial: number,
+    decay: number,
     minStability: number = S_MIN,
     maxStability: number = MAX_STABILITY
 ): number | null {
@@ -319,9 +321,7 @@ export function fitStability(
     const loss = (stability: number) => {
         let total = 0
         for (const sample of samples) {
-            const prediction = clampProbability(
-                forgetting_curve(sample.decay, sample.delta, stability)
-            )
+            const prediction = clampProbability(forgetting_curve(decay, sample.delta, stability))
             const recall = sample.recall
             total += -(recall * Math.log(prediction) + (1 - recall) * Math.log(1 - prediction))
         }
@@ -365,17 +365,23 @@ export function fitStability(
     return best
 }
 
-export function computeRmse(samples: ForgettingSample[], stability: number): number | null {
-    if (!samples.length) {
+export function computeRmse(
+    aggregated: AggregatedSample[],
+    stability: number,
+    decay: number
+): number | null {
+    const totalCount = aggregated.reduce((p, entry) => p + entry.count, 0)
+    if (!totalCount) {
         return null
     }
 
-    const squaredError = samples.reduce((p, sample) => {
-        const prediction = forgetting_curve(sample.decay, sample.delta, stability)
-        return p + (sample.recall - prediction) ** 2
+    const squaredError = aggregated.reduce((p, entry) => {
+        const prediction = forgetting_curve(decay, entry.delta, stability)
+        const meanRecall = entry.success / entry.count
+        return p + (meanRecall - prediction) ** 2 * entry.count
     }, 0)
 
-    return Math.sqrt(squaredError / samples.length)
+    return Math.sqrt(squaredError / totalCount)
 }
 
 export function computeStabilityForSeries(
@@ -390,15 +396,21 @@ export function computeStabilityForSeries(
 
         // Filter original samples by rating
         const ratingSamples = samples.filter((s) => s.firstRating === entry.rating)
-
-        const stability = fitStability(
+        const initial = averageInitialStability(
             ratingSamples,
-            RATING_DEFAULT_STABILITY[entry.rating],
-            options.minStability,
-            options.maxStability
+            RATING_DEFAULT_STABILITY[entry.rating]
         )
 
-        const rmse = stability ? computeRmse(ratingSamples, stability) : null
+        const stability = initial
+
+        // Reconstruct aggregated data from points for RMSE calculation.
+        const aggregated: AggregatedSample[] = entry.points.map((point) => ({
+            delta: point.delta,
+            success: point.recall * point.count,
+            count: point.count,
+        }))
+
+        const rmse = stability ? computeRmse(aggregated, stability, entry.decay) : null
 
         return {
             ...entry,
@@ -414,4 +426,16 @@ function clamp(value: number, min: number, max: number) {
 
 function clampProbability(value: number) {
     return Math.min(1 - EPSILON, Math.max(EPSILON, value))
+}
+
+function averageInitialStability(samples: ForgettingSample[], fallback: number): number {
+    let sum = 0
+    let count = 0
+    for (const sample of samples) {
+        if (sample.initialStability !== null && !Number.isNaN(sample.initialStability)) {
+            sum += sample.initialStability
+            count += 1
+        }
+    }
+    return count ? sum / count : fallback
 }

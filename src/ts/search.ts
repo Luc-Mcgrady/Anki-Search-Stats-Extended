@@ -1,4 +1,3 @@
-import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import { realFetch } from "./root"
 
 export function catchErrors<Return>(func: () => Return): Return {
@@ -87,8 +86,8 @@ export function getCardDecay(card: CardData) {
     return getDecay(getExtraDataFromCard(card))
 }
 
-export function getDecay(data: CardExtraData) {
-    return data.decay ?? FSRS5_DEFAULT_DECAY
+export function getDecay(data: CardExtraData): number | null {
+    return data.decay ?? null
 }
 
 export interface Revlog {
