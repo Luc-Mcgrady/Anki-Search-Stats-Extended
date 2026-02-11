@@ -128,7 +128,7 @@ def revlogs() -> bytes:
     if day_range > 0:
         rollover = mw.col.get_preferences().scheduling.rollover
         today = (int_time() - (rollover * 60 * 60)) / DAY_SECONDS
-        lower_limit = (today - day_range) * DAY_SECONDS * 1000  # +4 ?!?!?
+        lower_limit = (today - day_range) * DAY_SECONDS * 1000 
     else:
         lower_limit = 0
 
