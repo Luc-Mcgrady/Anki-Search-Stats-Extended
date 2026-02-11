@@ -226,8 +226,6 @@ introduced = Introduced
 re-introduced = Re-Introduced
 introduced-help =
     A card is introduced when it is shown to you for the first time. A card is re-introduced when it is shown to you for the first time after being reset.
-introduced-truncated-warning =
-    Re-introduced does not work for cards introduced before the cutoff date.
 
 introduced-load = Load by Introduction Day
 cumulative-load = Cumulative Load
@@ -505,3 +503,5 @@ preparing-review-stats = Preparing Review Stats...
 review-graphs-warning-title = Review Graphs
 review-graphs-prepare-graphs = Prepare Graphs
 review-graphs-warning = These statistics can take time to prepare.
+introduced-truncated-warning =
+    Re-introduced does not work for cards introduced before the cutoff date.

@@ -70,7 +70,7 @@
         </p>
         {#if truncated}
             <Warning>
-                {i18n("introduced-truncated-warning")}
+                {i18n("generic-truncated-warning")}
             </Warning>
         {/if}
     </RevlogGraphContainer>
