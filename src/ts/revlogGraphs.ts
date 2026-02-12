@@ -1,7 +1,7 @@
 import _ from "lodash"
+import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
-import type { DeckConfig } from "./config"
 import { type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
 import { getCardDecay, type CardData, type Revlog } from "./search"
@@ -18,26 +18,6 @@ export function dayFromMs(ms: number) {
 
 export const today = dayFromMs(Date.now())
 export const no_rollover_today = Math.floor(Date.now() / day_ms)
-
-function getInitialStability(card: CardData | undefined, rating: number): number | null {
-    if (!card || rating < 1 || rating > 4) {
-        return null
-    }
-    const deckId = card.odid || card.did
-    const configId = SSEother.deck_config_ids?.[deckId]
-    const config: DeckConfig | undefined = configId ? SSEother.deck_configs?.[configId] : undefined
-    if (!config) {
-        return null
-    }
-    const configParams = [
-        config.fsrsParams6,
-        config.fsrsParams5,
-        config.fsrsParams4,
-        config.fsrsWeights,
-    ]
-    const params = configParams.find((arr) => Array.isArray(arr) && arr.length >= 4)
-    return params ? (params[rating - 1] ?? null) : null
-}
 
 interface SiblingReview {
     cid: number
@@ -266,8 +246,7 @@ export function calculateRevlogStats(
                             firstRating: first_rating[revlog.cid]!,
                             delta: delta_minutes,
                             recall: revlog.ease > 1 ? 1 : 0,
-                            decay: card ? getCardDecay(card) : null,
-                            initialStability: getInitialStability(card, first_rating[revlog.cid]!),
+                            decay: card ? getCardDecay(card) : FSRS5_DEFAULT_DECAY,
                         })
                         short_term_recorded_cards.add(revlog.cid)
                     }
@@ -283,8 +262,7 @@ export function calculateRevlogStats(
                         firstRating: first_rating[revlog.cid]!,
                         delta: delta_t,
                         recall: revlog.ease > 1 ? 1 : 0,
-                        decay: card ? getCardDecay(card) : null,
-                        initialStability: getInitialStability(card, first_rating[revlog.cid]!),
+                        decay: card ? getCardDecay(card) : FSRS5_DEFAULT_DECAY,
                     })
                     recorded_cards.add(revlog.cid)
                 }
