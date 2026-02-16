@@ -17,6 +17,10 @@
         }
     }
 
+    $: if (trend === undefined) {
+        trend_value = 0
+    }
+
     function display(trend_value: number) {
         return (
             (trend_value > 1 ? trend_value.toFixed(2) : trend_value.toPrecision(2)) +

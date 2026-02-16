@@ -52,6 +52,7 @@
         }
 
     export let trend_data: TrendLine | undefined
+    $: if (type === "total") trend_data = undefined
 </script>
 
 <GraphTypeSelector>
