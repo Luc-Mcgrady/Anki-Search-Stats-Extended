@@ -134,43 +134,44 @@
 <GraphCategory hidden_title={i18n("card-count-time-machine")} config_name="timeMachine">
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("card-count-time-machine")}</h1>
-        <Pie
-            slot="graph"
-            data={time_machine_pie}
-            legend_left={i18n("card-type")}
-            legend_right={i18n("amount")}
-            percentage
-        ></Pie>
-        <TimeMachineScroll min={time_machine_min} />
-        <div>
-            {i18n("starts-at")}
-            <br />
-            <label>
-                <input type="radio" bind:group={left_bound_at} value="Added" />
-                {i18n("first-added")}
-            </label>
-            <label>
-                <input type="radio" bind:group={left_bound_at} value="Review" />
-                {i18n("first-review")}
-            </label>
-            <label>
-                <input
-                    type="radio"
-                    bind:group={left_bound_at}
-                    value="Custom"
-                    on:click={() => {
-                        if (time_machine_min) {
-                            custom_leftmost = time_machine_min
-                        }
-                    }}
-                />
-                {i18n("custom")}
-            </label>
-            {#if left_bound_at == "Custom"}
-                <input type="number" bind:value={custom_leftmost} />
-            {/if}
-        </div>
-        <span>{i18n("x-total-cards", { val: time_machine_added })}</span>
+        <svelte:fragment slot="graph">
+            <Pie
+                data={time_machine_pie}
+                legend_left={i18n("card-type")}
+                legend_right={i18n("amount")}
+                percentage
+            ></Pie>
+            <TimeMachineScroll min={time_machine_min} />
+            <div>
+                {i18n("starts-at")}
+                <br />
+                <label>
+                    <input type="radio" bind:group={left_bound_at} value="Added" />
+                    {i18n("first-added")}
+                </label>
+                <label>
+                    <input type="radio" bind:group={left_bound_at} value="Review" />
+                    {i18n("first-review")}
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        bind:group={left_bound_at}
+                        value="Custom"
+                        on:click={() => {
+                            if (time_machine_min) {
+                                custom_leftmost = time_machine_min
+                            }
+                        }}
+                    />
+                    {i18n("custom")}
+                </label>
+                {#if left_bound_at == "Custom"}
+                    <input type="number" bind:value={custom_leftmost} />
+                {/if}
+            </div>
+            <span>{i18n("x-total-cards", { val: time_machine_added })}</span>
+        </svelte:fragment>
         <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -178,39 +179,48 @@
     </RevlogGraphContainer>
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("review-interval-time-machine")}</h1>
-        <BarScrollable slot="graph" data={time_machine_bar} left_aligned />
-        <TimeMachineScroll min={time_machine_min} />
-        <span>{i18n("x-total-cards", { val: total_intervals })}</span>
-        <p>{i18n("review-interval-time-machine-help")}</p>
-        <span>
-            {i18n("mean")} = {intervals_mean.toFixed(2)}
-        </span>
+        <svelte:fragment slot="graph">
+            <BarScrollable data={time_machine_bar} left_aligned />
+            <TimeMachineScroll min={time_machine_min} />
+            <span>{i18n("x-total-cards", { val: total_intervals })}</span>
+            <p>{i18n("review-interval-time-machine-help")}</p>
+            <span>
+                {i18n("mean")} = {intervals_mean.toFixed(2)}
+            </span>
+        </svelte:fragment>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
     </RevlogGraphContainer>
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("daily-hourly-breakdown")}</h1>
-        <div class="options">
+        <svelte:fragment slot="graph">
+            <div class="options">
+                <label>
+                    {i18n("days")}
+                    <input
+                        type="number"
+                        bind:value={range}
+                        min={1}
+                        max={1 - (time_machine_min ?? 0)}
+                    />
+                </label>
+                <input
+                    type="button"
+                    value={i18n("today")}
+                    on:click={() => {
+                        $scroll = 0
+                        range = 1
+                    }}
+                />
+            </div>
+            <Bar data={hours_time_machine}></Bar>
             <label>
-                {i18n("days")}
-                <input type="number" bind:value={range} min={1} max={1 - (time_machine_min ?? 0)} />
+                <input type="checkbox" bind:checked={filtered} />
+                {i18n("include-filtered")}
             </label>
-            <input
-                type="button"
-                value={i18n("today")}
-                on:click={() => {
-                    $scroll = 0
-                    range = 1
-                }}
-            />
-        </div>
-        <Bar data={hours_time_machine}></Bar>
-        <label>
-            <input type="checkbox" bind:checked={filtered} />
-            {i18n("include-filtered")}
-        </label>
-        <TimeMachineScroll min={time_machine_min} />
+            <TimeMachineScroll min={time_machine_min} />
+        </svelte:fragment>
         <p>{i18n("daily-hourly-breakdown-help")}</p>
     </RevlogGraphContainer>
 </GraphCategory>
