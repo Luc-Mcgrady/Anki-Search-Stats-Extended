@@ -51,7 +51,7 @@
             down_colour,
         }
 
-    export let trend_data: TrendLine | undefined
+    export let trend_data: TrendLine
     $: if (type === "total") trend_data = undefined
 </script>
 
