@@ -13,6 +13,7 @@ export type SSEconfig = Partial<{
     categoryOrder: (keyof typeof CATEGORIES)[]
     autoRevlogStats: boolean
     autoMemorisedStats: boolean
+    alwaysAllTime: boolean
 }>
 
 export type DeckConfig = {

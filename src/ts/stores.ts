@@ -20,18 +20,6 @@ export let zero_inclusive = writable(false)
 export let custom_pie_mode = writable("Count")
 export let graph_mode = writable<"Bar" | "Pie">("Pie")
 
-// Data related
-export let data = writable<null | GraphsResponse>(null)
-export let not_suspended_data = writable<null | GraphsResponse>(null)
-export let mature_data = writable<null | GraphsResponse>(null)
-export let learn_data = writable<null | GraphsResponse>(null)
-export let relearn_data = writable<null | GraphsResponse>(null)
-
-export let graphsRequest = writable<null | GraphsRequest>(null)
-export let searchString = derived(graphsRequest, (searchRequest) => searchRequest?.search ?? null)
-export let searchLimit = derived(graphsRequest, (searchRequest) => searchRequest?.days ?? 0)
-export let cids = writable<null | number[]>(null)
-
 // Config related stats
 export let other = writable<SSEother>()
 export let config = writable<SSEconfig>()
@@ -75,6 +63,20 @@ configSubscribe(autoMemorisedStats, ($autoMemorisedStats) => {
         showFsrsStats.set($autoMemorisedStats)
     }
 })
+
+// Data related
+export let data = writable<null | GraphsResponse>(null)
+export let not_suspended_data = writable<null | GraphsResponse>(null)
+export let mature_data = writable<null | GraphsResponse>(null)
+export let learn_data = writable<null | GraphsResponse>(null)
+export let relearn_data = writable<null | GraphsResponse>(null)
+
+export let graphsRequest = writable<null | GraphsRequest>(null)
+export let searchString = derived(graphsRequest, ($graphsRequest) => $graphsRequest?.search ?? null)
+export let searchLimit = derived([graphsRequest, config], ([$graphsRequest, $config]) =>
+    $config?.alwaysAllTime ? 0 : ($graphsRequest?.days ?? 0)
+)
+export let cids = writable<null | number[]>(null)
 
 // Revlog graph specific stores
 export let pieLast = writable(59)

@@ -39,5 +39,6 @@
         "time",
         "lapse",
         "bad"
-    ]
+    ],
+    "alwaysAllTime": false
 }
