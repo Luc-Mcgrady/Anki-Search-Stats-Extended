@@ -3,7 +3,13 @@
     import GraphCategory from "./GraphCategory.svelte"
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
-    import { autoMemorisedStats, autoRevlogStats, categoryOrder, shownCategories } from "./stores"
+    import {
+        alwaysAllTime,
+        autoMemorisedStats,
+        autoRevlogStats,
+        categoryOrder,
+        shownCategories,
+    } from "./stores"
     import Warning from "./Warning.svelte"
 
     let current_hover = -1
@@ -72,6 +78,10 @@
             {/if}
             &nbsp;
         </div>
+        <label>
+            <input type="checkbox" bind:checked={$alwaysAllTime} />
+            {i18n("always-all-time")}
+        </label>
     </GraphContainer>
 </GraphCategory>
 

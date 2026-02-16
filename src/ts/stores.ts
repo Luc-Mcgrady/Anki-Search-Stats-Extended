@@ -26,6 +26,7 @@ export let config = writable<SSEconfig>()
 export let shownCategories = writable(SSEconfig.categories ?? {})
 export let autoRevlogStats = writable(SSEconfig.autoRevlogStats ?? false)
 export let autoMemorisedStats = writable(SSEconfig.autoMemorisedStats ?? false)
+export let alwaysAllTime = writable(SSEconfig.alwaysAllTime ?? false)
 export let categoryOrder = writable([
     ...(SSEconfig.categoryOrder ?? []).filter((c) => DEFAULT_ORDER.includes(c)),
     ...DEFAULT_ORDER.filter((c) => !(SSEconfig.categoryOrder ?? []).includes(c)),
@@ -64,6 +65,8 @@ configSubscribe(autoMemorisedStats, ($autoMemorisedStats) => {
     }
 })
 
+configSubscribe(alwaysAllTime, ($alwaysAllTime) => saveConfigValue("alwaysAllTime", $alwaysAllTime))
+
 // Data related
 export let data = writable<null | GraphsResponse>(null)
 export let not_suspended_data = writable<null | GraphsResponse>(null)
@@ -73,8 +76,9 @@ export let relearn_data = writable<null | GraphsResponse>(null)
 
 export let graphsRequest = writable<null | GraphsRequest>(null)
 export let searchString = derived(graphsRequest, ($graphsRequest) => $graphsRequest?.search ?? null)
-export let searchLimit = derived([graphsRequest, config], ([$graphsRequest, $config]) =>
-    $config?.alwaysAllTime ? 0 : ($graphsRequest?.days ?? 0)
+export let searchLimit = derived(
+    [graphsRequest, alwaysAllTime],
+    ([$graphsRequest, $alwaysAllTime]) => ($alwaysAllTime ? 0 : ($graphsRequest?.days ?? 0))
 )
 export let cids = writable<null | number[]>(null)
 
