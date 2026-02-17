@@ -3,6 +3,7 @@
 *.min.css
 *.zip
 *.ankiaddon
+*.wasm
 meta.json
 node_modules
 proto

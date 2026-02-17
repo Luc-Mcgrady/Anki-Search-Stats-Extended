@@ -10,7 +10,7 @@ export const rollover_ms = rollover * 60 * 60 * 1000
 export const day_ms = 1000 * 60 * 60 * 24
 
 const timezone_offset_mins = new Date().getTimezoneOffset()
-const timezone_offset_ms = timezone_offset_mins * 60 * 1000
+export const timezone_offset_ms = timezone_offset_mins * 60 * 1000
 export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover_ms - timezone_offset_ms) / day_ms)
 }
@@ -56,6 +56,7 @@ export function calculateRevlogStats(
     cardData: CardData[],
     end: number = today
 ) {
+    console.time("js calculate")
     let id_card_data = IDify(cardData)
 
     function emptyArray<T>(init: T): T[] {
@@ -328,7 +329,7 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
-
+    console.timeEnd("js calculate")
     return {
         day_initial_ease,
         day_initial_reintroduced_ease,

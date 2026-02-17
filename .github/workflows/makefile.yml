@@ -31,4 +31,4 @@ jobs:
         run: npm i
 
       - name: Format
-        run: npx prettier --config .prettierrc 'src/**/*' -c
+        run: npx prettier --config .prettierrc 'src/ts/**/*' -c

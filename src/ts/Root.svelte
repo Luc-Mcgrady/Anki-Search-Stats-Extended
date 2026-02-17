@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { card_data, categoryOrder, tooltip, tooltipShown } from "./stores"
+    import { card_data, categoryOrder, revlogs, tooltip, tooltipShown } from "./stores"
     import { defaultGraphBounds } from "./graph"
     import { i18n } from "./i18n"
     import About from "./About.svelte"

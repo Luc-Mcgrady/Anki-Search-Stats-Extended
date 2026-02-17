@@ -14,6 +14,7 @@ locale_dir = addon_dir / "locale"
 
 fallback_lang = "en_GB"
 
+mw.addonManager.setWebExports(__name__, r".*\.(wasm)")
 
 def getLocale(lang: str):
     try:
@@ -58,6 +59,7 @@ def new_refresh(self: NewDeckStats):
         "available_langs": getAvailableLangs(),
         "lang_ftl": getLocale(lang),
         "fallback_ftl": getLocale(fallback_lang),
+        "addon_id": mw.addonManager.addon_from_module(__name__)
     }
     setVars = (
         f"const css = `{innerCss}`;"
