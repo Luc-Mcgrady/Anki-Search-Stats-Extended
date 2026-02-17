@@ -66,7 +66,7 @@ auto-load-revlogs = Load slow graphs without confirmation
 auto-load-revlogs-warning = This can cause the stats menu to hang on startup
 auto-load-memorised = Load FSRS graphs without confirmation
 auto-load-memorised-warning = This will load even without "all history" being selected
-always-all-time = Always use "All history" for SSE graphs
+always-all-time = Always use "All history" for add-on graphs
 
 future-due-types = Future Due Types
 future-due-types-help =
