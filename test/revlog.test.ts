@@ -2,7 +2,7 @@ import { DeltaIfy } from "../src/ts/Candlestick"
 import { calculateRevlogStats, day_ms } from "../src/ts/revlogGraphs"
 import type { Revlog } from "../src/ts/search"
 import { RevlogBuilder } from "./revlogBuilder"
-import { buildForgettingCurve, computeStabilityForSeries } from "../src/ts/forgettingCurveData"
+import { averageDecay, buildForgettingCurve, computeStabilityForSeries } from "../src/ts/forgettingCurveData"
 
 const burden_revlog_builder1 = new RevlogBuilder()
 const burden_revlog_builder2 = new RevlogBuilder()
@@ -58,11 +58,20 @@ test("Forgetting curve aggregates recall data", () => {
         builder.review(1, 1),
     ].filter(Boolean) as Revlog[]
 
-    const stats = calculateRevlogStats(revlogs, [builder.card()] as any, builder.last_review + 5)
+    const stats = calculateRevlogStats(
+        revlogs,
+        [{ ...builder.card(), data: '{"decay":0.35}' }] as any,
+        builder.last_review + 5
+    )
     const series_raw = buildForgettingCurve(stats.forgetting_samples)
-    const series_with_stability = computeStabilityForSeries(series_raw, stats.forgetting_samples)
+    const series_with_stability = computeStabilityForSeries(
+        series_raw,
+        stats.forgetting_samples,
+        stats.forgetting_curve_decay
+    )
     const series = series_with_stability.find((entry) => entry.rating === 3)
 
     expect(series?.points.length).toBeGreaterThan(0)
     expect(series?.stability).not.toBeNull()
+    expect(stats.forgetting_curve_decay).toBeCloseTo(averageDecay([0.35]), 6)
 })

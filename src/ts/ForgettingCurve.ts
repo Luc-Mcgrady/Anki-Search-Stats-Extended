@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import * as _ from "lodash"
-import { forgetting_curve, FSRS6_DEFAULT_DECAY } from "ts-fsrs"
+import { forgetting_curve } from "ts-fsrs"
 import type { ForgettingCurveSeries } from "./forgettingCurveData"
 import { defaultGraphBounds } from "./graph"
 import { tooltip, tooltipShown } from "./stores"
@@ -25,6 +25,7 @@ export interface ForgettingCurveRenderOptions {
     formatTooltip: (payload: TooltipPayload) => string[]
     xLabel: string
     yLabel: string
+    decay: number
     maxX?: number
 }
 
@@ -104,7 +105,7 @@ export function renderForgettingCurve(
 
             const predicted = _.range(0, rightmost, step).map((delta) => ({
                 delta,
-                recall: forgetting_curve(FSRS6_DEFAULT_DECAY, delta, seriesEntry.stability!),
+                recall: forgetting_curve(options.decay, delta, seriesEntry.stability!),
             }))
 
             container

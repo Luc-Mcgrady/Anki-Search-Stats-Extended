@@ -1,4 +1,5 @@
-import { default_w, forgetting_curve, FSRS6_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
+import { mean } from "d3-array"
+import { default_w, forgetting_curve, FSRS5_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
 
 export type ForgettingSample = {
     cid: number
@@ -201,7 +202,6 @@ export function buildForgettingCurve(
         3: new Map(),
         4: new Map(),
     }
-
     let totalCount = 0
     let totalSuccess = 0
 
@@ -292,9 +292,17 @@ export function buildForgettingCurve(
     return series
 }
 
+export function averageDecay(decayValues: number[]): number {
+    const validDecayValues = decayValues.filter((decay) => !Number.isNaN(decay))
+    const avgDecay = mean(validDecayValues)
+    // Fall back to FSRS5 default: no per-card decay means the collection likely isn't on FSRS6.
+    return avgDecay ?? FSRS5_DEFAULT_DECAY
+}
+
 export function fitStability(
     samples: ForgettingSample[],
     initial: number,
+    decay: number = FSRS5_DEFAULT_DECAY,
     minStability: number = S_MIN,
     maxStability: number = MAX_STABILITY
 ): number | null {
@@ -305,9 +313,7 @@ export function fitStability(
     const loss = (stability: number) => {
         let total = 0
         for (const sample of samples) {
-            const prediction = clampProbability(
-                forgetting_curve(FSRS6_DEFAULT_DECAY, sample.delta, stability)
-            )
+            const prediction = clampProbability(forgetting_curve(decay, sample.delta, stability))
             const recall = sample.recall
             total += -(recall * Math.log(prediction) + (1 - recall) * Math.log(1 - prediction))
         }
@@ -351,24 +357,27 @@ export function fitStability(
     return best
 }
 
-export function computeRmse(aggregated: AggregatedSample[], stability: number): number | null {
-    const totalCount = aggregated.reduce((p, entry) => p + entry.count, 0)
-    if (!totalCount) {
+export function computeRmse(
+    samples: ForgettingSample[],
+    stability: number,
+    decay: number = FSRS5_DEFAULT_DECAY
+): number | null {
+    if (!samples.length) {
         return null
     }
 
-    const squaredError = aggregated.reduce((p, entry) => {
-        const prediction = forgetting_curve(FSRS6_DEFAULT_DECAY, entry.delta, stability)
-        const meanRecall = entry.success / entry.count
-        return p + (meanRecall - prediction) ** 2 * entry.count
+    const squaredError = samples.reduce((p, sample) => {
+        const prediction = forgetting_curve(decay, sample.delta, stability)
+        return p + (sample.recall - prediction) ** 2
     }, 0)
 
-    return Math.sqrt(squaredError / totalCount)
+    return Math.sqrt(squaredError / samples.length)
 }
 
 export function computeStabilityForSeries(
     series: ForgettingCurveSeries[],
     samples: ForgettingSample[],
+    decay: number = FSRS5_DEFAULT_DECAY,
     options: ForgettingCurveOptions = {}
 ): ForgettingCurveSeries[] {
     return series.map((entry) => {
@@ -382,18 +391,12 @@ export function computeStabilityForSeries(
         const stability = fitStability(
             ratingSamples,
             RATING_DEFAULT_STABILITY[entry.rating],
+            decay,
             options.minStability,
             options.maxStability
         )
 
-        // Reconstruct aggregated data from points for RMSE calculation
-        const aggregated: AggregatedSample[] = entry.points.map((point) => ({
-            delta: point.delta,
-            success: point.recall * point.count,
-            count: point.count,
-        }))
-
-        const rmse = stability ? computeRmse(aggregated, stability) : null
+        const rmse = stability ? computeRmse(ratingSamples, stability, decay) : null
 
         return {
             ...entry,
