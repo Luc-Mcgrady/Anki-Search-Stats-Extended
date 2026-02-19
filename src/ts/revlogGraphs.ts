@@ -2,7 +2,7 @@ import _ from "lodash"
 import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
-import { type ForgettingSample } from "./forgettingCurveData"
+import { averageDecay, type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
 import { getCardDecay, type CardData, type Revlog } from "./search"
 
@@ -331,6 +331,12 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
+    const forgetting_curve_decay =
+        forgetting_samples.length > 0 ? averageDecay(forgetting_samples) : FSRS5_DEFAULT_DECAY
+    const forgetting_curve_decay_short =
+        forgetting_samples_short.length > 0
+            ? averageDecay(forgetting_samples_short)
+            : FSRS5_DEFAULT_DECAY
 
     return {
         day_initial_ease,
@@ -355,6 +361,8 @@ export function calculateRevlogStats(
         last_forget,
         forgetting_samples,
         forgetting_samples_short,
+        forgetting_curve_decay,
+        forgetting_curve_decay_short,
     }
 }
 

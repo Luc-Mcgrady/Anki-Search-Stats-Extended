@@ -2,7 +2,7 @@ import { DeltaIfy } from "../src/ts/Candlestick"
 import { calculateRevlogStats, day_ms } from "../src/ts/revlogGraphs"
 import type { Revlog } from "../src/ts/search"
 import { RevlogBuilder } from "./revlogBuilder"
-import { buildForgettingCurve, computeStabilityForSeries } from "../src/ts/forgettingCurveData"
+import { averageDecay, buildForgettingCurve, computeStabilityForSeries } from "../src/ts/forgettingCurveData"
 
 const burden_revlog_builder1 = new RevlogBuilder()
 const burden_revlog_builder2 = new RevlogBuilder()
@@ -65,4 +65,9 @@ test("Forgetting curve aggregates recall data", () => {
 
     expect(series?.points.length).toBeGreaterThan(0)
     expect(series?.stability).not.toBeNull()
+    expect(stats.forgetting_curve_decay).toBeCloseTo(averageDecay(stats.forgetting_samples), 6)
+    expect(stats.forgetting_curve_decay_short).toBeCloseTo(
+        averageDecay(stats.forgetting_samples_short),
+        6
+    )
 })

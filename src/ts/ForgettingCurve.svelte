@@ -1,7 +1,7 @@
 <script lang="ts">
+    import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
     import { i18n } from "./i18n"
     import {
-        averageDecay,
         buildForgettingCurve,
         computeStabilityForSeries,
         type ForgettingCurveSeries,
@@ -15,6 +15,7 @@
     import NoGraph from "./NoGraph.svelte"
 
     export let data: ForgettingSample[] = []
+    export let decay: number | null = null
     export let xLabel: string | null = null
     export let yLabel: string | null = null
     export let isShortTerm: boolean = false
@@ -29,9 +30,11 @@
     let outlierFiltering = false
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
-    let decay: number = 0
+    let effectiveDecay: number = FSRS5_DEFAULT_DECAY
     let series: ForgettingCurveSeries[] = []
     let seriesWithStability: ForgettingCurveSeries[] = []
+
+    $: effectiveDecay = decay ?? FSRS5_DEFAULT_DECAY
 
     // Process data into series for each rating (without stability calculation)
     $: {
@@ -56,8 +59,6 @@
             })
         }
     }
-
-    $: decay = averageDecay(data)
 
     // Compute stability separately (only when data changes, not when maxBins changes)
     $: {
@@ -140,7 +141,7 @@
                 xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
                 yLabel: yLabel ?? i18n("forgetting-curve-y-axis"),
                 maxX: xAxisMax,
-                decay,
+                decay: effectiveDecay,
             })
         } else if (svg) {
             svg.innerHTML = ""
@@ -152,7 +153,7 @@
             return ""
         }
         const stability = entry.stability !== null ? entry.stability.toFixed(2) : "—"
-        const decayText = decay.toFixed(2)
+        const decayText = effectiveDecay.toFixed(2)
         const countText = i18n("forgetting-curve-legend-count", {
             count: entry.sampleSize.toLocaleString(),
         })
