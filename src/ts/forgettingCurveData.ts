@@ -1,3 +1,4 @@
+import { mean } from "d3-array"
 import { default_w, forgetting_curve, FSRS5_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
 
 export type ForgettingSample = {
@@ -27,7 +28,6 @@ export interface ForgettingCurveSeries {
     sampleSize: number
     points: ForgettingCurvePoint[]
     predicted: { delta: number; recall: number }[]
-    decay: number
 }
 
 const RATING_DEFAULT_STABILITY: Record<number, number> = {
@@ -203,9 +203,6 @@ export function buildForgettingCurve(
         3: new Map(),
         4: new Map(),
     }
-    let decaySum = 0
-    let decayCount = 0
-
     let totalCount = 0
     let totalSuccess = 0
 
@@ -219,11 +216,6 @@ export function buildForgettingCurve(
         existing.success += sample.recall
         existing.count += 1
         bucket.set(sample.delta, existing)
-
-        if (!Number.isNaN(sample.decay)) {
-            decaySum += sample.decay
-            decayCount += 1
-        }
 
         totalSuccess += sample.recall
         totalCount += 1
@@ -263,9 +255,6 @@ export function buildForgettingCurve(
 
     const series: ForgettingCurveSeries[] = []
 
-    // Fall back to FSRS5 default: no per-card decay means the collection likely isn't on FSRS6.
-    const decay = decayCount ? decaySum / decayCount : FSRS5_DEFAULT_DECAY
-
     for (const rating of [1, 2, 3, 4]) {
         const aggregated = aggregatedByRating[rating]
 
@@ -277,7 +266,6 @@ export function buildForgettingCurve(
                 sampleSize: 0,
                 points: [],
                 predicted: [],
-                decay,
             })
             continue
         }
@@ -299,11 +287,19 @@ export function buildForgettingCurve(
             sampleSize,
             points,
             predicted,
-            decay,
         })
     }
 
     return series
+}
+
+export function averageDecay(samples: ForgettingSample[]): number {
+    const decayValues = samples
+        .map((sample) => sample.decay)
+        .filter((decay) => !Number.isNaN(decay))
+    const avgDecay = mean(decayValues)
+    // Fall back to FSRS5 default: no per-card decay means the collection likely isn't on FSRS6.
+    return avgDecay ?? FSRS5_DEFAULT_DECAY
 }
 
 export function fitStability(

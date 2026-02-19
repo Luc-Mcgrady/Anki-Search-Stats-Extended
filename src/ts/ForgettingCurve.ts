@@ -25,6 +25,7 @@ export interface ForgettingCurveRenderOptions {
     formatTooltip: (payload: TooltipPayload) => string[]
     xLabel: string
     yLabel: string
+    decay: number
     maxX?: number
 }
 
@@ -102,10 +103,9 @@ export function renderForgettingCurve(
             const rightmost = x.domain()[1]
             const step = rightmost / numPoints
 
-            const decay = seriesEntry.decay
             const predicted = _.range(0, rightmost, step).map((delta) => ({
                 delta,
-                recall: forgetting_curve(decay, delta, seriesEntry.stability!),
+                recall: forgetting_curve(options.decay, delta, seriesEntry.stability!),
             }))
 
             container

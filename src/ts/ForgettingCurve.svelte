@@ -1,6 +1,7 @@
 <script lang="ts">
     import { i18n } from "./i18n"
     import {
+        averageDecay,
         buildForgettingCurve,
         computeStabilityForSeries,
         type ForgettingCurveSeries,
@@ -28,6 +29,7 @@
     let outlierFiltering = false
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
+    let decay: number = 0
     let series: ForgettingCurveSeries[] = []
     let seriesWithStability: ForgettingCurveSeries[] = []
 
@@ -54,6 +56,8 @@
             })
         }
     }
+
+    $: decay = averageDecay(data)
 
     // Compute stability separately (only when data changes, not when maxBins changes)
     $: {
@@ -136,6 +140,7 @@
                 xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
                 yLabel: yLabel ?? i18n("forgetting-curve-y-axis"),
                 maxX: xAxisMax,
+                decay,
             })
         } else if (svg) {
             svg.innerHTML = ""
@@ -147,7 +152,7 @@
             return ""
         }
         const stability = entry.stability !== null ? entry.stability.toFixed(2) : "—"
-        const decay = entry.decay.toFixed(2)
+        const decayText = decay.toFixed(2)
         const countText = i18n("forgetting-curve-legend-count", {
             count: entry.sampleSize.toLocaleString(),
         })
@@ -158,7 +163,7 @@
         return i18n(legendKey, {
             rating: labelForRating(entry.rating),
             stability,
-            decay,
+            decay: decayText,
             count: countText,
         }).trim()
     }
