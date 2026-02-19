@@ -246,7 +246,6 @@ export function calculateRevlogStats(
                             firstRating: first_rating[revlog.cid]!,
                             delta: delta_minutes,
                             recall: revlog.ease > 1 ? 1 : 0,
-                            decay: card ? getCardDecay(card) : FSRS5_DEFAULT_DECAY,
                         })
                         short_term_recorded_cards.add(revlog.cid)
                     }
@@ -262,7 +261,6 @@ export function calculateRevlogStats(
                         firstRating: first_rating[revlog.cid]!,
                         delta: delta_t,
                         recall: revlog.ease > 1 ? 1 : 0,
-                        decay: card ? getCardDecay(card) : FSRS5_DEFAULT_DECAY,
                     })
                     recorded_cards.add(revlog.cid)
                 }
@@ -331,12 +329,15 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
+    const forgettingCurveCardIds = new Set<number>(
+        [...forgetting_samples, ...forgetting_samples_short].map((sample) => sample.cid)
+    )
+    const decayValues = Array.from(forgettingCurveCardIds)
+        .map((cid) => id_card_data[cid])
+        .filter((card): card is CardData => card !== undefined)
+        .map((card) => getCardDecay(card))
     const forgetting_curve_decay =
-        forgetting_samples.length > 0 ? averageDecay(forgetting_samples) : FSRS5_DEFAULT_DECAY
-    const forgetting_curve_decay_short =
-        forgetting_samples_short.length > 0
-            ? averageDecay(forgetting_samples_short)
-            : FSRS5_DEFAULT_DECAY
+        decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DEFAULT_DECAY
 
     return {
         day_initial_ease,
@@ -362,7 +363,6 @@ export function calculateRevlogStats(
         forgetting_samples,
         forgetting_samples_short,
         forgetting_curve_decay,
-        forgetting_curve_decay_short,
     }
 }
 

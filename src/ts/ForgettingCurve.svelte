@@ -30,11 +30,8 @@
     let outlierFiltering = false
     let dataMinDelta: number = 1
     let dataMaxDelta: number = 1
-    let effectiveDecay: number = FSRS5_DEFAULT_DECAY
     let series: ForgettingCurveSeries[] = []
     let seriesWithStability: ForgettingCurveSeries[] = []
-
-    $: effectiveDecay = decay ?? FSRS5_DEFAULT_DECAY
 
     // Process data into series for each rating (without stability calculation)
     $: {
@@ -63,12 +60,22 @@
     // Compute stability separately (only when data changes, not when maxBins changes)
     $: {
         if (isShortTerm) {
-            seriesWithStability = computeStabilityForSeries(series, data, {
-                minStability: 0.01,
-                maxStability: 1440,
-            })
+            seriesWithStability = computeStabilityForSeries(
+                series,
+                data,
+                decay ?? FSRS5_DEFAULT_DECAY,
+                {
+                    minStability: 0.01,
+                    maxStability: 1440,
+                }
+            )
         } else {
-            seriesWithStability = computeStabilityForSeries(series, data, {})
+            seriesWithStability = computeStabilityForSeries(
+                series,
+                data,
+                decay ?? FSRS5_DEFAULT_DECAY,
+                {}
+            )
         }
     }
 
@@ -141,7 +148,7 @@
                 xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
                 yLabel: yLabel ?? i18n("forgetting-curve-y-axis"),
                 maxX: xAxisMax,
-                decay: effectiveDecay,
+                decay: decay ?? FSRS5_DEFAULT_DECAY,
             })
         } else if (svg) {
             svg.innerHTML = ""
@@ -153,7 +160,7 @@
             return ""
         }
         const stability = entry.stability !== null ? entry.stability.toFixed(2) : "—"
-        const decayText = effectiveDecay.toFixed(2)
+        const decayText = (decay ?? FSRS5_DEFAULT_DECAY).toFixed(2)
         const countText = i18n("forgetting-curve-legend-count", {
             count: entry.sampleSize.toLocaleString(),
         })

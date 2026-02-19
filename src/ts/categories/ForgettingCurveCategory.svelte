@@ -28,7 +28,7 @@
         <ForgettingCurve
             slot="graph"
             data={$revlogStats?.forgetting_samples_short ?? []}
-            decay={$revlogStats?.forgetting_curve_decay_short}
+            decay={$revlogStats?.forgetting_curve_decay}
             xLabel={i18n("forgetting-curve-x-axis-minutes")}
             isShortTerm={true}
             formatInterval={(delta) =>
