@@ -183,11 +183,11 @@
             <BarScrollable data={time_machine_bar} left_aligned />
             <TimeMachineScroll min={time_machine_min} />
             <span>{i18n("x-total-cards", { val: total_intervals })}</span>
-            <p>{i18n("review-interval-time-machine-help")}</p>
             <span>
                 {i18n("mean")} = {intervals_mean.toFixed(2)}
             </span>
         </svelte:fragment>
+        <p>{i18n("review-interval-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
         {/if}
