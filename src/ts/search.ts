@@ -80,7 +80,14 @@ export interface CardExtraData {
 }
 
 export function getExtraDataFromCard(card: CardData): CardExtraData {
-    return JSON.parse(card.data)
+    if (!card.data) {
+        return {}
+    }
+    try {
+        return JSON.parse(card.data)
+    } catch {
+        return {}
+    }
 }
 
 export function getCardDecay(card: CardData) {
