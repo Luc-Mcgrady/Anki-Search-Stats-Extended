@@ -1,5 +1,12 @@
 {
     "cSpell.words": [
         "retrievability"
+    ],
+    "rust-analyzer.files.exclude": [
+        "anki"
+    ],
+    "rust-analyzer.linkedProjects": [
+        "src/rs/bindings/Cargo.toml",
+        "src/rs/crate/Cargo.toml"
     ]
 }

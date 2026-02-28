@@ -16,4 +16,5 @@ esbuild.build({
           configFile: "src/ts/tsconfig.json"
         })
       ],
+    loader: {".wasm": "file"}
 })
