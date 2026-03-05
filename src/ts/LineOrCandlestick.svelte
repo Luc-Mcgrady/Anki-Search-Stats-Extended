@@ -10,7 +10,7 @@
     import { i18n } from "./i18n"
     import LineGraph from "./LineGraph.svelte"
     import { binSize, scroll, searchLimit } from "./stores"
-    import type { TrendLine } from "./trend"
+    import type { DrawnTrend, TrendLine } from "./trend"
 
     let type = "total"
     export let data: number[]
@@ -51,8 +51,9 @@
             down_colour,
         }
 
-    export let trend_data: TrendLine
-    $: if (type === "total") trend_data = undefined
+    export let trend_data: DrawnTrend[] = []
+    export let current_trend: TrendLine = undefined
+    export let removeTrend: (id: number) => void = () => {}
 </script>
 
 <GraphTypeSelector>
@@ -67,7 +68,7 @@
 </GraphTypeSelector>
 
 {#if type === "total"}
-    <LineGraph data={processed_data} {label} />
+    <LineGraph data={processed_data} {label} bind:trend_data bind:current_trend bind:removeTrend />
 {:else}
     <Candlestick
         data={candlestick_data}
@@ -75,6 +76,8 @@
         bind:binSize={$binSize}
         {limit}
         bind:trend_data
+        bind:current_trend
+        bind:removeTrend
         bind:offset={$scroll}
     />
 {/if}

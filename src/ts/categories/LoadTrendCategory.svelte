@@ -7,15 +7,19 @@
     import TrendValue from "../TrendValue.svelte"
     import { i18n, i18n_pattern } from "../i18n"
     import { CANDLESTICK_GREEN, CANDLESTICK_RED } from "../Candlestick"
-    import type { TrendLine } from "../trend"
+    import type { DrawnTrend, TrendLine } from "../trend"
     import { binSize, searchLimit, revlogStats } from "../stores"
     import * as d3 from "d3"
 
     $: truncated = $searchLimit !== 0
 
     let introduced_load_cumulative_mode = false
-    let burden_trend: TrendLine
-    let introduced_load_trend: TrendLine
+    let burden_trend: DrawnTrend[] = []
+    let burden_preview_trend: TrendLine = undefined
+    let removeBurdenTrend: (id: number) => void = () => {}
+    let introduced_load_trend: DrawnTrend[] = []
+    let introduced_load_preview_trend: TrendLine = undefined
+    let removeIntroducedTrend: (id: number) => void = () => {}
 
     $: learn_repetitions = ($revlogStats?.learn_steps_per_card ?? []).reduce(
         (learn_repetitions, count) => {
@@ -34,6 +38,8 @@
             data={$revlogStats?.burden ?? []}
             label={i18n("load")}
             bind:trend_data={burden_trend}
+            bind:current_trend={burden_preview_trend}
+            bind:removeTrend={removeBurdenTrend}
             up_colour={CANDLESTICK_RED}
             down_colour={CANDLESTICK_GREEN}
         />
@@ -41,9 +47,11 @@
             {i18n("load-trend-help")}
         </p>
         <TrendValue
-            trend={burden_trend}
+            trends={burden_trend}
+            trend={burden_preview_trend}
             n={$binSize}
             info={{ pattern: i18n_pattern("burden-per-day") }}
+            onRemoveTrend={removeBurdenTrend}
         />
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -56,6 +64,8 @@
             data={$revlogStats?.introduced_load_by_day ?? []}
             label={introduced_load_cumulative_mode ? i18n("cumulative-load") : i18n("load")}
             bind:trend_data={introduced_load_trend}
+            bind:current_trend={introduced_load_preview_trend}
+            bind:removeTrend={removeIntroducedTrend}
             cumulative={introduced_load_cumulative_mode}
         />
         <label>
@@ -66,9 +76,11 @@
             {i18n("introduced-load-help")}
         </p>
         <TrendValue
-            trend={introduced_load_trend}
+            trends={introduced_load_trend}
+            trend={introduced_load_preview_trend}
             n={$binSize}
             info={{ pattern: i18n_pattern("introduced-load-per-day") }}
+            onRemoveTrend={removeIntroducedTrend}
         />
         {#if truncated}
             <Warning>

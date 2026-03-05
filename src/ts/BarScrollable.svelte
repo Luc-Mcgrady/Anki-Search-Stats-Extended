@@ -9,7 +9,13 @@
     } from "./bar"
     import Bar from "./Bar.svelte"
     import TrendValue from "./TrendValue.svelte"
-    import { trendLine, type TrendInfo, type TrendLine } from "./trend"
+    import {
+        selectableTrendLine,
+        type DrawnTrend,
+        type TrendInfo,
+        type TrendLine,
+        type TrendSelectionController,
+    } from "./trend"
     import { i18n } from "./i18n"
 
     export let data: BarChart
@@ -37,7 +43,13 @@
         realOffset == 0 || realOffset >= data.data.length ? undefined : realOffset
     )
 
-    export let trend_values: TrendLine = undefined
+    export let trend_values: DrawnTrend[] = []
+    let current_trend: TrendLine = undefined
+    let trend_controller: TrendSelectionController | undefined = undefined
+
+    function removeTrend(id: number) {
+        trend_controller?.removeTrend(id)
+    }
 
     function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
         extraRender(chart)
@@ -50,9 +62,31 @@
         }))
 
         if (trend) {
-            trend_values = trendLine(chart, trend_data)
+            const hoverAreas = chart.svg.selectAll<SVGRectElement, BarDatum>("rect.hover-bar")
+            trend_controller = selectableTrendLine({
+                chart,
+                points: trend_data,
+                hoverAreas,
+                hoverToX: (datum) => +datum.label,
+                xToPixel: (xValue) => {
+                    const x = chart.x(xValue.toString())
+                    if (x === undefined) {
+                        return
+                    }
+                    return x + chart.x.step() / 2
+                },
+                onTrendsChange: (nextTrends) => {
+                    trend_values = nextTrends
+                },
+                onPreviewTrendChange: (nextTrend) => {
+                    current_trend = nextTrend
+                },
+                drawDefaultTrend: true,
+            })
         } else {
-            trend_values = undefined
+            trend_values = []
+            current_trend = undefined
+            trend_controller = undefined
         }
     }
 
@@ -100,8 +134,14 @@
 
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
-{#if trend_values}
-    <TrendValue trend={trend_values} n={binSize} info={trend_info} />
+{#if trend_values.length || current_trend !== undefined}
+    <TrendValue
+        trends={trend_values}
+        trend={current_trend}
+        n={binSize}
+        info={trend_info}
+        onRemoveTrend={removeTrend}
+    />
 {/if}
 
 <style>

@@ -2,7 +2,11 @@
     import _ from "lodash"
     import { plotCandlestick, type CandlestickDatum, type CandlestickGraph } from "./Candlestick"
     import { limit_area_width, limitArea } from "./bar"
-    import { trendLine, type TrendLine } from "./trend"
+    import {
+        selectableTrendLine,
+        type DrawnTrend,
+        type TrendLine,
+    } from "./trend"
     import { i18n } from "./i18n"
 
     let svg: SVGElement | null = null
@@ -13,7 +17,9 @@
     export let data: CandlestickGraph
     export let limit = 0
     export let trend = true
-    export let trend_data: TrendLine = undefined
+    export let trend_data: DrawnTrend[] = []
+    export let current_trend: TrendLine = undefined
+    export let removeTrend: (id: number) => void = () => {}
 
     $: realOffset = -Math.abs(offset)
 
@@ -47,7 +53,36 @@
                     return { x: +datum.label, y: total }
                 })
 
-                trend_data = trendLine(chart, trend_points)
+                const hoverAreas = chart.svg.selectAll<SVGRectElement, { label: string }>(
+                    "rect.hover-bar"
+                )
+                selectableTrendLine({
+                    chart,
+                    points: trend_points,
+                    hoverAreas,
+                    hoverToX: (datum) => +datum.label,
+                    xToPixel: (xValue) => {
+                        const x = chart.x(xValue.toString())
+                        if (x === undefined) {
+                            return
+                        }
+                        return x + chart.x.step() / 2
+                    },
+                    onTrendsChange: (nextTrends) => {
+                        trend_data = nextTrends
+                    },
+                    onPreviewTrendChange: (nextTrend) => {
+                        current_trend = nextTrend
+                    },
+                    onRemoveReady: (remove) => {
+                        removeTrend = remove
+                    },
+                    drawDefaultTrend: true,
+                })
+            } else {
+                trend_data = []
+                current_trend = undefined
+                removeTrend = () => {}
             }
         }
     }
