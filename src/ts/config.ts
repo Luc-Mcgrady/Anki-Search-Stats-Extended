@@ -1,5 +1,11 @@
 import type { CATEGORIES } from "./categories"
 
+export type StoredTrendCoordinate = number | string
+export type StoredTrendRange = {
+    startX: StoredTrendCoordinate
+    endX: StoredTrendCoordinate
+}
+
 export type SSEconfig = Partial<{
     loadDelayMs: number
     burdenNotLoad: boolean
@@ -14,6 +20,7 @@ export type SSEconfig = Partial<{
     autoRevlogStats: boolean
     autoMemorisedStats: boolean
     alwaysAllTime: boolean
+    pinnedTrends: Record<string, StoredTrendRange[]>
 }>
 
 export type DeckConfig = {

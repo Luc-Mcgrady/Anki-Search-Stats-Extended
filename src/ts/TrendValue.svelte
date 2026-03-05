@@ -8,6 +8,7 @@
 
     export let info: TrendInfo = {}
     export let onRemoveTrend: ((id: number) => void) | undefined = undefined
+    export let onTogglePinTrend: ((id: number) => void) | undefined = undefined
 
     $: ({ pattern = "", percentage = false, absolute = false } = info)
 
@@ -51,20 +52,36 @@
         {#if trend !== undefined}
             <div class="trend-item">
                 <span class="swatch preview"></span>
-                <span class="trend-text">{i18n("trend-preview")}: {trendSummary(preview_value)}</span>
+                <span class="trend-text">
+                    {i18n("trend-preview")}: {trendSummary(preview_value)}
+                </span>
             </div>
         {/if}
         {#each trend_values as line, i}
             <div class="trend-item">
                 <span class="swatch" style:background={line.colour}></span>
                 <span class="trend-text">{i18n("trend")} {i + 1}: {trendSummary(line.value)}</span>
+                {#if onTogglePinTrend}
+                    <button
+                        type="button"
+                        class:active={line.pinned}
+                        class="pin-trend"
+                        aria-label={line.pinned ? "unpin trend" : "pin trend"}
+                        title={line.pinned ? "unpin trend" : "pin trend"}
+                        on:click={() => onTogglePinTrend?.(line.id)}
+                    >
+                        📌
+                    </button>
+                {/if}
                 {#if onRemoveTrend}
                     <button
                         type="button"
                         class="remove-trend"
                         aria-label="remove trend"
-                        on:click={() => onRemoveTrend?.(line.id)}>x</button
+                        on:click={() => onRemoveTrend?.(line.id)}
                     >
+                        x
+                    </button>
                 {/if}
             </div>
         {/each}
@@ -107,7 +124,7 @@
     }
 
     .remove-trend {
-        margin-left: auto;
+        margin-left: 0.1em;
         border: none;
         background: transparent;
         color: var(--text-faint);
@@ -119,5 +136,28 @@
 
     .remove-trend:hover {
         color: var(--text);
+    }
+
+    .pin-trend {
+        margin-left: auto;
+        border: none;
+        background: transparent;
+        color: var(--text-faint);
+        line-height: 1;
+        font-size: 0.95em;
+        cursor: pointer;
+        padding: 0 0.2em;
+        opacity: 0.45;
+        filter: grayscale(1);
+    }
+
+    .pin-trend:hover {
+        color: var(--text);
+        opacity: 0.75;
+    }
+
+    .pin-trend.active {
+        opacity: 1;
+        filter: none;
     }
 </style>

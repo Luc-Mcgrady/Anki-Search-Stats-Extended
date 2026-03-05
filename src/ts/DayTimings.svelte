@@ -33,5 +33,7 @@
     average
     {limit}
     trend
+    trend_date_axis
+    trend_store_key="misc:review-speed-trend"
     trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
 />

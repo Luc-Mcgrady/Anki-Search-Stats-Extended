@@ -11,12 +11,24 @@
     import TrendValue from "./TrendValue.svelte"
     import {
         selectableTrendLine,
+        pinnedTrendsForKey,
+        type InitialTrend,
         type DrawnTrend,
+        upsertPinnedTrends,
         type TrendInfo,
         type TrendLine,
+        type TrendRange,
         type TrendSelectionController,
     } from "./trend"
+    import { needsStoredRangeMigration, parseStoredRanges, toStoredRange } from "./trendPersistence"
+    import {
+        hiddenPinnedRanges,
+        mergeTrendRanges,
+        mergeVisibleCustomTrends,
+        removeTrendFromAll,
+    } from "./trendSession"
     import { i18n } from "./i18n"
+    import { saveConfigValue } from "./search"
 
     export let data: BarChart
     export let extraRender = (chart: ExtraRenderInput<BarChart>) => {}
@@ -31,6 +43,8 @@
     export let trend_by: (values: number[]) => number = _.sum
     export let trend_info: TrendInfo = {}
     export let loss: boolean = false
+    export let trend_store_key = ""
+    export let trend_date_axis = false
 
     $: min = left_aligned ? 0 : 1
     $: absOffset = Math.abs(offset)
@@ -46,9 +60,48 @@
     export let trend_values: DrawnTrend[] = []
     let current_trend: TrendLine = undefined
     let trend_controller: TrendSelectionController | undefined = undefined
+    let default_trend_enabled = true
+    let all_trends: InitialTrend[] = []
+    let migrated_temporal_store_keys = new Set<string>()
 
     function removeTrend(id: number) {
+        const selectedTrend = trend_values.find((trend) => trend.id === id)
+        all_trends = removeTrendFromAll(all_trends, selectedTrend)
+        if (selectedTrend?.kind === "default") {
+            default_trend_enabled = false
+        }
         trend_controller?.removeTrend(id)
+    }
+
+    function togglePinTrend(id: number) {
+        trend_controller?.togglePin(id)
+    }
+
+    async function savePinnedTrends(storeKey: string, ranges: TrendRange[]) {
+        if (!storeKey) {
+            return
+        }
+        const rangesToPersist = ranges.map((range) => toStoredRange(range, trend_date_axis))
+        await saveConfigValue("pinnedTrends", upsertPinnedTrends(storeKey, rangesToPersist))
+    }
+
+    $: resolvedTrendStoreKey =
+        trend_store_key ||
+        `bar:${data.row_labels.join("|")}:${left_aligned ? "left" : "right"}:${average ? "avg" : "sum"}:${loss ? "loss" : "normal"}`
+    let last_trend_store_key = ""
+    $: if (resolvedTrendStoreKey !== last_trend_store_key) {
+        last_trend_store_key = resolvedTrendStoreKey
+        default_trend_enabled = true
+        all_trends = []
+        trend_values = []
+        current_trend = undefined
+    }
+
+    function absoluteDataIndex(index: number) {
+        if (index < 0) {
+            return data.data.length + index
+        }
+        return index
     }
 
     function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
@@ -57,19 +110,45 @@
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
 
         const trend_data = chart.chart.data.map((datum) => ({
-            x: +datum.label,
+            x: ((datum.trendStart ?? 0) + (datum.trendEnd ?? datum.trendStart ?? 0)) / 2,
+            rangeStart: datum.trendStart ?? datum.trendKey ?? +datum.label,
+            rangeEnd: datum.trendEnd ?? datum.trendKey ?? +datum.label,
             y: trend_by(datum.values),
         }))
 
         if (trend) {
+            const storedPinnedRanges = pinnedTrendsForKey(resolvedTrendStoreKey)
+            const parsedPinnedRanges = parseStoredRanges(storedPinnedRanges, trend_date_axis)
+            const initialPinnedRanges = parsedPinnedRanges.map((range) => range.normalized)
+            const needsMigration = trend_date_axis && needsStoredRangeMigration(parsedPinnedRanges)
+            if (needsMigration && !migrated_temporal_store_keys.has(resolvedTrendStoreKey)) {
+                migrated_temporal_store_keys.add(resolvedTrendStoreKey)
+                const migratedRanges = parsedPinnedRanges.map((range) => range.stored)
+                void saveConfigValue(
+                    "pinnedTrends",
+                    upsertPinnedTrends(resolvedTrendStoreKey, migratedRanges)
+                )
+            }
+
             const hoverAreas = chart.svg.selectAll<SVGRectElement, BarDatum>("rect.hover-bar")
             trend_controller = selectableTrendLine({
                 chart,
                 points: trend_data,
                 hoverAreas,
-                hoverToX: (datum) => +datum.label,
+                hoverToRange: (datum) => ({
+                    startX: datum.trendStart ?? datum.trendKey ?? +datum.label,
+                    endX: datum.trendEnd ?? datum.trendKey ?? +datum.label,
+                }),
                 xToPixel: (xValue) => {
-                    const x = chart.x(xValue.toString())
+                    const matchingDatum = chart.chart.data.find((datum) => {
+                        const start = datum.trendStart ?? datum.trendKey ?? +datum.label
+                        const end = datum.trendEnd ?? datum.trendKey ?? +datum.label
+                        return xValue >= Math.min(start, end) && xValue <= Math.max(start, end)
+                    })
+                    if (!matchingDatum) {
+                        return
+                    }
+                    const x = chart.x(matchingDatum.label)
                     if (x === undefined) {
                         return
                     }
@@ -77,24 +156,44 @@
                 },
                 onTrendsChange: (nextTrends) => {
                     trend_values = nextTrends
+                    all_trends = mergeVisibleCustomTrends(all_trends, nextTrends)
                 },
                 onPreviewTrendChange: (nextTrend) => {
                     current_trend = nextTrend
                 },
-                drawDefaultTrend: true,
+                onControllerReady: (controller) => {
+                    trend_controller = controller
+                },
+                initialPinnedTrends: initialPinnedRanges,
+                initialTrends: all_trends,
+                onPinnedRangesChange: (ranges) => {
+                    const mergedRanges = mergeTrendRanges(
+                        hiddenPinnedRanges(all_trends, trend_values),
+                        ranges
+                    )
+                    void savePinnedTrends(resolvedTrendStoreKey, mergedRanges)
+                },
+                drawDefaultTrend: default_trend_enabled,
             })
         } else {
             trend_values = []
             current_trend = undefined
             trend_controller = undefined
+            default_trend_enabled = true
+            all_trends = []
         }
     }
 
     let bars: BarDatum[]
     $: {
+        const maxIndex = Math.max(data.data.length - 1, 0)
+        const clampIndex = (index: number) => Math.min(Math.max(index, 0), maxIndex)
         bars = _.range(leftmost, realOffset, binSize).map((i) => ({
             label: (i + min).toString(),
             values: loss ? [0, 0] : data.row_labels.map((_) => 0),
+            trendKey: absoluteDataIndex(i),
+            trendStart: clampIndex(absoluteDataIndex(i)),
+            trendEnd: clampIndex(absoluteDataIndex(i + binSize - 1)),
         }))
 
         for (const [i, bar] of separate_bars.entries()) {
@@ -141,6 +240,7 @@
         n={binSize}
         info={trend_info}
         onRemoveTrend={removeTrend}
+        onTogglePinTrend={togglePinTrend}
     />
 {/if}
 

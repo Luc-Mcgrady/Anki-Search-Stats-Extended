@@ -151,6 +151,8 @@
             }}
             average
             trend
+            trend_date_axis
+            trend_store_key="fsrs:average-stability-over-time"
             trend_info={{ pattern: i18n_pattern("stability-per-day") }}
         />
         <p>

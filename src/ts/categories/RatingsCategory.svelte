@@ -33,6 +33,8 @@
             bind:offset={$scroll}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_date_axis
+            trend_store_key="ratings:ratings"
             trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
@@ -60,6 +62,8 @@
             bind:offset={$scroll}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_date_axis
+            trend_store_key="ratings:ratings-by-duration"
             trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
@@ -88,6 +92,7 @@
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
+            trend_store_key="ratings:interval-ratings"
             trend_by={retention_trend}
             trend_info={{
                 pattern: i18n_pattern("retention-per-day-greater-interval"),
@@ -113,6 +118,7 @@
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
+            trend_store_key="ratings:time-ratings"
             trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-second-spent"), percentage: true }}
         />

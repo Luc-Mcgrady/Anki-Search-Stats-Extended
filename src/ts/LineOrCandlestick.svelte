@@ -54,6 +54,11 @@
     export let trend_data: DrawnTrend[] = []
     export let current_trend: TrendLine = undefined
     export let removeTrend: (id: number) => void = () => {}
+    export let togglePinTrend: (id: number) => void = () => {}
+    export let trend_store_key = ""
+
+    $: resolvedTrendStoreKey =
+        trend_store_key || `line:${label}:${cumulative ? "cumulative" : "daily"}`
 </script>
 
 <GraphTypeSelector>
@@ -68,7 +73,15 @@
 </GraphTypeSelector>
 
 {#if type === "total"}
-    <LineGraph data={processed_data} {label} bind:trend_data bind:current_trend bind:removeTrend />
+    <LineGraph
+        data={processed_data}
+        {label}
+        trend_store_key={`${resolvedTrendStoreKey}:total`}
+        bind:trend_data
+        bind:current_trend
+        bind:removeTrend
+        bind:togglePinTrend
+    />
 {:else}
     <Candlestick
         data={candlestick_data}
@@ -78,6 +91,8 @@
         bind:trend_data
         bind:current_trend
         bind:removeTrend
+        bind:togglePinTrend
+        trend_store_key={`${resolvedTrendStoreKey}:candlestick`}
         bind:offset={$scroll}
     />
 {/if}

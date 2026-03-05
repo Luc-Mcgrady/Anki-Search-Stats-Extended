@@ -104,6 +104,8 @@
             bind:offset={$scroll}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_date_axis
+            trend_store_key="introduced:introductory-rating"
             trend_by={(values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}

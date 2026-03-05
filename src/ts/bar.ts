@@ -12,6 +12,9 @@ export type BarDatum = {
     values: number[]
     label: string
     onClick?: () => void
+    trendKey?: number
+    trendStart?: number
+    trendEnd?: number
 }
 
 export type LossBar = [number, number] // [MSE, Count]

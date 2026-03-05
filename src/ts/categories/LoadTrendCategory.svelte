@@ -17,9 +17,11 @@
     let burden_trend: DrawnTrend[] = []
     let burden_preview_trend: TrendLine = undefined
     let removeBurdenTrend: (id: number) => void = () => {}
+    let togglePinBurdenTrend: (id: number) => void = () => {}
     let introduced_load_trend: DrawnTrend[] = []
     let introduced_load_preview_trend: TrendLine = undefined
     let removeIntroducedTrend: (id: number) => void = () => {}
+    let togglePinIntroducedTrend: (id: number) => void = () => {}
 
     $: learn_repetitions = ($revlogStats?.learn_steps_per_card ?? []).reduce(
         (learn_repetitions, count) => {
@@ -40,6 +42,8 @@
             bind:trend_data={burden_trend}
             bind:current_trend={burden_preview_trend}
             bind:removeTrend={removeBurdenTrend}
+            bind:togglePinTrend={togglePinBurdenTrend}
+            trend_store_key="load-trend:burden"
             up_colour={CANDLESTICK_RED}
             down_colour={CANDLESTICK_GREEN}
         />
@@ -52,6 +56,7 @@
             n={$binSize}
             info={{ pattern: i18n_pattern("burden-per-day") }}
             onRemoveTrend={removeBurdenTrend}
+            onTogglePinTrend={togglePinBurdenTrend}
         />
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
@@ -66,6 +71,8 @@
             bind:trend_data={introduced_load_trend}
             bind:current_trend={introduced_load_preview_trend}
             bind:removeTrend={removeIntroducedTrend}
+            bind:togglePinTrend={togglePinIntroducedTrend}
+            trend_store_key="load-trend:introduced-load"
             cumulative={introduced_load_cumulative_mode}
         />
         <label>
@@ -81,6 +88,7 @@
             n={$binSize}
             info={{ pattern: i18n_pattern("introduced-load-per-day") }}
             onRemoveTrend={removeIntroducedTrend}
+            onTogglePinTrend={togglePinIntroducedTrend}
         />
         {#if truncated}
             <Warning>

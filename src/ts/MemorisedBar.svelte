@@ -58,6 +58,7 @@
     let trend_data: DrawnTrend[] = []
     let current_trend: TrendLine = undefined
     let removeTrend: (id: number) => void = () => {}
+    let togglePinTrend: (id: number) => void = () => {}
     let svg: SVGElement | undefined = undefined
 
     function hoverTooltip(x: number, y: number) {
@@ -92,6 +93,8 @@
             bind:trend_data
             bind:current_trend
             bind:removeTrend
+            bind:togglePinTrend
+            trend_store_key="memorised:stable-retrievability"
         />
     {:else if memorised_type == MemorisedType.NOTES}
         <LineOrCandlestick
@@ -100,6 +103,8 @@
             bind:trend_data
             bind:current_trend
             bind:removeTrend
+            bind:togglePinTrend
+            trend_store_key="memorised:notes"
         />
     {:else if memorised_type == MemorisedType.RETRIEVABILITY}
         <LineOrCandlestick
@@ -108,6 +113,8 @@
             bind:trend_data
             bind:current_trend
             bind:removeTrend
+            bind:togglePinTrend
+            trend_store_key="memorised:cards"
         />
     {:else if memorised_type == MemorisedType.CARDS_BY_BURDEN}
         <LineOrCandlestick
@@ -116,6 +123,8 @@
             bind:trend_data
             bind:current_trend
             bind:removeTrend
+            bind:togglePinTrend
+            trend_store_key="memorised:cards-by-burden"
         />
     {:else}
         <LineOrCandlestick
@@ -124,6 +133,8 @@
             bind:trend_data
             bind:current_trend
             bind:removeTrend
+            bind:togglePinTrend
+            trend_store_key="memorised:retrievability"
         />
     {/if}
     <TrendValue
@@ -132,6 +143,7 @@
         trends={trend_data}
         n={$binSize}
         onRemoveTrend={removeTrend}
+        onTogglePinTrend={togglePinTrend}
     />
     <div>
         <label>

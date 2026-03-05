@@ -1,10 +1,20 @@
 import {
+    DEFAULT_TREND_COLOUR,
     createTrendFromData,
+    defaultTrendRange,
+    denormalizeTemporalRange,
     filteredTrendData,
+    isLikelyTimestampMs,
+    normalizeTemporalRange,
+    nextCustomTrendColour,
     nextTrendClickTransition,
+    pinnedTrendsForKey,
     removeTrendById,
+    storedTemporalRange,
     trendColour,
     trendDataInRange,
+    trendRangesEqual,
+    upsertPinnedTrends,
 } from "../src/ts/trend"
 
 describe("trend selection helpers", () => {
@@ -43,6 +53,30 @@ describe("trend selection helpers", () => {
         ])
     })
 
+    test("includes bins that overlap selected range", () => {
+        const points = [
+            { x: 1, y: 1, rangeStart: 0, rangeEnd: 2 },
+            { x: 4, y: 4, rangeStart: 3, rangeEnd: 5 },
+            { x: 7, y: 7, rangeStart: 6, rangeEnd: 8 },
+        ]
+
+        expect(trendDataInRange(points, 2, 3)).toEqual([
+            { x: 1, y: 1, rangeStart: 0, rangeEnd: 2 },
+            { x: 4, y: 4, rangeStart: 3, rangeEnd: 5 },
+        ])
+    })
+
+    test("default trend range uses first and last valid data points", () => {
+        expect(
+            defaultTrendRange([
+                { x: 1, y: 0, rangeStart: 0, rangeEnd: 2 },
+                { x: 4, y: 10, rangeStart: 3, rangeEnd: 5 },
+                { x: 6, y: 9, rangeStart: 6, rangeEnd: 8 },
+                { x: 9, y: 0, rangeStart: 9, rangeEnd: 11 },
+            ])
+        ).toEqual({ startX: 3, endX: 8 })
+    })
+
     test("computes trend slope from valid points", () => {
         const trend = createTrendFromData([
             { x: 0, y: 0 },
@@ -77,11 +111,96 @@ describe("trend selection helpers", () => {
         expect(trendColour(6)).toBe("#e63946")
     })
 
+    test("matches trend ranges regardless of click direction", () => {
+        expect(trendRangesEqual({ startX: 10, endX: 2 }, { startX: 2, endX: 10 })).toBe(true)
+        expect(trendRangesEqual({ startX: 10, endX: 2 }, { startX: 3, endX: 10 })).toBe(false)
+    })
+
+    test("detects timestamp values while keeping legacy day values", () => {
+        expect(isLikelyTimestampMs(1_700_000_000_000)).toBe(true)
+        expect(isLikelyTimestampMs(25_000)).toBe(false)
+    })
+
+    test("normalizes and denormalizes temporal ranges", () => {
+        const toDay = (value: number) => Math.floor(value / 1000)
+        const toMs = (value: number) => value * 1000
+        const toDate = (value: number) => `day-${value}`
+
+        expect(
+            normalizeTemporalRange({ startX: 1_700_000_000_000, endX: 1_700_000_086_400 }, toDay)
+        ).toEqual({
+            startX: 1_700_000_000,
+            endX: 1_700_000_086,
+        })
+        expect(normalizeTemporalRange({ startX: 20_000, endX: 20_010 }, toDay)).toEqual({
+            startX: 20_000,
+            endX: 20_010,
+        })
+        expect(denormalizeTemporalRange({ startX: 20_000, endX: 20_010 }, toMs)).toEqual({
+            startX: 20_000_000,
+            endX: 20_010_000,
+        })
+        expect(storedTemporalRange({ startX: 20_000, endX: 20_010 }, toDate)).toEqual({
+            startX: "day-20000",
+            endX: "day-20010",
+        })
+        expect(storedTemporalRange({ startX: "2025-01-01", endX: "2025-01-10" }, toDate)).toEqual({
+            startX: "2025-01-01",
+            endX: "2025-01-10",
+        })
+    })
+
+    test("default trend uses black and does not shift custom colour order", () => {
+        expect(DEFAULT_TREND_COLOUR).toBe("#000000")
+        expect(nextCustomTrendColour([{ kind: "default" }] as any)).toBe("#e63946")
+        expect(
+            nextCustomTrendColour([{ kind: "default" }, { kind: "custom" }] as any)
+        ).toBe("#1d3557")
+    })
+
     test("removes one trend by id", () => {
         const trends = [
-            { id: 1, colour: "#000", trend: { slope: 1, yStart: 0, calcY: (x: number) => x } },
-            { id: 2, colour: "#111", trend: { slope: 2, yStart: 0, calcY: (x: number) => x } },
+            {
+                id: 1,
+                colour: "#000",
+                trend: { slope: 1, yStart: 0, calcY: (x: number) => x },
+                startX: 0,
+                endX: 1,
+                pinned: false,
+                kind: "custom",
+            },
+            {
+                id: 2,
+                colour: "#111",
+                trend: { slope: 2, yStart: 0, calcY: (x: number) => x },
+                startX: 1,
+                endX: 2,
+                pinned: true,
+                kind: "custom",
+            },
         ]
         expect(removeTrendById(trends as any, 1)).toEqual([trends[1]])
+    })
+
+    test("persists pinned trends under a store key", () => {
+        SSEconfig.pinnedTrends = {}
+        upsertPinnedTrends("chart:test", [
+            { startX: 3, endX: 5 },
+            { startX: 10, endX: 11 },
+        ])
+
+        expect(pinnedTrendsForKey("chart:test")).toEqual([
+            { startX: 3, endX: 5 },
+            { startX: 10, endX: 11 },
+        ])
+    })
+
+    test("keeps human-readable pinned trend dates", () => {
+        SSEconfig.pinnedTrends = {
+            "chart:dates": [{ startX: "2025-01-01", endX: "2025-01-12" }],
+        }
+        expect(pinnedTrendsForKey("chart:dates")).toEqual([
+            { startX: "2025-01-01", endX: "2025-01-12" },
+        ])
     })
 })

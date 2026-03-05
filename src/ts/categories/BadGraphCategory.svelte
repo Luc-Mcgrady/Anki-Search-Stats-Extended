@@ -78,6 +78,7 @@
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
+            trend_store_key="bad:naive-sibling-similarity"
             trend_by={retention_trend}
             trend_info={{
                 pattern: i18n_pattern("retention-per-day-since-last-sibling-review"),
@@ -106,6 +107,7 @@
             bind:binSize={fatigue_bin_size}
             left_aligned
             trend={normalize_ease}
+            trend_store_key="bad:rating-fatigue"
             trend_by={retention_trend}
             trend_info={{
                 pattern: i18n_pattern("retention-per-prior-review-that-day"),
@@ -139,6 +141,7 @@
             average
             loss
             trend
+            trend_store_key="bad:fsrs-loss-by-fatigue"
             trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
         ></BarScrollable>
         <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>

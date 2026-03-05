@@ -2,8 +2,14 @@ import * as d3 from "d3"
 import { clearChart, defaultGraphBounds } from "./graph"
 import { day_ms } from "./revlogGraphs"
 import { tooltip, tooltipShown } from "./stores"
-import { selectableTrendLine, type DrawnTrend, type TrendLine } from "./trend"
 import { tooltipX } from "./tooltip"
+import {
+    selectableTrendLine,
+    type DrawnTrend,
+    type TrendLine,
+    type TrendRange,
+    type TrendSelectionController,
+} from "./trend"
 
 export function gridLines(
     svg: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -42,17 +48,25 @@ export function renderLineChart(
     {
         onTrendsChange = () => {},
         onPreviewTrendChange = () => {},
-        onRemoveReady = () => {},
+        onControllerReady = () => {},
+        initialPinnedTrends = [],
+        onPinnedRangesChange = () => {},
     }: {
         onTrendsChange?: (trends: DrawnTrend[]) => void
         onPreviewTrendChange?: (trend: TrendLine) => void
-        onRemoveReady?: (removeTrend: (id: number) => void) => void
+        onControllerReady?: (controller: TrendSelectionController) => void
+        initialPinnedTrends?: TrendRange[]
+        onPinnedRangesChange?: (ranges: TrendRange[]) => void
     } = {}
 ) {
     if (!svg) {
         onTrendsChange([])
         onPreviewTrendChange(undefined)
-        onRemoveReady(() => {})
+        onControllerReady({
+            removeTrend: () => {},
+            togglePin: () => {},
+            clear: () => {},
+        })
         return
     }
     // This is a hacky fix and I should probably fix the d3 calls below instead
@@ -75,7 +89,11 @@ export function renderLineChart(
     if (!date_values.length) {
         onTrendsChange([])
         onPreviewTrendChange(undefined)
-        onRemoveReady(() => {})
+        onControllerReady({
+            removeTrend: () => {},
+            togglePin: () => {},
+            clear: () => {},
+        })
         return
     }
 
@@ -141,11 +159,13 @@ export function renderLineChart(
         chart: { svg: axis, y },
         points: date_values.map((value) => ({ x: value.day, y: value.value })),
         hoverAreas: hoverBars,
-        hoverToX: (datum) => datum.day,
+        hoverToRange: (datum) => ({ startX: datum.day, endX: datum.day }),
         xToPixel: (day) => x(new Date(day * day_ms)),
         onTrendsChange,
         onPreviewTrendChange,
-        onRemoveReady,
+        onControllerReady,
+        initialPinnedTrends,
+        onPinnedRangesChange,
         drawDefaultTrend: false,
     })
 
