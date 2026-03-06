@@ -17,6 +17,7 @@ import {
     storedTemporalRange,
     trendColour,
     trendDataInRange,
+    trendPatternBySlope,
     trendRangesEqual,
     upsertPinnedTrendsSnapshot,
     upsertPinnedTrends,
@@ -125,6 +126,34 @@ describe("trend selection helpers", () => {
     test("trend colour cycles through palette", () => {
         expect(trendColour(0)).toBe("#e63946")
         expect(trendColour(6)).toBe("#e63946")
+    })
+
+    test("selects signed pattern by trend slope when provided", () => {
+        const remembered = { type: "Text", value: "remembered" } as any
+        const forgotten = { type: "Text", value: "forgotten" } as any
+        const fallback = { type: "Text", value: "fallback" } as any
+
+        expect(
+            trendPatternBySlope({ slope: 0.5 } as any, {
+                pattern: fallback,
+                positivePattern: remembered,
+                negativePattern: forgotten,
+            })
+        ).toBe(remembered)
+        expect(
+            trendPatternBySlope({ slope: -0.5 } as any, {
+                pattern: fallback,
+                positivePattern: remembered,
+                negativePattern: forgotten,
+            })
+        ).toBe(forgotten)
+        expect(
+            trendPatternBySlope(undefined, {
+                pattern: fallback,
+                positivePattern: remembered,
+                negativePattern: forgotten,
+            })
+        ).toBe(fallback)
     })
 
     test("matches trend ranges regardless of click direction", () => {

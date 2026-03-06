@@ -1,6 +1,6 @@
 <script lang="ts">
     import { i18n, i18n_bundle } from "./i18n"
-    import type { DrawnTrend, TrendLine, TrendInfo } from "./trend"
+    import { trendPatternBySlope, type DrawnTrend, type TrendLine, type TrendInfo } from "./trend"
 
     export let trend: TrendLine = undefined
     export let trends: DrawnTrend[] = []
@@ -10,7 +10,7 @@
     export let onRemoveTrend: ((id: number) => void) | undefined = undefined
     export let onTogglePinTrend: ((id: number) => void) | undefined = undefined
 
-    $: ({ pattern = "", percentage = false, absolute = false } = info)
+    $: ({ pattern = "", positivePattern = undefined, negativePattern = undefined, percentage = false, absolute = false } = info)
 
     function valueFromTrend(trend: TrendLine) {
         if (trend === undefined) {
@@ -24,7 +24,12 @@
     }
 
     $: preview_value = valueFromTrend(trend)
-    $: trend_values = trends.map((line) => ({ ...line, value: valueFromTrend(line.trend) }))
+    $: preview_pattern = trendPatternBySlope(trend, { pattern, positivePattern, negativePattern })
+    $: trend_values = trends.map((line) => ({
+        ...line,
+        value: valueFromTrend(line.trend),
+        pattern: trendPatternBySlope(line.trend, { pattern, positivePattern, negativePattern }),
+    }))
 
     function display(trend_value: number) {
         return (
@@ -33,12 +38,12 @@
         )
     }
 
-    function trendSummary(value: number) {
-        const nValue = i18n_bundle.formatPattern(pattern, { n, value: display(value) })
+    function trendSummary(value: number, currentPattern: TrendInfo["pattern"]) {
+        const nValue = i18n_bundle.formatPattern(currentPattern ?? "", { n, value: display(value) })
         if (n <= 1) {
             return nValue
         }
-        const perDayValue = i18n_bundle.formatPattern(pattern, {
+        const perDayValue = i18n_bundle.formatPattern(currentPattern ?? "", {
             n: 1,
             value: display(value / n),
         })
@@ -53,14 +58,14 @@
             <div class="trend-item">
                 <span class="swatch preview"></span>
                 <span class="trend-text">
-                    {i18n("trend-preview")}: {trendSummary(preview_value)}
+                    {i18n("trend-preview")}: {trendSummary(preview_value, preview_pattern)}
                 </span>
             </div>
         {/if}
         {#each trend_values as line, i}
             <div class="trend-item">
                 <span class="swatch" style:background={line.colour}></span>
-                <span class="trend-text">{i18n("trend")} {i + 1}: {trendSummary(line.value)}</span>
+                <span class="trend-text">{i18n("trend")} {i + 1}: {trendSummary(line.value, line.pattern)}</span>
                 {#if onTogglePinTrend}
                     <button
                         type="button"

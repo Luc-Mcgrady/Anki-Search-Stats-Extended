@@ -8,6 +8,8 @@ export type { StoredTrendCoordinate, StoredTrendRange } from "./config"
 
 export type TrendInfo = Partial<{
     pattern: Pattern
+    positivePattern: Pattern
+    negativePattern: Pattern
     percentage: boolean
     absolute: boolean
 }>
@@ -154,6 +156,20 @@ export function trendColour(index: number) {
 
 export function nextCustomTrendColour(trends: Pick<DrawnTrend, "kind">[]) {
     return trendColour(trends.filter((trend) => trend.kind === "custom").length)
+}
+
+export function trendPatternBySlope(
+    trend: TrendLine,
+    {
+        pattern = "",
+        positivePattern = undefined,
+        negativePattern = undefined,
+    }: Pick<TrendInfo, "pattern" | "positivePattern" | "negativePattern">
+) {
+    if (!trend || !positivePattern || !negativePattern) {
+        return pattern
+    }
+    return trend.slope > 0 ? positivePattern : negativePattern
 }
 
 export function trendRangesEqual(a: TrendRange, b: TrendRange) {

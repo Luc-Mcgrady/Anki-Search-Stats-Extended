@@ -44,17 +44,11 @@
         })
     )
 
-    $: latest_trend =
-        trendSelection.previewTrend ??
-        trendSelection.visibleTrends[trendSelection.visibleTrends.length - 1]?.trend
-    $: pattern =
-        (latest_trend?.slope || 0) > 0
-            ? i18n_pattern("remembered-per-day")
-            : i18n_pattern("forgotten-per-day")
-
     let trend_info: TrendInfo
     $: trend_info = {
-        pattern,
+        pattern: i18n_pattern("remembered-per-day"),
+        positivePattern: i18n_pattern("remembered-per-day"),
+        negativePattern: i18n_pattern("forgotten-per-day"),
         absolute: true,
     }
 
