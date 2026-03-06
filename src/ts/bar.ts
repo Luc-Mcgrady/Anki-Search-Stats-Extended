@@ -12,7 +12,6 @@ export type BarDatum = {
     values: number[]
     label: string
     onClick?: () => void
-    trendKey?: number
     trendStart?: number
     trendEnd?: number
 }

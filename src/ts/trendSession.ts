@@ -1,8 +1,10 @@
 import {
     type DrawnTrend,
     type InitialTrend,
+    type TrendLine,
     trendRangesEqual,
     type TrendRange,
+    type TrendSelectionController,
 } from "./trend"
 
 type TrendIdentity = Pick<InitialTrend, "startX" | "endX" | "kind">
@@ -59,4 +61,22 @@ export function mergeTrendRanges(base: TrendRange[], extra: TrendRange[]) {
         }
     }
     return merged
+}
+
+export type GraphTrendSessionState = {
+    visibleTrends: DrawnTrend[]
+    previewTrend: TrendLine
+    controller: TrendSelectionController | undefined
+    allTrends: InitialTrend[]
+    defaultTrendEnabled: boolean
+}
+
+export function createGraphTrendSessionState(): GraphTrendSessionState {
+    return {
+        visibleTrends: [],
+        previewTrend: undefined,
+        controller: undefined,
+        allTrends: [],
+        defaultTrendEnabled: true,
+    }
 }

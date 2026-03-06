@@ -4,6 +4,7 @@
     import GraphCategory from "../GraphCategory.svelte"
     import MatureFilterSelector from "../MatureFilterSelector.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "../i18n"
+    import { TREND_PERSISTENCE_KEYS } from "../trendPersistenceKeys"
     import { barDateLabeler, barStringLabeler } from "../bar"
     import { binSize, scroll, searchLimit, revlogStats } from "../stores"
     import { today, easeBarChart, type RevlogBuckets } from "../revlogGraphs"
@@ -34,7 +35,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_date_axis
-            trend_store_key="ratings:ratings"
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.ratings.ratings}
             trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
@@ -63,7 +64,7 @@
             average={normalize_ease}
             trend={normalize_ease}
             trend_date_axis
-            trend_store_key="ratings:ratings-by-duration"
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.ratings.ratingsByDuration}
             trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
@@ -92,7 +93,7 @@
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
-            trend_store_key="ratings:interval-ratings"
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.ratings.intervalRatings}
             trend_by={retention_trend}
             trend_info={{
                 pattern: i18n_pattern("retention-per-day-greater-interval"),
@@ -118,7 +119,7 @@
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
-            trend_store_key="ratings:time-ratings"
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.ratings.timeRatings}
             trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-second-spent"), percentage: true }}
         />

@@ -43,6 +43,11 @@ type TrendClickTransition = {
     range?: TrendRange
 }
 
+type TrendCancelTransition = {
+    nextAnchorX: number | undefined
+    clearPreview: boolean
+}
+
 type TrendSelectionOptions<T> = {
     chart: Pick<ExtraRenderInput<unknown>, "svg" | "y">
     points: TrendDatum[]
@@ -65,10 +70,28 @@ export type TrendSelectionController = {
     clear: () => void
 }
 
+export type TrendSelectionState = {
+    visibleTrends: DrawnTrend[]
+    previewTrend: TrendLine
+    removeTrend: (id: number) => void
+    togglePinTrend: (id: number) => void
+}
+
+export function emptyTrendSelectionState(): TrendSelectionState {
+    return {
+        visibleTrends: [],
+        previewTrend: undefined,
+        removeTrend: () => {},
+        togglePinTrend: () => {},
+    }
+}
+
 const trendColours = ["#e63946", "#1d3557", "#2a9d8f", "#f4a261", "#6a4c93", "#457b9d"]
 const trendColoursNight = ["#ff9aa2", "#a9def9", "#b8f2e6", "#ffd6a5", "#d0bfff", "#bde0fe"]
 export const DEFAULT_TREND_COLOUR = "#000000"
 export const LIKELY_TIMESTAMP_MS_MIN = 10_000_000_000
+export const PREVIEW_TREND_LINE_DASH = "4 2"
+export const FIXED_TREND_LINE_DASH = "none"
 
 function isValidTrendDatum(datum: TrendDatum) {
     return Number.isFinite(datum.x) && Number.isFinite(datum.y) && !!datum.y
@@ -112,6 +135,13 @@ export function nextTrendClickTransition(
         return { nextAnchorX: clickedX }
     }
     return { nextAnchorX: undefined, range: { startX: anchorX, endX: clickedX } }
+}
+
+export function nextTrendCancelTransition(anchorX: number | undefined): TrendCancelTransition {
+    return {
+        nextAnchorX: undefined,
+        clearPreview: anchorX !== undefined,
+    }
 }
 
 export function trendColour(index: number) {
@@ -203,15 +233,24 @@ export function pinnedTrendsForKey(storeKey: string) {
     return stored.filter(isTrendRange)
 }
 
-export function upsertPinnedTrends(storeKey: string, ranges: StoredTrendRange[]) {
-    const allPinned = { ...(SSEconfig.pinnedTrends ?? {}) }
+export function upsertPinnedTrendsSnapshot(
+    allPinned: Record<string, StoredTrendRange[]>,
+    storeKey: string,
+    ranges: StoredTrendRange[]
+) {
+    const nextPinned = { ...allPinned }
     if (ranges.length) {
-        allPinned[storeKey] = ranges
+        nextPinned[storeKey] = ranges
     } else {
-        delete allPinned[storeKey]
+        delete nextPinned[storeKey]
     }
-    SSEconfig.pinnedTrends = allPinned
-    return allPinned
+    return nextPinned
+}
+
+export function upsertPinnedTrends(storeKey: string, ranges: StoredTrendRange[]) {
+    const nextPinned = upsertPinnedTrendsSnapshot(SSEconfig.pinnedTrends ?? {}, storeKey, ranges)
+    SSEconfig.pinnedTrends = nextPinned
+    return nextPinned
 }
 
 function trendEndPoints(data: TrendDatum[]) {
@@ -245,7 +284,7 @@ function drawTrendLine(
     colour = trendColour(0),
     className = "sse-trend-line",
     trendId?: number,
-    lineDash?: string
+    lineDash = FIXED_TREND_LINE_DASH
 ) {
     const [rangeStart, rangeEnd] = y.range()
     const minY = Math.min(rangeStart, rangeEnd)
@@ -260,11 +299,9 @@ function drawTrendLine(
         .attr("y2", clampY(trend.calcY(endX)))
         .style("stroke", colour)
         .style("stroke-width", 1.5)
+        .style("stroke-dasharray", lineDash)
     if (trendId !== undefined) {
         line.attr("data-trend-id", trendId)
-    }
-    if (lineDash) {
-        line.style("stroke-dasharray", lineDash)
     }
 }
 
@@ -431,7 +468,7 @@ export function selectableTrendLine<T>({
             previewColour,
             "sse-trend-line-preview",
             undefined,
-            "4 2"
+            PREVIEW_TREND_LINE_DASH
         )
         onPreviewTrendChange(trendData.trend)
     }
@@ -480,7 +517,9 @@ export function selectableTrendLine<T>({
         const existing = trends.find((trend) => trendRangesEqual(trend, pinnedTrend))
         if (existing) {
             if (!existing.pinned) {
-                existing.pinned = true
+                trends = trends.map((trend) =>
+                    trend.id === existing.id ? { ...trend, pinned: true } : trend
+                )
             }
             continue
         }
@@ -531,6 +570,15 @@ export function selectableTrendLine<T>({
                 kind: "custom",
             })
             anchorX = undefined
+        })
+        .on("contextmenu.trend", (event) => {
+            const transition = nextTrendCancelTransition(anchorX)
+            anchorX = transition.nextAnchorX
+            if (!transition.clearPreview) {
+                return
+            }
+            event.preventDefault()
+            clearPreview()
         })
 
     return controller

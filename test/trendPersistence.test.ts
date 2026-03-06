@@ -12,6 +12,11 @@ describe("trend persistence helpers", () => {
             endX: 4,
         })
         expect(toStoredRange({ startX: 2, endX: 4 }, false)).toEqual({ startX: 2, endX: 4 })
+        expect(fromStoredRange({ startX: "  -2.5e1  ", endX: ".5" }, false)).toEqual({
+            startX: -25,
+            endX: 0.5,
+        })
+        expect(fromStoredRange({ startX: "12abc", endX: "4" }, false)).toBeUndefined()
     })
 
     test("supports temporal ranges from human-readable formats only", () => {

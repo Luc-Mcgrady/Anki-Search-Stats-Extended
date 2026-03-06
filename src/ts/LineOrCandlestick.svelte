@@ -10,7 +10,7 @@
     import { i18n } from "./i18n"
     import LineGraph from "./LineGraph.svelte"
     import { binSize, scroll, searchLimit } from "./stores"
-    import type { DrawnTrend, TrendLine } from "./trend"
+    import { emptyTrendSelectionState, type DrawnTrend, type TrendLine, type TrendSelectionState } from "./trend"
 
     let type = "total"
     export let data: number[]
@@ -51,14 +51,19 @@
             down_colour,
         }
 
-    export let trend_data: DrawnTrend[] = []
-    export let current_trend: TrendLine = undefined
-    export let removeTrend: (id: number) => void = () => {}
-    export let togglePinTrend: (id: number) => void = () => {}
-    export let trend_store_key = ""
+    let visibleTrends: DrawnTrend[] = []
+    let previewTrend: TrendLine = undefined
+    let removeTrend: (id: number) => void = () => {}
+    let togglePinTrend: (id: number) => void = () => {}
+    export let trendSelection: TrendSelectionState = emptyTrendSelectionState()
+    export let trendPersistenceKey: string
 
-    $: resolvedTrendStoreKey =
-        trend_store_key || `line:${label}:${cumulative ? "cumulative" : "daily"}`
+    $: trendSelection = {
+        visibleTrends,
+        previewTrend,
+        removeTrend,
+        togglePinTrend,
+    }
 </script>
 
 <GraphTypeSelector>
@@ -76,9 +81,9 @@
     <LineGraph
         data={processed_data}
         {label}
-        trend_store_key={`${resolvedTrendStoreKey}:total`}
-        bind:trend_data
-        bind:current_trend
+        trendPersistenceKey={`${trendPersistenceKey}:total`}
+        bind:trend_data={visibleTrends}
+        bind:current_trend={previewTrend}
         bind:removeTrend
         bind:togglePinTrend
     />
@@ -88,11 +93,11 @@
         bind:bins
         bind:binSize={$binSize}
         {limit}
-        bind:trend_data
-        bind:current_trend
+        bind:trend_data={visibleTrends}
+        bind:current_trend={previewTrend}
         bind:removeTrend
         bind:togglePinTrend
-        trend_store_key={`${resolvedTrendStoreKey}:candlestick`}
+        trendPersistenceKey={`${trendPersistenceKey}:candlestick`}
         bind:offset={$scroll}
     />
 {/if}

@@ -10,6 +10,7 @@
     import ForgettingCurve from "../ForgettingCurve.svelte"
     import TimeMachineScroll from "../TimeMachineScroll.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "../i18n"
+    import { TREND_PERSISTENCE_KEYS } from "../trendPersistenceKeys"
     import { barDateLabeler, barStringLabeler, barHourLabeler, type BarChart } from "../bar"
     import { memorised_stats, scroll, searchLimit, binSize, revlogStats } from "../stores"
     import { today, day_ms, no_rollover_today } from "../revlogGraphs"
@@ -152,7 +153,7 @@
             average
             trend
             trend_date_axis
-            trend_store_key="fsrs:average-stability-over-time"
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.fsrs.averageStabilityOverTime}
             trend_info={{ pattern: i18n_pattern("stability-per-day") }}
         />
         <p>

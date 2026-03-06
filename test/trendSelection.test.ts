@@ -1,10 +1,14 @@
 import {
+    FIXED_TREND_LINE_DASH,
     DEFAULT_TREND_COLOUR,
+    PREVIEW_TREND_LINE_DASH,
     createTrendFromData,
     defaultTrendRange,
     denormalizeTemporalRange,
+    emptyTrendSelectionState,
     filteredTrendData,
     isLikelyTimestampMs,
+    nextTrendCancelTransition,
     normalizeTemporalRange,
     nextCustomTrendColour,
     nextTrendClickTransition,
@@ -14,6 +18,7 @@ import {
     trendColour,
     trendDataInRange,
     trendRangesEqual,
+    upsertPinnedTrendsSnapshot,
     upsertPinnedTrends,
 } from "../src/ts/trend"
 
@@ -106,6 +111,17 @@ describe("trend selection helpers", () => {
         })
     })
 
+    test("right click transition cancels only when a draw is in progress", () => {
+        expect(nextTrendCancelTransition(undefined)).toEqual({
+            nextAnchorX: undefined,
+            clearPreview: false,
+        })
+        expect(nextTrendCancelTransition(4)).toEqual({
+            nextAnchorX: undefined,
+            clearPreview: true,
+        })
+    })
+
     test("trend colour cycles through palette", () => {
         expect(trendColour(0)).toBe("#e63946")
         expect(trendColour(6)).toBe("#e63946")
@@ -158,6 +174,19 @@ describe("trend selection helpers", () => {
         ).toBe("#1d3557")
     })
 
+    test("uses dotted preview line and solid fixed line styles", () => {
+        expect(PREVIEW_TREND_LINE_DASH).toBe("4 2")
+        expect(FIXED_TREND_LINE_DASH).toBe("none")
+    })
+
+    test("builds an empty trend selection state", () => {
+        const state = emptyTrendSelectionState()
+        expect(state.visibleTrends).toEqual([])
+        expect(state.previewTrend).toBeUndefined()
+        expect(() => state.removeTrend(1)).not.toThrow()
+        expect(() => state.togglePinTrend(1)).not.toThrow()
+    })
+
     test("removes one trend by id", () => {
         const trends = [
             {
@@ -193,6 +222,21 @@ describe("trend selection helpers", () => {
             { startX: 3, endX: 5 },
             { startX: 10, endX: 11 },
         ])
+    })
+
+    test("builds pinned trend snapshots immutably", () => {
+        const existing = {
+            old: [{ startX: 1, endX: 2 }],
+        }
+        const next = upsertPinnedTrendsSnapshot(existing, "new", [{ startX: 3, endX: 4 }])
+
+        expect(existing).toEqual({
+            old: [{ startX: 1, endX: 2 }],
+        })
+        expect(next).toEqual({
+            old: [{ startX: 1, endX: 2 }],
+            new: [{ startX: 3, endX: 4 }],
+        })
     })
 
     test("keeps human-readable pinned trend dates", () => {

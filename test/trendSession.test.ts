@@ -1,4 +1,5 @@
 import {
+    createGraphTrendSessionState,
     hiddenPinnedRanges,
     mergeTrendRanges,
     mergeVisibleCustomTrends,
@@ -6,6 +7,16 @@ import {
 } from "../src/ts/trendSession"
 
 describe("trend session helpers", () => {
+    test("creates an empty graph trend session state", () => {
+        expect(createGraphTrendSessionState()).toEqual({
+            visibleTrends: [],
+            previewTrend: undefined,
+            controller: undefined,
+            allTrends: [],
+            defaultTrendEnabled: true,
+        })
+    })
+
     test("merges only custom visible trends and keeps updates stable", () => {
         const initial = [
             {

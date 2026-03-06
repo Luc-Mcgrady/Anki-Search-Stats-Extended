@@ -3,10 +3,11 @@
     import GraphContainer from "./GraphContainer.svelte"
     import LineOrCandlestick from "./LineOrCandlestick.svelte"
     import { binSize, memorised_stats } from "./stores"
-    import type { DrawnTrend, TrendInfo, TrendLine } from "./trend"
+    import { emptyTrendSelectionState, type TrendInfo, type TrendSelectionState } from "./trend"
     import TrendValue from "./TrendValue.svelte"
     import { matrix } from "./matrix"
     import { i18n, i18n_pattern } from "./i18n"
+    import { TREND_PERSISTENCE_KEYS } from "./trendPersistenceKeys"
     import MemorisedCalculator from "./MemorisedCalculator.svelte"
 
     export let burden: number[] = []
@@ -43,7 +44,9 @@
         })
     )
 
-    $: latest_trend = current_trend ?? trend_data[trend_data.length - 1]?.trend
+    $: latest_trend =
+        trendSelection.previewTrend ??
+        trendSelection.visibleTrends[trendSelection.visibleTrends.length - 1]?.trend
     $: pattern =
         (latest_trend?.slope || 0) > 0
             ? i18n_pattern("remembered-per-day")
@@ -55,10 +58,7 @@
         absolute: true,
     }
 
-    let trend_data: DrawnTrend[] = []
-    let current_trend: TrendLine = undefined
-    let removeTrend: (id: number) => void = () => {}
-    let togglePinTrend: (id: number) => void = () => {}
+    let trendSelection: TrendSelectionState = emptyTrendSelectionState()
     let svg: SVGElement | undefined = undefined
 
     function hoverTooltip(x: number, y: number) {
@@ -90,60 +90,45 @@
         <LineOrCandlestick
             data={stable_retrievability_days}
             label={i18n("cards-and-stability")}
-            bind:trend_data
-            bind:current_trend
-            bind:removeTrend
-            bind:togglePinTrend
-            trend_store_key="memorised:stable-retrievability"
+            bind:trendSelection
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.stableRetrievability}
         />
     {:else if memorised_type == MemorisedType.NOTES}
         <LineOrCandlestick
             data={Array.from($memorised_stats.noteRetrievabilityDays || [])}
             label={i18n("notes")}
-            bind:trend_data
-            bind:current_trend
-            bind:removeTrend
-            bind:togglePinTrend
-            trend_store_key="memorised:notes"
+            bind:trendSelection
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.notes}
         />
     {:else if memorised_type == MemorisedType.RETRIEVABILITY}
         <LineOrCandlestick
             data={retrievabilityDays}
             label={i18n("cards")}
-            bind:trend_data
-            bind:current_trend
-            bind:removeTrend
-            bind:togglePinTrend
-            trend_store_key="memorised:cards"
+            bind:trendSelection
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.cards}
         />
     {:else if memorised_type == MemorisedType.CARDS_BY_BURDEN}
         <LineOrCandlestick
             data={cardsByBurdenByDays}
             label={i18n("cards-by-burden")}
-            bind:trend_data
-            bind:current_trend
-            bind:removeTrend
-            bind:togglePinTrend
-            trend_store_key="memorised:cards-by-burden"
+            bind:trendSelection
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.cardsByBurden}
         />
     {:else}
         <LineOrCandlestick
             data={average_r}
             label={i18n("retrievability")}
-            bind:trend_data
-            bind:current_trend
-            bind:removeTrend
-            bind:togglePinTrend
-            trend_store_key="memorised:retrievability"
+            bind:trendSelection
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.retrievability}
         />
     {/if}
     <TrendValue
         info={trend_info}
-        trend={current_trend}
-        trends={trend_data}
+        trend={trendSelection.previewTrend}
+        trends={trendSelection.visibleTrends}
         n={$binSize}
-        onRemoveTrend={removeTrend}
-        onTogglePinTrend={togglePinTrend}
+        onRemoveTrend={trendSelection.removeTrend}
+        onTogglePinTrend={trendSelection.togglePinTrend}
     />
     <div>
         <label>

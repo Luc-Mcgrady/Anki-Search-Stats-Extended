@@ -6,6 +6,7 @@
     import type { GraphsResponse_ReviewCountsAndTimes } from "./proto/anki/stats_pb"
     import { today } from "./revlogGraphs"
     import { searchLimit } from "./stores"
+    import { TREND_PERSISTENCE_KEYS } from "./trendPersistenceKeys"
     import TrendValue from "./TrendValue.svelte"
 
     export let data: GraphsResponse_ReviewCountsAndTimes | undefined
@@ -34,6 +35,6 @@
     {limit}
     trend
     trend_date_axis
-    trend_store_key="misc:review-speed-trend"
+    trendPersistenceKey={TREND_PERSISTENCE_KEYS.misc.reviewSpeedTrend}
     trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
 />

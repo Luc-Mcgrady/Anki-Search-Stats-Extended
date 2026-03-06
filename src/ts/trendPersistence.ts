@@ -7,11 +7,17 @@ export type ParsedStoredRange = {
     stored: StoredTrendRange
 }
 
+const strictNumericPattern = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/
+
 function storedCoordinateToNumber(value: StoredTrendCoordinate) {
     if (typeof value === "number") {
-        return value
+        return Number.isFinite(value) ? value : undefined
     }
-    const parsed = Number.parseFloat(value)
+    const normalized = value.trim()
+    if (!strictNumericPattern.test(normalized)) {
+        return
+    }
+    const parsed = Number(normalized)
     return Number.isFinite(parsed) ? parsed : undefined
 }
 
