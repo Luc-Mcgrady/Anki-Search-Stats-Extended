@@ -77,45 +77,36 @@
             return (r ?? 0) / (c ?? 1)
         })
     }
+
+    let memorised_data: number[] = []
+    let memorised_label = i18n("cards")
+    $: {
+        if (memorised_type === MemorisedType.STABLE_RETRIEVABILITY) {
+            memorised_data = stable_retrievability_days ?? []
+            memorised_label = i18n("cards-and-stability")
+        } else if (memorised_type == MemorisedType.NOTES) {
+            memorised_data = Array.from($memorised_stats?.noteRetrievabilityDays || [])
+            memorised_label = i18n("notes")
+        } else if (memorised_type == MemorisedType.CARDS_BY_BURDEN) {
+            memorised_data = cardsByBurdenByDays
+            memorised_label = i18n("cards-by-burden")
+        } else if (memorised_type == MemorisedType.AVERAGE) {
+            memorised_data = average_r
+            memorised_label = i18n("retrievability")
+        } else {
+            memorised_data = retrievabilityDays ?? []
+            memorised_label = i18n("cards")
+        }
+    }
 </script>
 
 {#if $memorised_stats}
-    {#if memorised_type === MemorisedType.STABLE_RETRIEVABILITY}
-        <LineOrCandlestick
-            data={stable_retrievability_days}
-            label={i18n("cards-and-stability")}
-            bind:trendSelection
-            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.stableRetrievability}
-        />
-    {:else if memorised_type == MemorisedType.NOTES}
-        <LineOrCandlestick
-            data={Array.from($memorised_stats.noteRetrievabilityDays || [])}
-            label={i18n("notes")}
-            bind:trendSelection
-            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.notes}
-        />
-    {:else if memorised_type == MemorisedType.RETRIEVABILITY}
-        <LineOrCandlestick
-            data={retrievabilityDays}
-            label={i18n("cards")}
-            bind:trendSelection
-            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.cards}
-        />
-    {:else if memorised_type == MemorisedType.CARDS_BY_BURDEN}
-        <LineOrCandlestick
-            data={cardsByBurdenByDays}
-            label={i18n("cards-by-burden")}
-            bind:trendSelection
-            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.cardsByBurden}
-        />
-    {:else}
-        <LineOrCandlestick
-            data={average_r}
-            label={i18n("retrievability")}
-            bind:trendSelection
-            trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.retrievability}
-        />
-    {/if}
+    <LineOrCandlestick
+        data={memorised_data}
+        label={memorised_label}
+        bind:trendSelection
+        trendPersistenceKey={TREND_PERSISTENCE_KEYS.memorised.shared}
+    />
     <TrendValue
         info={trend_info}
         trend={trendSelection.previewTrend}

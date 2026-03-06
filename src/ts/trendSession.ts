@@ -1,8 +1,8 @@
 import {
+    trendRangesEqual,
     type DrawnTrend,
     type InitialTrend,
     type TrendLine,
-    trendRangesEqual,
     type TrendRange,
     type TrendSelectionController,
 } from "./trend"
@@ -33,7 +33,10 @@ export function mergeVisibleCustomTrends(allTrends: InitialTrend[], visibleTrend
     return merged
 }
 
-export function removeTrendFromAll(allTrends: InitialTrend[], selectedTrend: DrawnTrend | undefined) {
+export function removeTrendFromAll(
+    allTrends: InitialTrend[],
+    selectedTrend: DrawnTrend | undefined
+) {
     if (!selectedTrend) {
         return allTrends
     }

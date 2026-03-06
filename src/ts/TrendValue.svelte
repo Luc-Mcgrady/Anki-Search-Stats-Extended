@@ -10,7 +10,13 @@
     export let onRemoveTrend: ((id: number) => void) | undefined = undefined
     export let onTogglePinTrend: ((id: number) => void) | undefined = undefined
 
-    $: ({ pattern = "", positivePattern = undefined, negativePattern = undefined, percentage = false, absolute = false } = info)
+    $: ({
+        pattern = "",
+        positivePattern = undefined,
+        negativePattern = undefined,
+        percentage = false,
+        absolute = false,
+    } = info)
 
     function valueFromTrend(trend: TrendLine) {
         if (trend === undefined) {
@@ -65,7 +71,10 @@
         {#each trend_values as line, i}
             <div class="trend-item">
                 <span class="swatch" style:background={line.colour}></span>
-                <span class="trend-text">{i18n("trend")} {i + 1}: {trendSummary(line.value, line.pattern)}</span>
+                <span class="trend-text">
+                    {i18n("trend")}
+                    {i + 1}: {trendSummary(line.value, line.pattern)}
+                </span>
                 {#if onTogglePinTrend}
                     <button
                         type="button"

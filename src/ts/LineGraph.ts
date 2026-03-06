@@ -6,6 +6,7 @@ import { tooltipX } from "./tooltip"
 import {
     selectableTrendLine,
     type DrawnTrend,
+    type InitialTrend,
     type TrendLine,
     type TrendRange,
     type TrendSelectionController,
@@ -50,12 +51,14 @@ export function renderLineChart(
         onPreviewTrendChange = () => {},
         onControllerReady = () => {},
         initialPinnedTrends = [],
+        initialTrends = [],
         onPinnedRangesChange = () => {},
     }: {
         onTrendsChange?: (trends: DrawnTrend[]) => void
         onPreviewTrendChange?: (trend: TrendLine) => void
         onControllerReady?: (controller: TrendSelectionController) => void
         initialPinnedTrends?: TrendRange[]
+        initialTrends?: InitialTrend[]
         onPinnedRangesChange?: (ranges: TrendRange[]) => void
     } = {}
 ) {
@@ -165,6 +168,7 @@ export function renderLineChart(
         onPreviewTrendChange,
         onControllerReady,
         initialPinnedTrends,
+        initialTrends,
         onPinnedRangesChange,
         drawDefaultTrend: false,
     })

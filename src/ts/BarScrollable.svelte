@@ -9,11 +9,12 @@
     } from "./bar"
     import Bar from "./Bar.svelte"
     import TrendValue from "./TrendValue.svelte"
+    import { selectableTrendLine, type TrendInfo } from "./trend"
     import {
-        selectableTrendLine,
-        type TrendInfo,
-    } from "./trend"
-    import { loadPinnedTrendRanges, queuePersistPinnedRanges, queuePersistStoredPinnedRanges } from "./trendPinnedPersistence"
+        loadPinnedTrendRanges,
+        queuePersistPinnedRanges,
+        queuePersistStoredPinnedRanges,
+    } from "./trendPinnedPersistence"
     import { trendMidpointXFromAxisDatum, trendRangeFromAxisDatum } from "./trendAxis"
     import {
         createGraphTrendSessionState,

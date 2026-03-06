@@ -1,10 +1,11 @@
 <script lang="ts">
     import { renderLineChart } from "./LineGraph"
+    import { type DrawnTrend, type InitialTrend, type TrendLine } from "./trend"
     import {
-        type DrawnTrend,
-        type TrendLine,
-    } from "./trend"
-    import { loadPinnedTrendRanges, queuePersistPinnedRanges, queuePersistStoredPinnedRanges } from "./trendPinnedPersistence"
+        loadPinnedTrendRanges,
+        queuePersistPinnedRanges,
+        queuePersistStoredPinnedRanges,
+    } from "./trendPinnedPersistence"
 
     let svg: SVGElement | undefined
 
@@ -39,6 +40,15 @@
                 togglePinTrend = controller.togglePin
             },
             initialPinnedTrends: initialPinnedRanges,
+            initialTrends: trend_data.map(
+                (trend): InitialTrend => ({
+                    startX: trend.startX,
+                    endX: trend.endX,
+                    colour: trend.colour,
+                    pinned: trend.pinned,
+                    kind: trend.kind,
+                })
+            ),
             onPinnedRangesChange: (ranges) => {
                 void queuePersistPinnedRanges(trendPersistenceKey, ranges, true)
             },

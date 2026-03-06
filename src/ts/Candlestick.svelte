@@ -8,7 +8,11 @@
         trendMidpointXFromAxisDatum,
         trendRangeFromAxisDatum,
     } from "./trendAxis"
-    import { loadPinnedTrendRanges, queuePersistPinnedRanges, queuePersistStoredPinnedRanges } from "./trendPinnedPersistence"
+    import {
+        loadPinnedTrendRanges,
+        queuePersistPinnedRanges,
+        queuePersistStoredPinnedRanges,
+    } from "./trendPinnedPersistence"
     import {
         createGraphTrendSessionState,
         type GraphTrendSessionState,
@@ -99,7 +103,10 @@
                     trendPersistenceKey,
                     true
                 )
-                if (migratedStoredRanges && !migrated_temporal_store_keys.has(trendPersistenceKey)) {
+                if (
+                    migratedStoredRanges &&
+                    !migrated_temporal_store_keys.has(trendPersistenceKey)
+                ) {
                     migrated_temporal_store_keys.add(trendPersistenceKey)
                     void queuePersistStoredPinnedRanges(trendPersistenceKey, migratedStoredRanges)
                 }

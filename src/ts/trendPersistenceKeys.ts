@@ -3,6 +3,7 @@ export const TREND_PERSISTENCE_KEYS = {
         averageStabilityOverTime: "fsrs:average-stability-over-time",
     },
     memorised: {
+        shared: "memorised:shared",
         stableRetrievability: "memorised:stable-retrievability",
         notes: "memorised:notes",
         cards: "memorised:cards",

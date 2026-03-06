@@ -10,7 +10,12 @@
     import { i18n } from "./i18n"
     import LineGraph from "./LineGraph.svelte"
     import { binSize, scroll, searchLimit } from "./stores"
-    import { emptyTrendSelectionState, type DrawnTrend, type TrendLine, type TrendSelectionState } from "./trend"
+    import {
+        emptyTrendSelectionState,
+        type DrawnTrend,
+        type TrendLine,
+        type TrendSelectionState,
+    } from "./trend"
 
     let type = "total"
     export let data: number[]

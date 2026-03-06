@@ -18,7 +18,10 @@ export function loadPinnedTrendRanges(
     if (!trendPersistenceKey) {
         return { initialPinnedRanges: [], migratedStoredRanges: undefined }
     }
-    const parsedPinnedRanges = parseStoredRanges(pinnedTrendsForKey(trendPersistenceKey), temporalAxis)
+    const parsedPinnedRanges = parseStoredRanges(
+        pinnedTrendsForKey(trendPersistenceKey),
+        temporalAxis
+    )
     const initialPinnedRanges = parsedPinnedRanges.map((range) => range.normalized)
     const migratedStoredRanges = needsStoredRangeMigration(parsedPinnedRanges)
         ? parsedPinnedRanges.map((range) => range.stored)
