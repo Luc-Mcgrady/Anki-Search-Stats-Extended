@@ -9,11 +9,32 @@ import { getCardDecay, type CardData, type Revlog } from "./search"
 const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
 export const day_ms = 1000 * 60 * 60 * 24
+const half_day_ms = day_ms / 2
+const date_only_re = /^\d{4}-\d{2}-\d{2}$/
 
 const timezone_offset_mins = new Date().getTimezoneOffset()
 const timezone_offset_ms = timezone_offset_mins * 60 * 1000
 export function dayFromMs(ms: number) {
     return Math.floor((ms - rollover_ms - timezone_offset_ms) / day_ms)
+}
+
+export function dayToMs(day: number) {
+    return day * day_ms + rollover_ms + timezone_offset_ms
+}
+
+export function dayToDateString(day: number) {
+    return new Date(dayToMs(day) + half_day_ms).toISOString().slice(0, 10)
+}
+
+export function dayFromDateString(date: string) {
+    if (!date_only_re.test(date)) {
+        return
+    }
+    const ms = Date.parse(`${date}T12:00:00.000Z`)
+    if (!Number.isFinite(ms)) {
+        return
+    }
+    return dayFromMs(ms)
 }
 
 export const today = dayFromMs(Date.now())

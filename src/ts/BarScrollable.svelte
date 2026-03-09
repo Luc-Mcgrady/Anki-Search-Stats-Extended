@@ -9,7 +9,21 @@
     } from "./bar"
     import Bar from "./Bar.svelte"
     import TrendValue from "./TrendValue.svelte"
-    import { trendLine, type TrendInfo, type TrendLine } from "./trend"
+    import { selectableTrendLine, type TrendInfo } from "./trend"
+    import {
+        loadPinnedTrendRanges,
+        queuePersistPinnedRanges,
+        queuePersistStoredPinnedRanges,
+    } from "./trendPinnedPersistence"
+    import { trendMidpointXFromAxisDatum, trendRangeFromAxisDatum } from "./trendAxis"
+    import {
+        createGraphTrendSessionState,
+        type GraphTrendSessionState,
+        hiddenPinnedRanges,
+        mergeTrendRanges,
+        mergeVisibleCustomTrends,
+        removeTrendFromAll,
+    } from "./trendSession"
     import { i18n } from "./i18n"
 
     export let data: BarChart
@@ -25,6 +39,8 @@
     export let trend_by: (values: number[]) => number = _.sum
     export let trend_info: TrendInfo = {}
     export let loss: boolean = false
+    export let trendPersistenceKey = ""
+    export let trend_date_axis = false
 
     $: min = left_aligned ? 0 : 1
     $: absOffset = Math.abs(offset)
@@ -37,30 +53,129 @@
         realOffset == 0 || realOffset >= data.data.length ? undefined : realOffset
     )
 
-    export let trend_values: TrendLine = undefined
+    let trendSession: GraphTrendSessionState = createGraphTrendSessionState()
+    let migrated_temporal_store_keys = new Set<string>()
+
+    function removeTrend(id: number) {
+        const selectedTrend = trendSession.visibleTrends.find((trend) => trend.id === id)
+        trendSession = {
+            ...trendSession,
+            allTrends: removeTrendFromAll(trendSession.allTrends, selectedTrend),
+            defaultTrendEnabled:
+                selectedTrend?.kind === "default" ? false : trendSession.defaultTrendEnabled,
+        }
+        trendSession.controller?.removeTrend(id)
+    }
+
+    function togglePinTrend(id: number) {
+        trendSession.controller?.togglePin(id)
+    }
+
+    let lastTrendPersistenceKey = ""
+    $: if (trendPersistenceKey !== lastTrendPersistenceKey) {
+        lastTrendPersistenceKey = trendPersistenceKey
+        trendSession = createGraphTrendSessionState()
+    }
+
+    function absoluteDataIndex(index: number) {
+        if (index < 0) {
+            return data.data.length + index
+        }
+        return index
+    }
 
     function inner_extra_render(chart: ExtraRenderInput<BarChart>) {
         extraRender(chart)
 
         limitArea(chart, limit_area_width(chart.x, limit, offset, binSize, min, realOffset))
 
-        const trend_data = chart.chart.data.map((datum) => ({
-            x: +datum.label,
-            y: trend_by(datum.values),
-        }))
+        const trend_data = chart.chart.data.map((datum) => {
+            const range = trendRangeFromAxisDatum(datum)
+            return {
+                x: trendMidpointXFromAxisDatum(datum),
+                rangeStart: range.startX,
+                rangeEnd: range.endX,
+                y: trend_by(datum.values),
+            }
+        })
 
         if (trend) {
-            trend_values = trendLine(chart, trend_data)
+            if (!trendPersistenceKey) {
+                console.warn(
+                    "BarScrollable trend pinning requires a stable trendPersistenceKey; pins are disabled for this graph."
+                )
+            }
+            const { initialPinnedRanges, migratedStoredRanges } = loadPinnedTrendRanges(
+                trendPersistenceKey,
+                trend_date_axis
+            )
+            if (migratedStoredRanges && !migrated_temporal_store_keys.has(trendPersistenceKey)) {
+                migrated_temporal_store_keys.add(trendPersistenceKey)
+                void queuePersistStoredPinnedRanges(trendPersistenceKey, migratedStoredRanges)
+            }
+
+            const hoverAreas = chart.svg.selectAll<SVGRectElement, BarDatum>("rect.hover-bar")
+            selectableTrendLine({
+                chart,
+                points: trend_data,
+                hoverAreas,
+                hoverToRange: (datum) => trendRangeFromAxisDatum(datum),
+                xToPixel: (xValue) => {
+                    const matchingDatum = chart.chart.data.find((datum) => {
+                        const { startX: start, endX: end } = trendRangeFromAxisDatum(datum)
+                        return xValue >= Math.min(start, end) && xValue <= Math.max(start, end)
+                    })
+                    if (!matchingDatum) {
+                        return
+                    }
+                    const x = chart.x(matchingDatum.label)
+                    if (x === undefined) {
+                        return
+                    }
+                    return x + chart.x.step() / 2
+                },
+                onTrendsChange: (nextTrends) => {
+                    trendSession = {
+                        ...trendSession,
+                        visibleTrends: nextTrends,
+                        allTrends: mergeVisibleCustomTrends(trendSession.allTrends, nextTrends),
+                    }
+                },
+                onPreviewTrendChange: (nextTrend) => {
+                    trendSession = { ...trendSession, previewTrend: nextTrend }
+                },
+                onControllerReady: (controller) => {
+                    trendSession = { ...trendSession, controller }
+                },
+                initialPinnedTrends: initialPinnedRanges,
+                initialTrends: trendSession.allTrends,
+                onPinnedRangesChange: (ranges) => {
+                    const mergedRanges = mergeTrendRanges(
+                        hiddenPinnedRanges(trendSession.allTrends, trendSession.visibleTrends),
+                        ranges
+                    )
+                    void queuePersistPinnedRanges(
+                        trendPersistenceKey,
+                        mergedRanges,
+                        trend_date_axis
+                    )
+                },
+                drawDefaultTrend: trendSession.defaultTrendEnabled,
+            })
         } else {
-            trend_values = undefined
+            trendSession = createGraphTrendSessionState()
         }
     }
 
     let bars: BarDatum[]
     $: {
+        const maxIndex = Math.max(data.data.length - 1, 0)
+        const clampIndex = (index: number) => Math.min(Math.max(index, 0), maxIndex)
         bars = _.range(leftmost, realOffset, binSize).map((i) => ({
             label: (i + min).toString(),
             values: loss ? [0, 0] : data.row_labels.map((_) => 0),
+            trendStart: clampIndex(absoluteDataIndex(i)),
+            trendEnd: clampIndex(absoluteDataIndex(i + binSize - 1)),
         }))
 
         for (const [i, bar] of separate_bars.entries()) {
@@ -100,8 +215,15 @@
 
 <Bar data={{ ...data, data: bars, barWidth: binSize }} extraRender={inner_extra_render}></Bar>
 
-{#if trend_values}
-    <TrendValue trend={trend_values} n={binSize} info={trend_info} />
+{#if trendSession.visibleTrends.length || trendSession.previewTrend !== undefined}
+    <TrendValue
+        trends={trendSession.visibleTrends}
+        trend={trendSession.previewTrend}
+        n={binSize}
+        info={trend_info}
+        onRemoveTrend={removeTrend}
+        onTogglePinTrend={togglePinTrend}
+    />
 {/if}
 
 <style>

@@ -6,6 +6,7 @@
     import MatureFilterSelector from "../MatureFilterSelector.svelte"
     import MemorisedGraphContainer from "../MemorisedGraphContainer.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "../i18n"
+    import { TREND_PERSISTENCE_KEYS } from "../trendPersistenceKeys"
     import { barStringLabeler, type BarChart } from "../bar"
     import { memorised_stats, searchLimit, revlogStats } from "../stores"
     import { easeBarChart, type RevlogBuckets } from "../revlogGraphs"
@@ -78,6 +79,7 @@
             average={normalize_ease}
             left_aligned
             trend={normalize_ease}
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.bad.naiveSiblingSimilarity}
             trend_by={retention_trend}
             trend_info={{
                 pattern: i18n_pattern("retention-per-day-since-last-sibling-review"),
@@ -106,6 +108,7 @@
             bind:binSize={fatigue_bin_size}
             left_aligned
             trend={normalize_ease}
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.bad.ratingFatigue}
             trend_by={retention_trend}
             trend_info={{
                 pattern: i18n_pattern("retention-per-prior-review-that-day"),
@@ -139,6 +142,7 @@
             average
             loss
             trend
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.bad.fsrsLossByFatigue}
             trend_info={{ pattern: i18n_pattern("loss-per-prior-review-that-day") }}
         ></BarScrollable>
         <MatureFilterSelector bind:group={mature_filter}></MatureFilterSelector>

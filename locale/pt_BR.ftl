@@ -57,6 +57,7 @@ loading = Carregando...
 
 total = Total
 trend = Tendência
+trend-preview = Tendência (prévia)
 
 percent-correct = {$percentage}% Corretas
 

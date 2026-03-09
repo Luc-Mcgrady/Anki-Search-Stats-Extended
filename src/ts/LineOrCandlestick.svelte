@@ -10,7 +10,12 @@
     import { i18n } from "./i18n"
     import LineGraph from "./LineGraph.svelte"
     import { binSize, scroll, searchLimit } from "./stores"
-    import type { TrendLine } from "./trend"
+    import {
+        emptyTrendSelectionState,
+        type DrawnTrend,
+        type TrendLine,
+        type TrendSelectionState,
+    } from "./trend"
 
     let type = "total"
     export let data: number[]
@@ -51,8 +56,19 @@
             down_colour,
         }
 
-    export let trend_data: TrendLine
-    $: if (type === "total") trend_data = undefined
+    let visibleTrends: DrawnTrend[] = []
+    let previewTrend: TrendLine = undefined
+    let removeTrend: (id: number) => void = () => {}
+    let togglePinTrend: (id: number) => void = () => {}
+    export let trendSelection: TrendSelectionState = emptyTrendSelectionState()
+    export let trendPersistenceKey: string
+
+    $: trendSelection = {
+        visibleTrends,
+        previewTrend,
+        removeTrend,
+        togglePinTrend,
+    }
 </script>
 
 <GraphTypeSelector>
@@ -67,14 +83,26 @@
 </GraphTypeSelector>
 
 {#if type === "total"}
-    <LineGraph data={processed_data} {label} />
+    <LineGraph
+        data={processed_data}
+        {label}
+        trendPersistenceKey={`${trendPersistenceKey}:total`}
+        bind:trend_data={visibleTrends}
+        bind:current_trend={previewTrend}
+        bind:removeTrend
+        bind:togglePinTrend
+    />
 {:else}
     <Candlestick
         data={candlestick_data}
         bind:bins
         bind:binSize={$binSize}
         {limit}
-        bind:trend_data
+        bind:trend_data={visibleTrends}
+        bind:current_trend={previewTrend}
+        bind:removeTrend
+        bind:togglePinTrend
+        trendPersistenceKey={`${trendPersistenceKey}:candlestick`}
         bind:offset={$scroll}
     />
 {/if}

@@ -7,6 +7,8 @@ import { tooltipDate, tooltipX } from "./tooltip"
 export type CandlestickDatum = {
     delta: number
     label: string
+    trendStart?: number
+    trendEnd?: number
 }
 
 type CandlestickDelta = {
@@ -14,6 +16,8 @@ type CandlestickDelta = {
     end: number
     positive: boolean
     label: string
+    trendStart?: number
+    trendEnd?: number
 }
 
 export type CandlestickGraph = {
@@ -45,6 +49,8 @@ export function plotCandlestick(
             begin: positive ? begin : total,
             end: positive ? total : begin,
             label: datum.label,
+            trendStart: datum.trendStart,
+            trendEnd: datum.trendEnd,
         }
     })
 

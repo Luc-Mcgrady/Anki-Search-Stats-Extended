@@ -57,6 +57,7 @@ loading = 加载中...
 
 total = 总计
 trend = 趋势
+trend-preview = 趋势（预览）
 
 percent-correct = 正确率 {$percentage}%
 

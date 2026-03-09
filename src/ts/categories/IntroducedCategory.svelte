@@ -4,6 +4,7 @@
     import GraphCategory from "../GraphCategory.svelte"
     import Warning from "../Warning.svelte"
     import { i18n, i18n_pattern } from "../i18n"
+    import { TREND_PERSISTENCE_KEYS } from "../trendPersistenceKeys"
     import { barDateLabeler, type BarChart } from "../bar"
     import { binSize, scroll, searchLimit, revlogStats } from "../stores"
     import { today, easeBarChart } from "../revlogGraphs"
@@ -104,6 +105,8 @@
             bind:offset={$scroll}
             average={normalize_ease}
             trend={normalize_ease}
+            trend_date_axis
+            trendPersistenceKey={TREND_PERSISTENCE_KEYS.introduced.introductoryRating}
             trend_by={(values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
