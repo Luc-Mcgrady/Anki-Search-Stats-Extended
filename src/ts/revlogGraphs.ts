@@ -1,9 +1,10 @@
 import _ from "lodash"
+import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
-import { type ForgettingSample } from "./forgettingCurveData"
+import { averageDecay, type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
-import type { CardData, Revlog } from "./search"
+import { getCardDecay, type CardData, type Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
@@ -328,6 +329,15 @@ export function calculateRevlogStats(
     }
 
     const remaining_forgotten = forgotten.size
+    const forgettingCurveCardIds = new Set<number>(
+        [...forgetting_samples, ...forgetting_samples_short].map((sample) => sample.cid)
+    )
+    const decayValues = Array.from(forgettingCurveCardIds)
+        .map((cid) => id_card_data[cid])
+        .filter((card): card is CardData => card !== undefined)
+        .map((card) => getCardDecay(card))
+    const forgetting_curve_decay =
+        decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DEFAULT_DECAY
 
     return {
         day_initial_ease,
@@ -352,6 +362,7 @@ export function calculateRevlogStats(
         last_forget,
         forgetting_samples,
         forgetting_samples_short,
+        forgetting_curve_decay,
     }
 }
 
