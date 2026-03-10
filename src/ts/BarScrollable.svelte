@@ -25,6 +25,7 @@
     export let trend_by: (values: number[]) => number = _.sum
     export let trend_info: TrendInfo = {}
     export let loss: boolean = false
+    export let search: undefined | ((i: number, width: number) => void) = undefined
 
     $: min = left_aligned ? 0 : 1
     $: absOffset = Math.abs(offset)
@@ -61,6 +62,7 @@
         bars = _.range(leftmost, realOffset, binSize).map((i) => ({
             label: (i + min).toString(),
             values: loss ? [0, 0] : data.row_labels.map((_) => 0),
+            onClick: search ? () => search(i + min, binSize) : undefined,
         }))
 
         for (const [i, bar] of separate_bars.entries()) {
