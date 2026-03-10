@@ -5,9 +5,11 @@
     import { custom_bar_mode, searchString } from "./stores"
     import CancelablePromise, { cancelable } from "cancelable-promise"
     import { i18n } from "./i18n"
+    import type { GraphsResponse } from "./proto/anki/stats_pb"
 
     export let data: Writable<SearchBarData>
-    export let promise: CancelablePromise<number[]> = CancelablePromise.resolve([])
+    export let promise: CancelablePromise<GraphsResponse | undefined> =
+        CancelablePromise.resolve(undefined)
     let last_search: string
     let last_mode: string
 
@@ -16,7 +18,12 @@
         promise.cancel()
         promise = cancelable(getQuery($data.label, $custom_bar_mode))
         promise.then((result) => {
-            $data.value = result
+            let out = []
+            for (const day in result?.reviews?.count ?? []) {
+                // Todo add the other types of card as well
+                out[SSEother.days_elapsed + +day] = result?.reviews?.count[day]?.young ?? 0
+            }
+            $data.value = out
         })
         last_search = $data.label
         last_mode = $custom_bar_mode

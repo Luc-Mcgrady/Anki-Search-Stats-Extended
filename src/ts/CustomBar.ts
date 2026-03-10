@@ -1,44 +1,17 @@
-import { getRevlogs, search } from "./search"
+import type { GraphsResponse } from "./proto/anki/stats_pb"
+import { fetchSwappedSearch } from "./root"
 
 export type SearchBarData = {
-    label: string,
-    search: string,
-    colour: string,
-    value: number[],
+    label: string
+    search: string
+    colour: string
+    value: number[]
 }
 
-export async function getQuery(query: string, mode: string): Promise<number[]> {
+export async function getQuery(query: string, mode: string): Promise<GraphsResponse> {
     let cids: number[]
     if (!query) {
         query = "*"
     }
-
-    try {
-        cids = await search(query)
-    } catch {
-        return []
-    }
-
-    const switch
-
-    switch (mode) {
-        case "time-distribution":
-            for (const revlog of revlogs) {
-                const time = Math.round(revlog.time / 1000)
-                if (time < MAX_TIME) {
-                    values[time]++
-                }
-            }
-            break
-        case "time-totals":
-            for (const revlog of revlogs) {
-                const time = Math.round(revlog.time / 1000)
-                if (time < MAX_TIME) {
-                    values[time] += time
-                }
-            }
-            break
-    }
-
-    return values
+    return await fetchSwappedSearch(query)
 }

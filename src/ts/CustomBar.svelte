@@ -70,7 +70,7 @@
 </div>
 
 {#if _.sumBy($bar_data_values, (d) => _.sum(d.value))}
-    <BarScrollable data={bar_data} left_aligned></BarScrollable>
+    <BarScrollable data={bar_data}></BarScrollable>
 {:else}
     <NoGraph></NoGraph>
 {/if}
