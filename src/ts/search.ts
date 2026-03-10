@@ -1,5 +1,7 @@
+import { get } from "svelte/store"
 import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
-import { realFetch } from "./root"
+import { realFetch, searchJoin } from "./root"
+import { searchString } from "./stores"
 
 export function catchErrors<Return>(func: () => Return): Return {
     try {
@@ -180,6 +182,10 @@ export async function getRevlogs(cids: number[], day_range: number) {
 
 export function browserSearch(search: string) {
     window.bridgeCommand(`browserSearch:${search}`)
+}
+
+export function browserSearchCurrent(search: string) {
+    browserSearch(searchJoin(get(searchString), search))
 }
 
 export function browserSearchCids(cids: (number | string)[]) {

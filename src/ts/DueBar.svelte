@@ -5,7 +5,7 @@
     import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "./graph"
     import { i18n } from "./i18n"
     import { card_data } from "./stores"
-    import type { CardData } from "./search"
+    import { browserSearchCurrent, type CardData } from "./search"
 
     const maxBar = 30
     let bars: BarDatum[] = []
@@ -27,6 +27,7 @@
                 bars[due] ??= {
                     label: due.toString(),
                     values: [0, 0, 0, 0],
+                    onClick: () => browserSearchCurrent(`prop:due=${due}`),
                 }
                 bars[due].values[type] += 1
             }
