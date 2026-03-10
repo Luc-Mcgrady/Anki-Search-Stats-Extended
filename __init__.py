@@ -64,8 +64,9 @@ def new_refresh(self: NewDeckStats):
         f"const SSEconfig = {json.dumps(config)};"
         f"const SSEother = {json.dumps(other)};"
     )
-    self.form.web.eval(setVars + innerJs)
-
+    self.form.web.loadFinished.connect(
+        lambda: self.form.web.eval(setVars + innerJs)
+    )
 
 NewDeckStats.refresh = wrap(NewDeckStats.refresh, new_refresh, "after")
 
