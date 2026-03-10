@@ -7,6 +7,8 @@ load = 工作量
 count = （次）数
 lapses = 遗忘次数
 repetitions = 复习次数
+time-distribution = 时间分布
+time-totals = 时间总计
 
 cards = 卡片
 card-load = 卡片工作量
@@ -102,8 +104,11 @@ learning = 学习中
 custom-pie = 自定义饼图
 custom-pie-help = 
     此图表将根据搜索条件，显示匹配卡片指定数值（如遗忘次数）的汇总分布。
-    
-    
+
+custom-bar = 自定义条形图
+custom-bar-help =
+    此条形图将为您显示与“搜索”匹配的卡片的请求值总和
+    对于每次搜索
 
 search = 搜索
 colour = 颜色

@@ -7,6 +7,8 @@ load = Carga
 count = Contagem
 lapses = Lapsos
 repetitions = Repetições
+time-distribution = Distribuição de Tempo
+time-totals = Totais de Tempo
 
 cards = Cartões
 card-load = Carga de Cartões
@@ -102,6 +104,12 @@ learning = Aprendendo
 custom-pie = Gráfico de Pizza Personalizado
 custom-pie-help =
     Este gráfico de pizza mostrará a soma do valor solicitado para os cartões que correspondem à "Busca" para cada busca.
+
+custom-bar = Gráfico de Barras Personalizado
+custom-bar-help =
+    Este gráfico de barras mostrará a soma do valor solicitado para cartões que correspondem
+    "Pesquisar"
+    para cada pesquisa
 
 search = Busca
 colour = Cor

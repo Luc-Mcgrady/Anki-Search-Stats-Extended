@@ -3,6 +3,7 @@
     import GraphCategory from "../GraphCategory.svelte"
     import OldRetentionPie from "../OldRetentionPie.svelte"
     import CustomPie from "../CustomPie.svelte"
+    import CustomBar from "../CustomBar.svelte"
     import DayTimings from "../DayTimings.svelte"
     import SRHeatmap from "../SRHeatmap.svelte"
     import EaseFactor from "../EaseFactor.svelte"
@@ -28,6 +29,13 @@
         <CustomPie />
         <p>
             {i18n("custom-pie-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("custom-bar")}</h1>
+        <CustomBar />
+        <p>
+            {i18n("custom-bar-help")}
         </p>
     </GraphContainer>
     <GraphContainer>

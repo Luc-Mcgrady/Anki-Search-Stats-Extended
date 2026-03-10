@@ -7,6 +7,8 @@ load = Load
 count = Count
 lapses = Lapses
 repetitions = Repetitions
+time-distribution = Time Distribution
+time-totals = Time Totals
 
 cards = Cards
 card-load = Card Load
@@ -111,6 +113,12 @@ learning = Learning
 custom-pie = Custom pie
 custom-pie-help =
     This pie will show you the sum of the requested value for cards which match
+    "Search"
+    for each search
+
+custom-bar = Custom bar
+custom-bar-help =
+    This bar will show you the sum of the requested value for cards which match
     "Search"
     for each search
 
