@@ -70,9 +70,6 @@ configSubscribe(alwaysAllTime, ($alwaysAllTime) => saveConfigValue("alwaysAllTim
 // Data related
 export let data = writable<null | GraphsResponse>(null)
 export let not_suspended_data = writable<null | GraphsResponse>(null)
-export let mature_data = writable<null | GraphsResponse>(null)
-export let learn_data = writable<null | GraphsResponse>(null)
-export let relearn_data = writable<null | GraphsResponse>(null)
 
 export let graphsRequest = writable<null | GraphsRequest>(null)
 export let searchString = derived(graphsRequest, ($graphsRequest) => $graphsRequest?.search ?? null)

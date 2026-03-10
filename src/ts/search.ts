@@ -58,6 +58,16 @@ export interface CardData {
     usn: number
     type: number
     // https://github.com/ankitects/anki/blob/main/pylib/anki/consts.py#L22-L29
+    /* 
+    QUEUE_TYPE_MANUALLY_BURIED = CardQueue(-3)
+    QUEUE_TYPE_SIBLING_BURIED = CardQueue(-2)
+    QUEUE_TYPE_SUSPENDED = CardQueue(-1)
+    QUEUE_TYPE_NEW = CardQueue(0)
+    QUEUE_TYPE_LRN = CardQueue(1)
+    QUEUE_TYPE_REV = CardQueue(2)
+    QUEUE_TYPE_DAY_LEARN_RELEARN = CardQueue(3)
+    QUEUE_TYPE_PREVIEW = CardQueue(4)
+    */
     queue: number
     due: number
     ivl: number

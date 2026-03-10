@@ -6,7 +6,7 @@
     import IntraDayDueBar from "../IntraDayDueBar.svelte"
     import NoGraph from "../NoGraph.svelte"
     import { i18n } from "../i18n"
-    import { cardDataStats, data, learn_data, mature_data, relearn_data } from "../stores"
+    import { card_data, cardDataStats, data } from "../stores"
     import { EASE_COLOURS, formatRetention } from "../revlogGraphs"
     import { barDateLabeler, type BarDatum } from "../bar"
     import { totalCalc } from "../barHelpers"
@@ -16,7 +16,7 @@
     $: target_R_days = $cardDataStats.target_R_days
     $: target_R_day_values = target_R_days.map((v, i) => [
         v,
-        ($data?.futureDue?.futureDue[i] || 0) - ($learn_data?.futureDue?.futureDue[i] || 0) - v,
+        ($data?.futureDue?.futureDue[i] || 0) - v,
     ])
     $: target_R_days_bar = {
         row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
@@ -42,15 +42,10 @@
 <GraphCategory hidden_title={i18n("future-due-types")} config_name="due">
     <GraphContainer>
         <h1>{i18n("future-due-types")}</h1>
-        {#if $data?.futureDue && $learn_data?.futureDue && $mature_data?.futureDue && $relearn_data?.futureDue}
-            <DueBar
-                all={$data.futureDue}
-                learn={$learn_data.futureDue}
-                mature={$mature_data.futureDue}
-                relearn={$relearn_data?.futureDue}
-            />
+        {#if $card_data}
+            <DueBar />
         {:else}
-            <NoGraph></NoGraph>
+            <NoGraph />
         {/if}
         <p>
             {i18n("future-due-types-help")}

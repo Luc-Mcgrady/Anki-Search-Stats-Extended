@@ -1,14 +1,6 @@
 import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { search } from "./search"
-import {
-    cids,
-    data,
-    graphsRequest,
-    learn_data,
-    mature_data,
-    not_suspended_data,
-    relearn_data,
-} from "./stores"
+import { cids, data, graphsRequest, not_suspended_data } from "./stores"
 
 export async function decodeResponse(resp: Response) {
     const blob = await resp.blob()
@@ -56,10 +48,6 @@ export function patchFetch() {
     fetch = (req: string, headers: Record<string, any>) => {
         if (req == "/_anki/graphs") {
             data.set(null)
-            mature_data.set(null)
-            learn_data.set(null)
-            relearn_data.set(null)
-            not_suspended_data.set(null)
 
             const origBody = headers.body
 
@@ -76,9 +64,6 @@ export function patchFetch() {
             cidSearch.then(cids.set)
 
             fetchAndDecode(realFetch(req, headers)).then(data.set)
-            fetchSwappedSearch("prop:ivl>=21").then(mature_data.set)
-            fetchSwappedSearch("is:learn").then(learn_data.set)
-            fetchSwappedSearch("is:learn is:review").then(relearn_data.set)
             fetchSwappedSearch("-is:suspended").then(not_suspended_data.set)
 
             headers.body = origBody

@@ -2,39 +2,40 @@
     import _ from "lodash"
     import Bar from "./Bar.svelte"
     import { barDateLabeler, type BarDatum } from "./bar"
-    import type { GraphsResponse_FutureDue } from "./proto/anki/stats_pb"
     import { LEARN_COLOUR, MATURE_COLOUR, RELEARN_COLOUR, YOUNG_COLOUR } from "./graph"
     import { i18n } from "./i18n"
+    import { card_data } from "./stores"
+    import type { CardData } from "./search"
 
-    export let all: GraphsResponse_FutureDue
-    export let mature: GraphsResponse_FutureDue
-    export let learn: GraphsResponse_FutureDue
-    export let relearn: GraphsResponse_FutureDue
+    const maxBar = 30
+    let bars: BarDatum[] = []
+    const days_elapsed = SSEother.days_elapsed
 
-    let bars: BarDatum[]
-    $: {
-        const len = Object.keys(all.futureDue).reduce((a, b) => (a > +b ? a : +b), 0)
-        let newbars = _.range(0, len)
-        bars = newbars.map((i) => ({
-            label: i.toString(),
-            values: [0, 0, 0, 0],
-        }))
+    function calculateBars(card_data: CardData[]) {
+        const bars: BarDatum[] = []
+        for (const card of card_data ?? []) {
+            if (card.queue == -1) {
+                continue
+            }
+            let due = card.due < 365_000 ? card.due - days_elapsed : 0
+            if (card.queue < -1) {
+                due = 1
+            }
+            const type = card.ivl > 21 ? 0 : card.ivl > 1 ? 1 : card.queue == 1 ? 3 : 2
 
-        for (const day in all.futureDue) {
-            const all_day = all.futureDue[day] ?? 0
-            const mature_day = mature.futureDue[day] ?? 0
-            const relearn_day = relearn.futureDue[day] ?? 0
-            const learn_day = (learn.futureDue[day] ?? 0) - relearn_day
-            const young_day = all_day - learn_day - relearn_day - mature_day
-
-            bars[+day] = {
-                label: day,
-                values: [mature_day, young_day, relearn_day, learn_day],
+            if (due < maxBar) {
+                bars[due] ??= {
+                    label: due.toString(),
+                    values: [0, 0, 0, 0],
+                }
+                bars[due].values[type] += 1
             }
         }
 
-        bars = bars.slice(0, 30)
+        return bars.slice(0, maxBar)
     }
+
+    $: bars = calculateBars($card_data ?? [])
 </script>
 
 <Bar
