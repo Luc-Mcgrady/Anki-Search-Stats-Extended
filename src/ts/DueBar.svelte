@@ -12,7 +12,11 @@
     const days_elapsed = SSEother.days_elapsed
 
     function calculateBars(card_data: CardData[]) {
-        const bars: BarDatum[] = []
+        const newbars = _.range(0, maxBar)
+        bars = newbars.map((i) => ({
+            label: i.toString(),
+            values: [0, 0, 0, 0],
+        }))
         for (const card of card_data ?? []) {
             if (card.queue == -1) {
                 continue
