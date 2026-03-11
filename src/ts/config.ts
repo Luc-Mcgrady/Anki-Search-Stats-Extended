@@ -91,6 +91,7 @@ export interface SSEother {
 
 export const DEFAULT_ORDER = [
     "due",
+    "custom",
     "misc",
     "rating",
     "load",

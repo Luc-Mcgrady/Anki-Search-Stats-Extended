@@ -108,7 +108,7 @@ passed = Passed
 flunked = Flunked
 learning = Learning
 
-custom-pie = Custom pie
+custom-pie = Custom Pie
 custom-pie-help =
     This pie will show you the sum of the requested value for cards which match
     "Search"
