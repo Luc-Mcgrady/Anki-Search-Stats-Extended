@@ -61,11 +61,11 @@
 <div class="options">
     <label>
         <input type="radio" bind:group={$custom_bar_mode} value="count" />
-        {i18n("count")}
+        {i18n("reviews")}
     </label>
     <label>
         <input type="radio" bind:group={$custom_bar_mode} value="time" />
-        {i18n("time")}
+        {i18n("time-in-minutes")}
     </label>
 </div>
 
