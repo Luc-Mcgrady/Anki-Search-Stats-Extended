@@ -7,7 +7,6 @@ load = Carga
 count = Contagem
 lapses = Lapsos
 repetitions = Repetições
-time-distribution = Distribuição de Tempo
 time-totals = Totais de Tempo
 
 cards = Cartões
@@ -207,9 +206,6 @@ review-graphs-config-hint =
     Para carregar estes gráficos por padrão, defina "confirmExpensiveStats" como falso na configuração do addon.
 generic-truncated-warning =
     Pode ser impreciso enquanto "todo histórico" não estiver selecionado.
-time-distribution = Distribuição de Tempo
-time-distribution-help =
-    Quantos cartões levaram um determinado tempo para serem respondidos em todas as revisões.
 most-seconds = Mais Segundos
 time-in-seconds = Tempo (s)
 seconds = Segundos

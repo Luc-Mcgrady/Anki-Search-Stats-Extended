@@ -42,7 +42,7 @@
     let bar_data: BarChart
     $: {
         const data = $bar_data_values
-        const max_len = Math.max(0, ...data.map((d) => d.value.length))
+        const max_len = Math.max(0, ...data.map((d) => d.value?.length ?? 0))
         const combined_data = _.range(max_len).map((i) => ({
             label: i.toString(),
             values: data.map((d) => d.value[i] ?? 0),
@@ -60,12 +60,12 @@
 
 <div class="options">
     <label>
-        <input type="radio" bind:group={$custom_bar_mode} value="time-distribution" />
-        {i18n("time-distribution")}
+        <input type="radio" bind:group={$custom_bar_mode} value="count" />
+        {i18n("count")}
     </label>
     <label>
-        <input type="radio" bind:group={$custom_bar_mode} value="time-totals" />
-        {i18n("time-totals")}
+        <input type="radio" bind:group={$custom_bar_mode} value="time" />
+        {i18n("time")}
     </label>
 </div>
 

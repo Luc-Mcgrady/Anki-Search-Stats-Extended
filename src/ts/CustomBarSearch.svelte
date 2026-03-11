@@ -12,21 +12,38 @@
         CancelablePromise.resolve(undefined)
     let last_search: string
     let last_mode: string
+    let search_data: GraphsResponse | undefined
+
+    function updateData() {
+        let out = []
+        if (search_data?.reviews) {
+            let result = search_data.reviews[$custom_bar_mode]
+
+            for (const day in search_data?.reviews?.count ?? []) {
+                // Todo add the other types of card as well
+                out[SSEother.days_elapsed + +day] =
+                    result[day].young + result[day].mature + result[day].relearn + result[day].learn
+            }
+            $data.value = out
+
+            last_mode = $custom_bar_mode
+            last_search = $data.label
+        }
+    }
 
     $: $data.label = searchJoin($searchString, $data.search)
-    $: if (last_search !== $data.label || last_mode !== $custom_bar_mode) {
+    $: if (last_search !== $data.label) {
+        last_search = $data.label
         promise.cancel()
         promise = cancelable(getQuery($data.label, $custom_bar_mode))
         promise.then((result) => {
-            let out = []
-            for (const day in result?.reviews?.count ?? []) {
-                // Todo add the other types of card as well
-                out[SSEother.days_elapsed + +day] = result?.reviews?.count[day]?.young ?? 0
-            }
-            $data.value = out
+            search_data = result
+            updateData()
         })
-        last_search = $data.label
-        last_mode = $custom_bar_mode
+    }
+
+    $: if (last_mode !== $custom_bar_mode) {
+        updateData()
     }
 </script>
 

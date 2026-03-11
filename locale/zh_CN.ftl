@@ -7,7 +7,6 @@ load = 工作量
 count = （次）数
 lapses = 遗忘次数
 repetitions = 复习次数
-time-distribution = 时间分布
 time-totals = 时间总计
 
 cards = 卡片
@@ -213,9 +212,6 @@ review-graphs-config-hint =
 generic-truncated-warning = 
     未选择"全部历史"时数据可能不准确。
 
-time-distribution = 时间分布
-time-distribution-help =
-    各耗时区间的卡片数量分布。
 most-seconds = 最大耗时
 time-in-seconds = 时间 (s)
 seconds = 秒
