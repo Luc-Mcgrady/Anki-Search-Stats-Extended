@@ -216,6 +216,9 @@ repetition-total-help =
 generic-truncated-warning =
     May be inaccurate while "all history" is not selected.
 
+time-distribution = Time Distribution
+time-distribution-help =
+    How many cards have taken the given amount of time to answer over every review
 most-seconds = Most Seconds
 time-in-seconds = Time (s)
 time-in-minutes = Time (minutes)
