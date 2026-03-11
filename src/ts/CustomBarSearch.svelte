@@ -2,7 +2,7 @@
     import type { Writable } from "svelte/store"
     import { getQuery, type SearchBarData } from "./CustomBar"
     import { searchJoin } from "./root"
-    import { custom_bar_mode, searchString } from "./stores"
+    import { custom_bar_mode, searchString, data as default_data } from "./stores"
     import CancelablePromise, { cancelable } from "cancelable-promise"
     import { i18n } from "./i18n"
     import type { GraphsResponse } from "./proto/anki/stats_pb"
@@ -39,7 +39,15 @@
     $: if (last_search !== $data.label) {
         last_search = $data.label
         promise.cancel()
-        promise = cancelable(getQuery($data.label, $custom_bar_mode))
+        if ($data.search == "") {
+            promise = new CancelablePromise((resolve) => {
+                default_data.subscribe((d) => {
+                    if (d) resolve(d)
+                })
+            })
+        } else {
+            promise = cancelable(getQuery($data.label, $custom_bar_mode))
+        }
         promise.then((result) => {
             search_data = result
             updateData()
