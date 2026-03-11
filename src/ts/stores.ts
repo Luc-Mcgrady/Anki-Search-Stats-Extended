@@ -18,6 +18,7 @@ import type { Tooltip } from "./tooltip"
 export let include_suspended = writable(false)
 export let zero_inclusive = writable(false)
 export let custom_pie_mode = writable("Count")
+export let custom_bar_mode = writable<"count" | "time">("count")
 export let graph_mode = writable<"Bar" | "Pie">("Pie")
 
 // Config related stats

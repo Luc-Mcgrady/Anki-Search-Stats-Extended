@@ -108,11 +108,19 @@ passed = Passed
 flunked = Flunked
 learning = Learning
 
-custom-pie = Custom pie
+custom-pie = Custom Pie
 custom-pie-help =
     This pie will show you the sum of the requested value for cards which match
     "Search"
     for each search
+
+custom-bar = Custom Bar
+custom-bar-help =
+    This bar chart will show you the sum of the requested value in the "Reviews" graph for cards which match
+    "Search"
+    for each search
+
+reviews = Reviews
 
 search = Search
 colour = Colour
@@ -212,6 +220,7 @@ time-distribution-help =
     How many cards have taken the given amount of time to answer over every review
 most-seconds = Most Seconds
 time-in-seconds = Time (s)
+time-in-minutes = Time (minutes)
 seconds = Seconds
 total-seconds = Total (s)
 seconds-per-card = Per card (s)

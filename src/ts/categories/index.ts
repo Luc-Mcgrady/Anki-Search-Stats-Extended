@@ -1,4 +1,5 @@
 import BadGraphCategory from "./BadGraphCategory.svelte"
+import CustomCategory from "./CustomCategory.svelte"
 import ForgettingCurveCategory from "./ForgettingCurveCategory.svelte"
 import FSRSCategory from "./FSRSCategory.svelte"
 import FutureDueCategory from "./FutureDueCategory.svelte"
@@ -64,5 +65,9 @@ export const CATEGORIES = {
     forgettingCurve: {
         component: ForgettingCurveCategory,
         title: "forgetting-curve",
+    },
+    custom: {
+        component: CustomCategory,
+        title: "custom-bar",
     },
 } as const

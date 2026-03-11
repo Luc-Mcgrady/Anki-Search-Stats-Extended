@@ -43,18 +43,24 @@ async function fetchAndDecode(fetchPromise: Promise<Response>) {
     return await decodeResponse(resp)
 }
 
+let origBody: any = undefined
+let origReq: string = ""
+let origHeaders: any = { body: undefined }
+
+export function fetchSwappedSearch(criteria: string) {
+    origHeaders.body = bodySwap(origBody, criteria)
+    return fetchAndDecode(realFetch(origReq, origHeaders))
+}
+
 export function patchFetch() {
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {
         if (req == "/_anki/graphs") {
             data.set(null)
 
-            const origBody = headers.body
-
-            function fetchSwappedSearch(criteria: string) {
-                headers.body = bodySwap(origBody, criteria)
-                return fetchAndDecode(realFetch(req, headers))
-            }
+            origReq = req
+            origBody = headers.body
+            origHeaders = headers
 
             const search_request = decodeRequest(origBody)
 
