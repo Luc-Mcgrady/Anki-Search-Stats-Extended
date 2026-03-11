@@ -7,7 +7,6 @@ load = Load
 count = Count
 lapses = Lapses
 repetitions = Repetitions
-time-totals = Time Totals
 
 cards = Cards
 card-load = Card Load

@@ -7,7 +7,6 @@ load = 工作量
 count = （次）数
 lapses = 遗忘次数
 repetitions = 复习次数
-time-totals = 时间总计
 
 cards = 卡片
 card-load = 卡片工作量

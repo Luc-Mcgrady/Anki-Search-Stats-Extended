@@ -7,8 +7,6 @@ load = Carga
 count = Contagem
 lapses = Lapsos
 repetitions = Repetições
-time-totals = Totais de Tempo
-
 cards = Cartões
 card-load = Carga de Cartões
 intervals = Intervalos
