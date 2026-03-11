@@ -23,6 +23,10 @@
                 // Todo add the other types of card as well
                 out[SSEother.days_elapsed + +day] =
                     result[day].young + result[day].mature + result[day].relearn + result[day].learn
+
+                if ($custom_bar_mode == "time") {
+                    out[SSEother.days_elapsed + +day] /= 60 * 1000
+                }
             }
             $data.value = out
 

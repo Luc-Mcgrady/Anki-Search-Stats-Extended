@@ -9,7 +9,7 @@
     import { i18n } from "./i18n"
     import type { BarChart } from "./bar"
     import BarScrollable from "./BarScrollable.svelte"
-    import { barStringLabeler } from "./bar"
+    import { barDateLabeler } from "./bar"
 
     const pickable_colours = ["blue", "red", "green", "orange"]
     let pickable_colours_i = 0
@@ -52,7 +52,7 @@
             row_labels: data.map((d) => d.label),
             row_colours: data.map((d) => d.colour),
             data: combined_data,
-            columnLabeler: barStringLabeler(i18n("seconds")),
+            columnLabeler: barDateLabeler,
             tick_spacing: 5,
         }
     }
