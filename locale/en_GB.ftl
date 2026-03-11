@@ -114,9 +114,9 @@ custom-pie-help =
     "Search"
     for each search
 
-custom-bar = Custom bar
+custom-bar = Custom Bar
 custom-bar-help =
-    This bar will show you the sum of the requested value in the "Reviews" graph for cards which match
+    This bar chart will show you the sum of the requested value in the "Reviews" graph for cards which match
     "Search"
     for each search
 

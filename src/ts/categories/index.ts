@@ -68,6 +68,6 @@ export const CATEGORIES = {
     },
     custom: {
         component: CustomCategory,
-        title: "custom-pie",
+        title: "custom-bar",
     },
 } as const

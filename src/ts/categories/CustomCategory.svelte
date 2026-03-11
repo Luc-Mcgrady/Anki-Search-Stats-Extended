@@ -9,7 +9,7 @@
     import { data } from "../stores"
 </script>
 
-<GraphCategory hidden_title={i18n("custom-graphs")} config_name="custom">
+<GraphCategory hidden_title={i18n("custom-bar")} config_name="custom">
     <GraphContainer>
         <h1>{i18n("todays-retention")}</h1>
         {#if false && $data?.trueRetention}
@@ -22,17 +22,17 @@
         </p>
     </GraphContainer>
     <GraphContainer>
-        <h1>{i18n("custom-pie")}</h1>
-        <CustomPie />
-        <p>
-            {i18n("custom-pie-help")}
-        </p>
-    </GraphContainer>
-    <GraphContainer>
         <h1>{i18n("custom-bar")}</h1>
         <CustomBar />
         <p>
             {i18n("custom-bar-help")}
+        </p>
+    </GraphContainer>
+    <GraphContainer>
+        <h1>{i18n("custom-pie")}</h1>
+        <CustomPie />
+        <p>
+            {i18n("custom-pie-help")}
         </p>
     </GraphContainer>
 </GraphCategory>
