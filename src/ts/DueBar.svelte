@@ -26,7 +26,7 @@
                 due = 1
                 continue
             }
-            
+
             let type = (
                 {
                     0: 3, // new
