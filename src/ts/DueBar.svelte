@@ -24,8 +24,21 @@
             let due = card.due < 365_000 ? card.due - days_elapsed : 0
             if (card.queue < -1) {
                 due = 1
+                continue
             }
-            const type = card.ivl > 21 ? 0 : card.ivl > 1 ? 1 : card.queue == 1 ? 3 : 2
+            
+            let type = (
+                {
+                    0: 3, // new
+                    1: 3, // learn
+                    2: 0, // review
+                    3: 2, // relearning
+                } as const
+            )[card.type] as number
+
+            if (type == 0 && card.ivl < 21) {
+                type = 1
+            }
 
             if (due < maxBar) {
                 bars[due] ??= {
