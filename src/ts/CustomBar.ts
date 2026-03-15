@@ -8,10 +8,10 @@ export type SearchBarData = {
     value: number[]
 }
 
-export async function getQuery(query: string, mode: string): Promise<GraphsResponse> {
+export async function getQuery(query: string, dayLimit: number): Promise<GraphsResponse> {
     let cids: number[]
     if (!query) {
         query = "*"
     }
-    return await fetchSwappedSearch(query)
+    return await fetchSwappedSearch(query, dayLimit)
 }

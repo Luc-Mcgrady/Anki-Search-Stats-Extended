@@ -1,6 +1,7 @@
+import { get } from "svelte/store"
 import { GraphsRequest, GraphsResponse } from "./proto/anki/stats_pb"
 import { search } from "./search"
-import { cids, data, graphsRequest, not_suspended_data } from "./stores"
+import { alwaysAllTime, cids, data, graphsRequest, not_suspended_data } from "./stores"
 
 export async function decodeResponse(resp: Response) {
     const blob = await resp.blob()
@@ -32,9 +33,12 @@ export function searchJoin(user: string | null, added: string | null): string {
     }
 }
 
-function bodySwap(req: string | Uint8Array, newSearch: string) {
+function bodySwap(req: string | Uint8Array, newSearch: string, newLimit?: number) {
     const request = decodeRequest(req)
     request.search = searchJoin(request?.search, newSearch)
+    if (newLimit !== undefined) {
+        request.days = newLimit
+    }
     return request.toBinary()
 }
 
@@ -47,14 +51,14 @@ let origBody: any = undefined
 let origReq: string = ""
 let origHeaders: any = { body: undefined }
 
-export function fetchSwappedSearch(criteria: string) {
-    origHeaders.body = bodySwap(origBody, criteria)
+export function fetchSwappedSearch(criteria: string, limit?: number) {
+    origHeaders.body = bodySwap(origBody, criteria, limit)
     return fetchAndDecode(realFetch(origReq, origHeaders))
 }
 
 export function patchFetch() {
     //@ts-ignore
-    fetch = (req: string, headers: Record<string, any>) => {
+    fetch = async (req: string, headers: Record<string, any>) => {
         if (req == "/_anki/graphs") {
             data.set(null)
 
@@ -69,7 +73,7 @@ export function patchFetch() {
             const cidSearch = search(search_request?.search)
             cidSearch.then(cids.set)
 
-            fetchAndDecode(realFetch(req, headers)).then(data.set)
+            fetchSwappedSearch("", get(alwaysAllTime) ? 0 : undefined).then(data.set)
             fetchSwappedSearch("-is:suspended").then(not_suspended_data.set)
 
             headers.body = origBody
