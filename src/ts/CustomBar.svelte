@@ -39,11 +39,14 @@
         newSearch()
     }
 
+    let binSize = 1
+    let offset = 0
+
     let bar_data: BarChart
     $: {
         const data = $bar_data_values
         const max_len = Math.max(0, ...data.map((d) => d.value?.length ?? 0))
-        const combined_data = _.range(max_len).map((i) => ({
+        const combined_data = _.range(-(offset + binSize * 30), max_len).map((i) => ({
             label: i.toString(),
             values: data.map((d) => d.value[i] ?? 0),
         }))
@@ -73,7 +76,7 @@
 </div>
 
 {#if _.sumBy($bar_data_values, (d) => _.sum(d.value))}
-    <BarScrollable data={bar_data} {limit}></BarScrollable>
+    <BarScrollable data={bar_data} {limit} bind:offset bind:binSize></BarScrollable>
 {:else}
     <NoGraph></NoGraph>
 {/if}
