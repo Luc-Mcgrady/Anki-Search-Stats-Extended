@@ -48,8 +48,8 @@ let origReq: string = ""
 let origHeaders: any = { body: undefined }
 
 export function fetchSwappedSearch(criteria: string) {
-    origHeaders.body = bodySwap(origBody, criteria)
-    return fetchAndDecode(realFetch(origReq, origHeaders))
+    const headers = { ...origHeaders, body: bodySwap(origBody, criteria) }
+    return fetchAndDecode(realFetch(origReq, headers))
 }
 
 export function patchFetch() {
