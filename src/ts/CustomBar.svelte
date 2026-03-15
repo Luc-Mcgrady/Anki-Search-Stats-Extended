@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { custom_bar_mode, searchString } from "./stores"
+    import { custom_bar_mode, searchLimit, searchString } from "./stores"
     import _ from "lodash"
     import NoGraph from "./NoGraph.svelte"
     import { derived, writable, type Writable } from "svelte/store"
@@ -56,6 +56,9 @@
             tick_spacing: 5,
         }
     }
+
+    // Todo: Make this a store
+    $: limit = -1 - $searchLimit
 </script>
 
 <div class="options">
@@ -70,7 +73,7 @@
 </div>
 
 {#if _.sumBy($bar_data_values, (d) => _.sum(d.value))}
-    <BarScrollable data={bar_data}></BarScrollable>
+    <BarScrollable data={bar_data} {limit}></BarScrollable>
 {:else}
     <NoGraph></NoGraph>
 {/if}
