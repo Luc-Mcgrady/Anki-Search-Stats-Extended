@@ -73,8 +73,9 @@ export function patchFetch() {
             const cidSearch = search(search_request?.search)
             cidSearch.then(cids.set)
 
-            fetchSwappedSearch("", get(alwaysAllTime) ? 0 : undefined).then(data.set)
-            fetchSwappedSearch("-is:suspended").then(not_suspended_data.set)
+            const limit = get(alwaysAllTime) ? 0 : undefined
+            fetchSwappedSearch("", limit).then(data.set)
+            fetchSwappedSearch("-is:suspended", limit).then(not_suspended_data.set)
 
             headers.body = origBody
         }
