@@ -58,7 +58,7 @@ export function fetchSwappedSearch(criteria: string, limit?: number) {
 
 export function patchFetch() {
     //@ts-ignore
-    fetch = async (req: string, headers: Record<string, any>) => {
+    fetch = (req: string, headers: Record<string, any>) => {
         if (req == "/_anki/graphs") {
             data.set(null)
 
