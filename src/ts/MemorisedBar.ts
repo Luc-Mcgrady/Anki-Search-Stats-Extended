@@ -176,6 +176,12 @@ export function getFsrs(config: DeckConfig) {
     return deckFsrs[id]
 }
 
+const STABILITY_WEIGHT_FACTOR = 8 / 365
+
+function stability_weight(s: number): number {
+    return 1 - Math.exp(-STABILITY_WEIGHT_FACTOR * s)
+}
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -248,9 +254,6 @@ export function getMemorisedDays(
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
-                function stability_weight(s: number): number {
-                    return 1 - Math.exp(-((8 / 365) * s))
-                }
                 stable_retrievability_days[day] =
                     (stable_retrievability_days[day] || 0) +
                     retrievability * stability_weight(card.stability)
