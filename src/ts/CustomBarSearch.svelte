@@ -2,7 +2,13 @@
     import type { Writable } from "svelte/store"
     import { getQuery, type SearchBarData } from "./CustomBar"
     import { searchJoin } from "./root"
-    import { custom_bar_mode, searchString, data as default_data, searchLimit } from "./stores"
+    import {
+        custom_bar_mode,
+        searchString,
+        data as default_data,
+        searchLimit,
+        graphsRequest,
+    } from "./stores"
     import CancelablePromise, { cancelable } from "cancelable-promise"
     import { i18n } from "./i18n"
     import type { GraphsResponse } from "./proto/anki/stats_pb"
@@ -39,9 +45,8 @@
     $: $data.label = searchJoin($searchString, $data.search)
     $: if (last_search !== $data.label || last_search_limit !== $searchLimit) {
         last_search = $data.label
-        last_search_limit = $searchLimit
         promise.cancel()
-        if ($data.search == "") {
+        if ($data.search == "" && $graphsRequest?.days === $searchLimit) {
             promise = new CancelablePromise((resolve) => {
                 default_data.subscribe((d) => {
                     if (d) resolve(d)
@@ -50,6 +55,7 @@
         } else {
             promise = cancelable(getQuery($data.label, $searchLimit))
         }
+        last_search_limit = $searchLimit
         promise.then((result) => {
             search_data = result
             updateData()
