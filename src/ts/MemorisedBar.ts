@@ -436,9 +436,10 @@ export function getMemorisedDays(
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
         forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, card, num_cid)
-        if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
+        const extra_data = cards_by_id[num_cid].data ? JSON.parse(cards_by_id[num_cid].data) : null
+        if (extra_data?.s) {
             const expected = last_stability[num_cid]
-            const actual = JSON.parse(cards_by_id[num_cid].data).s
+            const actual = extra_data.s
             if (Math.abs(expected - actual) > 0.01) {
                 inaccurate_cids.push({
                     cid: num_cid,
