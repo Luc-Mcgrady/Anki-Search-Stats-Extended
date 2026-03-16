@@ -290,7 +290,7 @@ export function calculateRevlogStats(
 
         let to = next_review ? dayFromMs(next_review.id) : end + 1
 
-        for (const intervalDay of _.range(day, to)) {
+        for (let intervalDay = day; intervalDay < to; intervalDay++) {
             intervals[intervalDay] = intervals[intervalDay] ?? []
             // -1 suspended
             // -2 learn (0 still contains learn as well)
