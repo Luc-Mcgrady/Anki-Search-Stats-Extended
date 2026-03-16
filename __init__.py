@@ -46,9 +46,10 @@ def new_refresh(self: NewDeckStats):
         else config["forceLang"]
     )
 
+    prefs = mw.col.get_preferences().scheduling
     other = {
-        "rollover": mw.col.get_preferences().scheduling.rollover,
-        "learn_ahead_secs": mw.col.get_preferences().scheduling.learn_ahead_secs,
+        "rollover": prefs.rollover,
+        "learn_ahead_secs": prefs.learn_ahead_secs,
         "deck_configs": {conf["id"]: conf for conf in mw.col.decks.all_config()},
         "deck_config_ids": {
             deck["id"]: deck.get("conf", None) for deck in mw.col.decks.all()
