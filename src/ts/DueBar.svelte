@@ -53,7 +53,14 @@
         return bars.slice(0, maxBar)
     }
 
-    $: bars = calculateBars($card_data ?? [])
+    let debounceTimer: ReturnType<typeof setTimeout>
+    $: {
+        clearTimeout(debounceTimer)
+        const snapshot = $card_data ?? []
+        debounceTimer = setTimeout(() => {
+            bars = calculateBars(snapshot)
+        }, 0)
+    }
 </script>
 
 <Bar
