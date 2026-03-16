@@ -295,15 +295,16 @@ export function getMemorisedDays(
         const now = new Date(revlog.id)
         const fsrs = getFsrs(config)
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
+        const revlogDay = dayFromMs(revlog.id)
 
-        if (last_day < dayFromMs(revlog.id)) {
+        if (last_day < revlogDay) {
             const stabilities = Object.values(last_stability)
-            for (let day = last_day; day < dayFromMs(revlog.id); day++) {
+            for (let day = last_day; day < revlogDay; day++) {
                 day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
                 day_means[day] = d3.mean(stabilities) ?? 0
             }
         }
-        last_day = dayFromMs(revlog.id)
+        last_day = revlogDay
 
         // on forget
         if (revlog.factor == 0 && revlog.type == 4 && !new_card) {
@@ -322,7 +323,7 @@ export function getMemorisedDays(
         if (last_stability[revlog.cid]) {
             const previous = dayFromMs(card.last_review!.getTime())
             const stability = last_stability[revlog.cid]
-            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), card, revlog.cid)
+            forgetting_curve(fsrs, stability, previous, revlogDay, card, revlog.cid)
         }
 
         let memoryState: FSRSState | null = null
