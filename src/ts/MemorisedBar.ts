@@ -234,7 +234,7 @@ export function getMemorisedDays(
         card: Card,
         cid: number
     ) {
-        for (const day of _.range(from, to)) {
+        for (let day = from; day < to; day++) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
             const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
