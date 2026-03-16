@@ -52,8 +52,8 @@ let origReq: string = ""
 let origHeaders: any = { body: undefined }
 
 export function fetchSwappedSearch(criteria: string, limit?: number) {
-    origHeaders.body = bodySwap(origBody, criteria, limit)
-    return fetchAndDecode(realFetch(origReq, origHeaders))
+    const headers = { ...origHeaders, body: bodySwap(origBody, criteria, limit) }
+    return fetchAndDecode(realFetch(origReq, headers))
 }
 
 export function patchFetch() {
@@ -76,8 +76,6 @@ export function patchFetch() {
             const limit = get(alwaysAllTime) ? 0 : undefined
             fetchSwappedSearch("", limit).then(data.set)
             fetchSwappedSearch("-is:suspended", limit).then(not_suspended_data.set)
-
-            headers.body = origBody
         }
         return realFetch(req, headers)
     }
