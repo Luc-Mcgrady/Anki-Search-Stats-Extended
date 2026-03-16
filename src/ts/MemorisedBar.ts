@@ -182,6 +182,10 @@ function stability_weight(s: number): number {
     return 1 - Math.exp(-STABILITY_WEIGHT_FACTOR * s)
 }
 
+// Constants for B-W matrix
+const R_BIN_POWER = 1.4
+const LOG_R_BIN_POWER = Math.log(R_BIN_POWER)
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -371,14 +375,8 @@ export function getMemorisedDays(
                 if (!new_card && (last_forget[revlog.cid] ?? 0) < revlog.id) {
                     // B-W matrix
                     if (card.stability > 1) {
-                        const r_bin_power = 1.4
-                        const r_bin = _.round(
-                            Math.pow(
-                                r_bin_power,
-                                Math.floor(Math.log(card.stability) / Math.log(r_bin_power))
-                            ),
-                            2
-                        )
+                        const exp = Math.floor(Math.log(card.stability) / LOG_R_BIN_POWER)
+                        const r_bin = Math.round(Math.pow(R_BIN_POWER, exp) * 100) / 100
                         const d_bin = Math.round(card.difficulty)
                         bw_matrix_count[r_bin] ??= []
                         let retention_row = bw_matrix_count[r_bin]
