@@ -78,7 +78,7 @@ from flask import Response, request
 def card_search() -> bytes:
     search = request.data
     try:
-        return Response(str(list(mw.col.find_cards(search))))
+        return Response(orjson.dumps(list(mw.col.find_cards(search))))
     except:
         return None
 
