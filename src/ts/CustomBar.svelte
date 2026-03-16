@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { custom_bar_mode, searchString } from "./stores"
+    import { custom_bar_mode, searchLimit, searchString } from "./stores"
     import _ from "lodash"
     import NoGraph from "./NoGraph.svelte"
     import { derived, writable, type Writable } from "svelte/store"
@@ -39,11 +39,14 @@
         newSearch()
     }
 
+    let binSize = 1
+    let offset = 0
+
     let bar_data: BarChart
     $: {
         const data = $bar_data_values
         const max_len = Math.max(0, ...data.map((d) => d.value?.length ?? 0))
-        const combined_data = _.range(max_len).map((i) => ({
+        const combined_data = _.range(-(offset + binSize * 30), max_len).map((i) => ({
             label: i.toString(),
             values: data.map((d) => d.value[i] ?? 0),
         }))
@@ -56,6 +59,9 @@
             tick_spacing: 5,
         }
     }
+
+    // Todo: Make this a store
+    $: limit = -1 - $searchLimit
 </script>
 
 <div class="options">
@@ -70,7 +76,7 @@
 </div>
 
 {#if _.sumBy($bar_data_values, (d) => _.sum(d.value))}
-    <BarScrollable data={bar_data}></BarScrollable>
+    <BarScrollable data={bar_data} {limit} bind:offset bind:binSize></BarScrollable>
 {:else}
     <NoGraph></NoGraph>
 {/if}
