@@ -4,8 +4,7 @@ import { search } from "./search"
 import { alwaysAllTime, cids, data, graphsRequest, not_suspended_data } from "./stores"
 
 export async function decodeResponse(resp: Response) {
-    const blob = await resp.blob()
-    const respBuf = await new Response(blob).arrayBuffer()
+    const respBuf = await resp.arrayBuffer()
     const bytes = new Uint8Array(respBuf)
     return GraphsResponse.fromBinary(bytes)!
 }
