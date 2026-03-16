@@ -60,7 +60,7 @@ export interface CardData {
     usn: number
     type: number
     // https://github.com/ankitects/anki/blob/main/pylib/anki/consts.py#L22-L29
-    /* 
+    /*
     QUEUE_TYPE_MANUALLY_BURIED = CardQueue(-3)
     QUEUE_TYPE_SIBLING_BURIED = CardQueue(-2)
     QUEUE_TYPE_SUSPENDED = CardQueue(-1)
@@ -138,7 +138,37 @@ export async function openLocaleFolder() {
 }
 
 export async function getCardData(cids: number[]) {
-    return (await endpoint("cardData", JSON.stringify(cids))) as CardData[]
+    const response = (await endpoint("cardData", JSON.stringify(cids))) as {
+        columns: string[]
+        data: any[][]
+    }
+    const idx: Record<string, number> = {}
+    response.columns.forEach((col, i) => (idx[col] = i))
+    const cards = new Array<CardData>(response.data.length)
+    for (let i = 0; i < response.data.length; i++) {
+        const row = response.data[i]
+        cards[i] = {
+            id: row[idx.id],
+            nid: row[idx.nid],
+            did: row[idx.did],
+            ord: row[idx.ord],
+            mod: row[idx.mod],
+            usn: row[idx.usn],
+            type: row[idx.type],
+            queue: row[idx.queue],
+            due: row[idx.due],
+            ivl: row[idx.ivl],
+            factor: row[idx.factor],
+            reps: row[idx.reps],
+            lapses: row[idx.lapses],
+            left: row[idx.left],
+            odue: row[idx.odue],
+            odid: row[idx.odid],
+            flags: row[idx.flags],
+            data: row[idx.data],
+        }
+    }
+    return cards
 }
 
 export async function saveConfigValue(key: string, value: any) {

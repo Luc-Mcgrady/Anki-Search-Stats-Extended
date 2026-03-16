@@ -64,9 +64,8 @@ def new_refresh(self: NewDeckStats):
         f"const SSEconfig = {json.dumps(config)};"
         f"const SSEother = {json.dumps(other)};"
     )
-    self.form.web.loadFinished.connect(
-        lambda: self.form.web.eval(setVars + innerJs)
-    )
+    self.form.web.loadFinished.connect(lambda: self.form.web.eval(setVars + innerJs))
+
 
 NewDeckStats.refresh = wrap(NewDeckStats.refresh, new_refresh, "after")
 
@@ -111,8 +110,7 @@ CARD_COLUMNS = [
 def card_data() -> bytes:
     cards = request.data.strip(b"[]").decode()
     cardData = mw.col.db.all(f"SELECT * FROM cards WHERE id IN ({cards})")
-    cardData = [{k: v for k, v in zip(CARD_COLUMNS, a)} for a in cardData]
-    return Response(orjson.dumps(cardData))
+    return Response(orjson.dumps({"columns": CARD_COLUMNS, "data": cardData}))
 
 
 post_handlers["cardData"] = card_data
@@ -129,7 +127,7 @@ def revlogs() -> bytes:
     if day_range > 0:
         rollover = mw.col.get_preferences().scheduling.rollover
         today = (int_time() - (rollover * 60 * 60)) / DAY_SECONDS
-        lower_limit = (today - day_range) * DAY_SECONDS * 1000 
+        lower_limit = (today - day_range) * DAY_SECONDS * 1000
     else:
         lower_limit = 0
 
