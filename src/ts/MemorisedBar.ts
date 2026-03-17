@@ -176,6 +176,16 @@ export function getFsrs(config: DeckConfig) {
     return deckFsrs[id]
 }
 
+const STABILITY_WEIGHT_FACTOR = 8 / 365
+
+function stability_weight(s: number): number {
+    return 1 - Math.exp(-STABILITY_WEIGHT_FACTOR * s)
+}
+
+// Constants for B-W matrix
+const R_BIN_POWER = 1.4
+const LOG_R_BIN_POWER = Math.log(R_BIN_POWER)
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -228,7 +238,7 @@ export function getMemorisedDays(
         card: Card,
         cid: number
     ) {
-        for (const day of _.range(from, to)) {
+        for (let day = from; day < to; day++) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
             const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
@@ -248,9 +258,6 @@ export function getMemorisedDays(
                 const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
-                function stability_weight(s: number): number {
-                    return 1 - Math.exp(-((8 / 365) * s))
-                }
                 stable_retrievability_days[day] =
                     (stable_retrievability_days[day] || 0) +
                     retrievability * stability_weight(card.stability)
@@ -279,11 +286,9 @@ export function getMemorisedDays(
     let day_medians: number[] = []
     let day_means: number[] = []
     let last_day = dayFromMs(revlogs[0].id)
-    // Todo: This can be optimised
-    let probabilities = _.mapValues(
-        _.groupBy(revlogs, (r) => r.cid),
-        (_) => [1]
-    )
+    const uniqueCids = new Set(revlogs.map((r) => r.cid))
+    let probabilities: Record<number, number[]> = {}
+    for (const cid of uniqueCids) probabilities[cid] = [1]
 
     // let log: any[] = []
     for (const revlog of revlogs) {
@@ -297,13 +302,16 @@ export function getMemorisedDays(
         const now = new Date(revlog.id)
         const fsrs = getFsrs(config)
         let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
+        const revlogDay = dayFromMs(revlog.id)
 
-        for (let day = last_day; day < dayFromMs(revlog.id); day++) {
+        if (last_day < revlogDay) {
             const stabilities = Object.values(last_stability)
-            day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
-            day_means[day] = d3.mean(stabilities) ?? 0
+            for (let day = last_day; day < revlogDay; day++) {
+                day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
+                day_means[day] = d3.mean(stabilities) ?? 0
+            }
         }
-        last_day = dayFromMs(revlog.id)
+        last_day = revlogDay
 
         // on forget
         if (revlog.factor == 0 && revlog.type == 4 && !new_card) {
@@ -322,7 +330,7 @@ export function getMemorisedDays(
         if (last_stability[revlog.cid]) {
             const previous = dayFromMs(card.last_review!.getTime())
             const stability = last_stability[revlog.cid]
-            forgetting_curve(fsrs, stability, previous, dayFromMs(revlog.id), card, revlog.cid)
+            forgetting_curve(fsrs, stability, previous, revlogDay, card, revlog.cid)
         }
 
         let memoryState: FSRSState | null = null
@@ -367,14 +375,8 @@ export function getMemorisedDays(
                 if (!new_card && (last_forget[revlog.cid] ?? 0) < revlog.id) {
                     // B-W matrix
                     if (card.stability > 1) {
-                        const r_bin_power = 1.4
-                        const r_bin = _.round(
-                            Math.pow(
-                                r_bin_power,
-                                Math.floor(Math.log(card.stability) / Math.log(r_bin_power))
-                            ),
-                            2
-                        )
+                        const exp = Math.floor(Math.log(card.stability) / LOG_R_BIN_POWER)
+                        const r_bin = Math.round(Math.pow(R_BIN_POWER, exp) * 100) / 100
                         const d_bin = Math.round(card.difficulty)
                         bw_matrix_count[r_bin] ??= []
                         let retention_row = bw_matrix_count[r_bin]
@@ -436,9 +438,10 @@ export function getMemorisedDays(
         const previous = dayFromMs(card.last_review!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
         forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, card, num_cid)
-        if (cards_by_id[num_cid].data && JSON.parse(cards_by_id[num_cid].data).s) {
+        const extra_data = cards_by_id[num_cid].data ? JSON.parse(cards_by_id[num_cid].data) : null
+        if (extra_data?.s) {
             const expected = last_stability[num_cid]
-            const actual = JSON.parse(cards_by_id[num_cid].data).s
+            const actual = extra_data.s
             if (Math.abs(expected - actual) > 0.01) {
                 inaccurate_cids.push({
                     cid: num_cid,

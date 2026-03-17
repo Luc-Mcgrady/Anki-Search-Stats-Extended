@@ -1,7 +1,7 @@
 import { forgetting_curve } from "ts-fsrs"
 import { CardType } from "../../anki/ts/lib/tslib/cards"
 import type { HeatmapData, HeatmapDimension } from "./heatmap"
-import { getDecay, type CardData, type CardExtraData } from "./search"
+import { getDecay, getExtraDataFromCard, type CardData } from "./search"
 
 export interface CardSRData {
     r: number
@@ -36,7 +36,7 @@ export function create_card_sr_dataset(
             continue
         }
 
-        const extra_data: CardExtraData = JSON.parse(card_data_entry.data)
+        const extra_data = getExtraDataFromCard(card_data_entry)
 
         if (extra_data.s === undefined) {
             // We don't care about non-FSRS cards

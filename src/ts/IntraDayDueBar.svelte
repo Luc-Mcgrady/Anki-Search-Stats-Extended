@@ -13,14 +13,14 @@
     let next_card_time_until: string = ""
 
     async function fetchCards(parentSearch: string): Promise<BarDatum[]> {
-        const due_today_learn = await search(
-            searchJoin(parentSearch, "prop:due=0 is:learn -is:review")
-        )
-        const cards_learn = await getCardData(due_today_learn)
-        const due_today_relearn = await search(
-            searchJoin(parentSearch, "prop:due=0 is:learn is:review")
-        )
-        const cards_relearn = await getCardData(due_today_relearn)
+        const [due_today_learn, due_today_relearn] = await Promise.all([
+            search(searchJoin(parentSearch, "prop:due=0 is:learn -is:review")),
+            search(searchJoin(parentSearch, "prop:due=0 is:learn is:review")),
+        ])
+        const [cards_learn, cards_relearn] = await Promise.all([
+            getCardData(due_today_learn),
+            getCardData(due_today_relearn),
+        ])
 
         const { learn_ahead_secs, rollover } = $other
 
