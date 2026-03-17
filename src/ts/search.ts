@@ -139,9 +139,17 @@ export async function openLocaleFolder() {
 
 export async function getCardData(cids: number[]) {
     const response = (await endpoint("cardData", JSON.stringify(cids))) as {
-        columns: string[]
-        data: any[][]
+        columns?: string[]
+        data?: any[][]
     }
+
+    if (!response.columns || !response.data) {
+        alert(
+            "Search Stats Extended has been updated. Some graphs may not work until you restart Anki."
+        )
+        return []
+    }
+
     const idx: Record<string, number> = {}
     response.columns.forEach((col, i) => (idx[col] = i))
     const cards = new Array<CardData>(response.data.length)
