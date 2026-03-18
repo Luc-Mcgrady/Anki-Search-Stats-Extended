@@ -198,8 +198,11 @@ export function getMemorisedDays(
     console.log(`ts-fsrs ${FSRSVersion}`)
 
     // Apply the new outlier filtering logic at the start.
+    console.time("Applying outlier filter")
     const excludedRevlogIds = applyOutlierFilter(revlogs)
+    console.timeEnd("Applying outlier filter")
 
+    console.time("Calculating memorised days")
     let fsrsCards: Record<number, Card> = {}
     let cards_by_id = IDify(cards)
 
@@ -476,7 +479,7 @@ export function getMemorisedDays(
     const leech_probabilities = _.mapValues(probabilities, (p) =>
         p.length > leech_min_reviews ? _.sum(p) : 1
     )
-
+    console.timeEnd("Calculating memorised days")
     return {
         retrievabilityDays,
         totalCards,
