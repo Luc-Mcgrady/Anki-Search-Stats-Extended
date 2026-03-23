@@ -64,7 +64,6 @@
         transform: rotate(0deg);
     }
 
-    span,
     button,
     hr,
     h3 {

@@ -51,28 +51,6 @@
         background: var(--canvas-overlay);
     }
 
-    div.loadOption {
-        background-color: rgba(255, 136, 0, 0.116);
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
-        min-height: 500px;
-
-        border-radius: var(--border-radius-medium, 10px);
-        margin: -1em;
-        padding: 1em;
-
-        button {
-            font-size: 2em;
-            font-weight: 900;
-        }
-
-        & :global(span) {
-            border-radius: var(--border-radius-medium, 10px);
-            padding: 0.5em;
-        }
-    }
-
     :global(.hover-bar) {
         fill: white;
         opacity: 0;
