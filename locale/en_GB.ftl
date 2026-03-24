@@ -284,6 +284,8 @@ memorised-truncated-warning =
 
 fsrs-calibration = FSRS Calibration
 fsrs-calibration-help = This compares the average retention FSRS predicts you should have on cards (Perfect/orange line) to the retention you actually have (Actual/blue line).
+fsrs-calibration-suspended-warning = You have suspended cards with a review history. FSRS is not optimised on suspended cards by default, but they are included in this graph which may make the calibration seem worse than it actually is.
+fsrs-calibration-suspended-warning2 = You may want to use "-is:suspended" in your search to exclude them. You can ignore this if you have optimised using suspended cards.
 forgetting-curve = First Long-term Forgetting Curve
 forgetting-curve-help =
     Compares the observed rate of recall against fitted FSRS forgetting curves which are grouped by the card's first rating.

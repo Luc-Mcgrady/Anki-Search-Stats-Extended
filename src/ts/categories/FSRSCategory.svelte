@@ -11,7 +11,14 @@
     import TimeMachineScroll from "../TimeMachineScroll.svelte"
     import { i18n, i18n_bundle, i18n_pattern } from "../i18n"
     import { barDateLabeler, barStringLabeler, barHourLabeler, type BarChart } from "../bar"
-    import { memorised_stats, scroll, searchLimit, binSize, revlogStats } from "../stores"
+    import {
+        memorised_stats,
+        scroll,
+        searchLimit,
+        binSize,
+        revlogStats,
+        searchString,
+    } from "../stores"
     import { today, day_ms, no_rollover_today } from "../revlogGraphs"
     import { YOUNG_COLOUR, MATURE_COLOUR } from "../graph"
     import type { PieDatum } from "../pie"
@@ -77,6 +84,7 @@
 
     $: review_leftmost = minIndex($revlogStats?.intervals ?? {}) - today
     $: time_machine_min = review_leftmost
+    $: has_suspended_with_history = ($revlogStats?.intervals?.[today]?.[-1] ?? 0) > 0
 </script>
 
 <GraphCategory hidden_title="FSRS" config_name="fsrs">
@@ -96,6 +104,15 @@
     <MemorisedGraphContainer>
         <h1 slot="title">{i18n("fsrs-calibration")}</h1>
         <FsrsCalibration slot="graph" data={$memorised_stats!.calibration} />
+        {#if has_suspended_with_history}
+            <Warning>
+                <p>
+                    {i18n("fsrs-calibration-suspended-warning")}
+                    <br />
+                    {i18n("fsrs-calibration-suspended-warning2")}
+                </p>
+            </Warning>
+        {/if}
         <p>
             {i18n("fsrs-calibration-help")}
         </p>
