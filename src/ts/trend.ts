@@ -22,6 +22,10 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
 
     data = data.filter((a) => !!a.y)
 
+    if (data.length < 2) {
+        return
+    }
+
     const trend = createTrend(data, "x", "y")
     const leftmost = _.minBy(data, (datum) => datum.x)
     const rightmost = _.maxBy(data, (datum) => datum.x)
