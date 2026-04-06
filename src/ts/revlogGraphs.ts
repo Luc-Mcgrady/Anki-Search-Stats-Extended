@@ -30,10 +30,7 @@ export const no_rollover_today = Math.floor(Date.now() / day_ms)
 
 let deckFsrs: Record<number, FSRS> = {}
 
-function getFsrs(config: {
-    id: number
-    fsrsParams6: number[]
-}) {
+function getFsrs(config: { id: number; fsrsParams6: number[] }) {
     const id = config.id
     if (!deckFsrs[id]) {
         deckFsrs[id] = Fsrs(
