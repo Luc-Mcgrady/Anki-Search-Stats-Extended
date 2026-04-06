@@ -1,10 +1,19 @@
 import _ from "lodash"
-import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
+import {
+    type Card,
+    checkParameters,
+    createEmptyCard,
+    type FSRS,
+    fsrs as Fsrs,
+    FSRS5_DEFAULT_DECAY,
+    type FSRSState,
+    generatorParameters,
+} from "ts-fsrs"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { averageDecay, type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
-import { getCardDecay, type CardData, type Revlog } from "./search"
+import { type CardData, getCardDecay, type Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
@@ -18,6 +27,52 @@ export function dayFromMs(ms: number) {
 
 export const today = dayFromMs(Date.now())
 export const no_rollover_today = Math.floor(Date.now() / day_ms)
+
+let deckFsrs: Record<number, FSRS> = {}
+
+function getFsrs(config: {
+    id: number
+    fsrsParams6: number[]
+}) {
+    const id = config.id
+    if (!deckFsrs[id]) {
+        deckFsrs[id] = Fsrs(
+            generatorParameters({
+                w: checkParameters(config.fsrsParams6),
+                enable_fuzz: false,
+                enable_short_term: true,
+            })
+        )
+    }
+    return deckFsrs[id]
+}
+
+function median(values: number[]) {
+    if (!values.length) {
+        return 0
+    }
+    const sorted = [...values].sort((a, b) => a - b)
+    const middle = Math.floor(sorted.length / 2)
+    if (sorted.length % 2 === 1) {
+        return sorted[middle]
+    }
+    return (sorted[middle - 1] + sorted[middle]) / 2
+}
+
+function bucketTimeStats(bucketedSamples: number[][]) {
+    const meanByBucket: number[] = []
+    const medianByBucket: number[] = []
+
+    bucketedSamples.forEach((samples, bucket) => {
+        if (!samples?.length) {
+            return
+        }
+        meanByBucket[bucket] = _.sum(samples) / samples.length
+        medianByBucket[bucket] = median(samples)
+    })
+
+    return { meanByBucket, medianByBucket }
+}
 
 interface SiblingReview {
     cid: number
@@ -59,6 +114,8 @@ export function calculateRevlogStats(
 ) {
     console.time("revlog stats")
     let id_card_data = IDify(cardData)
+    let fsrsCards: Record<number, Card> = {}
+    deckFsrs = {}
 
     function emptyArray<T>(init: T): T[] {
         const empty_array: T[] = []
@@ -116,6 +173,20 @@ export function calculateRevlogStats(
     let short_term_recorded_cards: Set<number> = new Set()
     let forgetting_samples: ForgettingSample[] = []
     let forgetting_samples_short: ForgettingSample[] = []
+    let time_by_retrievability_samples: number[][] = []
+    let time_by_stability_samples: number[][] = []
+
+    function card_config(cid: number) {
+        const card = id_card_data[cid]
+        if (!card) {
+            return undefined
+        }
+        const configId = SSEother.deck_config_ids?.[card.odid || card.did]
+        if (configId === undefined) {
+            return undefined
+        }
+        return SSEother.deck_configs?.[configId]
+    }
 
     function incrementEase(ease_array: number[][], day: number, ease: number, amount = 1) {
         // Doesn't check for negative ease (manual reschedule)
@@ -211,6 +282,55 @@ export function calculateRevlogStats(
         const hasRating = revlog.ease > 0
         const isResetEntry = !hasRating && revlog.factor === 0
         const isCrammingEntry = hasRating && revlog.type === 3 && revlog.factor === 0
+        const config = card_config(revlog.cid)
+
+        if (config) {
+            const fsrs = getFsrs(config)
+            const now = new Date(revlog.id)
+            const hasPreviousReview = !!fsrsCards[revlog.cid]
+            let fsrsCard = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
+
+            if (revlog.factor == 0 && revlog.type == 4 && hasPreviousReview) {
+                fsrsCard = fsrs.forget(fsrsCard, now).card
+                fsrsCards[revlog.cid] = fsrsCard
+            }
+
+            if (hasRating && !isCrammingEntry) {
+                let memoryState: FSRSState | null = null
+                let elapsed = 0
+
+                if (fsrsCard.last_review) {
+                    memoryState = fsrsCard.stability
+                        ? {
+                              difficulty: fsrsCard.difficulty,
+                              stability: fsrsCard.stability,
+                          }
+                        : null
+                    elapsed = dayFromMs(now.getTime()) - dayFromMs(fsrsCard.last_review.getTime())
+
+                    if (revlog.time > 0 && fsrsCard.stability > 0) {
+                        const seconds = revlog.time / 1000
+                        const retrievability = fsrs.forgetting_curve(elapsed, fsrsCard.stability)
+                        const retrievabilityBucket = Math.max(
+                            0,
+                            Math.min(99, Math.floor(retrievability * 100))
+                        )
+                        const stabilityBucket = Math.max(0, Math.round(fsrsCard.stability))
+
+                        time_by_retrievability_samples[retrievabilityBucket] ??= []
+                        time_by_retrievability_samples[retrievabilityBucket].push(seconds)
+                        time_by_stability_samples[stabilityBucket] ??= []
+                        time_by_stability_samples[stabilityBucket].push(seconds)
+                    }
+                }
+
+                const newState = fsrs.next_state(memoryState, elapsed, revlog.ease)
+                fsrsCard.last_review = now
+                fsrsCard.stability = newState.stability
+                fsrsCard.difficulty = newState.difficulty
+                fsrsCards[revlog.cid] = fsrsCard
+            }
+        }
 
         if (isResetEntry) {
             forgetting_samples = forgetting_samples.filter((sample) => sample.cid !== revlog.cid)
@@ -339,6 +459,8 @@ export function calculateRevlogStats(
         .map((card) => getCardDecay(card))
     const forgetting_curve_decay =
         decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DEFAULT_DECAY
+    const retrievabilityTimeStats = bucketTimeStats(time_by_retrievability_samples)
+    const stabilityTimeStats = bucketTimeStats(time_by_stability_samples)
 
     console.timeEnd("revlog stats")
 
@@ -366,6 +488,10 @@ export function calculateRevlogStats(
         forgetting_samples,
         forgetting_samples_short,
         forgetting_curve_decay,
+        time_by_retrievability_mean: retrievabilityTimeStats.meanByBucket,
+        time_by_retrievability_median: retrievabilityTimeStats.medianByBucket,
+        time_by_stability_mean: stabilityTimeStats.meanByBucket,
+        time_by_stability_median: stabilityTimeStats.medianByBucket,
     }
 }
 

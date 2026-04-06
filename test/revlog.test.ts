@@ -32,6 +32,10 @@ const burden_revlogs : Revlog[] = [
 
 const end = 10
 const {burden, learn_steps_per_card} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
+const fsrs_weights = [
+    0.40255, 1.18385, 3.173, 15.69105, 7.1949, 0.5345, 1.4604, 0.0046, 1.54575, 0.1192,
+    1.01925, 1.9395, 0.11, 0.29605, 2.2698, 0.2315, 2.9898, 0.51655, 0.6621,
+]
 
 test("Burden", () =>{
     // expect(burden.length).toEqual(end + 1)
@@ -74,4 +78,53 @@ test("Forgetting curve aggregates recall data", () => {
     expect(series?.points.length).toBeGreaterThan(0)
     expect(series?.stability).not.toBeNull()
     expect(stats.forgetting_curve_decay).toBeCloseTo(averageDecay([0.35]), 6)
+})
+
+test("Time distribution by retrievability and stability is generated", () => {
+    const previousSSEother = global.SSEother
+    try {
+        global.SSEother = {
+            ...previousSSEother,
+            deck_configs: {
+                1: {
+                    id: 1,
+                    fsrsParams6: fsrs_weights,
+                },
+            },
+            deck_config_ids: {
+                1: 1,
+            },
+            rollover: 0,
+        }
+
+        const builder = new RevlogBuilder()
+        const revlogs = [
+            builder.review(0, 3, 1000),
+            builder.review(1, 3, 2000),
+            builder.wait(2 * day_ms),
+            builder.review(2, 3, 4000),
+            builder.wait(2 * day_ms),
+            builder.review(3, 2, 6000),
+        ].filter(Boolean) as Revlog[]
+
+        const stats = calculateRevlogStats(
+            revlogs,
+            [{ ...builder.card(), did: 1, data: "{}" }] as any,
+            builder.last_review + 2
+        )
+
+        const retrievabilityValues = (stats.time_by_retrievability_mean ?? []).filter((v) =>
+            Number.isFinite(v)
+        )
+        const stabilityValues = (stats.time_by_stability_mean ?? []).filter((v) =>
+            Number.isFinite(v)
+        )
+
+        expect(retrievabilityValues.length).toBeGreaterThan(0)
+        expect(stabilityValues.length).toBeGreaterThan(0)
+        expect(Math.max(...retrievabilityValues)).toBeGreaterThan(0)
+        expect(Math.max(...stabilityValues)).toBeGreaterThan(0)
+    } finally {
+        global.SSEother = previousSSEother
+    }
 })

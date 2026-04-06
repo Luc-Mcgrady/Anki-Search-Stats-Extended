@@ -132,6 +132,7 @@ reset = Reset
 interval-of = Interval of {$value}
 difficulty-of = Difficulty of {$value}
 stability-of = Stability of {$value}
+retrievability-of = Retrievability of {$value}
 factor-of = Increase of {$value}%
 x-seconds = {$value} Seconds
 # e.g
@@ -231,6 +232,12 @@ suspended-cards-warning =
 time-totals = Time Totals
 time-totals-help =
     The quantity of time that has been spent on cards which have taken the given amount of time to answer over every review
+time-distribution-by-retrievability = Time Distribution by Retrievability
+time-distribution-by-retrievability-help =
+    The average or median answer time (seconds) grouped by predicted retrievability bucket before each review.
+time-distribution-by-stability = Time Distribution by Stability
+time-distribution-by-stability-help =
+    The average or median answer time (seconds) grouped by predicted stability bucket (days) before each review.
 
 introduced = Introduced
 re-introduced = Re-Introduced
