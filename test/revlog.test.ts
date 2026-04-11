@@ -88,7 +88,8 @@ test("Time distribution by retrievability and stability is generated", () => {
             deck_configs: {
                 1: {
                     id: 1,
-                    fsrsParams6: fsrs_weights,
+                    fsrsParams6: [],
+                    fsrsWeights: fsrs_weights,
                 },
             },
             deck_config_ids: {

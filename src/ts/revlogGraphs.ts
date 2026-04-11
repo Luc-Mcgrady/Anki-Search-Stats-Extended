@@ -3,6 +3,7 @@ import {
     type Card,
     checkParameters,
     createEmptyCard,
+    default_w,
     type FSRS,
     fsrs as Fsrs,
     FSRS5_DEFAULT_DECAY,
@@ -30,12 +31,26 @@ export const no_rollover_today = Math.floor(Date.now() / day_ms)
 
 let deckFsrs: Record<number, FSRS> = {}
 
-function getFsrs(config: { id: number; fsrsParams6: number[] }) {
+function getFsrs(config: {
+    id: number
+    fsrsParams6?: number[]
+    fsrsParams5?: number[]
+    fsrsParams4?: number[]
+    fsrsWeights?: number[]
+}) {
     const id = config.id
     if (!deckFsrs[id]) {
+        const configParams = [
+            config.fsrsParams6,
+            config.fsrsParams5,
+            config.fsrsParams4,
+            config.fsrsWeights,
+        ]
+        const params = configParams.find((arr) => Array.isArray(arr) && arr.length > 0) ?? default_w
+
         deckFsrs[id] = Fsrs(
             generatorParameters({
-                w: checkParameters(config.fsrsParams6),
+                w: checkParameters(params),
                 enable_fuzz: false,
                 enable_short_term: true,
             })
