@@ -4,7 +4,7 @@
     import RevlogGraphContainer from "../RevlogGraphContainer.svelte"
     import IntervalGraph from "../IntervalGraph.svelte"
     import GraphCategory from "../GraphCategory.svelte"
-    import { i18n } from "../i18n"
+    import { i18n, i18n_pattern } from "../i18n"
     import { pieLast, pieSteps, revlogStats } from "../stores"
 
     enum AverageType {
@@ -113,7 +113,10 @@
         <BarScrollable
             slot="graph"
             data={retrievabilityTimeBar}
+            average
             bind:binSize={retrievabilityBinSize}
+            trend
+            trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
         />
         <div class="toggle">
             <label>
@@ -132,8 +135,11 @@
         <BarScrollable
             slot="graph"
             data={stabilityTimeBar}
+            average
             left_aligned
             bind:binSize={stabilityBinSize}
+            trend
+            trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
         />
         <div class="toggle">
             <label>
