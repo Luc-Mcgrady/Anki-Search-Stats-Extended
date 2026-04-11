@@ -155,6 +155,20 @@ average-second-per-day = {$value} {$value ->
         [one] day
         *[many] {$n} days
     }
+average-second-per-retrievability-percent = {$value} {$value ->
+        [one] second
+        *[many] seconds
+    } on average per {$n ->
+        [one] 1% retrievability bucket
+        *[many] {$n}% retrievability buckets
+    }
+average-second-per-stability-day = {$value} {$value ->
+        [one] second
+        *[many] seconds
+    } on average per {$n ->
+        [one] 1-day stability bucket
+        *[many] {$n}-day stability buckets
+    }
 
 sxr-heatmap = SxR Heatmap
 sxr-heatmap-help =

@@ -116,7 +116,7 @@
             average
             bind:binSize={retrievabilityBinSize}
             trend
-            trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
+            trend_info={{ pattern: i18n_pattern("average-second-per-retrievability-percent") }}
         />
         <div class="toggle">
             <label>
@@ -139,7 +139,7 @@
             left_aligned
             bind:binSize={stabilityBinSize}
             trend
-            trend_info={{ pattern: i18n_pattern("average-second-per-day") }}
+            trend_info={{ pattern: i18n_pattern("average-second-per-stability-day") }}
         />
         <div class="toggle">
             <label>
