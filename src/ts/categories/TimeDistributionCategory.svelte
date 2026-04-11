@@ -5,7 +5,7 @@
     import IntervalGraph from "../IntervalGraph.svelte"
     import GraphCategory from "../GraphCategory.svelte"
     import { i18n, i18n_pattern } from "../i18n"
-    import { pieLast, pieSteps, revlogStats } from "../stores"
+    import { memorised_stats, pieLast, pieSteps, revlogStats } from "../stores"
 
     enum AverageType {
         MEAN,
@@ -31,8 +31,8 @@
 
     $: retrievabilitySeries =
         averageType === AverageType.MEAN
-            ? ($revlogStats?.time_by_retrievability_mean ?? [])
-            : ($revlogStats?.time_by_retrievability_median ?? [])
+            ? ($memorised_stats?.time_by_retrievability_mean ?? [])
+            : ($memorised_stats?.time_by_retrievability_median ?? [])
 
     let retrievabilityTimeBar: BarChart
     $: retrievabilityTimeBar = {
@@ -48,8 +48,8 @@
 
     $: stabilitySeries =
         averageType === AverageType.MEAN
-            ? ($revlogStats?.time_by_stability_mean ?? [])
-            : ($revlogStats?.time_by_stability_median ?? [])
+            ? ($memorised_stats?.time_by_stability_mean ?? [])
+            : ($memorised_stats?.time_by_stability_median ?? [])
 
     let stabilityTimeBar: BarChart
     $: stabilityTimeBar = {

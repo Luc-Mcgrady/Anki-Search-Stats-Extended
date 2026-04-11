@@ -186,6 +186,33 @@ function stability_weight(s: number): number {
 const R_BIN_POWER = 1.4
 const LOG_R_BIN_POWER = Math.log(R_BIN_POWER)
 
+function median(values: number[]) {
+    if (!values.length) {
+        return 0
+    }
+    const sorted = [...values].sort((a, b) => a - b)
+    const middle = Math.floor(sorted.length / 2)
+    if (sorted.length % 2 === 1) {
+        return sorted[middle]
+    }
+    return (sorted[middle - 1] + sorted[middle]) / 2
+}
+
+function bucketTimeStats(bucketedSamples: number[][]) {
+    const meanByBucket: number[] = []
+    const medianByBucket: number[] = []
+
+    bucketedSamples.forEach((samples, bucket) => {
+        if (!samples?.length) {
+            return
+        }
+        meanByBucket[bucket] = _.sum(samples) / samples.length
+        medianByBucket[bucket] = median(samples)
+    })
+
+    return { meanByBucket, medianByBucket }
+}
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -291,6 +318,8 @@ export function getMemorisedDays(
     let last_day = dayFromMs(revlogs[0].id)
     const uniqueCids = new Set(revlogs.map((r) => r.cid))
     let probabilities: Record<number, number[]> = {}
+    let time_by_retrievability_samples: number[][] = []
+    let time_by_stability_samples: number[][] = []
     for (const cid of uniqueCids) probabilities[cid] = [1]
 
     // let log: any[] = []
@@ -357,6 +386,16 @@ export function getMemorisedDays(
             }
 
             const p = fsrs.forgetting_curve(elapsed, card.stability)
+            if (revlog.time > 0 && card.stability > 0) {
+                const seconds = revlog.time / 1000
+                const retrievabilityBucket = Math.max(0, Math.min(99, Math.floor(p * 100)))
+                const stabilityBucket = Math.max(0, Math.round(card.stability))
+
+                time_by_retrievability_samples[retrievabilityBucket] ??= []
+                time_by_retrievability_samples[retrievabilityBucket].push(seconds)
+                time_by_stability_samples[stabilityBucket] ??= []
+                time_by_stability_samples[stabilityBucket].push(seconds)
+            }
             const y = grade > 1 ? 1 : 0
 
             let card_type: LossBin[]
@@ -479,6 +518,8 @@ export function getMemorisedDays(
     const leech_probabilities = _.mapValues(probabilities, (p) =>
         p.length > leech_min_reviews ? _.sum(p) : 1
     )
+    const retrievabilityTimeStats = bucketTimeStats(time_by_retrievability_samples)
+    const stabilityTimeStats = bucketTimeStats(time_by_stability_samples)
     console.timeEnd("Calculating memorised days")
     return {
         retrievabilityDays,
@@ -493,5 +534,9 @@ export function getMemorisedDays(
         leech_probabilities,
         difficulty_days: difficulty_day_bins,
         calibration,
+        time_by_retrievability_mean: retrievabilityTimeStats.meanByBucket,
+        time_by_retrievability_median: retrievabilityTimeStats.medianByBucket,
+        time_by_stability_mean: stabilityTimeStats.meanByBucket,
+        time_by_stability_median: stabilityTimeStats.medianByBucket,
     }
 }
