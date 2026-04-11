@@ -1,16 +1,12 @@
 import { DeltaIfy } from "../src/ts/Candlestick"
-import {
-    averageDecay,
-    buildForgettingCurve,
-    computeStabilityForSeries,
-} from "../src/ts/forgettingCurveData"
 import { calculateRevlogStats, day_ms } from "../src/ts/revlogGraphs"
 import type { Revlog } from "../src/ts/search"
 import { RevlogBuilder } from "./revlogBuilder"
+import { averageDecay, buildForgettingCurve, computeStabilityForSeries } from "../src/ts/forgettingCurveData"
 
 const burden_revlog_builder1 = new RevlogBuilder()
 const burden_revlog_builder2 = new RevlogBuilder()
-const burden_revlogs: Revlog[] = [
+const burden_revlogs : Revlog[] = [
     burden_revlog_builder1.review(-5000, 3),
     burden_revlog_builder1.review(-6000, 3),
     burden_revlog_builder1.review(1, 3),
@@ -22,11 +18,11 @@ const burden_revlogs: Revlog[] = [
     burden_revlog_builder1.review(1, 3),
     burden_revlog_builder1.review(4, 3),
 
-    burden_revlog_builder2.wait(7 * day_ms),
+    burden_revlog_builder2.wait(7*day_ms),
     burden_revlog_builder2.review(1) as Revlog,
-    burden_revlog_builder2.wait(2 * day_ms),
-    burden_revlog_builder2.review(-5000) as Revlog,
-].filter((a) => a) as Revlog[]
+    burden_revlog_builder2.wait(2*day_ms),
+    burden_revlog_builder2.review(-5000) as Revlog, 
+].filter(a=>a) as Revlog[]
 
 //Card1: 1, 0.5, 0.5, 0, 0, 1, 0.25, 0.25, 0.25, 0.25 0.25
 //Card2: 0, 0,   0,   0, 0, 0, 0,    1,    1,    1    1(learning)
@@ -35,22 +31,18 @@ const burden_revlogs: Revlog[] = [
 // console.log(burden_revlogs.map(revlog=>({id: revlog.id / day_ms, ...revlog})))
 
 const end = 10
-const { burden, learn_steps_per_card } = calculateRevlogStats(
-    burden_revlogs,
-    [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any,
-    end
-)
+const {burden, learn_steps_per_card} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
 
-test("Burden", () => {
+test("Burden", () =>{
     // expect(burden.length).toEqual(end + 1)
     expect(burden).toMatchObject([1, 0.5, 0.5, 0, 0, 1, 0.25, 1.25, 1.25, 1.25, 1.25])
 })
 
-test("Burden delta", () => {
+test("Burden delta", () =>{
     expect(DeltaIfy(burden)).toMatchObject([1, -0.5, 0, -0.5, 0, 1, -0.75, 1, 0, 0, 0])
 })
 
-test("learn_step_count", () => {
+test("learn_step_count", ()=>{
     console.log(burden_revlogs)
     expect(learn_steps_per_card).toContain(2)
 })
