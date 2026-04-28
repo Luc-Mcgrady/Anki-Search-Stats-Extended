@@ -14,10 +14,9 @@
 
     let normalize = true
     $: target_R_days = $cardDataStats.target_R_days
-    $: target_R_day_values = target_R_days.map((v, i) => [
-        v,
-        ($data?.futureDue?.futureDue[i] || 0) - v,
-    ])
+    $: target_R_day_values = _.zip(target_R_days, $cardDataStats.target_R_day_totals).map(
+        ([R, total], i) => [R ?? 0, (total ?? 0) - (R ?? 0)]
+    )
     $: target_R_days_bar = {
         row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
         row_labels: [i18n("pass"), i18n("fail")],
