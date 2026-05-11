@@ -288,7 +288,7 @@ export function getMemorisedDays(
     let bw_matrix_count: Record<number, LossBin[]> = {}
     let day_medians: number[] = []
     let day_means: number[] = []
-    let last_day = dayFromMs(revlogs[0].id)
+    let last_day = dayFromMs(revlogs[0]?.id ?? 0)
     const uniqueCids = new Set(revlogs.map((r) => r.cid))
     let probabilities: Record<number, number[]> = {}
     for (const cid of uniqueCids) probabilities[cid] = [1]
