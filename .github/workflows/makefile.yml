@@ -19,6 +19,13 @@ jobs:
       - name: Build
         run: make
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ankiaddon-file
+          path: |
+            searchStatsExtended.ankiaddon
+
       - name: Test
         run: npm run test
 
