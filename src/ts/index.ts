@@ -21,6 +21,8 @@ if (!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (search: string, replacement: string) {
         return this.split(search).join(replacement)
     }
+
+    document.body.classList.add("qt5")
 }
 
 patchFetch()
