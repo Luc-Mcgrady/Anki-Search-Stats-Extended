@@ -8,6 +8,7 @@ esbuild.build({
     outfile: "stats.min.js",
     bundle: true,
     minify: false,
+    target: "chrome77", // For QT5
     plugins: [
         esbuildSvelte({
           preprocess: sveltePreprocess(),
