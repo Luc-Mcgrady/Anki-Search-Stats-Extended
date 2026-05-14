@@ -14,7 +14,7 @@ declare global {
     }
 }
 
-// For QT5
+// For Qt5
 // @ts-ignore
 if (!String.prototype.replaceAll) {
     // @ts-ignore
