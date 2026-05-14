@@ -14,6 +14,17 @@ declare global {
     }
 }
 
+// For Qt5
+// @ts-ignore
+if (!String.prototype.replaceAll) {
+    // @ts-ignore
+    String.prototype.replaceAll = function (search: string, replacement: string) {
+        return this.split(search).join(replacement)
+    }
+
+    document.body.classList.add("qt5")
+}
+
 patchFetch()
 
 config.set(SSEconfig)
