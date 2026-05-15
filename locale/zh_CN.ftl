@@ -119,6 +119,7 @@ reset = 重置
 interval-of = {$value}天间隔
 difficulty-of = {$value}的难度
 stability-of = {$value}的稳定期
+retrievability-of = {$value}的可提取性
 factor-of = Increase of {$value}%
 x-seconds = {$value}秒
 # e.g 
@@ -229,6 +230,12 @@ suspended-cards-warning =
 time-totals = 时间总计
 time-totals-help = 
     各耗时区间的总时间累积。
+time-distribution-by-retrievability = 按可提取性划分的耗时分布
+time-distribution-by-retrievability-help =
+    按每次复习前预测可提取性分箱，显示答题耗时（秒）的均值或中位数。
+time-distribution-by-stability = 按稳定期划分的耗时分布
+time-distribution-by-stability-help =
+    按每次复习前预测稳定期（天）分箱，显示答题耗时（秒）的均值或中位数。
 
 introduced = 新学习
 re-introduced = 重新学习

@@ -116,3 +116,32 @@ test("Leech Detection", () =>{
 
     expect(leech_probabilities[card.card().id]).toBeCloseTo(0.1)
 })
+
+test("Time distribution by retrievability and stability is generated", () => {
+    const card = new RevlogBuilder()
+
+    const revlogs = [
+        card.review(0, 3, 1000),
+        card.review(1, 3, 2000),
+        card.wait(2 * 24 * 60 * 60 * 1000),
+        card.review(2, 3, 4000),
+        card.wait(2 * 24 * 60 * 60 * 1000),
+        card.review(3, 2, 6000),
+    ].filter(Boolean) as Revlog[]
+
+    const stats = getMemorisedDays(revlogs, [{
+        ...card.card(),
+        did: 1,
+        data: "{}",
+    } as any], configs, mappings)
+
+    const retrievabilityValues = (stats.time_by_retrievability_mean ?? []).filter((v) =>
+        Number.isFinite(v)
+    )
+    const stabilityValues = (stats.time_by_stability_mean ?? []).filter((v) => Number.isFinite(v))
+
+    expect(retrievabilityValues.length).toBeGreaterThan(0)
+    expect(stabilityValues.length).toBeGreaterThan(0)
+    expect(Math.max(...retrievabilityValues)).toBeGreaterThan(0)
+    expect(Math.max(...stabilityValues)).toBeGreaterThan(0)
+})

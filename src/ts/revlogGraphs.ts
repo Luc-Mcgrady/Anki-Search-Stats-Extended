@@ -4,7 +4,7 @@ import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { averageDecay, type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
-import { getCardDecay, type CardData, type Revlog } from "./search"
+import { type CardData, getCardDecay, type Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
