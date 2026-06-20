@@ -52,6 +52,10 @@ export function IDify<T extends { id: number }>(array: T[]) {
     return id_data
 }
 
+function isForget(revlog?: Revlog) {
+    return revlog && revlog.factor == 0 && revlog.type == 4
+}
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
@@ -183,7 +187,7 @@ export function calculateRevlogStats(
         } else {
             incrementAllEase("learn")
         }
-        if (revlog.factor == 0 && revlog.type == 4) {
+        if (isForget(revlog)) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
             last_forget[revlog.cid] = revlog.id
@@ -278,7 +282,7 @@ export function calculateRevlogStats(
         // If the card is still learning, use the card data
         let ivl = next_review ? revlog.ivl : card.type != 3 && card.type != 1 ? card.ivl : 0
         // Ignore "forgets"
-        if ((revlog.factor == 0 && revlog.type == 4) || (!next_review && card.queue == 0)) {
+        if (isForget(revlog) || isForget(next_review) || (!next_review && card.queue == 0)) {
             last_cids[revlog.cid] = revlog
             return undefined
         }
