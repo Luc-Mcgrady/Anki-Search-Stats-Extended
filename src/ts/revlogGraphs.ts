@@ -52,6 +52,10 @@ export function IDify<T extends { id: number }>(array: T[]) {
     return id_data
 }
 
+function isForget(revlog?: Revlog) {
+    return revlog && revlog.factor == 0 && revlog.type == 4
+}
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
@@ -84,6 +88,7 @@ export function calculateRevlogStats(
     let day_forgotten: number[] = emptyArray(0)
 
     let intervals: number[][] = []
+    let burden: number[] = []
 
     let day_initial_ease: number[][] = emptyArray(initialEase())
     let day_initial_reintroduced_ease: number[][] = emptyArray(initialEase())
@@ -183,7 +188,7 @@ export function calculateRevlogStats(
         } else {
             incrementAllEase("learn")
         }
-        if (revlog.factor == 0 && revlog.type == 4) {
+        if (isForget(revlog)) {
             introduced.delete(revlog.cid)
             forgotten.add(revlog.cid)
             last_forget[revlog.cid] = revlog.id
@@ -278,7 +283,7 @@ export function calculateRevlogStats(
         // If the card is still learning, use the card data
         let ivl = next_review ? revlog.ivl : card.type != 3 && card.type != 1 ? card.ivl : 0
         // Ignore "forgets"
-        if ((revlog.factor == 0 && revlog.type == 4) || (!next_review && card.queue == 0)) {
+        if (isForget(revlog) || (!next_review && card.queue == 0)) {
             last_cids[revlog.cid] = revlog
             return undefined
         }
@@ -288,6 +293,9 @@ export function calculateRevlogStats(
         if (!next_review && card.queue == -1) {
             ivl = -1
         }
+
+        // load/burden
+        const is_load = !isForget(next_review) && ivl != -1
 
         let to = next_review ? dayFromMs(next_review.id) : end + 1
 
@@ -300,6 +308,10 @@ export function calculateRevlogStats(
             if (ivl == 0 && (revlog.type == 0 || (!next_review && card.type == 1))) {
                 intervals[intervalDay][-2] = (intervals[intervalDay][-2] ?? 0) + 1
             }
+
+            if (is_load) {
+                burden[intervalDay] = (burden[intervalDay] ?? 0) + (ivl > 0 ? 1 / ivl : 1)
+            }
         }
 
         last_cids[revlog.cid] = revlog
@@ -307,13 +319,8 @@ export function calculateRevlogStats(
         return undefined
     }, undefined)
 
-    const burden = Array.from(intervals).map((v) => {
-        if (!v) {
-            return 0
-        } else {
-            return _.sum(v.map((val, ivl) => val / (ivl || 1))) ?? 0
-        }
-    })
+    burden = Array.from(burden).map((a) => a ?? 0)
+    intervals = intervals.map((day) => Array.from(day ?? []).map((a) => a ?? 0))
 
     // Calculate current load by introduction day
     for (const card of cardData) {
