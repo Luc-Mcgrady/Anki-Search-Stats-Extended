@@ -56,6 +56,10 @@ function isForget(revlog?: Revlog) {
     return revlog && revlog.factor == 0 && revlog.type == 4
 }
 
+function isCram(revlog?: Revlog) {
+    return revlog && revlog.factor == 0 && revlog.type == 3
+}
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
@@ -282,6 +286,12 @@ export function calculateRevlogStats(
         const next_review = last_cids[revlog.cid]
         // If the card is still learning, use the card data
         let ivl = next_review ? revlog.ivl : card.type != 3 && card.type != 1 ? card.ivl : 0
+        // Filtered/cram reviews don't reschedule the card, so make them transparent:
+        // return WITHOUT updating last_cids, so the previous review's interval spans
+        // across the cram day instead of the cram injecting a 0-interval segment.
+        if (isCram(revlog)) {
+            return undefined
+        }
         // Ignore "forgets"
         if (isForget(revlog) || (!next_review && card.queue == 0)) {
             last_cids[revlog.cid] = revlog
