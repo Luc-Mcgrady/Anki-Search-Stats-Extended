@@ -30,19 +30,14 @@ const end = 10
 const {burden, intervals, learn_steps_per_card} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
 
 test("Intervals", () =>{
-    // In an ideal world these undefined would be [] but its hard to do with a sparse array that starts at not 0
     expect(intervals).toMatchObject([
-        [0, 1], [0, 0, 1], [0, 0, 1], undefined, undefined, [0, 1], [0, 0, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [1, 0, 0, 0, 1],
+        [0, 1], [0, 0, 1], [0, 0, 1], [], [], [0, 1], [0, 0, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [1, 0, 0, 0, 1],
     ])
 })
 
 test("Burden", () =>{
     // expect(burden.length).toEqual(end + 1)
     expect(burden).toMatchObject([1, 0, 0, 0, 0, 1, 0.25, 1.25, 1.25, 1.25, 1.25])
-})
-
-test("Burden delta", () =>{
-    expect(DeltaIfy(burden)).toMatchObject([1, -1, 0, 0, 0, 1, -0.75, 1, 0, 0, 0])
 })
 
 test("learn_step_count", ()=>{

@@ -274,6 +274,12 @@ export function calculateRevlogStats(
         }
     }
 
+    const first_day = dayFromMs(revlogData[0]?.cid ?? 0)
+    for (let i = first_day; i < end; i++) {
+        burden[i] = 0
+        intervals[i] = []
+    }
+
     // "reduceRight" Used here to iterate backwards, never returns true
     revlogData.reduceRight((_p, revlog) => {
         const day = dayFromMs(revlog.id)
