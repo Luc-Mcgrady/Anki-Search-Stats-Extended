@@ -24,22 +24,25 @@ const burden_revlogs : Revlog[] = [
     burden_revlog_builder2.review(-5000) as Revlog, 
 ].filter(a=>a) as Revlog[]
 
-//Card1: 1, 0.5, 0.5, 0, 0, 1, 0.25, 0.25, 0.25, 0.25 0.25
-//Card2: 0, 0,   0,   0, 0, 0, 0,    1,    1,    1    1(learning)
-//Total: 1, 0.5, 0.5, 0, 0, 1, 0.25, 1.25, 1.25  1.25 1.25
-
 // console.log(burden_revlogs.map(revlog=>({id: revlog.id / day_ms, ...revlog})))
 
 const end = 10
-const {burden, learn_steps_per_card} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
+const {burden, intervals, learn_steps_per_card} = calculateRevlogStats(burden_revlogs, [burden_revlog_builder1.card(), burden_revlog_builder2.card()] as any, end)
+
+test("Intervals", () =>{
+    // In an ideal world these undefined would be [] but its hard to do with a sparse array that starts at not 0
+    expect(intervals).toMatchObject([
+        [0, 1], [0, 0, 1], [0, 0, 1], undefined, undefined, [0, 1], [0, 0, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [1, 0, 0, 0, 1],
+    ])
+})
 
 test("Burden", () =>{
     // expect(burden.length).toEqual(end + 1)
-    expect(burden).toMatchObject([1, 0.5, 0.5, 0, 0, 1, 0.25, 1.25, 1.25, 1.25, 1.25])
+    expect(burden).toMatchObject([1, 0, 0, 0, 0, 1, 0.25, 1.25, 1.25, 1.25, 1.25])
 })
 
 test("Burden delta", () =>{
-    expect(DeltaIfy(burden)).toMatchObject([1, -0.5, 0, -0.5, 0, 1, -0.75, 1, 0, 0, 0])
+    expect(DeltaIfy(burden)).toMatchObject([1, -1, 0, 0, 0, 1, -0.75, 1, 0, 0, 0])
 })
 
 test("learn_step_count", ()=>{
