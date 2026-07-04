@@ -7,9 +7,15 @@
     import Warning from "../Warning.svelte"
     import TimeMachineScroll from "../TimeMachineScroll.svelte"
     import { i18n, i18n_bundle } from "../i18n"
-    import { barStringLabeler, barHourLabeler, type BarChart } from "../bar"
+    import {
+        barStringLabeler,
+        barHourLabeler,
+        type BarChart,
+        barDateLabeler,
+        type BarDatum,
+    } from "../bar"
     import type { PieDatum } from "../pie"
-    import { scroll, searchLimit, revlogStats, data } from "../stores"
+    import { scroll, searchLimit, revlogStats, data, binSize } from "../stores"
     import { today, no_rollover_today } from "../revlogGraphs"
     import {
         LEARN_COLOUR,
@@ -25,6 +31,39 @@
 
     $: truncated = $searchLimit !== 0
     $: realScroll = -Math.abs($scroll)
+
+    $: runningAdded = (() => {
+        const result: number[] = []
+        let total = 0
+        const min = Math.min(...Object.keys(addedCards).map((k) => parseInt(k)))
+
+        for (let day = min; day <= 0; day++) {
+            total += addedCards[day] ?? 0
+            result[day] = total
+        }
+
+        console.log({ result, addedCards })
+
+        return result
+    })()
+
+    $: time_machine_data = Array.from($revlogStats?.intervals ?? []).map(
+        (time_machine_intervals, i) => {
+            const intraDay = time_machine_intervals?.[0] ?? 0
+            const learning = time_machine_intervals?.[-2] ?? 0
+            const relearning = intraDay - learning
+            const young = _.sum((time_machine_intervals ?? []).slice(1, 21)) || 0
+            const mature = _.sum((time_machine_intervals ?? []).slice(21)) || 0
+            const suspended = time_machine_intervals?.[-1] ?? 0
+            const newCards =
+                runningAdded[i - today] - intraDay - learning - young - mature - suspended
+
+            return {
+                values: [mature, young, learning, relearning, suspended, newCards],
+                label: barLabel(i),
+            } satisfies BarDatum
+        }
+    )
 
     $: time_machine_intervals = ($revlogStats?.intervals ?? [])[today + realScroll] ?? []
     $: time_machine_intra_day = time_machine_intervals[0] || 0
@@ -46,6 +85,10 @@
 
     function minIndex(vals: Record<number, any>) {
         return _.min(Object.keys(vals).map((k) => parseInt(k))) ?? 0
+    }
+
+    function barLabel(i: number) {
+        return (i - today).toString()
     }
 
     $: review_leftmost = minIndex($revlogStats?.intervals ?? {}) - today
@@ -96,6 +139,32 @@
             colour: NEW_COLOUR,
         },
     ]
+
+    $: introduced_total_bar = {
+        row_labels: [
+            i18n("mature-count"),
+            i18n("young-count"),
+            i18n("learning-count"),
+            i18n("relearning-count"),
+            i18n("suspended"),
+            i18n("new-count"),
+        ],
+
+        row_colours: [
+            MATURE_COLOUR,
+            YOUNG_COLOUR,
+            LEARN_COLOUR,
+            RELEARN_COLOUR,
+            SUSPENDED_COLOUR,
+            NEW_COLOUR,
+        ],
+
+        data: time_machine_data.map((d, i) => d ?? { values: [], label: barLabel(i) }),
+        tick_spacing: 5,
+        columnLabeler: barDateLabeler,
+    }
+
+    $: limit = -1 - $searchLimit
 
     let time_machine_bar: BarChart
     $: time_machine_bar = {
@@ -175,6 +244,26 @@
         <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
+        {/if}
+    </RevlogGraphContainer>
+    <RevlogGraphContainer>
+        <h1 slot="title">{i18n("introduced-total")}</h1>
+        <BarScrollable
+            slot="graph"
+            data={introduced_total_bar}
+            bins={30}
+            bind:binSize={$binSize}
+            bind:offset={$scroll}
+            {limit}
+            average
+        />
+        <p>
+            {i18n("introduced-help")}
+        </p>
+        {#if truncated}
+            <Warning>
+                {i18n("generic-truncated-warning")}
+            </Warning>
         {/if}
     </RevlogGraphContainer>
     <RevlogGraphContainer>
