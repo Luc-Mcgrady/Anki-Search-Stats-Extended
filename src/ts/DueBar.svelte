@@ -69,5 +69,6 @@
         inverseFade: true,
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
+        hidden_rows: new Set(),
     }}
 ></Bar>

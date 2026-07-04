@@ -422,5 +422,6 @@ export function easeBarChart(
         reverse_legend: true,
         columnLabeler,
         extraStats: normalize ? retentionStats : totalCalc,
+        hidden_rows: new Set(),
     }
 }

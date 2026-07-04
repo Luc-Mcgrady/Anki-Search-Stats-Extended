@@ -171,9 +171,14 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         column_counts = true,
         precision = 2,
     } = chart
+
+    function isRowHidden(i: number) {
+        return hidden_rows.has(chart.reverse_legend ? chart.row_labels.length - i - 1 : i)
+    }
+
     const hiddenData = chart.data.map((datum) => ({
         ...datum,
-        values: datum.values.map((v, i) => (hidden_rows.has(i) ? 0 : v)),
+        values: datum.values.map((v, i) => (isRowHidden(i) ? 0 : v)),
     }))
 
     const stack = d3
@@ -223,7 +228,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("width", x.bandwidth())
 
     function rowLabeler(v: number, i: number) {
-        if (hidden_rows.has(i)) {
+        if (isRowHidden(i)) {
             return ""
         }
         return `${chart.row_labels[i]}: ${parseFloat(v.toFixed(precision))}`
@@ -231,7 +236,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     hoverBars(axis, x, chart.data)
         .on("mouseover", function (e: MouseEvent, d) {
-            const filteredValues = d.values.filter((_, i) => !hidden_rows.has(i))
+            const filteredValues = d.values.filter((_, i) => !isRowHidden(i))
 
             const columnString = columnLabeler(d.label, chart.barWidth)
             const columnCounts = column_counts ? filteredValues.map(rowLabeler).filter(Boolean) : []
