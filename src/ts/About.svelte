@@ -18,6 +18,7 @@
             <li>{i18n("credits-Huili-fox")}</li>
             <li>{i18n("credits-Rener-Crisostomo")}</li>
             <li>{i18n("credits-user1823")}</li>
+            <li>{i18n("credits-mikael")}</li>
         </ul>
     </GraphContainer>
     <GraphContainer>
