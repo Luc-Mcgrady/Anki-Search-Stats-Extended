@@ -456,6 +456,7 @@ credits-Jarrett-Ye = Jarrett Ye: {memorised}, {forgetting-curve} and {first-shor
 credits-Ishiko = Ishiko: {memorised} graph
 credits-Rener-Crisostomo = Renêr Crisostomo: Brazilian translation
 credits-user1823 = user1823: Performance improvements
+credits-mikael = mikael2123: {load-trend} fix for cram reviews
 
 support = Support the Addon
 like-on-ankiweb = Like on AnkiWeb 👍
