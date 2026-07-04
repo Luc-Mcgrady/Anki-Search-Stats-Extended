@@ -31,7 +31,7 @@ const {burden, intervals, learn_steps_per_card} = calculateRevlogStats(burden_re
 
 test("Intervals", () =>{
     expect(intervals).toMatchObject([
-        [0, 1], [0, 0, 1], [0, 0, 1], [], [], [0, 1], [0, 0, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [0, 1, 0, 0, 1], [1, 0, 0, 0, 1],
+        [, 1], [, , 1], [, , 1], [], [], [, 1], [, , , , 1], [, 1, , , 1], [, 1, , , 1], [, 1, , , 1], [1, , , , 1],
     ])
 })
 

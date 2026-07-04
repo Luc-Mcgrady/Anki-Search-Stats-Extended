@@ -335,9 +335,6 @@ export function calculateRevlogStats(
         return undefined
     }, undefined)
 
-    burden = Array.from(burden).map((a) => a ?? 0)
-    intervals = intervals.map((day) => Array.from(day ?? []).map((a) => a ?? 0))
-
     // Calculate current load by introduction day
     for (const card of cardData) {
         const intro_day = card_introduction_day[card.id]
