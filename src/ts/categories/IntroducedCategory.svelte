@@ -33,6 +33,7 @@
             .map((d, i) => d ?? { values: [0, 0], label: barLabel(i) }),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
+        hidden_rows: new Set<number>(),
     }
 
     $: forgotten_bar = {
