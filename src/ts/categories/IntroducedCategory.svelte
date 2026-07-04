@@ -77,6 +77,7 @@
         <p>
             {i18n("introduced-help")}
             <br />
+            <br />
             {i18n("introduced-average-per-day", { value: average.toFixed(1) })}
         </p>
         {#if truncated}
