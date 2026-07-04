@@ -164,7 +164,7 @@
         data: time_machine_data.map((d, i) => d ?? { values: [], label: barLabel(i) }),
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
-        hidden_rows: new Set(),
+        hidden_rows: new Set<number>(),
     }
 
     $: limit = -1 - $searchLimit
