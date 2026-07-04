@@ -250,7 +250,7 @@
         {/if}
     </RevlogGraphContainer>
     <RevlogGraphContainer>
-        <h1 slot="title">{i18n("introduced-total")}</h1>
+        <h1 slot="title">{i18n("card-count-time-machine-bar")}</h1>
         <BarScrollable
             slot="graph"
             data={introduced_total_bar}
@@ -261,7 +261,7 @@
             average
         />
         <p>
-            {i18n("introduced-help")}
+            {i18n("card-count-time-machine-bar-help")}
         </p>
         {#if truncated}
             <Warning>

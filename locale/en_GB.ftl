@@ -364,6 +364,12 @@ card-count-time-machine-help =
     Learn and re-learn count for the end of the day, and not for learning steps greater than 1 day.
     e.g. You failed to finish the learning steps that day.
 
+card-count-time-machine-bar = Card Count Time Machine (Bar)
+card-count-time-machine-bar-help =
+    Shows your card type counts for a given date as a bar graph.
+
+    Click the legend to hide or show a card type.
+
 starts-at = Starts at
 first-added = First Added
 first-review = First Review
