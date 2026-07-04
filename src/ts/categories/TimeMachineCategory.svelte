@@ -66,17 +66,24 @@
     )
 
     $: time_machine_intervals = ($revlogStats?.intervals ?? [])[today + realScroll] ?? []
-    $: time_machine_intra_day = time_machine_intervals[0] || 0
-    $: time_machine_learn = time_machine_intervals[-2] || 0
-    $: time_machine_young = _.sum(time_machine_intervals.slice(1, 21)) || 0
-    $: time_machine_mature = _.sum(time_machine_intervals.slice(21)) || 0
-    $: time_machine_suspended = time_machine_intervals[-1] ?? 0
-    $: time_machine_added = Object.entries(addedCards).reduce(
-        (p, [i, v]) => p + (+i <= realScroll ? v : 0),
-        0
-    )
 
-    $: total_intervals = time_machine_mature + time_machine_young + time_machine_intra_day
+    $: time_machine_stats = time_machine_data[today + realScroll] ?? []
+    $: time_machine_relearn = time_machine_stats.values?.[3] ?? 0
+    $: time_machine_learn = time_machine_stats.values?.[2] ?? 0
+    $: time_machine_young = time_machine_stats.values?.[1] ?? 0
+    $: time_machine_mature = time_machine_stats.values?.[0] ?? 0
+    $: time_machine_suspended = time_machine_stats.values?.[4] ?? 0
+    $: time_machine_new = time_machine_stats.values?.[5] ?? 0
+
+    $: total_intervals =
+        time_machine_mature + time_machine_young + time_machine_learn + time_machine_relearn
+    $: time_machine_added =
+        time_machine_mature +
+        time_machine_young +
+        time_machine_learn +
+        time_machine_relearn +
+        time_machine_new
+
     $: intervals_mean =
         ($revlogStats?.intervals ?? [])[today + realScroll]?.reduce((p, c, i) => p + c * i, 0) /
             total_intervals || 0
@@ -120,7 +127,7 @@
         },
         {
             label: i18n("relearning-count"),
-            value: time_machine_intra_day - time_machine_learn,
+            value: time_machine_relearn,
             colour: RELEARN_COLOUR,
         },
         {
@@ -130,12 +137,7 @@
         },
         {
             label: i18n("new-count"),
-            value:
-                time_machine_added -
-                time_machine_young -
-                time_machine_mature -
-                time_machine_intra_day -
-                time_machine_suspended,
+            value: time_machine_new,
             colour: NEW_COLOUR,
         },
     ]
