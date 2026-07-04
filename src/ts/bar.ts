@@ -227,11 +227,10 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
+    const filteredRowLabels = chart.row_labels.filter((_, i) => !isRowHidden(i))
+
     function rowLabeler(v: number, i: number) {
-        if (isRowHidden(i)) {
-            return ""
-        }
-        return `${chart.row_labels[i]}: ${parseFloat(v.toFixed(precision))}`
+        return `${filteredRowLabels[i]}: ${parseFloat(v.toFixed(precision))}`
     }
 
     hoverBars(axis, x, chart.data)
@@ -239,7 +238,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
             const filteredValues = d.values.filter((_, i) => !isRowHidden(i))
 
             const columnString = columnLabeler(d.label, chart.barWidth)
-            const columnCounts = column_counts ? filteredValues.map(rowLabeler).filter(Boolean) : []
+            const columnCounts = column_counts ? filteredValues.map(rowLabeler) : []
 
             tooltipShown.set(true)
             tooltip.set({
