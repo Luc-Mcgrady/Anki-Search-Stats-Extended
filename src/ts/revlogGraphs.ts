@@ -357,8 +357,7 @@ export function calculateRevlogStats(
         .map((cid) => id_card_data[cid])
         .filter((card): card is CardData => card !== undefined)
         .map((card) => getCardDecay(card))
-    const forgetting_curve_decay =
-        decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DECAY
+    const forgetting_curve_decay = decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DECAY
 
     console.timeEnd("revlog stats")
 

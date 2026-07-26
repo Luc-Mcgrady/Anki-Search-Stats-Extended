@@ -150,10 +150,10 @@ function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
     return excludedRevlogIds
 }
 
-const scheduler  = defineScheduler({model:FSRS6Model, chrono: dateChrono})
+const scheduler = defineScheduler({ model: FSRS6Model, chrono: dateChrono })
 type FSRSScheduler = ReturnType<typeof scheduler.create>
 let deckFsrs: Record<number, FSRSScheduler> = {}
-type Card = ReturnType<FSRSScheduler['newCard']>
+type Card = ReturnType<FSRSScheduler["newCard"]>
 
 export function getFsrs(config: DeckConfig) {
     const id = config.id
@@ -168,11 +168,11 @@ export function getFsrs(config: DeckConfig) {
         const params = configParams.find((arr) => Array.isArray(arr) && arr.length > 0) ?? default_w
 
         deckFsrs[id] = scheduler.create({
-            config:{
-                weights: migrateFSRS6Parameters(checkParameters(params) as number[]) ,
+            config: {
+                weights: migrateFSRS6Parameters(checkParameters(params) as number[]),
                 enableShortTerm: true,
-                numRelearningSteps:1,
-            }
+                numRelearningSteps: 0,
+            },
         })
     }
     return deckFsrs[id]
@@ -321,7 +321,7 @@ export function getMemorisedDays(
         // on forget
         if (revlog.factor == 0 && revlog.type == 4 && !new_card) {
             const lastReviewAt = card.lastReviewAt
-            card = fsrs.forget({card, now})
+            card = fsrs.forget({ card, now })
             card.lastReviewAt = lastReviewAt
             fsrsCards[revlog.cid] = card
             probabilities[revlog.cid] = [1]
