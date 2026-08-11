@@ -283,7 +283,7 @@ memorised-truncated-warning =
     affect the results.
 
 fsrs-calibration = FSRS Calibration
-fsrs-calibration-help = This compares the average retention FSRS predicts you should have on cards (Perfect/orange line) to the retention you actually have (Actual/blue line).
+fsrs-calibration-help = This compares the average retrievability FSRS predicts you should have on cards (Perfect/orange line) to the retrievability you actually have (Actual/blue line).
 forgetting-curve = First Long-term Forgetting Curve
 forgetting-curve-help =
     Compares the observed rate of recall against fitted FSRS forgetting curves which are grouped by the card's first rating.
@@ -470,7 +470,7 @@ bad-graph = Bad Graphs
 # This tables description and help will most likely change or become a bad graph
 leech-detector = Lapse Odds (Experimental)
 leech-detector-help =
-    A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retention.
+    A clickable graph! The degree to which cards number of lapses deviate from what was expected based on their retrievability.
     The higher the value, the less likely the cards are to have that number of lapses.
     The formula for calculating this may change in the future.
 
