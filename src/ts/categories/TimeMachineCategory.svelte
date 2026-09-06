@@ -15,7 +15,7 @@
         type BarDatum,
     } from "../bar"
     import type { PieDatum } from "../pie"
-    import { scroll, searchLimit, revlogStats, data, binSize } from "../stores"
+    import { scroll, searchLimit, revlogStats, data, binSize, graph_mode } from "../stores"
     import { today, no_rollover_today } from "../revlogGraphs"
     import {
         LEARN_COLOUR,
@@ -26,6 +26,7 @@
         YOUNG_COLOUR,
     } from "../graph"
     import _ from "lodash"
+    import GraphTypeSelector from "../GraphTypeSelector.svelte"
 
     $: addedCards = $data?.added?.added ?? {}
 
@@ -207,66 +208,68 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("card-count-time-machine")}</h1>
         <svelte:fragment slot="graph">
-            <Pie
-                data={time_machine_pie}
-                legend_left={i18n("card-type")}
-                legend_right={i18n("amount")}
-                percentage
-            ></Pie>
-            <TimeMachineScroll min={time_machine_min} />
-            <div>
-                {i18n("starts-at")}
-                <br />
+            <GraphTypeSelector>
                 <label>
-                    <input type="radio" bind:group={left_bound_at} value="Added" />
-                    {i18n("first-added")}
+                    <input type="radio" bind:group={$graph_mode} value="Pie" />
+                    {i18n("pie")}
                 </label>
                 <label>
-                    <input type="radio" bind:group={left_bound_at} value="Review" />
-                    {i18n("first-review")}
+                    <input type="radio" bind:group={$graph_mode} value="Bar" />
+                    {i18n("bar")}
                 </label>
-                <label>
-                    <input
-                        type="radio"
-                        bind:group={left_bound_at}
-                        value="Custom"
-                        on:click={() => {
-                            if (time_machine_min) {
-                                custom_leftmost = time_machine_min
-                            }
-                        }}
-                    />
-                    {i18n("custom")}
-                </label>
-                {#if left_bound_at == "Custom"}
-                    <input type="number" bind:value={custom_leftmost} />
-                {/if}
-            </div>
-            <span>{i18n("x-total-cards", { val: time_machine_added })}</span>
+            </GraphTypeSelector>
+            {#if $graph_mode == "Bar"}
+                <BarScrollable
+                    data={introduced_total_bar}
+                    bins={30}
+                    bind:binSize={$binSize}
+                    bind:offset={$scroll}
+                    {limit}
+                    average
+                />
+            {:else}
+                <Pie
+                    data={time_machine_pie}
+                    legend_left={i18n("card-type")}
+                    legend_right={i18n("amount")}
+                    percentage
+                ></Pie>
+                <TimeMachineScroll min={time_machine_min} />
+                <div>
+                    {i18n("starts-at")}
+                    <br />
+                    <label>
+                        <input type="radio" bind:group={left_bound_at} value="Added" />
+                        {i18n("first-added")}
+                    </label>
+                    <label>
+                        <input type="radio" bind:group={left_bound_at} value="Review" />
+                        {i18n("first-review")}
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            bind:group={left_bound_at}
+                            value="Custom"
+                            on:click={() => {
+                                if (time_machine_min) {
+                                    custom_leftmost = time_machine_min
+                                }
+                            }}
+                        />
+                        {i18n("custom")}
+                    </label>
+                    {#if left_bound_at == "Custom"}
+                        <input type="number" bind:value={custom_leftmost} />
+                    {/if}
+                </div>
+                <span>{i18n("x-total-cards", { val: time_machine_added })}</span>
+            {/if}
         </svelte:fragment>
+        <p>{i18n("card-count-time-machine-bar-help")}</p>
         <p>{i18n("card-count-time-machine-help")}</p>
         {#if truncated}
             <Warning>{i18n("generic-truncated-warning")}</Warning>
-        {/if}
-    </RevlogGraphContainer>
-    <RevlogGraphContainer>
-        <h1 slot="title">{i18n("card-count-time-machine-bar")}</h1>
-        <BarScrollable
-            slot="graph"
-            data={introduced_total_bar}
-            bins={30}
-            bind:binSize={$binSize}
-            bind:offset={$scroll}
-            {limit}
-            average
-        />
-        <p>
-            {i18n("card-count-time-machine-bar-help")}
-        </p>
-        {#if truncated}
-            <Warning>
-                {i18n("generic-truncated-warning")}
-            </Warning>
         {/if}
     </RevlogGraphContainer>
     <RevlogGraphContainer>
