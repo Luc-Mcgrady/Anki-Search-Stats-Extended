@@ -143,7 +143,8 @@
         },
     ]
 
-    $: introduced_total_bar = {
+    let normalise = false
+    $: time_machine_bar = {
         row_labels: [
             i18n("mature-count"),
             i18n("young-count"),
@@ -166,12 +167,13 @@
         tick_spacing: 5,
         columnLabeler: barDateLabeler,
         hidden_rows: new Set<number>(),
+        normalise,
     }
 
     $: limit = -1 - $searchLimit
 
-    let time_machine_bar: BarChart
-    $: time_machine_bar = {
+    let time_machine_interval_bar: BarChart
+    $: time_machine_interval_bar = {
         row_colours: ["#70AFD6"],
         row_labels: [i18n("cards")],
         data: Array.from(time_machine_intervals).map((v, i) => ({
@@ -220,13 +222,17 @@
             </GraphTypeSelector>
             {#if $graph_mode == "Bar"}
                 <BarScrollable
-                    data={introduced_total_bar}
+                    data={time_machine_bar}
                     bins={30}
                     bind:binSize={$binSize}
                     bind:offset={$scroll}
                     {limit}
                     average
                 />
+                <label>
+                    <input type="checkbox" bind:checked={normalise} />
+                    {i18n("as-ratio")}
+                </label>
             {:else}
                 <Pie
                     data={time_machine_pie}
@@ -275,7 +281,7 @@
     <RevlogGraphContainer>
         <h1 slot="title">{i18n("review-interval-time-machine")}</h1>
         <svelte:fragment slot="graph">
-            <BarScrollable data={time_machine_bar} left_aligned />
+            <BarScrollable data={time_machine_interval_bar} left_aligned />
             <TimeMachineScroll min={time_machine_min} />
             <span>{i18n("x-total-cards", { val: total_intervals })}</span>
             <span>
