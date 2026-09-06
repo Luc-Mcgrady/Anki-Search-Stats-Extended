@@ -46,3 +46,8 @@ export function trendLine({ svg, x, y }: ExtraRenderInput<unknown>, data: TrendD
 
     return trend
 }
+
+export function retention_trend(values: number[]) {
+    const sum = _.sum(values)
+    return sum == 0 ? 0 : 1 - values[3] / sum
+}

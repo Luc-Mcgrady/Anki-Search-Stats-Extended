@@ -57,6 +57,7 @@
             data: combined_data,
             columnLabeler: barDateLabeler,
             tick_spacing: 5,
+            hidden_rows: new Set<number>(),
         }
     }
 

@@ -26,6 +26,9 @@ export type BarChart = {
     column_counts?: boolean
     precision?: number
     inverseFade?: boolean
+    normalise?: boolean
+    // If this is undefined then the rows appear unhidable
+    hidden_rows?: Set<number>
 
     extraStats?: (data: BarDatum) => string[]
     columnLabeler?: (thing: string, width?: number) => string
@@ -162,7 +165,37 @@ export function hoverBars<T extends { label: string }>(
 }
 
 export function renderBarChart(chart: BarChart, svg: SVGElement) {
-    const max = _.maxBy(chart.data, (d) => _.sum(Object.values(d?.values ?? [])))
+    const {
+        hidden_rows = new Set<number>(),
+        columnLabeler = (a) => `"${a}"`,
+        extraStats = totalCalc,
+        column_counts = true,
+        precision = 2,
+        normalise = false,
+    } = chart
+
+    function isRowHidden(i: number) {
+        return hidden_rows.has(chart.reverse_legend ? chart.row_labels.length - i - 1 : i)
+    }
+
+    const hiddenData = chart.data.map((datum) => {
+        let values = datum.values.map((v, i) => (isRowHidden(i) ? 0 : v))
+        if (normalise) {
+            const sum = _.sum(values)
+            values = values.map((value) => value / sum)
+        }
+        return {
+            ...datum,
+            values,
+        }
+    })
+
+    const stack = d3
+        .stack<BarDatum, number>()
+        .keys(_.range(0, chart.row_labels.length))
+        .value((obj, key) => obj.values[key])(hiddenData)
+
+    const max = _.maxBy(hiddenData, (d) => _.sum(Object.values(d?.values ?? [])))
     let maxValue = _.sum(Object.values(max?.values ?? []))
 
     if (!Number.isFinite(maxValue) || maxValue < 0) {
@@ -177,18 +210,6 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     const x = defaultX(chart.data.map((datum) => datum.label))
     const y = defaultY(0, maxValue)
     const axis = createAxis(svg, chart.tick_spacing, x, y)
-
-    const stack = d3
-        .stack<BarDatum, number>()
-        .keys(_.range(0, chart.row_labels.length))
-        .value((obj, key) => obj.values[key])(chart.data)
-
-    const {
-        columnLabeler = (a) => `"${a}"`,
-        extraStats = totalCalc,
-        column_counts = true,
-        precision = 2,
-    } = chart
 
     const colourDegree = 0.15
     axis.append("g")
@@ -215,18 +236,32 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("height", (d) => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth())
 
-    hoverBars(axis, x, chart.data)
+    const filteredRowLabels = chart.row_labels.filter((_, i) => !isRowHidden(i))
+
+    function rowLabelerRegular(v: number, i: number) {
+        return `${filteredRowLabels[i]}: ${parseFloat(v.toFixed(precision))}`
+    }
+
+    function rowLabelerNormalised(v: number, i: number) {
+        return `${filteredRowLabels[i]}: ${parseFloat((v * 100).toFixed(1))}%`
+    }
+
+    const rowLabeler = normalise ? rowLabelerNormalised : rowLabelerRegular
+
+    hoverBars(axis, x, hiddenData)
         .on("mouseover", function (e: MouseEvent, d) {
+            const filteredValues = d.values.filter((_, i) => !isRowHidden(i))
+
             const columnString = columnLabeler(d.label, chart.barWidth)
-            const columnCounts = column_counts
-                ? d.values.map(
-                      (v, i) => `${chart.row_labels[i]}: ${parseFloat(v.toFixed(precision))}`
-                  )
-                : []
+            const columnCounts = column_counts ? filteredValues.map(rowLabeler) : []
 
             tooltipShown.set(true)
             tooltip.set({
-                text: [columnString, ...columnCounts, ...extraStats(d)],
+                text: [
+                    columnString,
+                    ...columnCounts,
+                    ...extraStats({ ...d, values: filteredValues }),
+                ],
                 x: tooltipX(e),
                 y: e.pageY,
             })
