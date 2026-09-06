@@ -398,6 +398,7 @@ daily-hourly-breakdown-help =
 days = Days
 today = Today
 
+introduced-average-per-day = {$value} average for shown period
 burden-per-day = {$value} burden per {$n ->
         [one] day
         *[many] {$n} days

@@ -4,7 +4,7 @@
     import GraphCategory from "../GraphCategory.svelte"
     import Warning from "../Warning.svelte"
     import { i18n, i18n_pattern } from "../i18n"
-    import { barDateLabeler, type BarChart, type BarDatum } from "../bar"
+    import { barDateLabeler, type BarChart, type BarDatum, type ExtraRenderInput } from "../bar"
     import { binSize, scroll, searchLimit, revlogStats } from "../stores"
     import { today, easeBarChart } from "../revlogGraphs"
     import _ from "lodash"
@@ -56,6 +56,11 @@
 
     const introducedSearch = (i: number, width: number) =>
         browserSearchCurrent(`introduced:${-i + 1} -introduced:${-(i + width) + 1}`)
+
+    let average = 0
+    function extraRender(chart: ExtraRenderInput<BarChart>) {
+        average = _.meanBy(chart.chart.data, (datum) => _.sum(datum.values)) / $binSize
+    }
 </script>
 
 <GraphCategory hidden_title={i18n("introduced")} config_name="introduced">
@@ -69,9 +74,13 @@
             bind:offset={$scroll}
             {limit}
             search={introducedSearch}
+            {extraRender}
         />
         <p>
             {i18n("introduced-help")}
+            <br />
+            <br />
+            {i18n("introduced-average-per-day", { value: average.toFixed(1) })}
         </p>
         {#if truncated}
             <Warning>
