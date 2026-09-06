@@ -26,6 +26,7 @@ export type BarChart = {
     column_counts?: boolean
     precision?: number
     inverseFade?: boolean
+    normalise?: boolean
     // If this is undefined then the rows appear unhidable
     hidden_rows?: Set<number>
 
@@ -170,16 +171,24 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         extraStats = totalCalc,
         column_counts = true,
         precision = 2,
+        normalise = false,
     } = chart
 
     function isRowHidden(i: number) {
         return hidden_rows.has(chart.reverse_legend ? chart.row_labels.length - i - 1 : i)
     }
 
-    const hiddenData = chart.data.map((datum) => ({
-        ...datum,
-        values: datum.values.map((v, i) => (isRowHidden(i) ? 0 : v)),
-    }))
+    const hiddenData = chart.data.map((datum) => {
+        let values = datum.values.map((v, i) => (isRowHidden(i) ? 0 : v))
+        if (normalise) {
+            const sum = _.sum(values)
+            values = values.map((value) => value / sum)
+        }
+        return {
+            ...datum,
+            values,
+        }
+    })
 
     const stack = d3
         .stack<BarDatum, number>()

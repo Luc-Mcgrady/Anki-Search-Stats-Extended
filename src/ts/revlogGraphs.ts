@@ -403,16 +403,14 @@ export function formatRetention(value: number) {
 export function easeBarChart(
     eases: number[][],
     offset = today,
-    normalize = false,
+    normalise = false,
     columnLabeler: BarChart["columnLabeler"] = undefined
 ): BarChart {
     return {
         row_colours: EASE_COLOURS,
         row_labels: EASE_LABELS,
         data: Array.from(eases).map((data, label) => {
-            const sum = _.sum(data)
             let values = [...(data ?? [0, 0, 0, 0])].reverse()
-            values = normalize ? values.map((a) => a / sum) : values
             return {
                 values,
                 label: (label - offset).toString(),
@@ -421,7 +419,8 @@ export function easeBarChart(
         tick_spacing: 5,
         reverse_legend: true,
         columnLabeler,
-        extraStats: normalize ? retentionStats : totalCalc,
+        extraStats: normalise ? retentionStats : totalCalc,
         hidden_rows: new Set(),
+        normalise: normalise,
     }
 }

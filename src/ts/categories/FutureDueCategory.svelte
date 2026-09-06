@@ -12,7 +12,7 @@
     import { totalCalc } from "../barHelpers"
     import _ from "lodash"
 
-    let normalize = true
+    let normalise = true
     $: target_R_days = $cardDataStats.target_R_days
     $: target_R_day_values = _.zip(target_R_days, $cardDataStats.target_R_day_totals).map(
         ([R, total], i) => [R ?? 0, (total ?? 0) - (R ?? 0)]
@@ -21,20 +21,18 @@
         row_colours: [EASE_COLOURS[1], EASE_COLOURS[3]], // The EASE_COLOURS are in reverse order
         row_labels: [i18n("pass"), i18n("fail")],
         reverse_legend: true,
-        data: target_R_day_values.map((values, label) => {
-            const sum = _.sum(values)
-            return {
-                values: normalize && sum !== 0 ? values.map((a) => a / sum) : values,
-                label: label.toString(),
-            }
-        }),
-        extraStats: normalize
+        data: target_R_day_values.map((values, label) => ({
+            values,
+            label: label.toString(),
+        })),
+        extraStats: normalise
             ? (bar: BarDatum) => [bar.values[0] ? formatRetention(bar.values[0]) : "No data"]
             : totalCalc,
         columnLabeler: barDateLabeler,
-        column_counts: !normalize,
-        precision: normalize ? 2 : 0,
+        column_counts: !normalise,
+        precision: normalise ? 2 : 0,
         inverseFade: true,
+        normalise,
     }
 </script>
 
@@ -53,7 +51,7 @@
     <GraphContainer>
         <h1>{i18n("future-due-retention")}</h1>
         {#if _.sum(target_R_days) > 0}
-            <BarScrollable data={target_R_days_bar} left_aligned average={normalize}
+            <BarScrollable data={target_R_days_bar} left_aligned average={normalise}
             ></BarScrollable>
         {:else}
             <NoGraph>
@@ -62,7 +60,7 @@
             </NoGraph>
         {/if}
         <label>
-            <input type="checkbox" bind:checked={normalize} />
+            <input type="checkbox" bind:checked={normalise} />
             {i18n("as-ratio")}
         </label>
         <p>
