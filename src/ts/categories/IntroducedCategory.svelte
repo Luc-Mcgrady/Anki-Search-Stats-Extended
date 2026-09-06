@@ -9,6 +9,7 @@
     import { today, easeBarChart } from "../revlogGraphs"
     import _ from "lodash"
     import { browserSearchCurrent } from "../search"
+    import { retention_trend } from "../trend"
 
     const bins = 30
     $: limit = -1 - $searchLimit
@@ -108,7 +109,7 @@
             bind:offset={$scroll}
             average={normalize_ease}
             trend={normalize_ease}
-            trend_by={(values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])}
+            trend_by={retention_trend}
             trend_info={{ pattern: i18n_pattern("retention-per-day"), percentage: true }}
             {limit}
             search={introducedSearch}

@@ -8,14 +8,13 @@
     import { binSize, scroll, searchLimit, revlogStats } from "../stores"
     import { today, easeBarChart, type RevlogBuckets } from "../revlogGraphs"
     import _ from "lodash"
+    import { retention_trend } from "../trend"
 
     $: limit = -1 - $searchLimit
     let normalize_ease = false
     let mature_filter: keyof RevlogBuckets = "not_learn"
     let interval_scroll = 1
     let interval_bin_size = 1
-
-    let retention_trend = (values: number[]) => (_.sum(values) == 0 ? 0 : 1 - values[3])
 </script>
 
 <GraphCategory hidden_title={i18n("ratings")} config_name="rating">
