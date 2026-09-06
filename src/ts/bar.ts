@@ -238,11 +238,17 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
 
     const filteredRowLabels = chart.row_labels.filter((_, i) => !isRowHidden(i))
 
-    function rowLabeler(v: number, i: number) {
+    function rowLabelerRegular(v: number, i: number) {
         return `${filteredRowLabels[i]}: ${parseFloat(v.toFixed(precision))}`
     }
 
-    hoverBars(axis, x, chart.data)
+    function rowLabelerNormalised(v: number, i: number) {
+        return `${filteredRowLabels[i]}: ${parseFloat((v * 100).toFixed(1))}%`
+    }
+
+    const rowLabeler = normalise ? rowLabelerNormalised : rowLabelerRegular
+
+    hoverBars(axis, x, hiddenData)
         .on("mouseover", function (e: MouseEvent, d) {
             const filteredValues = d.values.filter((_, i) => !isRowHidden(i))
 
