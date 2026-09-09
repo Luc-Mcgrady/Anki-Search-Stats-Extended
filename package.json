@@ -18,7 +18,7 @@
     "lodash": "^4.17.21",
     "rainbowvis.js": "^1.1.1",
     "trendline": "^1.0.0",
-    "ts-fsrs": "^6.0.0-beta.0"
+    "ts-fsrs": "https://pkg.pr.new/open-spaced-repetition/ts-fsrs@5d5395d"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",

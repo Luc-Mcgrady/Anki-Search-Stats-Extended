@@ -169,7 +169,7 @@ export function getFsrs(config: DeckConfig) {
 
         deckFsrs[id] = scheduler.create({
             config: {
-                weights: migrateFSRS6Parameters(checkParameters(params) as number[]),
+                weights: migrateFSRS6Parameters(checkParameters(params)),
                 enableShortTerm: true,
                 numRelearningSteps: 0,
             },
