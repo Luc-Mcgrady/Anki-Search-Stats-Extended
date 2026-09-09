@@ -2,7 +2,7 @@ import { RevlogBuilder } from "./revlogBuilder"
 import {getMemorisedDays} from "../src/ts/MemorisedBar"
 import type {DeckConfig} from "../src/ts/config"
 import { Revlog } from "../src/ts/search"
-import {fsrs} from "ts-fsrs"
+import { forgettingCurve, migrateFSRS6Parameters } from "ts-fsrs/models/fsrs-6"
 
 const weights = [
     0.40255, 1.18385, 3.173, 15.69105, 7.1949, 0.5345, 1.4604, 0.0046, 1.54575, 0.1192, 1.01925,
@@ -49,7 +49,7 @@ test("Day Timings", ()=>{
 // https://github.com/open-spaced-repetition/fsrs-rs/blob/a7aaa40498bae992e0be0a1e9a1380e4992aee60/src/inference.rs#L433-L465
 test("Stability", ()=>{
     const card = new RevlogBuilder()
-    const FSRS = fsrs({w: weights})
+    const w = migrateFSRS6Parameters(weights, 0, true)
 
     const revlogs = [
         card.review(1, 1),
@@ -67,13 +67,13 @@ test("Stability", ()=>{
 
     const OFFSET = 10
 
-    expect(memorised[card.last_review + OFFSET]).toBeCloseTo(FSRS.forgetting_curve(OFFSET, 31.722975))
+    expect(memorised[card.last_review + OFFSET]).toBeCloseTo(forgettingCurve(w, OFFSET, 31.722975))
 
 })
 
 test("Stability On Forget", ()=>{
     const card = new RevlogBuilder()
-    const FSRS = fsrs({w: weights})
+    const w = migrateFSRS6Parameters(weights, 0, true)
 
     const revlogs = [
         card.review(1, 1),
@@ -94,7 +94,7 @@ test("Stability On Forget", ()=>{
 
     const OFFSET = 10
 
-    expect(memorised[card.last_review + OFFSET]).toBeCloseTo(FSRS.forgetting_curve(OFFSET, 31.722975))
+    expect(memorised[card.last_review + OFFSET]).toBeCloseTo(forgettingCurve(w, OFFSET, 31.722975))
 
 })
 

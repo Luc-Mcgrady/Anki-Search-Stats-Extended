@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
+    import { FSRS5_DECAY } from "ts-fsrs/models/fsrs-5"
     import { i18n } from "./i18n"
     import {
         buildForgettingCurve,
@@ -60,22 +60,12 @@
     // Compute stability separately (only when data changes, not when maxBins changes)
     $: {
         if (isShortTerm) {
-            seriesWithStability = computeStabilityForSeries(
-                series,
-                data,
-                decay ?? FSRS5_DEFAULT_DECAY,
-                {
-                    minStability: 0.01,
-                    maxStability: 1440,
-                }
-            )
+            seriesWithStability = computeStabilityForSeries(series, data, decay ?? FSRS5_DECAY, {
+                minStability: 0.01,
+                maxStability: 1440,
+            })
         } else {
-            seriesWithStability = computeStabilityForSeries(
-                series,
-                data,
-                decay ?? FSRS5_DEFAULT_DECAY,
-                {}
-            )
+            seriesWithStability = computeStabilityForSeries(series, data, decay ?? FSRS5_DECAY, {})
         }
     }
 
@@ -148,7 +138,7 @@
                 xLabel: xLabel ?? i18n("forgetting-curve-x-axis"),
                 yLabel: yLabel ?? i18n("forgetting-curve-y-axis"),
                 maxX: xAxisMax,
-                decay: decay ?? FSRS5_DEFAULT_DECAY,
+                decay: decay ?? FSRS5_DECAY,
             })
         } else if (svg) {
             svg.innerHTML = ""
@@ -160,7 +150,7 @@
             return ""
         }
         const stability = entry.stability !== null ? entry.stability.toFixed(2) : "—"
-        const decayText = (decay ?? FSRS5_DEFAULT_DECAY).toFixed(2)
+        const decayText = (decay ?? FSRS5_DECAY).toFixed(2)
         const countText = i18n("forgetting-curve-legend-count", {
             count: entry.sampleSize.toLocaleString(),
         })
