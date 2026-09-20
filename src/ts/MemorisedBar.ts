@@ -1,17 +1,15 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import {
-    type Card,
     checkParameters,
-    createEmptyCard,
+    dateChrono,
     dateDiffInDays,
     default_w,
-    type FSRS,
-    fsrs as Fsrs,
+    defineScheduler,
     type FSRSState,
     FSRSVersion,
-    generatorParameters,
 } from "ts-fsrs"
+import { forgettingCurve, FSRS6Model, migrateFSRS6Parameters } from "ts-fsrs/models/fsrs-6"
 import type { LossBar } from "./bar"
 import type { DeckConfig } from "./config"
 import { type Buckets, dayFromMs, emptyBuckets, IDify, rollover_ms, today } from "./revlogGraphs"
@@ -152,7 +150,11 @@ function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
     return excludedRevlogIds
 }
 
-let deckFsrs: Record<number, FSRS> = {}
+const scheduler = defineScheduler({ model: FSRS6Model, chrono: dateChrono })
+type FSRSScheduler = ReturnType<typeof scheduler.create>
+let deckFsrs: Record<number, FSRSScheduler> = {}
+type Card = ReturnType<FSRSScheduler["newCard"]>
+
 export function getFsrs(config: DeckConfig) {
     const id = config.id
     if (!deckFsrs[id]) {
@@ -165,13 +167,13 @@ export function getFsrs(config: DeckConfig) {
 
         const params = configParams.find((arr) => Array.isArray(arr) && arr.length > 0) ?? default_w
 
-        deckFsrs[id] = Fsrs(
-            generatorParameters({
-                w: checkParameters(params),
-                enable_fuzz: false,
-                enable_short_term: true,
-            })
-        )
+        deckFsrs[id] = scheduler.create({
+            config: {
+                weights: migrateFSRS6Parameters(checkParameters(params)),
+                enableShortTerm: true,
+                numRelearningSteps: 0,
+            },
+        })
     }
     return deckFsrs[id]
 }
@@ -234,7 +236,7 @@ export function getMemorisedDays(
     let calibration = <LossBin[]>Array(calibration_bin_count)
 
     function forgetting_curve(
-        fsrs: FSRS,
+        fsrs: FSRSScheduler,
         s: number,
         from: number,
         to: number,
@@ -242,7 +244,7 @@ export function getMemorisedDays(
         cid: number
     ) {
         for (let day = from; day < to; day++) {
-            const retrievability = fsrs.forgetting_curve(day - from, s)
+            const retrievability = forgettingCurve(fsrs.config.weights, day - from, s)
             const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
             totalCards[day] = (totalCards[day] | 0) + 1
@@ -304,7 +306,7 @@ export function getMemorisedDays(
         const new_card = !fsrsCards[revlog.cid]
         const now = new Date(revlog.id)
         const fsrs = getFsrs(config)
-        let card = fsrsCards[revlog.cid] ?? createEmptyCard(new Date(revlog.cid))
+        let card = fsrsCards[revlog.cid] ?? fsrs.newCard({ now })
         const revlogDay = dayFromMs(revlog.id)
 
         if (last_day < revlogDay) {
@@ -318,7 +320,9 @@ export function getMemorisedDays(
 
         // on forget
         if (revlog.factor == 0 && revlog.type == 4 && !new_card) {
-            card = fsrs.forget(card, now).card
+            const lastReviewAt = card.lastReviewAt
+            card = fsrs.forget({ card, now })
+            card.lastReviewAt = lastReviewAt
             fsrsCards[revlog.cid] = card
             probabilities[revlog.cid] = [1]
         }
@@ -331,21 +335,21 @@ export function getMemorisedDays(
             continue
         }
         if (last_stability[revlog.cid]) {
-            const previous = dayFromMs(card.last_review!.getTime())
+            const previous = dayFromMs(card.lastReviewAt!.getTime())
             const stability = last_stability[revlog.cid]
             forgetting_curve(fsrs, stability, previous, revlogDay, card, revlog.cid)
         }
 
         let memoryState: FSRSState | null = null
         let elapsed = 0
-        if (card.last_review) {
+        if (card.lastReviewAt) {
             memoryState = card.stability
                 ? {
                       difficulty: card.difficulty,
                       stability: card.stability,
                   }
                 : null
-            const oldDate = new Date(card.last_review.getTime() - rollover_ms)
+            const oldDate = new Date(card.lastReviewAt.getTime() - rollover_ms)
             oldDate.setHours(0, 0, 0, 0)
             const newDate = new Date(now.getTime() - rollover_ms)
             newDate.setHours(0, 0, 0, 0)
@@ -356,7 +360,7 @@ export function getMemorisedDays(
                 last_date = newDate
             }
 
-            const p = fsrs.forgetting_curve(elapsed, card.stability)
+            const p = forgettingCurve(fsrs.config.weights, elapsed, card.stability)
             const y = grade > 1 ? 1 : 0
 
             let card_type: LossBin[]
@@ -422,8 +426,12 @@ export function getMemorisedDays(
 
             today_so_far += 1
         }
-        const newState = fsrs.next_state(memoryState, elapsed, grade)
-        card.last_review = now
+        const newState = fsrs.model.step({
+            memoryState,
+            elapsedDays: elapsed,
+            rating: grade,
+        })
+        card.lastReviewAt = now
         card.stability = newState.stability
         card.difficulty = newState.difficulty
         last_stability[revlog.cid] = card.stability // To prevent "forget" affecting the forgetting curve
@@ -438,7 +446,7 @@ export function getMemorisedDays(
 
     for (const [cid, card] of Object.entries(fsrsCards)) {
         const num_cid = +cid
-        const previous = dayFromMs(card.last_review!.getTime())
+        const previous = dayFromMs(card.lastReviewAt!.getTime())
         const fsrs = getFsrs(card_config(num_cid)!)
         forgetting_curve(fsrs, last_stability[num_cid], previous, today + 1, card, num_cid)
         const extra_data = cards_by_id[num_cid].data ? JSON.parse(cards_by_id[num_cid].data) : null

@@ -1,4 +1,4 @@
-import { forgetting_curve } from "ts-fsrs"
+import { forgettingCurve } from "ts-fsrs/models/fsrs-6"
 import { CardType } from "../../anki/ts/lib/tslib/cards"
 import type { HeatmapData, HeatmapDimension } from "./heatmap"
 import { getDecay, getExtraDataFromCard, type CardData } from "./search"
@@ -53,7 +53,7 @@ export function create_card_sr_dataset(
         const elapsed_days = collection_today_timestamp - last_review_days
 
         const s = extra_data.s
-        const r = forgetting_curve(getDecay(extra_data), elapsed_days, s)
+        const r = forgettingCurve(getDecay(extra_data), elapsed_days, s)
 
         if (!Number.isFinite(r) || !Number.isFinite(s) || r < 0 || r > 1 || s <= 0) {
             console.warn("Skipping card with invalid r or s:", {

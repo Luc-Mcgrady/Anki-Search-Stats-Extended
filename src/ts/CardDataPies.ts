@@ -1,4 +1,4 @@
-import { forgetting_curve } from "ts-fsrs"
+import { forgettingCurve } from "ts-fsrs/models/fsrs-6"
 import { day_ms } from "./revlogGraphs"
 import { getDecay, getExtraDataFromCard, type CardData } from "./search"
 
@@ -31,7 +31,7 @@ export function calculateCardDataPies(
 
                 if (stability && card.ivl > 0 && card.type == 2 && card.queue > 0) {
                     let due = card.due < 365_000 ? card.due - days_elapsed : card.due / day_ms
-                    const target_R = forgetting_curve(getDecay(extraData), card.ivl, stability)
+                    const target_R = forgettingCurve(getDecay(extraData), card.ivl, stability)
                     target_R_days[due] = (target_R_days[due] ?? 0) + target_R
                     target_R_day_totals[due] = (target_R_day_totals[due] ?? 0) + 1
                 }

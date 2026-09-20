@@ -1,4 +1,3 @@
-import { createEmptyCard } from "ts-fsrs"
 import { getFsrs } from "./MemorisedBar"
 import { getExtraDataFromCard, type CardData } from "./search"
 
@@ -19,13 +18,10 @@ export function calculateEaseFactors(
             const dr = data.dr
 
             const fsrs = getFsrs(configs[config_mapping[c.odid || c.did]])
-            fsrs.parameters.request_retention = dr
 
-            const fsrsCard = createEmptyCard()
-            fsrsCard.difficulty = difficulty
-            fsrsCard.stability = stability
-            const interval = fsrs.next_interval(stability, 0)
-            const next = fsrs.next_state(fsrsCard, interval, 3)
+            const memoryState = { difficulty, stability }
+            const interval = fsrs.model.nextInterval(memoryState, dr)
+            const next = fsrs.model.step({ memoryState, elapsedDays: interval, rating: 3 })
             return next.stability / stability
         })
         .filter((a) => a !== undefined)
