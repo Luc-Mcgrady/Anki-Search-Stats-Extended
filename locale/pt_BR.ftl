@@ -118,6 +118,7 @@ reset = Redefinir
 interval-of = Intervalo de {$value}
 difficulty-of = Dificuldade de {$value}
 stability-of = Estabilidade de {$value}
+retrievability-of = Recuperabilidade de {$value}
 x-seconds = {$value} Segundos
 # e.g
 # x = Interval
@@ -219,6 +220,12 @@ suspended-cards-warning =
 time-totals = Totais de Tempo
 time-totals-help =
     A quantidade de tempo que foi gasta em cartões que levaram um determinado tempo para serem respondidos em todas as revisões.
+time-distribution-by-retrievability = Distribuição de Tempo por Recuperabilidade
+time-distribution-by-retrievability-help =
+    O tempo médio ou mediano de resposta (segundos), agrupado por faixa de recuperabilidade prevista antes de cada revisão.
+time-distribution-by-stability = Distribuição de Tempo por Estabilidade
+time-distribution-by-stability-help =
+    O tempo médio ou mediano de resposta (segundos), agrupado por faixa de estabilidade prevista (dias) antes de cada revisão.
 
 introduced = Introduzidos
 re-introduced = Reintroduzidos
