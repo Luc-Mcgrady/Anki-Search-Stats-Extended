@@ -9,7 +9,7 @@ import {
     type FSRSState,
     FSRSVersion,
 } from "ts-fsrs"
-import { forgettingCurve, FSRS6Model, migrateFSRS6Parameters } from "ts-fsrs/models/fsrs-6"
+import { FSRS6Model, migrateFSRS6Parameters } from "ts-fsrs/models/fsrs-6"
 import type { LossBar } from "./bar"
 import type { DeckConfig } from "./config"
 import { type Buckets, dayFromMs, emptyBuckets, IDify, rollover_ms, today } from "./revlogGraphs"
@@ -243,8 +243,10 @@ export function getMemorisedDays(
         card: Card,
         cid: number
     ) {
+        // The model caches the decay factor, unlike the standalone forgettingCurve helper.
+        const memory_state = { stability: s, difficulty: card.difficulty }
         for (let day = from; day < to; day++) {
-            const retrievability = forgettingCurve(fsrs.config.weights, day - from, s)
+            const retrievability = fsrs.model.forgettingCurve(memory_state, day - from)
             const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
             totalCards[day] = (totalCards[day] | 0) + 1
@@ -360,7 +362,7 @@ export function getMemorisedDays(
                 last_date = newDate
             }
 
-            const p = forgettingCurve(fsrs.config.weights, elapsed, card.stability)
+            const p = fsrs.model.forgettingCurve(card, elapsed)
             const y = grade > 1 ? 1 : 0
 
             let card_type: LossBin[]
