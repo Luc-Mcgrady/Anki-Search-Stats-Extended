@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "rootDirs": [
-            "../src/ts",
-            "../anki/ts"
-        ],
+        "target": "ES2017",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "rootDirs": ["../src/ts", "../anki/ts"],
+        "types": ["jest", "node", "svelte"],
         "esModuleInterop": true,
+        "skipLibCheck": true,
+        "noEmit": true
     },
+    "include": ["**/*.ts", "../src/ts/index.ts"]
 }

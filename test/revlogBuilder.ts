@@ -5,7 +5,7 @@ let card_id = 0;
 let start_id = 1;
 
 export class RevlogBuilder {
-    state: Partial<Revlog>
+    state: Partial<Revlog> & Pick<Revlog, "id" | "cid" | "ivl" | "type">
 
     constructor() {
         this.state = {
@@ -43,7 +43,7 @@ export class RevlogBuilder {
         }
     }
 
-    card(): Partial<CardData> {
+    card(): Pick<CardData, "id" | "ivl" | "did"> {
         return {
             id: this.state.cid,
             ivl: this.state.ivl,
