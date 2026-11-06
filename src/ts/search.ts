@@ -137,7 +137,9 @@ export async function openLocaleFolder() {
     await endpoint("openLocaleFolder")
 }
 
-export async function getCardData(cids: number[]) {
+export type CardSelection = number[] | { all: true }
+
+export async function getCardData(cids: CardSelection) {
     const response = (await endpoint("cardData", JSON.stringify(cids))) as {
         columns?: string[]
         data?: any[][]
@@ -183,7 +185,7 @@ export async function saveConfigValue(key: string, value: any) {
     await endpoint("writeConfig", JSON.stringify({ key, value }))
 }
 
-export async function getRevlogs(cids: number[], day_range: number) {
+export async function getRevlogs(cids: CardSelection, day_range: number) {
     const response = (await endpoint("revlogs", JSON.stringify({ cids, day_range }))) as {
         columns?: string[]
         data?: any[][]

@@ -206,10 +206,10 @@ export function getMemorisedDays(
     let fsrsCards: Record<number, Card> = {}
     let cards_by_id = IDify(cards)
 
-    let retrievabilityDays: number[] = []
-    let totalCards: number[] = []
-    let noteRetrievabilityDays: number[] = []
-    let stable_retrievability_days: number[] = []
+    let retrievabilityDays: number[] = new Array(today + 2)
+    let totalCards: number[] = new Array(today + 2)
+    let noteRetrievabilityDays: number[] = new Array(today + 2)
+    let stable_retrievability_days: number[] = new Array(today + 2)
 
     let cardCounts = cards.reduce(
         (p, c) => {
@@ -227,8 +227,8 @@ export function getMemorisedDays(
         return configs[config_mapping[card.odid || card.did]]
     }
 
-    let stability_day_bins: number[][] = []
-    let difficulty_day_bins: number[][] = []
+    let stability_day_bins: number[][] = new Array(today + 2)
+    let difficulty_day_bins: number[][] = new Array(today + 2)
 
     const calibration_bin_count = 20
     let calibration = <LossBin[]>Array(calibration_bin_count)
@@ -241,9 +241,14 @@ export function getMemorisedDays(
         card: Card,
         cid: number
     ) {
+        if (from >= to) return
+
+        const card_count = cardCounts[cards_by_id[cid].nid]
+        const stability_bin = Math.round(s)
+        const difficulty_bin = Math.round(card.difficulty * 10) - 1
+        const weight = stability_weight(card.stability)
         for (let day = from; day < to; day++) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
-            const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
             totalCards[day] = (totalCards[day] | 0) + 1
 
@@ -254,21 +259,21 @@ export function getMemorisedDays(
             }
             // If the cards not been forgotten
             if (card.stability) {
-                const stability_bin = Math.round(s)
                 stability_day_bins[day] ??= []
                 stability_day_bins[day][stability_bin] =
                     (stability_day_bins[day][stability_bin] || 0) + 1
-                const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
                 stable_retrievability_days[day] =
-                    (stable_retrievability_days[day] || 0) +
-                    retrievability * stability_weight(card.stability)
+                    (stable_retrievability_days[day] || 0) + retrievability * weight
             }
         }
     }
 
     let last_stability: number[] = []
+    // Dense copy of last_stability values for the daily median/mean.
+    const stability_values: number[] = []
+    const stability_index = new Map<number, number>()
 
     const default_bin = { predicted: 0, real: 0, count: 0 }
     function incrementLoss(bin: LossBin | null, predicted: number, real: number) {
@@ -286,8 +291,8 @@ export function getMemorisedDays(
     let last_date = new Date()
 
     let bw_matrix_count: Record<number, LossBin[]> = {}
-    let day_medians: number[] = []
-    let day_means: number[] = []
+    let day_medians: number[] = new Array(today + 2)
+    let day_means: number[] = new Array(today + 2)
     let last_day = dayFromMs(revlogs[0]?.id ?? 0)
     const uniqueCids = new Set(revlogs.map((r) => r.cid))
     let probabilities: Record<number, number[]> = {}
@@ -308,10 +313,11 @@ export function getMemorisedDays(
         const revlogDay = dayFromMs(revlog.id)
 
         if (last_day < revlogDay) {
-            const stabilities = Object.values(last_stability)
+            const median = d3.quantile(stability_values, 0.5) ?? 0
+            const mean = d3.mean(stability_values) ?? 0
             for (let day = last_day; day < revlogDay; day++) {
-                day_medians[day] = d3.quantile(stabilities, 0.5) ?? 0
-                day_means[day] = d3.mean(stabilities) ?? 0
+                day_medians[day] = median
+                day_means[day] = mean
             }
         }
         last_day = revlogDay
@@ -427,6 +433,13 @@ export function getMemorisedDays(
         card.stability = newState.stability
         card.difficulty = newState.difficulty
         last_stability[revlog.cid] = card.stability // To prevent "forget" affecting the forgetting curve
+        const value_index = stability_index.get(revlog.cid)
+        if (value_index === undefined) {
+            stability_index.set(revlog.cid, stability_values.length)
+            stability_values.push(card.stability)
+        } else {
+            stability_values[value_index] = card.stability
+        }
 
         fsrsCards[revlog.cid] = card
     }
@@ -467,6 +480,20 @@ export function getMemorisedDays(
             } cards differ between SSE and anki with a mean error of ${mean_error}:`,
             { inaccurate_cids, accurate_cids }
         )
+    }
+
+    // Drop unused preallocated tail so lengths match the written days.
+    for (const arr of [
+        retrievabilityDays,
+        totalCards,
+        noteRetrievabilityDays,
+        stable_retrievability_days,
+        stability_day_bins,
+        difficulty_day_bins,
+        day_medians,
+        day_means,
+    ]) {
+        while (arr.length > 0 && !(arr.length - 1 in arr)) arr.length--
     }
 
     const fatigueRMSE = _.mapValues(fatigue_bins, (bins) =>
