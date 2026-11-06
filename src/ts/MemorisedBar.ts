@@ -241,9 +241,14 @@ export function getMemorisedDays(
         card: Card,
         cid: number
     ) {
+        if (from >= to) return
+
+        const card_count = cardCounts[cards_by_id[cid].nid]
+        const stability_bin = Math.round(s)
+        const difficulty_bin = Math.round(card.difficulty * 10) - 1
+        const weight = stability_weight(card.stability)
         for (let day = from; day < to; day++) {
             const retrievability = fsrs.forgetting_curve(day - from, s)
-            const card_count = cardCounts[cards_by_id[cid].nid]
             retrievabilityDays[day] = (retrievabilityDays[day] || 0) + retrievability
             totalCards[day] = (totalCards[day] | 0) + 1
 
@@ -254,16 +259,14 @@ export function getMemorisedDays(
             }
             // If the cards not been forgotten
             if (card.stability) {
-                const stability_bin = Math.round(s)
                 stability_day_bins[day] ??= []
                 stability_day_bins[day][stability_bin] =
                     (stability_day_bins[day][stability_bin] || 0) + 1
-                const difficulty_bin = Math.round(card.difficulty * 10) - 1
                 difficulty_day_bins[day] ??= Array(100).fill(0)
                 difficulty_day_bins[day][difficulty_bin] += 1
                 stable_retrievability_days[day] =
                     (stable_retrievability_days[day] || 0) +
-                    retrievability * stability_weight(card.stability)
+                    retrievability * weight
             }
         }
     }
