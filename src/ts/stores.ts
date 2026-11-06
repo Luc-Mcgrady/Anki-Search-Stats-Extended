@@ -10,6 +10,7 @@ import {
     getRevlogs,
     saveConfigValue,
     type CardData,
+    type CardSelection,
     type Revlog,
 } from "./search"
 import type { Tooltip } from "./tooltip"
@@ -78,7 +79,7 @@ export let searchLimit = derived(
     [graphsRequest, alwaysAllTime],
     ([$graphsRequest, $alwaysAllTime]) => ($alwaysAllTime ? 0 : ($graphsRequest?.days ?? 0))
 )
-export let cids = writable<null | number[]>(null)
+export let cids = writable<null | CardSelection>(null)
 
 // Revlog graph specific stores
 export let pieLast = writable(59)

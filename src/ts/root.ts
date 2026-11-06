@@ -68,10 +68,16 @@ export function patchFetch() {
 
             const search_request = decodeRequest(origBody)
 
+            cids.set(null)
             graphsRequest.set(search_request)
 
-            const cidSearch = search(search_request?.search)
-            cidSearch.then(cids.set)
+            if (search_request.search === "") {
+                cids.set({ all: true })
+            } else {
+                search(search_request.search).then((ids) => {
+                    if (get(graphsRequest) === search_request) cids.set(ids)
+                })
+            }
 
             const limit = get(alwaysAllTime) ? 0 : undefined
             const stats =
