@@ -1,5 +1,5 @@
 import { get } from "svelte/store"
-import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
+import { FSRS5_DECAY } from "ts-fsrs/models/fsrs-5"
 import { realFetch, searchJoin } from "./root"
 import { searchString } from "./stores"
 
@@ -107,7 +107,7 @@ export function getCardDecay(card: CardData) {
 }
 
 export function getDecay(data: CardExtraData) {
-    return data.decay ?? FSRS5_DEFAULT_DECAY
+    return data.decay ?? FSRS5_DECAY
 }
 
 export interface Revlog {

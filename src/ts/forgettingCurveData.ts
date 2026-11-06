@@ -1,5 +1,6 @@
 import { mean } from "d3-array"
-import { default_w, forgetting_curve, FSRS5_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
+import { default_w, FSRS5_DEFAULT_DECAY, S_MIN } from "ts-fsrs"
+import { forgettingCurve } from "ts-fsrs/models/fsrs-6"
 
 export type ForgettingSample = {
     cid: number
@@ -313,7 +314,7 @@ export function fitStability(
     const loss = (stability: number) => {
         let total = 0
         for (const sample of samples) {
-            const prediction = clampProbability(forgetting_curve(decay, sample.delta, stability))
+            const prediction = clampProbability(forgettingCurve(decay, sample.delta, stability))
             const recall = sample.recall
             total += -(recall * Math.log(prediction) + (1 - recall) * Math.log(1 - prediction))
         }
@@ -367,7 +368,7 @@ export function computeRmse(
     }
 
     const squaredError = samples.reduce((p, sample) => {
-        const prediction = forgetting_curve(decay, sample.delta, stability)
+        const prediction = forgettingCurve(decay, sample.delta, stability)
         return p + (sample.recall - prediction) ** 2
     }, 0)
 

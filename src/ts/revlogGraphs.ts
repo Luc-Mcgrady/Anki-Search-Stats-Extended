@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { FSRS5_DEFAULT_DECAY } from "ts-fsrs"
+import { FSRS5_DECAY } from "ts-fsrs/models/fsrs-5"
 import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { averageDecay, type ForgettingSample } from "./forgettingCurveData"
@@ -357,8 +357,7 @@ export function calculateRevlogStats(
         .map((cid) => id_card_data[cid])
         .filter((card): card is CardData => card !== undefined)
         .map((card) => getCardDecay(card))
-    const forgetting_curve_decay =
-        decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DEFAULT_DECAY
+    const forgetting_curve_decay = decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DECAY
 
     console.timeEnd("revlog stats")
 
