@@ -132,19 +132,27 @@ def revlogs() -> bytes:
     else:
         lower_limit = 0
 
-    revlog_entries = mw.col.db.all(f"""
-    SELECT
-        {",".join(REVLOG_COLUMNS)}
-    FROM revlog
-    WHERE
-        cid IN ({cards})
-        AND revlog.id > ({lower_limit})
-    ORDER BY revlog.id
+    # Keep rows as JSON across the backend bridge instead of rebuilding them in Python.
+    revlog_entries = mw.col.db.scalar(f"""
+    SELECT json_group_array(json_array({",".join(REVLOG_COLUMNS)}))
+    FROM (
+        SELECT
+            {",".join(REVLOG_COLUMNS)}
+        FROM revlog
+        WHERE
+            cid IN ({cards})
+            AND revlog.id > ({lower_limit})
+        ORDER BY revlog.id
+    )
     """)
 
-    result = {"columns": REVLOG_COLUMNS, "data": revlog_entries}
-
-    return Response(orjson.dumps(result))
+    return Response(
+        b'{"columns":'
+        + orjson.dumps(REVLOG_COLUMNS)
+        + b',"data":'
+        + revlog_entries.encode("utf-8")
+        + b'}'
+    )
 
 
 post_handlers["revlogs"] = revlogs
