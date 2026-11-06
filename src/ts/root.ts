@@ -58,6 +58,7 @@ export function fetchSwappedSearch(criteria: string, limit?: number) {
 export function patchFetch() {
     //@ts-ignore
     fetch = (req: string, headers: Record<string, any>) => {
+        const response = realFetch(req, headers)
         if (req == "/_anki/graphs") {
             data.set(null)
 
@@ -73,9 +74,13 @@ export function patchFetch() {
             cidSearch.then(cids.set)
 
             const limit = get(alwaysAllTime) ? 0 : undefined
-            fetchSwappedSearch("", limit).then(data.set)
+            const stats =
+                limit === undefined || search_request.days === limit
+                    ? fetchAndDecode(response.then((resp) => resp.clone()))
+                    : fetchSwappedSearch("", limit)
+            stats.then(data.set)
             fetchSwappedSearch("-is:suspended", limit).then(not_suspended_data.set)
         }
-        return realFetch(req, headers)
+        return response
     }
 }
