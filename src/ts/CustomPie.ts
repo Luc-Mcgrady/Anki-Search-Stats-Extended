@@ -18,7 +18,7 @@ export async function getQuery(query: string, mode: string): Promise<number> {
     if (mode === "Count") {
         return cids.length
     }
-    const cards = await getCardData(cids)
+    const cards = await getCardData({ all: false, cids })
     switch (mode) {
         case "Load":
             return cards.reduce((p, n) => (p += n.ivl ? 1 / n.ivl : 0), 0)

@@ -64,7 +64,7 @@ test.each([
     expect(stores.data.set.mock.calls[0][0]).toBeNull()
     expect(stores.data.set.mock.calls[1][0].toBinary()).toEqual(bytes)
     expect(stores.not_suspended_data.set).toHaveBeenCalledTimes(1)
-    expect(stores.cids.set).toHaveBeenLastCalledWith([123])
+    expect(stores.cids.set).toHaveBeenLastCalledWith({ all: false, cids: [123] })
 })
 
 test("full collection skips card search and clears the selection on every refresh", async () => {

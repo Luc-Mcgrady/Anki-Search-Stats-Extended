@@ -75,7 +75,7 @@ export function patchFetch() {
                 cids.set({ all: true })
             } else {
                 search(search_request.search).then((ids) => {
-                    if (get(graphsRequest) === search_request) cids.set(ids)
+                    if (get(graphsRequest) === search_request) cids.set({ all: false, cids: ids })
                 })
             }
 

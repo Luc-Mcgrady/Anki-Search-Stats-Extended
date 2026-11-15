@@ -111,7 +111,7 @@ config.subscribe(($config) =>
 export let card_data: Readable<CardData[] | null> = derived([cids], ([$cids], set) => {
     set(null)
     if ($cids) {
-        catchErrors(() => getCardData($cids ?? [])).then(set)
+        catchErrors(() => getCardData($cids)).then(set)
     }
 })
 

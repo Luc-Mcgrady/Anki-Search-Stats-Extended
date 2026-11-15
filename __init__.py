@@ -109,11 +109,11 @@ CARD_COLUMNS = [
 
 
 def card_data() -> bytes:
-    cids = orjson.loads(request.data)
-    if cids == {"all": True}:
+    selection = orjson.loads(request.data)
+    if selection == {"all": True}:
         cardData = mw.col.db.all("SELECT * FROM cards ORDER BY id")
     else:
-        cards = ",".join(str(int(cid)) for cid in cids)
+        cards = ",".join(str(int(cid)) for cid in selection["cids"])
         cardData = mw.col.db.all(f"SELECT * FROM cards WHERE id IN ({cards})")
     return Response(orjson.dumps({"columns": CARD_COLUMNS, "data": cardData}))
 
@@ -126,11 +126,12 @@ DAY_SECONDS = 60 * 60 * 24
 
 def revlogs() -> bytes:
     req = orjson.loads(request.data)
+    selection = req["selection"]
     # Keep orphaned revlogs excluded even when selecting the whole collection.
     card_filter = (
         "EXISTS (SELECT 1 FROM cards WHERE cards.id = revlog.cid)"
-        if req["cids"] == {"all": True}
-        else "cid IN (" + ",".join(str(int(cid)) for cid in req["cids"]) + ")"
+        if selection == {"all": True}
+        else "cid IN (" + ",".join(str(int(cid)) for cid in selection["cids"]) + ")"
     )
     day_range = req["day_range"]
 

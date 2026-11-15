@@ -18,8 +18,8 @@
             search(searchJoin(parentSearch, "prop:due=0 is:learn is:review")),
         ])
         const [cards_learn, cards_relearn] = await Promise.all([
-            getCardData(due_today_learn),
-            getCardData(due_today_relearn),
+            getCardData({ all: false, cids: due_today_learn }),
+            getCardData({ all: false, cids: due_today_relearn }),
         ])
 
         const { learn_ahead_secs, rollover } = $other
