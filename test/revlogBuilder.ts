@@ -5,7 +5,7 @@ let card_id = 0;
 let start_id = 1;
 
 export class RevlogBuilder {
-    state: Partial<Revlog>
+    state: Revlog | Pick<Revlog, "id" | "cid" | "ivl" | "type">
 
     constructor() {
         this.state = {
@@ -20,7 +20,7 @@ export class RevlogBuilder {
         return dayFromMs(this.state.id)
     }
 
-    review(ivl: number, ease: 0 | 1 | 2 | 3 | 4 = 0, time_spent: number = ease == 0 ? 0 : 10_000) {
+    review(ivl: number, ease: 0 | 1 | 2 | 3 | 4 = 0, time_spent: number = ease == 0 ? 0 : 10_000): Revlog {
 
         this.state = {
             id: this.state.id + (this.state.ivl > 0 ? this.state.ivl * day_ms : -this.state.ivl),
@@ -31,7 +31,7 @@ export class RevlogBuilder {
             time: time_spent,
             factor: ivl > 0 ? 200 : 0,
             lastIvl: this.state.ivl
-        }
+        } satisfies Revlog
 
         return this.state
     }
@@ -43,7 +43,7 @@ export class RevlogBuilder {
         }
     }
 
-    card(): Partial<CardData> {
+    card(): Pick<CardData, "id" | "ivl" | "did"> {
         return {
             id: this.state.cid,
             ivl: this.state.ivl,

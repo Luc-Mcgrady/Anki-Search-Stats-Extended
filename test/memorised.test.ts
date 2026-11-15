@@ -14,9 +14,10 @@ const weights2 = [
 ]
 
 const mappings = {1: 1, 2: 2}
-const configs: Record<number, Partial<DeckConfig>> = {
-    1: {id: 1, fsrsWeights: weights, fsrsParams5: weights},
-    2: {id: 2, fsrsWeights: weights2, fsrsParams5: weights2}
+// These test fixtures only provide the fields read by the FSRS calculation.
+const configs: Record<number, DeckConfig> = {
+    1: {id: 1, fsrsWeights: weights, fsrsParams5: weights} as DeckConfig,
+    2: {id: 2, fsrsWeights: weights2, fsrsParams5: weights2} as DeckConfig
 }
 
 
