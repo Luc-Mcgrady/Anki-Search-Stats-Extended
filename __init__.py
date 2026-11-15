@@ -156,11 +156,9 @@ def revlogs() -> bytes:
     """)
 
     return Response(
-        b'{"columns":'
-        + orjson.dumps(REVLOG_COLUMNS)
-        + b',"data":'
-        + revlog_entries.encode("utf-8")
-        + b'}'
+        orjson.dumps(
+            {"columns": REVLOG_COLUMNS, "data": revlog_entries.encode("utf-8")}
+        )
     )
 
 
