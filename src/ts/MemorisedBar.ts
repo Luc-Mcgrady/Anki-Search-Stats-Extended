@@ -13,7 +13,7 @@ import { FSRS6Model, migrateFSRS6Parameters } from "ts-fsrs/models/fsrs-6"
 import type { LossBar } from "./bar"
 import type { DeckConfig } from "./config"
 import { type Buckets, dayFromMs, emptyBuckets, IDify, rollover_ms, today } from "./revlogGraphs"
-import type { CardData, Revlog } from "./search"
+import { type CardData, type Revlog, SSE_CONSOLE_LABEL } from "./search"
 
 export interface LossBin {
     real: number
@@ -144,7 +144,9 @@ function applyOutlierFilter(revlogs: Revlog[]): Set<number> {
     }
 
     if (excludedRevlogIds.size > 0) {
-        console.log(`Outlier filter excluded ${excludedRevlogIds.size} reviews from stats.`)
+        console.log(
+            `${SSE_CONSOLE_LABEL}Outlier filter excluded ${excludedRevlogIds.size} reviews from stats.`
+        )
     }
 
     return excludedRevlogIds
@@ -188,6 +190,9 @@ function stability_weight(s: number): number {
 const R_BIN_POWER = 1.4
 const LOG_R_BIN_POWER = Math.log(R_BIN_POWER)
 
+const OUTLIER_TIMER = SSE_CONSOLE_LABEL + "Outlier filter"
+const MEMORISED_TIMER = SSE_CONSOLE_LABEL + "FSRS stats"
+
 export function getMemorisedDays(
     revlogs: Revlog[],
     cards: CardData[],
@@ -197,14 +202,14 @@ export function getMemorisedDays(
     leech_elapsed_threshold = 2,
     leech_min_reviews = 2
 ) {
-    console.log(`ts-fsrs ${FSRSVersion}`)
+    console.log(`${SSE_CONSOLE_LABEL}ts-fsrs ${FSRSVersion}`)
 
     // Apply the new outlier filtering logic at the start.
-    console.time("Applying outlier filter")
+    console.time(OUTLIER_TIMER)
     const excludedRevlogIds = applyOutlierFilter(revlogs)
-    console.timeEnd("Applying outlier filter")
+    console.timeEnd(OUTLIER_TIMER)
 
-    console.time("Calculating memorised days")
+    console.time(MEMORISED_TIMER)
     let fsrsCards: Record<number, Card> = {}
     let cards_by_id = IDify(cards)
 
@@ -485,7 +490,7 @@ export function getMemorisedDays(
             Math.abs(a.expected - a.actual)
         ).toFixed(2)
         console.warn(
-            `The stability of the following ${inaccurate_cids.length}/${
+            `${SSE_CONSOLE_LABEL}The stability of the following ${inaccurate_cids.length}/${
                 inaccurate_cids.length + accurate_cids.length
             } cards differ between SSE and anki with a mean error of ${mean_error}:`,
             { inaccurate_cids, accurate_cids }
@@ -516,7 +521,7 @@ export function getMemorisedDays(
     const leech_probabilities = _.mapValues(probabilities, (p) =>
         p.length > leech_min_reviews ? _.sum(p) : 1
     )
-    console.timeEnd("Calculating memorised days")
+    console.timeEnd(MEMORISED_TIMER)
     return {
         retrievabilityDays,
         totalCards,

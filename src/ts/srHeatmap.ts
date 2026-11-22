@@ -1,7 +1,7 @@
 import { forgettingCurve } from "ts-fsrs/models/fsrs-6"
 import { CardType } from "../../anki/ts/lib/tslib/cards"
 import type { HeatmapData, HeatmapDimension } from "./heatmap"
-import { getDecay, getExtraDataFromCard, type CardData } from "./search"
+import { getDecay, getExtraDataFromCard, SSE_CONSOLE_LABEL, type CardData } from "./search"
 
 export interface CardSRData {
     r: number
@@ -56,7 +56,7 @@ export function create_card_sr_dataset(
         const r = forgettingCurve(getDecay(extra_data), elapsed_days, s)
 
         if (!Number.isFinite(r) || !Number.isFinite(s) || r < 0 || r > 1 || s <= 0) {
-            console.warn("Skipping card with invalid r or s:", {
+            console.warn(SSE_CONSOLE_LABEL + "Skipping card with invalid r or s:", {
                 card_id: card_data_entry.id,
                 r,
                 s,
@@ -153,14 +153,14 @@ export function calculate_sr_heatmap_data(
         !Number.isFinite(s_dim.start_value) ||
         !Number.isFinite(s_dim.end_value)
     ) {
-        console.error("Invalid dimension values detected:", { r_dim, s_dim })
+        console.error(SSE_CONSOLE_LABEL + "Invalid dimension values detected:", { r_dim, s_dim })
         return null
     }
 
     const total_bins = r_dim.bin_count * s_dim.bin_count
 
     if (!Number.isFinite(total_bins) || total_bins < 0 || total_bins > 2 ** 32 - 1) {
-        console.error("INVALID total_bins value detected!", total_bins)
+        console.error(SSE_CONSOLE_LABEL + "INVALID total_bins value detected!", total_bins)
         return null
     }
 

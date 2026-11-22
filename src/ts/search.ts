@@ -12,6 +12,7 @@ const ERROR_STRING = `Search Stats Extended has encountered an error.
 
 If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
 `
+export const SSE_CONSOLE_LABEL = "(Search Stats Extended) "
 
 export function catchErrors<Return>(func: () => Return): Return {
     try {

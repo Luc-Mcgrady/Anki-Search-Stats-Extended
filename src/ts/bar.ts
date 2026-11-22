@@ -5,6 +5,7 @@ import { totalCalc } from "./barHelpers"
 import type { CandlestickGraph } from "./Candlestick"
 import { defaultGraphBounds } from "./graph"
 import { i18n_bundle } from "./i18n"
+import { SSE_CONSOLE_LABEL } from "./search"
 import { tooltip, tooltipShown } from "./stores"
 import { tooltipDate, tooltipX } from "./tooltip"
 
@@ -199,7 +200,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
     let maxValue = _.sum(Object.values(max?.values ?? []))
 
     if (!Number.isFinite(maxValue) || maxValue < 0) {
-        console.warn("Invalid maxValue detected in bar chart:", {
+        console.warn(SSE_CONSOLE_LABEL + "Invalid maxValue detected in bar chart:", {
             maxValue,
             maxDatum: max,
             chartRowLabels: chart.row_labels,

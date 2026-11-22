@@ -4,7 +4,7 @@ import type { BarChart, BarDatum } from "./bar"
 import { totalCalc } from "./barHelpers"
 import { averageDecay, type ForgettingSample } from "./forgettingCurveData"
 import { i18n } from "./i18n"
-import { getCardDecay, type CardData, type Revlog } from "./search"
+import { getCardDecay, SSE_CONSOLE_LABEL, type CardData, type Revlog } from "./search"
 
 const rollover = SSEother.rollover ?? 0
 export const rollover_ms = rollover * 60 * 60 * 1000
@@ -60,12 +60,14 @@ function isCram(revlog?: Revlog) {
     return revlog && revlog.factor == 0 && revlog.type == 3
 }
 
+const REVLOG_TIMER = SSE_CONSOLE_LABEL + "Review based stats"
+
 export function calculateRevlogStats(
     revlogData: Revlog[],
     cardData: CardData[],
     end: number = today
 ) {
-    console.time("revlog stats")
+    console.time(REVLOG_TIMER)
     let id_card_data = IDify(cardData)
 
     function emptyArray<T>(init: T): T[] {
@@ -360,7 +362,7 @@ export function calculateRevlogStats(
         .map((card) => getCardDecay(card))
     const forgetting_curve_decay = decayValues.length > 0 ? averageDecay(decayValues) : FSRS5_DECAY
 
-    console.timeEnd("revlog stats")
+    console.timeEnd(REVLOG_TIMER)
 
     return {
         day_initial_ease,
