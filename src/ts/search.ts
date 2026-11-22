@@ -3,14 +3,21 @@ import { FSRS5_DECAY } from "ts-fsrs/models/fsrs-5"
 import { realFetch, searchJoin } from "./root"
 import { searchString } from "./stores"
 
+const ERROR_STRING = `Search Stats Extended has encountered an error.
+
+--- *** If you have recently updated the addon please ensure you have restarted Anki. *** ---
+
+
+
+
+If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
+`
+
 export function catchErrors<Return>(func: () => Return): Return {
     try {
         return func()
     } catch (e: any) {
-        alert(`Search Stats Extended has encountered an error.
-
---- *** If you have recently updated the addon please ensure you have restarted Anki. *** ---
-
+        alert(`${ERROR_STRING}
 JS:
 ${e?.stack ? e.stack : e}`)
         throw e
@@ -25,16 +32,9 @@ async function endpoint(endpoint: string, body?: string) {
     })
 
     if (!resp.ok) {
-        alert(`Search Stats Extended has encountered an error.
+        alert(`${ERROR_STRING}
 
---- *** If you have recently updated the addon please ensure you have restarted Anki. *** ---
-
-
-
-
-If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
-
-Fetch Response: ${resp.status}
+Fetch "${endpoint}" Response: ${resp.status}
 ${await resp.text()}`)
         throw resp.status
     }
