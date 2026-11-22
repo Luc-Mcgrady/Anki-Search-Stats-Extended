@@ -1,9 +1,14 @@
 import { get } from "svelte/store"
 import { FSRS5_DECAY } from "ts-fsrs/models/fsrs-5"
+import { good_version } from "."
 import { realFetch, searchJoin } from "./root"
 import { searchString } from "./stores"
 
-const ERROR_STRING = `Search Stats Extended has encountered an error.
+const bad_version_error_string = `Search Stats Extended has encountered an error.
+You have bypassed restart protections, this is likely the cause for this error. Please restart Anki.
+`
+
+const good_version_error_string = `Search Stats Extended has encountered an error.
 
 --- *** If you have recently updated the addon please ensure you have restarted Anki. *** ---
 
@@ -12,13 +17,15 @@ const ERROR_STRING = `Search Stats Extended has encountered an error.
 
 If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
 `
+
+const error_string = good_version ? good_version_error_string : bad_version_error_string
 export const SSE_CONSOLE_LABEL = "(Search Stats Extended) "
 
 export function catchErrors<Return>(func: () => Return): Return {
     try {
         return func()
     } catch (e: any) {
-        alert(`${ERROR_STRING}
+        alert(`${error_string}
 JS:
 ${e?.stack ? e.stack : e}`)
         throw e
@@ -33,7 +40,7 @@ async function endpoint(endpoint: string, body?: string) {
     })
 
     if (!resp.ok) {
-        alert(`${ERROR_STRING}
+        alert(`${error_string}
 
 Fetch "${endpoint}" Response: ${resp.status}
 ${await resp.text()}`)
