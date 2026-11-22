@@ -27,7 +27,7 @@ def getLocale(lang: str):
 def getAvailableLangs():
     try:
         return [a[:-4] for a in os.listdir(locale_dir) if a.endswith(".ftl")]
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         return ["Locale folder missing or otherwise inaccessable", e]
 
 
@@ -78,10 +78,7 @@ from flask import Response, request
 
 def card_search() -> bytes:
     search = request.data
-    try:
-        return Response(orjson.dumps(list(mw.col.find_cards(search))))
-    except:
-        return None
+    return Response(orjson.dumps(list(mw.col.find_cards(search))))
 
 
 post_handlers["cardSearch"] = card_search
