@@ -11,10 +11,21 @@
     }
 </script>
 
-<h1>{i18n("search-stats-extended")}</h1>
-<GraphContainer>
+<div>
+    <hr />
+    <h1>{i18n("title-search-stats-extended")}</h1>
     <Warning always>
-        {i18n("out-of-date-warning")}
-        <button on:click={onClick}>{i18n("load-anyway")}</button>
+        <GraphContainer>
+            <span>
+                <h3>{i18n("out-of-date-warning")}</h3>
+                <button on:click={onClick}>{i18n("load-anyway")}</button>
+            </span>
+        </GraphContainer>
     </Warning>
-</GraphContainer>
+</div>
+
+<style lang="scss">
+    div {
+        margin: 1.5rem;
+    }
+</style>

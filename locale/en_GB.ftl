@@ -470,6 +470,9 @@ star-on-github = Star on Github ⭐
 sponsor-on-github = Sponsor me on Github ❤️
 buy-me-a-coffee = Buy me a coffee ☕
 
+out-of-date-warning = Restart Anki to continue using Search Stats Extended.
+load-anyway = Load anyway (Not Recommended)
+
 # Graphs that are hidden by default, translate if you want to
 bad-graph = Bad Graphs
 
