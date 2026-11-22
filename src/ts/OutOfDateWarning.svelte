@@ -5,9 +5,11 @@
     import Warning from "./Warning.svelte"
 
     function onClick() {
-        const url = new URL(window.location.href)
-        url.searchParams.set(IGNORE_VERSION_URL_PARAMETER, "1")
-        window.location.replace(url)
+        if (confirm(i18n("load-anyway-warning") + "\n\n" + i18n("load-anyway-warning2"))) {
+            const url = new URL(window.location.href)
+            url.searchParams.set(IGNORE_VERSION_URL_PARAMETER, "1")
+            window.location.replace(url)
+        }
     }
 </script>
 
