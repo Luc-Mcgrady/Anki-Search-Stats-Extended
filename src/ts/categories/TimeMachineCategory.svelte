@@ -43,8 +43,6 @@
             result[day] = total
         }
 
-        console.log({ result, addedCards })
-
         return result
     })()
 
