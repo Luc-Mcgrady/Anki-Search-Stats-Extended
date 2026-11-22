@@ -69,7 +69,8 @@ export function calculateRevlogStats(
     let id_card_data = IDify(cardData)
 
     function emptyArray<T>(init: T): T[] {
-        const empty_array: T[] = []
+        // Preallocate so V8 keeps day-indexed arrays in fast elements mode.
+        const empty_array: T[] = new Array(end + 1)
         empty_array[end] = init
         return empty_array
     }
