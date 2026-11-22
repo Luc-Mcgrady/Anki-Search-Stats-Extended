@@ -1,7 +1,9 @@
 import { mount } from "svelte"
+import OutOfDateWarning from "./OutOfDateWarning.svelte"
 import Root from "./Root.svelte"
 import type { SSEconfig, SSEother } from "./config"
 import { patchFetch } from "./root"
+import { catchErrors } from "./search"
 import { config, other } from "./stores"
 
 declare global {
@@ -25,13 +27,25 @@ if (!String.prototype.replaceAll) {
     document.body.classList.add("qt5")
 }
 
-patchFetch()
+export const IGNORE_VERSION_URL_PARAMETER = "issev" // Ignore SSE version
 
-config.set(SSEconfig)
-other.set(SSEother)
+catchErrors(() => {
+    const url = new URL(window.location.href)
 
-setTimeout(() => mount(Root, { target: document.body }), SSEconfig.loadDelayMs ?? 100)
+    const BACKEND_VERSION = 1
+    const ignore_version = url.searchParams.has(IGNORE_VERSION_URL_PARAMETER)
+    const version_correct = SSEother.backend_version === BACKEND_VERSION || ignore_version
+    const component = version_correct ? Root : OutOfDateWarning
 
-const style = document.createElement("style")
-style.innerHTML = css
-document.head.appendChild(style)
+    if (version_correct) {
+        patchFetch()
+
+        config.set(SSEconfig)
+        other.set(SSEother)
+    }
+    setTimeout(() => mount(component, { target: document.body }), SSEconfig.loadDelayMs ?? 100)
+
+    const style = document.createElement("style")
+    style.innerHTML = css
+    document.head.appendChild(style)
+})
