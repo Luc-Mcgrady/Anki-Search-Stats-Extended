@@ -14,7 +14,7 @@
     $: learning_search = searchJoin($searchString, "rated:1 -is:review is:learn")
 
     let do_learning = true
-    let data_fetcher = CancelablePromise.reject<PieDatum[]>()
+    let data_fetcher = CancelablePromise.resolve<PieDatum[]>([])
     $: {
         if ($searchString !== null) {
             data_fetcher.cancel()
