@@ -472,8 +472,8 @@ buy-me-a-coffee = Buy me a coffee ☕
 
 out-of-date-warning = Restart Anki to continue using Search Stats Extended.
 load-anyway = Load anyway (Not Recommended)
-load-anyway-warning = This feature is intended as a failsafe if the restart warning remains after restarting.
-load-anyway-warning2 = Loading while the add-on is in this state will cause it to be unstable and there will likely be errors. Continue?
+load-anyway-warning = Bypassing this warning is intended as a failsafe for if it remains after restarting. If this does happen, please report it (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new).
+load-anyway-warning2 = Loading while the add-on is in this state will cause it to be unstable and there will likely be errors. Do not report any bugs. Continue?
 
 # Graphs that are hidden by default, translate if you want to
 bad-graph = Bad Graphs

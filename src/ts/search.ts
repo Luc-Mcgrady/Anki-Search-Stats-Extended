@@ -5,7 +5,7 @@ import { realFetch, searchJoin } from "./root"
 import { searchString } from "./stores"
 
 const bad_version_error_string = `Search Stats Extended has encountered an error.
-You have bypassed restart protections, this is likely the cause for this error. Please restart Anki.
+You have bypassed restart protections. Please restart Anki.
 `
 
 const good_version_error_string = `Search Stats Extended has encountered an error.
