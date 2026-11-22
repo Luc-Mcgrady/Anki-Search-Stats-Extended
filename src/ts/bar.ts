@@ -233,7 +233,7 @@ export function renderBarChart(chart: BarChart, svg: SVGElement) {
         .attr("fill", (d, i) => d.color)
         .attr("x", (d) => x(d.data.label)!)
         .attr("y", (d) => y(d[1]))
-        .attr("height", (d) => y(d[0]) - y(d[1]))
+        .attr("height", (d) => y(d[0]) - y(d[1]) || 0)
         .attr("width", x.bandwidth())
 
     const filteredRowLabels = chart.row_labels.filter((_, i) => !isRowHidden(i))
