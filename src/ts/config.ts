@@ -87,7 +87,7 @@ export interface SSEother {
     lang: string
     lang_ftl: string
     fallback_ftl: string
-    backend_version?: number
+    backend_major_version?: number
 }
 
 export const DEFAULT_ORDER = [

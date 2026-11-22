@@ -14,9 +14,11 @@ locale_dir = addon_dir / "locale"
 
 fallback_lang = "en_GB"
 
-# Bump this here and in index.ts if you make any changes that 
-# will cause the frontend to error if the python file from the last release is used
-BACKEND_VERSION = 1
+# Bump this here and in index.ts if you make any changes that will cause
+# the frontend to error if the python file from the last release is used
+#
+# Unrelated to the release versions.
+BACKEND_MAJOR_VERSION = 1
 
 
 def getLocale(lang: str):
@@ -63,7 +65,7 @@ def new_refresh(self: NewDeckStats):
         "available_langs": getAvailableLangs(),
         "lang_ftl": getLocale(lang),
         "fallback_ftl": getLocale(fallback_lang),
-        "backend_version": BACKEND_VERSION
+        "backend_major_version": BACKEND_MAJOR_VERSION
     }
     setVars = (
         f"const css = `{innerCss}`;"

@@ -28,13 +28,14 @@ if (!String.prototype.replaceAll) {
 }
 
 export const IGNORE_VERSION_URL_PARAMETER = "issev" // Ignore SSE version
+const BACKEND_MAJOR_VERSION = 1
 
 catchErrors(() => {
     const url = new URL(window.location.href)
 
-    const BACKEND_VERSION = 1
     const ignore_version = url.searchParams.has(IGNORE_VERSION_URL_PARAMETER)
-    const version_correct = SSEother.backend_version === BACKEND_VERSION || ignore_version
+    const version_correct =
+        SSEother.backend_major_version === BACKEND_MAJOR_VERSION || ignore_version
     const component = version_correct ? Root : OutOfDateWarning
 
     if (version_correct) {
