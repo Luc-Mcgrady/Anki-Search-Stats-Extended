@@ -19,7 +19,7 @@
     <Warning always>
         <GraphContainer>
             <span>
-                <h3>{i18n("out-of-date-warning")}</h3>
+                <h3>{i18n("please-restart-anki")}</h3>
                 <button on:click={onClick}>{i18n("load-anyway")}</button>
             </span>
         </GraphContainer>
