@@ -90,3 +90,6 @@ export function patchFetch() {
         return response
     }
 }
+export const IGNORE_VERSION_URL_PARAMETER = "issev" // Ignore SSE version
+const BACKEND_MAJOR_VERSION = 1
+export const good_version = SSEother.backend_major_version === BACKEND_MAJOR_VERSION

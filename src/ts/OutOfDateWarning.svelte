@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { IGNORE_VERSION_URL_PARAMETER } from "."
+    import { IGNORE_VERSION_URL_PARAMETER } from "./root"
     import GraphContainer from "./GraphContainer.svelte"
     import { i18n } from "./i18n"
     import Warning from "./Warning.svelte"

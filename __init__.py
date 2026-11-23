@@ -14,7 +14,7 @@ locale_dir = addon_dir / "locale"
 
 fallback_lang = "en_GB"
 
-# Bump this here and in index.ts if you make any changes that will cause
+# Bump this here and in root.ts if you make any changes that will cause
 # the frontend to error if the python file from the last release is used
 #
 # Unrelated to the release versions.

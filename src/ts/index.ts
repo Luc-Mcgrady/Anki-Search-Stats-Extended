@@ -2,7 +2,7 @@ import { mount } from "svelte"
 import OutOfDateWarning from "./OutOfDateWarning.svelte"
 import Root from "./Root.svelte"
 import type { SSEconfig, SSEother } from "./config"
-import { patchFetch } from "./root"
+import { good_version, IGNORE_VERSION_URL_PARAMETER, patchFetch } from "./root"
 import { catchErrors } from "./search"
 import { config, other } from "./stores"
 
@@ -26,10 +26,6 @@ if (!String.prototype.replaceAll) {
 
     document.body.classList.add("qt5")
 }
-
-export const IGNORE_VERSION_URL_PARAMETER = "issev" // Ignore SSE version
-const BACKEND_MAJOR_VERSION = 1
-export const good_version = SSEother.backend_major_version === BACKEND_MAJOR_VERSION
 
 catchErrors(() => {
     const url = new URL(window.location.href)

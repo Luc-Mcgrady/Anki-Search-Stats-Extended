@@ -1,7 +1,6 @@
 import { get } from "svelte/store"
 import { FSRS5_DECAY } from "ts-fsrs/models/fsrs-5"
-import { good_version } from "."
-import { realFetch, searchJoin } from "./root"
+import { good_version, realFetch, searchJoin } from "./root"
 import { searchString } from "./stores"
 
 const bad_version_error_string = `Search Stats Extended has encountered an error.
