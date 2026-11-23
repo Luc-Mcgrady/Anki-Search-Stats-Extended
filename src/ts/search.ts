@@ -30,8 +30,9 @@ export function catchErrors<Return>(func: () => Return): Return {
         return func()
     } catch (e: any) {
         alert(`${errorString()}
-            JS:
-            ${e?.stack ? e.stack : e}`)
+
+JS:
+${e?.stack ? e.stack : e}`)
         throw e
     }
 }
