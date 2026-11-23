@@ -17,17 +17,21 @@ const good_version_error_string = `Search Stats Extended has encountered an erro
 
 If the problem persists copy the following information into a github issue (https://github.com/Luc-Mcgrady/Anki-Search-Stats-Extended/issues/new) with a description of what you were doing at the time:
 `
-
-const error_string = good_version ? good_version_error_string : bad_version_error_string
 export const SSE_CONSOLE_LABEL = "(Search Stats Extended) "
+
+function errorString() {
+    return good_version === undefined || good_version
+        ? good_version_error_string
+        : bad_version_error_string
+}
 
 export function catchErrors<Return>(func: () => Return): Return {
     try {
         return func()
     } catch (e: any) {
-        alert(`${error_string}
-JS:
-${e?.stack ? e.stack : e}`)
+        alert(`${errorString()}
+            JS:
+            ${e?.stack ? e.stack : e}`)
         throw e
     }
 }
@@ -40,7 +44,7 @@ async function endpoint(endpoint: string, body?: string) {
     })
 
     if (!resp.ok) {
-        alert(`${error_string}
+        alert(`${errorString()}
 
 Fetch "${endpoint}" Response: ${resp.status}
 ${await resp.text()}`)
